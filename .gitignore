@@ -3,3 +3,6 @@
 /Fluvius/
 /data
 *.csv
+/.idea/
+/.ipynb_checkpoints/
+
