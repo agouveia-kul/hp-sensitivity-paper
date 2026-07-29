@@ -171,11 +171,27 @@ def build_pool(heapo_obj, cache_path=POOL_CACHE, rebuild=False, verbose=True):
             print(f'  scanned {k + 1}/{len(all_households)} households, '
                   f'kept {len(kept)} ({len(hp_kept)} with HP submetering)')
 
+    # Households whose NON-HP load still contains electric heating. In HEAPO
+    # every household owns a heat pump, so a "non-HP member" is synthetic -- its
+    # `Other` series with the HP removed. That series still carries an electric
+    # water heater where one is installed, which is a temperature-driven load and
+    # therefore disqualifies the household as control material.
+    ewh_col = 'Survey_DHW_Production_ByElectricWaterHeater'
+    if ewh_col in meta.columns:
+        ewh = meta.set_index('Household_ID')[ewh_col]
+        eheat_kept = [h for h in kept if str(ewh.get(h)) == 'True']
+    else:
+        eheat_kept = []
+    if verbose:
+        print(f'{len(eheat_kept)} of {len(kept)} households have an electric water '
+              f'heater in their non-HP load')
+
     pool = {
         'index': index,
         'households': kept,
         'weather_of': weather_of_all.reindex(kept),
         'hp_households': hp_kept,
+        'eheat_households': eheat_kept,
         'hp_peak': pd.Series(hp_peaks, index=hp_kept, dtype=float),
         'hp_mat': np.vstack(hp_rows) if hp_rows else np.zeros((0, n_t), np.float32),
         'other_mat': np.vstack(other_rows) if other_rows else np.zeros((0, n_t), np.float32),
@@ -196,8 +212,22 @@ def build_pool(heapo_obj, cache_path=POOL_CACHE, rebuild=False, verbose=True):
 # Stage 2 -- factorial design
 # ---------------------------------------------------------------------------
 def generate_design(pool, n_grid=N_GRID, ratio_grid=RATIO_GRID, n_reps=N_REPS,
-                    seed=42, verbose=True):
+                    seed=42, verbose=True, eheat_frac=0.0):
     """Generate the factorial design from a household pool.
+
+    ``eheat_frac`` is the share of the NON-heat-pump members drawn from
+    households that have some OTHER electric heating (electric water heater,
+    storage or direct heating). Heat pumps are not the only temperature-driven
+    electric load, so a control group is only a true control when it contains
+    none of them:
+
+    * ``eheat_frac = 0`` -> every non-HP member is free of electric heating, so
+      the ``N_hp = 0`` cells are genuine zero-electric-heating controls.
+    * ``eheat_frac = 1`` -> all non-HP members have other electric heating,
+      which isolates its influence on the same grid.
+
+    Pools that carry no electric-heating metadata (e.g. WPUQ) expose an empty
+    ``eheat_households`` and only support ``eheat_frac = 0``.
 
     Returns (design_dict, coverage_df).
     """
@@ -209,43 +239,81 @@ def generate_design(pool, n_grid=N_GRID, ratio_grid=RATIO_GRID, n_reps=N_REPS,
     row_of = {hid: i for i, hid in enumerate(households)}
     hp_row_of = {hid: i for i, hid in enumerate(pool['hp_households'])}
 
-    # Two-tier pools per weather station: every consumer, and the submetered
-    # subset that can act as an HP member.
+    # Pools per weather station, split three ways: households with a submetered
+    # heat pump, households with some OTHER electric heating, and households
+    # with no electric heating at all (the only valid control material).
     station_pool = {wid: np.asarray(grp.index)
                     for wid, grp in weather_of.groupby(weather_of)}
-    hp_set = set(pool['hp_households'])
+    # A household qualifies as a NON-HP member through its non-HP load series,
+    # whether or not it owns a heat pump -- in HEAPO every household does, and
+    # the non-HP member is that household's `Other` series with the HP removed.
+    # The only disqualifier is OTHER electric heating, which stays in that
+    # series. So `clean` is "no other electric heating", NOT "no heat pump", and
+    # HP members are drawn from the heat pumps that are themselves clean.
+    # eheat_frac=None means "natural prevalence": draw non-HP members from the
+    # whole population and let electric heating occur at whatever rate it does
+    # in the data. That is the realistic setting for a substation study; the
+    # 0/1 settings exist to identify its effect, not to describe reality.
+    natural = eheat_frac is None
+    eheat_set = set() if natural else set(pool.get('eheat_households', []))
+    hp_set = set(pool['hp_households']) - eheat_set
+    clean_set = set(pool['households']) - eheat_set
     station_hp_pool = {w: np.asarray([h for h in v if h in hp_set])
                        for w, v in station_pool.items()}
+    station_eheat_pool = {w: np.asarray([h for h in v if h in eheat_set])
+                          for w, v in station_pool.items()}
+    station_clean_pool = {w: np.asarray([h for h in v if h in clean_set])
+                          for w, v in station_pool.items()}
     pool_sizes = pd.Series({w: len(v) for w, v in station_pool.items()}
                            ).sort_values(ascending=False)
     hp_pool_sizes = pd.Series({w: len(v) for w, v in station_hp_pool.items()}
                               ).reindex(pool_sizes.index)
+    eheat_pool_sizes = pd.Series({w: len(v) for w, v in station_eheat_pool.items()}
+                                 ).reindex(pool_sizes.index)
+    clean_pool_sizes = pd.Series({w: len(v) for w, v in station_clean_pool.items()}
+                                 ).reindex(pool_sizes.index)
     if verbose:
-        print('Household pool per weather station (all consumers / HP-submetered):')
-        print(pd.DataFrame({'all': pool_sizes, 'hp_submetered': hp_pool_sizes}).to_string())
+        print('Household pool per weather station:')
+        print(pd.DataFrame({'all': pool_sizes, 'hp_submetered': hp_pool_sizes,
+                            'other_electric_heating': eheat_pool_sizes,
+                            'no_electric_heating': clean_pool_sizes}).to_string())
 
+    _eheat_all = set(pool.get('eheat_households', []))
     meta_rows, hp_load, total_load, coverage = [], {}, {}, []
     sid = 0
     for n_total in n_grid:
         for ratio in ratio_grid:
             n_hp = int(round(n_total * ratio))
             filled = 0
-            # 1a/1b: a station must supply N_total consumers AND N_hp of them
-            # must be HP-submetered, all from that one station.
+            n_rest = n_total - n_hp
+            n_eheat = 0 if natural else int(round(n_rest * eheat_frac))
+            n_clean = n_rest - n_eheat
+            # 1a/1b: one station must supply every member -- N_hp submetered
+            # heat pumps, N_eheat with other electric heating, N_clean with none.
+            # HP members are themselves drawn from the clean pool, so the clean
+            # pool must cover both them and the clean non-HP members.
             eligible = [w for w in pool_sizes.index
-                        if pool_sizes[w] >= n_total and hp_pool_sizes[w] >= n_hp]
+                        if hp_pool_sizes[w] >= n_hp
+                        and eheat_pool_sizes[w] >= n_eheat
+                        and clean_pool_sizes[w] >= n_clean + n_hp]
             if not eligible:
                 if int(pool_sizes.max()) < n_total:
                     reason = (f'no weather station has >= {n_total} consumers '
                               f'(max pool = {int(pool_sizes.max())})')
-                else:
+                elif int(hp_pool_sizes.max()) < n_hp:
                     reason = (f'no weather station has >= {n_hp} HP-submetered '
-                              f'households alongside {n_total} consumers '
-                              f'(max HP pool = {int(hp_pool_sizes.max())})')
+                              f'households (max HP pool = {int(hp_pool_sizes.max())})')
+                elif int(eheat_pool_sizes.max()) < n_eheat:
+                    reason = (f'no weather station has >= {n_eheat} households with '
+                              f'other electric heating '
+                              f'(max = {int(eheat_pool_sizes.max())})')
+                else:
+                    reason = (f'no weather station has >= {n_clean} households free of '
+                              f'electric heating (max = {int(clean_pool_sizes.max())})')
                 coverage.append({
                     'N_total': n_total, 'hp_ratio': ratio, 'N_hp': n_hp,
-                    'requested': n_reps, 'filled': 0, 'skipped': n_reps,
-                    'reason': reason,
+                    'N_eheat': n_eheat, 'requested': n_reps, 'filled': 0,
+                    'skipped': n_reps, 'reason': reason,
                 })
                 continue
 
@@ -256,12 +324,15 @@ def generate_design(pool, n_grid=N_GRID, ratio_grid=RATIO_GRID, n_reps=N_REPS,
                 # consumers from the rest of the same station's population.
                 hp_members = rng.choice(station_hp_pool[wid], size=n_hp,
                                         replace=False) if n_hp else np.array([], dtype=object)
-                rest_avail = np.setdiff1d(station_pool[wid], hp_members)
-                n_rest = n_total - n_hp
-                rest = rng.choice(rest_avail, size=n_rest, replace=False) if n_rest else \
-                    np.array([], dtype=object)
-                members = np.concatenate([hp_members, rest]) if n_total else \
-                    np.array([], dtype=object)
+                eheat_members = rng.choice(station_eheat_pool[wid], size=n_eheat,
+                                           replace=False) if n_eheat else np.array([], dtype=object)
+                # clean non-HP members must not re-use a household already taken
+                # as an HP member (sampling stays without replacement)
+                clean_avail = np.setdiff1d(station_clean_pool[wid], hp_members)
+                clean_members = rng.choice(clean_avail, size=n_clean,
+                                           replace=False) if n_clean else np.array([], dtype=object)
+                parts = [p for p in (hp_members, eheat_members, clean_members) if len(p)]
+                members = np.concatenate(parts) if parts else np.array([], dtype=object)
 
                 rows_all = [row_of[h] for h in members]
                 rows_hp = [hp_row_of[h] for h in hp_members]
@@ -276,6 +347,10 @@ def generate_design(pool, n_grid=N_GRID, ratio_grid=RATIO_GRID, n_reps=N_REPS,
                     'substation_id': sid,
                     'N_total': n_total,
                     'N_hp': n_hp,
+                    'N_eheat': n_eheat,
+                    'N_clean': n_clean,
+                    'eheat_frac': eheat_frac,
+                    'N_eheat_realised': int(sum(1 for h in members if h in _eheat_all)),
                     'hp_ratio': ratio,
                     'weather_id': wid,
                     'replicate_idx': rep,
@@ -290,7 +365,7 @@ def generate_design(pool, n_grid=N_GRID, ratio_grid=RATIO_GRID, n_reps=N_REPS,
 
             coverage.append({
                 'N_total': n_total, 'hp_ratio': ratio, 'N_hp': n_hp,
-                'requested': n_reps, 'filled': filled,
+                'N_eheat': n_eheat, 'requested': n_reps, 'filled': filled,
                 'skipped': n_reps - filled,
                 'reason': '' if filled == n_reps else 'partial',
             })
@@ -311,6 +386,9 @@ def generate_design(pool, n_grid=N_GRID, ratio_grid=RATIO_GRID, n_reps=N_REPS,
         'coverage': coverage_df,
         'pool_sizes': pool_sizes,
         'hp_pool_sizes': hp_pool_sizes,
+        'eheat_pool_sizes': eheat_pool_sizes,
+        'clean_pool_sizes': clean_pool_sizes,
+        'eheat_frac': eheat_frac,
         'n_distinct_households_used': len(used),
         'n_distinct_households_available': len(households),
         'grid': {'N_GRID': list(n_grid), 'RATIO_GRID': list(ratio_grid),
