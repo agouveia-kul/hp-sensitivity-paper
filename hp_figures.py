@@ -243,10 +243,13 @@ def fig4_detection(load_fits, wpuq_load, det_ch, det_de, name='fig4_detection'):
     ax.legend(loc='lower right', bbox_to_anchor=(1.0, 0.12))
 
     ax = axs[1]
+    # Banded penetration: on a triangular grid nearly every cell realises its
+    # own hp_ratio, so the exact ratio gives dozens of groups of a few
+    # substations each. The bands are the levels the earlier ratio grid used.
     for det, lab, col, mk in [(det_ch, 'Switzerland', C_CH, M_CH),
                               (det_de, 'Germany', C_DE, M_DE)]:
-        s = det['by_hp_ratio']
-        ax.plot(s.index * 100, s.values, marker=mk, color=col, label=lab)
+        s = det['by_penetration'].dropna(subset=['rate'])
+        ax.plot(s.x * 100, s.rate, marker=mk, color=col, label=lab)
     ax.axhline(.8, color='k', ls='-.', lw=.8)
     ax.text(98, .755, '80 % detection', fontsize=6, ha='right')
     ax.set_xlabel('heat pump penetration (%)')

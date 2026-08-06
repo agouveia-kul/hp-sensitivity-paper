@@ -38,10 +38,6 @@ import hp_design as hd
 import hp_pools as hpp
 import hp_analysis as ha
 
-WIDE_N = [10, 20, 50, 100, 200]
-WIDE_RATIO = [0.0, 0.05, 0.10, 0.25, 0.50, 0.75, 1.0]
-WIDE_REPS = 40
-
 TRI_N = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 100, 150, 200]
 TRI_HP = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50]
 TRI_REPS = 25
@@ -94,11 +90,8 @@ def main():
     pool = hpp.build_pool_combined(verbose=False)
 
     build(pool, 'triangular', 'data/design_tri.pkl', 'data/tri_fits.parquet',
+          hdh_path='data/tri_hdh_fits.parquet',
           n_grid=TRI_N, hp_grid=TRI_HP, n_reps=TRI_REPS)
-
-    build(pool, 'wide', 'data/design_wide.pkl', 'data/wide_fits.parquet',
-          hdh_path='data/wide_hdh_fits.parquet',
-          n_grid=WIDE_N, ratio_grid=WIDE_RATIO, n_reps=WIDE_REPS)
 
     groups = hpp.dwelling_groups(pool)
     houses = [h for h in pool['households'] if groups[h] == 'house']
@@ -111,6 +104,14 @@ def main():
           'data/tri_strict_fits.parquet',
           rule=dict(RULE, clean_hp=True),
           n_grid=STRICT_N, hp_grid=STRICT_HP, n_reps=TRI_REPS)
+
+    # WPUQ: the same triangular shape on the 37 available households. No
+    # extension, because every WPUQ household owns a heat pump, so N_hp can
+    # always reach N_total and there is nothing to the right of the triangle.
+    build(hpp.build_pool_wpuq(verbose=False), 'wpuq',
+          'data/design_wpuq_val.pkl', 'data/wpuq_val_fits.parquet',
+          n_grid=[5, 10, 15, 20, 25, 30, 35],
+          hp_grid=[0, 5, 10, 15, 20, 25, 30, 35], n_reps=40)
 
 
 if __name__ == '__main__':

@@ -195,6 +195,28 @@ def roc(df_load, statistic='slope', resolution='24 h'):
     return curve, abs(auc)
 
 
+# Penetration bands for reporting. A triangular design realises a different
+# hp_ratio in almost every cell (5/15 and 10/30 are both a third, 5/20 and 10/40
+# both a quarter), so grouping on the exact ratio scatters the result over
+# dozens of tiny groups. These bands are the penetration levels the earlier
+# ratio grid used, so the numbers stay comparable across designs.
+PENETRATION_BINS = (0.0, 0.05, 0.10, 0.25, 0.50, 0.75, 1.001)
+PENETRATION_LABELS = ('<=5%', '5-10%', '10-25%', '25-50%', '50-75%', '>75%')
+# nominal x position for each band, for plotting against a penetration axis
+PENETRATION_X = (0.05, 0.10, 0.25, 0.50, 0.75, 1.00)
+
+
+def by_penetration(pos, flag, bins=PENETRATION_BINS, labels=PENETRATION_LABELS):
+    """Detection rate per penetration band, with the count behind each one."""
+    band = pd.cut(pos['hp_ratio'], bins=bins, labels=labels, right=False,
+                  include_lowest=True)
+    g = pd.DataFrame({'band': band, 'flag': np.asarray(flag)}).groupby(
+        'band', observed=False)['flag']
+    out = pd.DataFrame({'n': g.size(), 'rate': g.mean()})
+    out['x'] = list(PENETRATION_X)[:len(out)]
+    return out
+
+
 def detection_threshold(df_load, statistic='slope', resolution='24 h',
                         specificity=0.95):
     """Threshold at the requested specificity, and what it detects.
@@ -220,6 +242,7 @@ def detection_threshold(df_load, statistic='slope', resolution='24 h',
               .groupby('N_hp')['flag'].mean())
     out['by_hp_ratio'] = by_ratio
     out['by_N_hp'] = by_nhp
+    out['by_penetration'] = by_penetration(pos, pos[statistic] >= thr)
     return out
 
 
@@ -244,7 +267,8 @@ def detection_at(df_load, threshold, statistic='slope_per_peak',
             'sensitivity': float(flag.mean()),
             'observed_fpr': float((neg[statistic] >= threshold).mean()) if len(neg) else np.nan,
             'by_hp_ratio': pos.assign(flag=flag).groupby('hp_ratio')['flag'].mean(),
-            'by_N_hp': pos.assign(flag=flag).groupby('N_hp')['flag'].mean()}
+            'by_N_hp': pos.assign(flag=flag).groupby('N_hp')['flag'].mean(),
+            'by_penetration': by_penetration(pos, flag)}
 
 
 def statistic_comparison(df_load, resolution='24 h', specificity=0.95):
@@ -567,6 +591,20 @@ def flexibility_envelope(sf_fits, design, resolution='24 h', pad=8.0, n=200):
     return out, (t_lo, t_hi)
 
 
+def sf_at_coldest(sf_fits, resolution='24 h', clip=True):
+    """Each substation's own fitted SF on its own coldest observed day.
+
+    One value per substation, evaluated at that substation's ``T_min_obs``
+    rather than at a pooled minimum shared by every station. Report the median
+    of what this returns, not a curve read off at one temperature: the median of
+    the per-substation values and the value of the median curve are different
+    quantities whenever the substations do not all see the same coldest day.
+    """
+    d = sf_fits[(~sf_fits['failed']) & (sf_fits['resolution'] == resolution)]
+    sf = d['base'] + d['slope'] * np.maximum(0.0, d['T_threshold'] - d['T_min_obs'])
+    return sf.clip(0.0, 1.0) if clip else sf
+
+
 def flexibility_summary(sf_fits, envelope, t_range, resolution='24 h'):
     """Headline numbers: SF and dSF/dT at the edges of the observed range.
 
@@ -575,16 +613,17 @@ def flexibility_summary(sf_fits, envelope, t_range, resolution='24 h'):
     """
     d = sf_fits[(~sf_fits['failed']) & (sf_fits['resolution'] == resolution)]
     t_lo, t_hi = t_range
-    obs = envelope[envelope['observed']]
-    at_cold = obs.iloc[0]
+    # per-substation value on each substation's own coldest day, then the median
+    cold = sf_at_coldest(sf_fits, resolution)
     rows = {
         'T_observed_min': t_lo,
         'T_observed_max': t_hi,
-        'SF_at_coldest_observed': float(at_cold['sf_median']),
-        'SF_at_coldest_q25': float(at_cold['sf_q25']),
-        'SF_at_coldest_q75': float(at_cold['sf_q75']),
-        'down_at_coldest': float(at_cold['down_median']),
-        'up_at_coldest': float(at_cold['up_median']),
+        'SF_at_coldest_observed': float(cold.median()),
+        'SF_at_coldest_q25': float(cold.quantile(.25)),
+        'SF_at_coldest_q75': float(cold.quantile(.75)),
+        'n_substations': int(len(cold)),
+        'down_at_coldest': float(cold.median()),
+        'up_at_coldest': float(1.0 - cold.median()),
         'dSF_dT_median': float(-d['slope'].median()),
         'dSF_dT_q25': float(-d['slope'].quantile(.75)),
         'dSF_dT_q75': float(-d['slope'].quantile(.25)),
