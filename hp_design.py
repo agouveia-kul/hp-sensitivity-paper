@@ -212,8 +212,16 @@ def build_pool(heapo_obj, cache_path=POOL_CACHE, rebuild=False, verbose=True):
 # Stage 2 -- factorial design
 # ---------------------------------------------------------------------------
 def generate_design(pool, n_grid=N_GRID, ratio_grid=RATIO_GRID, n_reps=N_REPS,
-                    seed=42, verbose=True, eheat_frac=0.0):
+                    seed=42, verbose=True, eheat_frac=0.0, hp_grid=None,
+                    clean_hp=True):
     """Generate the factorial design from a household pool.
+
+    ``hp_grid`` switches the design from a penetration grid to an absolute
+    heat-pump-count grid. For each ``N_total`` only the counts satisfying
+    ``N_hp <= N_total`` are generated, so the realised ``N_total`` by ``N_hp``
+    matrix is lower triangular and completely filled rather than sparse. The
+    penetration ratio is still recorded for every substation, so analyses that
+    stratify by penetration are unaffected.
 
     ``eheat_frac`` is the share of the NON-heat-pump members drawn from
     households that have some OTHER electric heating (electric water heater,
@@ -228,6 +236,17 @@ def generate_design(pool, n_grid=N_GRID, ratio_grid=RATIO_GRID, n_reps=N_REPS,
 
     Pools that carry no electric-heating metadata (e.g. WPUQ) expose an empty
     ``eheat_households`` and only support ``eheat_frac = 0``.
+
+    ``clean_hp`` decides whether the same exclusion is applied to the HEAT PUMP
+    tier. An HP member contributes its non-HP load as well as its heat pump, so
+    an electric water heater in that household enters the aggregate exactly as it
+    would for any other member. Excluding them is therefore the stricter reading,
+    but it is expensive: of the 50 submetered heat pumps on the largest station
+    only 21 are themselves free of other electric heating, so ``clean_hp=True``
+    caps ``N_hp`` at 21. ``clean_hp=False`` keeps the full heat-pump ladder while
+    still drawing every NON-HP member from households with no electric heating,
+    which is the relevant condition when the question is what the heat-pump-free
+    reference group contains. Ignored when ``eheat_frac`` is None.
 
     Returns (design_dict, coverage_df).
     """
@@ -256,7 +275,7 @@ def generate_design(pool, n_grid=N_GRID, ratio_grid=RATIO_GRID, n_reps=N_REPS,
     # 0/1 settings exist to identify its effect, not to describe reality.
     natural = eheat_frac is None
     eheat_set = set() if natural else set(pool.get('eheat_households', []))
-    hp_set = set(pool['hp_households']) - eheat_set
+    hp_set = set(pool['hp_households']) - (eheat_set if clean_hp else set())
     clean_set = set(pool['households']) - eheat_set
     station_hp_pool = {w: np.asarray([h for h in v if h in hp_set])
                        for w, v in station_pool.items()}
@@ -282,8 +301,12 @@ def generate_design(pool, n_grid=N_GRID, ratio_grid=RATIO_GRID, n_reps=N_REPS,
     meta_rows, hp_load, total_load, coverage = [], {}, {}, []
     sid = 0
     for n_total in n_grid:
-        for ratio in ratio_grid:
-            n_hp = int(round(n_total * ratio))
+        if hp_grid is not None:
+            # triangular: only heat-pump counts that fit inside the substation
+            cell_specs = [(h / n_total, int(h)) for h in hp_grid if h <= n_total]
+        else:
+            cell_specs = [(r, int(round(n_total * r))) for r in ratio_grid]
+        for ratio, n_hp in cell_specs:
             filled = 0
             n_rest = n_total - n_hp
             n_eheat = 0 if natural else int(round(n_rest * eheat_frac))
@@ -389,6 +412,7 @@ def generate_design(pool, n_grid=N_GRID, ratio_grid=RATIO_GRID, n_reps=N_REPS,
         'eheat_pool_sizes': eheat_pool_sizes,
         'clean_pool_sizes': clean_pool_sizes,
         'eheat_frac': eheat_frac,
+        'clean_hp': clean_hp,
         'n_distinct_households_used': len(used),
         'n_distinct_households_available': len(households),
         'grid': {'N_GRID': list(n_grid), 'RATIO_GRID': list(ratio_grid),

@@ -213,6 +213,64 @@ def filter_pool_electric_heating(pool, flags=ELECTRIC_HEATING_FLAGS,
 COMBINED_CACHE = 'data/_combined_pool_cache.pkl'
 
 
+def dwelling_groups(pool):
+    """Dwelling category per household in the combined pool.
+
+    Swiss households carry an installation type; every HEAPO dwelling in the pool
+    is a single-family house. This is the only composition variable present for
+    both cohorts.
+    """
+    meta = pd.read_csv(os.path.join(SWISS_DIR, 'metadata.csv'), sep=';',
+                       encoding='utf-8-sig').set_index('0_meter_id')
+    itype = meta['0_installation_type']
+
+    def group(h):
+        src, ident = h.split(':', 1)
+        if src == 'swiss':
+            t = itype.get(int(ident))
+            if t == 'Apartment':
+                return 'apartment'
+            if t == 'Single-family house':
+                return 'house'
+            return 'other'
+        return 'house'
+
+    return pd.Series({h: group(h) for h in pool['households']})
+
+
+def restrict_pool(pool, keep_households=None, keep_hp=None, verbose=True):
+    """Sub-pool containing only the given households (and optionally HP subset).
+
+    Used to build clustered-composition arms: restricting the pool and then
+    running the unchanged design generator gives substations drawn from within a
+    group rather than uniformly across the whole population.
+    """
+    hh = list(pool['households'])
+    keep = list(hh if keep_households is None else keep_households)
+    keep_set = set(keep)
+    pos = [i for i, h in enumerate(hh) if h in keep_set]
+    kept = [hh[i] for i in pos]
+
+    hp_all = list(pool['hp_households'])
+    hp_keep = [h for h in hp_all if h in keep_set]
+    if keep_hp is not None:
+        hp_keep = [h for h in hp_keep if h in set(keep_hp)]
+    hp_pos = [hp_all.index(h) for h in hp_keep]
+
+    out = dict(pool)
+    out['households'] = kept
+    out['other_mat'] = pool['other_mat'][pos]
+    out['weather_of'] = pool['weather_of'].reindex(kept)
+    out['hp_households'] = hp_keep
+    out['hp_mat'] = pool['hp_mat'][hp_pos] if hp_pos else pool['hp_mat'][:0]
+    out['hp_peak'] = pool['hp_peak'].reindex(hp_keep)
+    out['eheat_households'] = [h for h in pool.get('eheat_households', [])
+                               if h in keep_set]
+    if verbose:
+        print(f'restricted pool: {len(kept)} consumers, {len(hp_keep)} with submetered HP')
+    return out
+
+
 def build_pool_combined(heapo_pool=None, swiss_pool=None,
                         cache_path=COMBINED_CACHE, rebuild=False, verbose=True):
     """Merge the HEAPO and Swiss pools into one.
