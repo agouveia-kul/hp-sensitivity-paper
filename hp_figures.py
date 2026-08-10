@@ -182,18 +182,18 @@ def fig3_heatmap(d24, name='fig3_confound', mark='auto', split_after=50):
             ha='center', va='center', fontsize=6, color='0.45')
 
     # outline the two cells that carry the argument
-    if mark == 'auto':
-        free = piv.loc[0, cols[-1]]
-        col = piv[split_after].dropna().drop(0, errors='ignore')
-        beaten = col[col < free]
-        mark = (((0, cols[-1]), (int(beaten.index.max()), split_after))
-                if len(beaten) else ())
-    for nhp, ntot in mark:
-        if nhp in piv.index and ntot in cols:
-            i, j = list(piv.index).index(nhp), cols.index(ntot)
-            ax.add_patch(mpl.patches.Rectangle((j - .5, i - .5), 1, 1,
-                                               fill=False, edgecolor='#00d0ff',
-                                               lw=1.6, zorder=6))
+    # if mark == 'auto':
+    #     free = piv.loc[0, cols[-1]]
+    #     col = piv[split_after].dropna().drop(0, errors='ignore')
+    #     beaten = col[col < free]
+    #     mark = (((0, cols[-1]), (int(beaten.index.max()), split_after))
+    #             if len(beaten) else ())
+    # for nhp, ntot in mark:
+    #     if nhp in piv.index and ntot in cols:
+    #         i, j = list(piv.index).index(nhp), cols.index(ntot)
+    #         ax.add_patch(mpl.patches.Rectangle((j - .5, i - .5), 1, 1,
+    #                                            fill=False, edgecolor='#00d0ff',
+    #                                            lw=1.6, zorder=6))
     ax.set_xlabel('consumers per substation')
     ax.set_ylabel('heat pumps per substation')
     ax.grid(False)
@@ -223,23 +223,23 @@ def fig4_detection(load_fits, wpuq_load, det_ch, det_de, name='fig4_detection'):
                 markeredgecolor='k', markeredgewidth=.5, zorder=6)
 
     ax = axs[0]
-    styles = [('slope', 'raw sensitivity', '-', C_NOHP),
-              ('slope_per_peak', 'normalised by peak load', '-', C_CH),
-              ('slope_per_base', 'normalised by base load', '--', C_ALT)]
+    styles = [('slope', 'slope', '-', C_NOHP),
+              ('slope_per_peak', 'slope / peak load', '-', C_CH),
+              ('slope_per_base', 'slope / base load', '--', C_ALT)]
     for stat, lab, ls, col in styles:
         curve, auc = ha.roc(load_fits, stat)
         ax.plot(curve.fpr, curve.tpr, ls, color=col, label=f'{lab} ({auc:.2f})')
         thr = ha.detection_threshold(load_fits, stat, '24 h')['threshold']
-        mark(ax, curve, thr, col, M_CH)
+        # mark(ax, curve, thr, col, M_CH)
     curve, auc = ha.roc(wpuq_load, 'slope_per_peak')
     ax.plot(curve.fpr, curve.tpr, '-', color=C_DE,
             label=f'Germany, normalised ({auc:.2f})')
-    mark(ax, curve, det_de['threshold'], C_DE, M_DE)
+    # mark(ax, curve, det_de['threshold'], C_DE, M_DE)
     ax.plot([0, 1], [0, 1], ':', color='k', lw=.7)
     ax.set_xlabel('false positive rate')
     ax.set_ylabel('true positive rate')
-    ax.text(0.97, 0.06, 'markers: Swiss operating point', fontsize=6,
-            ha='right', transform=ax.transAxes)
+    # ax.text(0.97, 0.06, 'markers: Swiss operating point', fontsize=6,
+    #         ha='right', transform=ax.transAxes)
     ax.legend(loc='lower right', bbox_to_anchor=(1.0, 0.12))
 
     ax = axs[1]

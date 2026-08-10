@@ -73,12 +73,17 @@ def build(pool, label, design_path, fits_path, hdh_path=None, rule=RULE, **grid)
     fits = ha.fit_all(design, verbose=False)
     fits.to_parquet(fits_path)
     print(f'[{label}] {len(fits)} fits, {int(fits.failed.sum())} failed', flush=True)
-    if hdh_path:
-        ha.fit_hdh_all(design, verbose=False).to_parquet(hdh_path)
-        print(f'[{label}] HDH fits -> {hdh_path}', flush=True)
 
     d24 = fits[(fits.response == 'Load') & (fits.resolution == '24 h') &
                (~fits.failed)]
+    if hdh_path:
+        # each substation's own hockey-stick balance temperature, not one
+        # constant applied to everyone (see thermal-energy validation)
+        thresholds = d24.set_index('substation_id')['T_threshold']
+        ha.fit_hdh_all(design, thresholds=thresholds,
+                       verbose=False).to_parquet(hdh_path)
+        print(f'[{label}] HDH fits (per-substation threshold) -> {hdh_path}',
+              flush=True)
     print(f'[{label}] median sensitivity (kW/K), rows N_hp, columns N_total:',
           flush=True)
     print(d24.pivot_table(index='N_hp', columns='N_total', values='slope',

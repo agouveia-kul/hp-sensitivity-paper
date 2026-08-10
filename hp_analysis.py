@@ -107,22 +107,35 @@ def fit_all(design, ids=None, verbose=True):
 # confound survives both parameterisations it is a property of the problem
 # rather than of the estimator, which is the point of running it.
 #
-# HDH_THRESH is the base temperature already defined in hp_common and used by
-# the rest of the pipeline. No second constant is introduced here.
+# The base temperature is per substation, taken from that substation's own
+# hockey-stick T_threshold, not a single constant applied to everyone.
+# hp_common's HDH_THRESH (12 degC) is still the fallback for a substation with
+# no threshold to borrow -- a failed hockey-stick fit, or none supplied at all.
 # ---------------------------------------------------------------------------
-def fit_hdh_all(design, ids=None, hdh_thresh=None, verbose=True):
+def fit_hdh_all(design, ids=None, thresholds=None, hdh_thresh=None, verbose=True):
     """Fit daily mean load against daily cumulative HDH for every substation.
 
+    ``thresholds`` maps substation_id -> base temperature (degC), typically the
+    same substation's own hockey-stick T_threshold (e.g. `d24.set_index(
+    'substation_id').T_threshold`), so the degree-hours integrate below the
+    balance temperature THAT substation's net-load fit actually found. A
+    substation missing from ``thresholds`` -- or every substation, if
+    ``thresholds`` is None -- falls back to ``hdh_thresh`` (default
+    `hp_common.HDH_THRESH`).
+
     Returns the same schema the detection functions expect, so the identical
-    analysis can be run on it without special-casing.
+    analysis can be run on it without special-casing. The threshold actually
+    used for each substation is recorded in ``hdh_threshold``.
     """
     from hp_common import HDH_THRESH, daily_cumulative_hdh, fit_hdh_linear
-    thresh = HDH_THRESH if hdh_thresh is None else hdh_thresh
+    default_thresh = HDH_THRESH if hdh_thresh is None else hdh_thresh
 
     ids = list(design['meta'].index) if ids is None else list(ids)
     rows = []
     for k, sid in enumerate(ids):
         sid = int(sid)
+        thresh = (thresholds.get(sid, default_thresh) if thresholds is not None
+                  else default_thresh)
         temp = hd.get_series(design, sid, 'Temperature')
         load = hd.get_series(design, sid, 'Total_Load')
         m = design['meta'].loc[sid]
@@ -133,6 +146,7 @@ def fit_hdh_all(design, ids=None, hdh_thresh=None, verbose=True):
                'dt_minutes': 1440, 'n_points': len(d),
                'N_total': int(m['N_total']), 'N_hp': int(m['N_hp']),
                'hp_ratio': float(m['hp_ratio']), 'HP_Peak': float(m['HP_Peak']),
+               'hdh_threshold': float(thresh),
                'base': np.nan, 'slope': np.nan, 'r2': np.nan,
                'peak_load': np.nan, 'failed': True}
         if len(d) >= MIN_POINTS and (d['x'] > 0).sum() >= MIN_POINTS:
@@ -151,6 +165,238 @@ def fit_hdh_all(design, ids=None, hdh_thresh=None, verbose=True):
     df.loc[ok, 'slope_per_base'] = (df.loc[ok, 'slope'] /
                                     df.loc[ok, 'base'].replace(0, np.nan))
     return df
+
+
+def thermal_energy_estimates(design, load_fits, hdh_fits, resolution='24 h',
+                             hdh_thresh=None):
+    """Per-day thermal energy implied by each fit, against submetered ground truth.
+
+    Both fits are trained on NET LOAD, never on heat pump energy specifically, so
+    comparing their thermal component against the substation's own submetered
+    heat pump circuits is a genuine test of what the "thermal" part of a net-load
+    fit actually captures -- not a restatement of the R^2 already reported
+    elsewhere, which is against net load.
+
+    For every substation with N_hp > 0 and a successful fit under both
+    parameterisations, for every day of the year:
+
+    * ``actual_kWh``          -- the substation's submetered heat pump circuits,
+      summed and integrated over the day. Independent of either fit.
+    * ``hs_kWh``               -- the hockey-stick fit's thermal component,
+      `slope * max(0, T_threshold - T_mean) * 24 h`, using only that day's mean
+      temperature -- exactly the input the hockey stick was fitted on.
+    * ``hdh_native_kWh``       -- the HDH fit's thermal component. The HDH model
+      is fit against daily MEAN load, same as the hockey stick, so `slope *
+      HDH_day` is a mean-power-equivalent (kW) and needs the same conversion to
+      energy the hockey stick gets: `slope * HDH_day * 24 h`, where `HDH_day` is
+      the TRUE cumulative heating-degree-hours built from the substation's
+      sub-daily temperature, integrated below THAT substation's own
+      `hdh_threshold` -- whatever base temperature `hdh_fits` was actually fit
+      with, read from the fit rather than assumed here.
+    * ``hdh_meanonly_kWh``     -- the same fitted HDH slope, but the input is now
+      the degree-hours a day would have if it sat at its own mean temperature
+      for all 24 hours, `max(0, hdh_threshold - T_mean) * 24 h` (one factor of
+      24 turning a temperature deficit into a full day of it), then the same
+      mean-power-to-energy conversion as above (a second, separate factor of
+      24). This is what the HDH model gives with only a daily-mean temperature
+      to work with, the same data requirement as the hockey stick.
+
+    Because `max(0, x)` is convex, a day with the same mean temperature but
+    bigger swings around the threshold has MORE true heating-degree-hours than
+    the single-point approximation, so `hdh_meanonly_kWh` is a systematic
+    underestimate of `hdh_native_kWh` whenever the threshold sits inside the
+    day's temperature range -- not noise, a property of the transform.
+
+    Returns one row per (substation, day).
+    """
+    from hp_common import HDH_THRESH, daily_cumulative_hdh
+    default_thresh = HDH_THRESH if hdh_thresh is None else hdh_thresh
+    has_own_thresh = 'hdh_threshold' in hdh_fits.columns
+
+    hs = load_fits[(load_fits.response == 'Load') &
+                   (load_fits.resolution == resolution) &
+                   (~load_fits.failed) & (load_fits.N_hp > 0)]
+    hdh_ok = hdh_fits[(~hdh_fits.failed) & (hdh_fits.N_hp > 0)]
+    ids = sorted(set(hs.substation_id) & set(hdh_ok.substation_id))
+
+    hs = hs.set_index('substation_id')
+    hdh_ok = hdh_ok.set_index('substation_id')
+
+    rows = []
+    for sid in ids:
+        hs_row = hs.loc[sid]
+        hdh_row = hdh_ok.loc[sid]
+        # the base temperature this substation's HDH fit actually used, not a
+        # constant assumed here -- fit_hdh_all records it per substation
+        thresh = (float(hdh_row['hdh_threshold']) if has_own_thresh
+                  else default_thresh)
+
+        temp = hd.get_series(design, sid, 'Temperature')
+        hp_load = pd.Series(design['hp_load'][sid], index=design['index'])
+        dt_hours = temp.index.to_series().diff().median().total_seconds() / 3600
+
+        T_mean = temp.resample('D').mean()
+        hdh_true = daily_cumulative_hdh(temp, thresh)
+        hdh_approx = (thresh - T_mean).clip(lower=0) * 24.0
+        actual = hp_load.resample('D').sum() * dt_hours
+
+        d = pd.DataFrame({'T_mean': T_mean, 'hdh_true': hdh_true,
+                          'hdh_approx': hdh_approx, 'actual_kWh': actual}).dropna()
+        d['hs_kWh'] = (hs_row['slope'] *
+                       (hs_row['T_threshold'] - d['T_mean']).clip(lower=0) * 24.0)
+        # HDH slope is fit against MEAN load (kW), same as the hockey stick, so
+        # both need the same power-to-energy factor of 24 h applied here.
+        d['hdh_native_kWh'] = hdh_row['slope'] * d['hdh_true'] * 24.0
+        d['hdh_meanonly_kWh'] = hdh_row['slope'] * d['hdh_approx'] * 24.0
+        d['substation_id'] = sid
+        d['N_total'] = int(hs_row['N_total'])
+        d['N_hp'] = int(hs_row['N_hp'])
+        rows.append(d.reset_index().rename(columns={'index': 'date'}))
+    return pd.concat(rows, ignore_index=True)
+
+
+def summer_hp_days(pool, min_days=60):
+    """Daily (temperature, HP load) pairs for June-August, any submetered pool.
+
+    One row per submetered household-day, restricted to households with at
+    least `min_days` of summer coverage. Built to test whether a heat pump
+    behaves as a reversible (cooling-capable) unit: if it does, load should
+    RISE with temperature on the hottest days; if it is heating-only, plus
+    perhaps a flat non-thermal baseline such as domestic hot water, load
+    should be flat or falling. June-August only, so no residual space-heating
+    season leaks in through a less specific "warm days" cutoff -- the 85th
+    percentile of a whole year can still be a mild spring day. Works on any
+    pool with the standard hp_households/hp_mat/hp_peak/weather_of/temperature
+    structure (HEAPO, WPUQ, ...), not HEAPO-specific despite the first use.
+    """
+    idx = pool['index']
+    temp = pool['temperature']
+    wo = pool['weather_of']
+    hp_hh = pool['hp_households']
+    hp_mat = pool['hp_mat']
+    hp_peak = pool['hp_peak']
+
+    rows = []
+    for i, hid in enumerate(hp_hh):
+        station = wo.get(hid)
+        if station not in temp:
+            continue
+        pk = hp_peak.get(hid, np.nan)
+        if not np.isfinite(pk) or pk <= 0:
+            continue
+        T = pd.Series(temp[station], index=idx).resample('D').mean()
+        load = pd.Series(hp_mat[i], index=idx).resample('D').mean()
+        d = pd.DataFrame({'T': T, 'load': load}).dropna()
+        jja = d[d.index.month.isin([6, 7, 8])]
+        if len(jja) < min_days:
+            continue
+        jja = jja.assign(household=hid, sf=jja['load'] / pk)
+        rows.append(jja.reset_index().rename(columns={'index': 'date'}))
+    return pd.concat(rows, ignore_index=True)
+
+
+def summer_cooling_test(summer_days):
+    """Per-household Spearman correlation of summer load against temperature.
+
+    A positive, significant correlation is the cooling signature (load rises
+    with heat). The count of significant positive against significant
+    negative correlations across households is the headline number, not any
+    single household's result.
+
+    A household whose summer load never varies at all has no correlation to
+    compute -- not "not significant", genuinely undefined -- and is flagged
+    via `constant=True` rather than silently landing in whichever bucket a NaN
+    happens to fail both comparisons into.
+    """
+    from scipy.stats import spearmanr
+    rows = []
+    for hid, g in summer_days.groupby('household'):
+        constant = g['load'].nunique() <= 1
+        if constant:
+            rho, p = np.nan, np.nan
+        else:
+            rho, p = spearmanr(g['T'], g['load'])
+        rows.append({'household': hid, 'n_days': len(g), 'rho': float(rho),
+                     'p': float(p), 'constant': constant})
+    return pd.DataFrame(rows)
+
+
+def _fit_stats(actual, pred):
+    a, p = np.asarray(actual, float), np.asarray(pred, float)
+    resid = p - a
+    ss_res = np.sum(resid ** 2)
+    ss_tot = np.sum((a - a.mean()) ** 2)
+    return pd.Series({
+        'r2': 1 - ss_res / ss_tot if ss_tot > 0 else np.nan,
+        'mae_kWh': np.mean(np.abs(resid)),
+        'bias_kWh': resid.mean(),
+        'bias_pct': 100 * resid.mean() / a.mean() if a.mean() else np.nan,
+    })
+
+
+SEASON_OF_MONTH = {12: 'winter', 1: 'winter', 2: 'winter',
+                   3: 'spring', 4: 'spring', 5: 'spring',
+                   6: 'summer', 7: 'summer', 8: 'summer',
+                   9: 'autumn', 10: 'autumn', 11: 'autumn'}
+SEASON_ORDER = ['winter', 'spring', 'summer', 'autumn']
+
+_THERMAL_METHODS = ('hs_kWh', 'hdh_native_kWh', 'hdh_meanonly_kWh')
+
+
+def thermal_energy_rmse_by_season(est, methods=_THERMAL_METHODS):
+    """RMSE against submetered ground truth, per substation, per season.
+
+    Meteorological seasons (Dec-Feb winter, ... ), not the fitted heating
+    threshold, so the split is the same for every substation regardless of its
+    own fit. Each substation's RMSE in a season is computed only from that
+    substation's own days in that season -- nothing is pooled across
+    substations at this stage, so a substation with an unusually large error
+    cannot be smoothed out by the rest before the summary sees it.
+    """
+    d = est.copy()
+    d['season'] = d['date'].dt.month.map(SEASON_OF_MONTH)
+
+    def _rmse(g):
+        out = {f'rmse_{m}': float(np.sqrt(np.mean((g[m] - g['actual_kWh']) ** 2)))
+               for m in methods}
+        out['n_days'] = len(g)
+        return pd.Series(out)
+
+    out = (d.groupby(['substation_id', 'season'], observed=True)
+           .apply(_rmse, include_groups=False).reset_index())
+    out['season'] = pd.Categorical(out['season'], categories=SEASON_ORDER,
+                                   ordered=True)
+    return out
+
+
+def thermal_energy_rmse_summary(rmse_df, methods=_THERMAL_METHODS,
+                                quantiles=(.25, .5, .75)):
+    """Median and quantiles of the per-substation seasonal RMSE, by season."""
+    cols = [f'rmse_{m}' for m in methods]
+    g = rmse_df.groupby('season', observed=True)[cols]
+    pieces = {f'q{int(q * 100):02d}': g.quantile(q) for q in quantiles}
+    return pd.concat(pieces, axis=1).reindex(SEASON_ORDER)
+
+
+def thermal_energy_summary(est, by='pooled'):
+    """Accuracy of each estimator against submetered ground truth.
+
+    `by='pooled'` scores every (substation, day) row together. `by='substation'`
+    fits the same statistics within each substation first and returns the
+    median across substations, so one substation with unusually many days
+    cannot dominate the pooled number.
+    """
+    methods = ['hs_kWh', 'hdh_native_kWh', 'hdh_meanonly_kWh']
+    if by == 'pooled':
+        return pd.DataFrame({m: _fit_stats(est['actual_kWh'], est[m]) for m in methods}).T
+    if by == 'substation':
+        rows = {}
+        for m in methods:
+            per_sub = est.groupby('substation_id').apply(
+                lambda g, m=m: _fit_stats(g['actual_kWh'], g[m]))
+            rows[m] = per_sub.median()
+        return pd.DataFrame(rows).T
+    raise ValueError(f'unknown by {by!r}')
 
 
 def parameterisation_comparison(load_fits, hdh_fits, resolution='24 h',
@@ -204,6 +450,29 @@ PENETRATION_BINS = (0.0, 0.05, 0.10, 0.25, 0.50, 0.75, 1.001)
 PENETRATION_LABELS = ('<=5%', '5-10%', '10-25%', '25-50%', '50-75%', '>75%')
 # nominal x position for each band, for plotting against a penetration axis
 PENETRATION_X = (0.05, 0.10, 0.25, 0.50, 0.75, 1.00)
+
+
+def by_penetration_quantile(pos, flag, q=5):
+    """Detection rate per equal-frequency penetration bin.
+
+    Unlike `by_penetration`, bin EDGES are not fixed -- they are chosen so every
+    bin holds the same number of substations, which only the fixed thresholds in
+    `PENETRATION_BINS` cannot guarantee (n ranged 50 to 550 across those bands on
+    the full grid). Ties are broken by row order (`rank(method='first')`) rather
+    than dropped, so replicate substations at the same hp_ratio can land in
+    adjacent bins -- harmless, since they are exchangeable draws from the same
+    design cell.
+    """
+    rank = pos['hp_ratio'].rank(method='first')
+    bins = pd.qcut(rank, q=q)
+    lab_map = {cat: f"{pos['hp_ratio'][bins == cat].min():.0%}-"
+                    f"{pos['hp_ratio'][bins == cat].max():.0%}"
+              for cat in bins.cat.categories}
+    order = [lab_map[c] for c in bins.cat.categories]
+    band = bins.map(lab_map).astype(pd.CategoricalDtype(categories=order, ordered=True))
+    g = pd.DataFrame({'band': band, 'flag': np.asarray(flag)}).groupby(
+        'band', observed=False)['flag']
+    return pd.DataFrame({'n': g.size(), 'rate': g.mean()}), band
 
 
 def by_penetration(pos, flag, bins=PENETRATION_BINS, labels=PENETRATION_LABELS):
@@ -500,6 +769,71 @@ def quality_model(df, response='Load'):
     })
 
 
+def _bootstrap_median_ci(values, n_boot=1000, seed=0):
+    """Percentile bootstrap CI of the median, same convention as bootstrap_detection
+    (2.5/97.5, n_boot=1000, seed=0)."""
+    v = np.asarray(values, float)
+    v = v[np.isfinite(v)]
+    if not len(v):
+        return np.nan, np.nan, np.nan
+    rng = np.random.default_rng(seed)
+    boot = np.median(rng.choice(v, size=(n_boot, len(v)), replace=True), axis=1)
+    return float(np.median(v)), float(np.percentile(boot, 2.5)), float(np.percentile(boot, 97.5))
+
+
+def quality_by_resolution(fits, response='Load', N_total=50, N_hp=25, n_boot=1000,
+                          seed=0):
+    """Median R2 (with a bootstrap CI) at ONE fixed (N_total, N_hp) cell, across
+    resolution.
+
+    Holding both counts fixed isolates resolution as the only thing varying --
+    `quality_grid` sweeps N_total at each resolution too, which is a different
+    question. The CI is a percentile bootstrap over the cell's replicate
+    substations (25 in the standard design), not a spread statistic: it answers
+    how precisely the median is known from this many replicates, not how much
+    substations in the cell differ from each other.
+    """
+    d = fits[(fits.response == response) & (~fits.failed) &
+             (fits.N_total == N_total) & (fits.N_hp == N_hp)]
+    rows = []
+    for res in LABELS:
+        med, lo, hi = _bootstrap_median_ci(d.loc[d.resolution == res, 'r2'],
+                                           n_boot=n_boot, seed=seed)
+        rows.append({'resolution': res, 'n': int((d.resolution == res).sum()),
+                     'median_r2': med, 'ci_lo': lo, 'ci_hi': hi})
+    return pd.DataFrame(rows)
+
+
+def quality_by_size(fits, response='Load', resolution='24 h', ratio=0.5,
+                    n_boot=1000, seed=0, even_only=True):
+    """Median R2 (with a bootstrap CI) at ONE fixed resolution and penetration
+    ratio, across N_total.
+
+    `ratio` must land on an exact N_hp for every N_total considered, or the
+    cell does not exist in a design indexed by absolute heat pump count. With
+    ratio=0.5 that means even N_total only (`even_only=True`, the default) --
+    an odd N_total has no substation at exactly 50 %, it would have to be
+    rounded, and rounding is exactly what this figure is built to avoid.
+    """
+    d = fits[(fits.response == response) & (fits.resolution == resolution) &
+             (~fits.failed)]
+    totals = sorted(d.N_total.unique())
+    if even_only:
+        totals = [n for n in totals if n % 2 == 0]
+    rows = []
+    for nt in totals:
+        nh = round(nt * ratio)
+        if not np.isclose(nh, nt * ratio):
+            continue
+        sub = d[(d.N_total == nt) & (d.N_hp == nh)]
+        if not len(sub):
+            continue
+        med, lo, hi = _bootstrap_median_ci(sub['r2'], n_boot=n_boot, seed=seed)
+        rows.append({'N_total': int(nt), 'N_hp': int(nh), 'n': len(sub),
+                     'median_r2': med, 'ci_lo': lo, 'ci_hi': hi})
+    return pd.DataFrame(rows)
+
+
 def local_scaling_slopes(fits, response='Load', by='N_total', hp_only=True):
     """Local d logit(R2) / d log(dt) between adjacent resolutions.
 
@@ -644,4 +978,85 @@ def describe_params(df, response, cols=('slope', 'T_threshold', 'T_crit'),
         rows.append({'parameter': c, 'n': len(s), 'median': s.median(),
                      'q25': s.quantile(.25), 'q75': s.quantile(.75),
                      'min': s.min(), 'max': s.max()})
+    return pd.DataFrame(rows)
+
+
+# ---------------------------------------------------------------------------
+# Technology fingerprint: is the cold-side response convex?
+# ---------------------------------------------------------------------------
+def curvature_test(pool, agg='mean', min_points=30, T_bounds=T_BALANCE_BOUNDS):
+    """Per-household test of curvature below the fitted balance temperature.
+
+    A heat pump draws Q_heat(T) / COP(T), and COP falls as T falls, so its
+    electrical load should curve upward (convex) below the balance temperature.
+    Resistive heating has COP = 1 and stays linear. This fits each submetered
+    heat pump circuit's own hockey stick to (SF, T), then adds a quadratic term
+    on the cold side alone and reports whether it earns its keep.
+
+    ``agg`` selects the daily aggregation used to build the (T, SF) pairs:
+
+    * ``'mean'`` -- daily mean T against daily mean SF. The convention used for
+      every other hockey-stick fit in this notebook. Ties the fit to typical
+      operation, which is also where thermostatic on/off cycling does the most
+      damage to a curvature signal built on a handful of extra degrees of
+      freedom.
+    * ``'minmax'`` -- daily minimum T against daily maximum SF, the convention
+      ``hp_common.daily_min_max_heating_season`` uses elsewhere in this
+      codebase. Ties the fit to the coldest, hardest-running part of the day.
+      It does not test the same physical claim: a fixed equipment capacity
+      makes the daily MAX saturate as it gets colder regardless of COP, which
+      shows up as curvature of the opposite sign to the one predicted here.
+
+    Returns one row per household with a usable fit: the linear and quadratic
+    R^2 on the cold-side subset, their difference, and the quadratic term's
+    coefficient (curvature > 0 is convex, the heat-pump prediction).
+    """
+    idx = pool['index']
+    temp = pool['temperature']
+    wo = pool['weather_of']
+    hp_hh = pool['hp_households']
+    hp_mat = pool['hp_mat']
+    hp_peak = pool['hp_peak']
+
+    rows = []
+    for i, h in enumerate(hp_hh):
+        pk = hp_peak.get(h, np.nan)
+        if not np.isfinite(pk) or pk <= 0:
+            continue
+        station = wo.get(h)
+        if station not in temp:
+            continue
+        T = pd.Series(temp[station], index=idx)
+        sf = pd.Series(hp_mat[i], index=idx) / pk
+        if agg == 'mean':
+            d = pd.DataFrame({'T': T.resample('D').mean(),
+                              'sf': sf.resample('D').mean()}).dropna()
+        elif agg == 'minmax':
+            d = pd.DataFrame({'T': T.resample('D').min(),
+                              'sf': sf.resample('D').max()}).dropna()
+        else:
+            raise ValueError(f'unknown agg {agg!r}')
+        if len(d) < 2 * min_points or d['T'].nunique() < 5:
+            continue
+        try:
+            base, slope, Tb, r2 = fit_hockey_stick(d['T'].to_numpy(),
+                                                    d['sf'].to_numpy(), T_bounds)
+        except Exception:
+            continue
+        if slope <= 0:
+            continue
+        sub = d[d['T'] < Tb]
+        if len(sub) < min_points:
+            continue
+        y = sub['sf'].to_numpy()
+        dd = (Tb - sub['T']).to_numpy()
+        X1 = np.column_stack([np.ones_like(dd), dd])
+        X2 = np.column_stack([np.ones_like(dd), dd, dd ** 2])
+        c1, *_ = np.linalg.lstsq(X1, y, rcond=None)
+        c2, *_ = np.linalg.lstsq(X2, y, rcond=None)
+        r2_lin = 1 - np.sum((y - X1 @ c1) ** 2) / np.sum((y - y.mean()) ** 2)
+        r2_quad = 1 - np.sum((y - X2 @ c2) ** 2) / np.sum((y - y.mean()) ** 2)
+        rows.append({'household': h, 'n_cold_days': len(sub), 'HP_Peak': pk,
+                     'T_balance': Tb, 'r2_lin': r2_lin, 'r2_quad': r2_quad,
+                     'd_r2': r2_quad - r2_lin, 'curvature': c2[2]})
     return pd.DataFrame(rows)
