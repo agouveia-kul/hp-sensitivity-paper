@@ -32,6 +32,8 @@ T_BALANCE_BOUNDS = (8, 20)     # degC, plausible balance-temperature range
 HEATING_SEASON_THRESH = 12.0   # degC, daily-mean temperature threshold to keep a day
 MIN_HEATING_DAYS = 20          # minimum heating-season DAYS required to attempt a fit
 HDH_THRESH = 12.0              # degC, threshold for Heating Degree Hour accumulation
+T_COOLING_BOUNDS = (15, 32)    # degC, plausible AC turn-on threshold range
+DEADBAND_BOUNDS = (0, 24)      # degC, plausible Tc - Th width for the bathtub model
 
 # Time-of-day windows. Pooling hours into 4 broad windows (rather than fitting 24
 # separate hourly models) keeps each fit well-conditioned.
@@ -78,6 +80,71 @@ def fit_hockey_stick(x, y, T_balance_bounds=T_BALANCE_BOUNDS):
     r2 = 1 - ss_res / ss_tot if ss_tot > 0 else 0.0
     base_load, hp_sensitivity, T_balance = popt
     return base_load, hp_sensitivity, T_balance, r2
+
+
+def cooling_stick(T, base_load, ac_sensitivity, T_balance):
+    """The cooling-season mirror of ``hockey_stick``: load rises ABOVE a
+    balance temperature (AC turning on) rather than below one (heating)."""
+    return base_load + ac_sensitivity * np.maximum(0, T - T_balance)
+
+
+def fit_cooling_stick(x, y, T_balance_bounds=T_COOLING_BOUNDS):
+    """Fit a 3-parameter cooling-stick load-vs-temperature curve.
+
+    Same shape as ``fit_hockey_stick``, mirrored for cooling: the kink sits
+    above ``T_balance`` instead of below it, and the search range defaults to
+    a plausible AC turn-on window rather than a heating balance temperature.
+    Returns (base_load, ac_sensitivity, T_balance, r2).
+    """
+    p0 = [np.median(y), 0.5, np.mean(T_balance_bounds)]
+    bounds = (
+        [0, 0, T_balance_bounds[0]],
+        [np.inf, np.inf, T_balance_bounds[1]]
+    )
+    popt, _ = curve_fit(cooling_stick, x, y, p0=p0, bounds=bounds, maxfev=5000)
+    y_pred = cooling_stick(x, *popt)
+    ss_res = np.sum((y - y_pred) ** 2)
+    ss_tot = np.sum((y - np.mean(y)) ** 2)
+    r2 = 1 - ss_res / ss_tot if ss_tot > 0 else 0.0
+    base_load, ac_sensitivity, T_balance = popt
+    return base_load, ac_sensitivity, T_balance, r2
+
+
+def bathtub_stick(T, base_load, heat_slope, T_heat, cool_slope, deadband):
+    """Two hockey sticks sharing one flat base, heating below ``T_heat`` and
+    cooling above ``T_cool = T_heat + deadband``.
+
+    ``deadband`` (>= 0 by construction, not ``T_cool`` itself) is the fitted
+    parameter so a fit can never place the cooling threshold below the
+    heating one -- a bathtub with a negative-width deadband is not a
+    bathtub. ``T_cool`` is recovered as ``T_heat + deadband`` after fitting.
+    """
+    T_cool = T_heat + deadband
+    return (base_load + heat_slope * np.maximum(0, T_heat - T)
+                       + cool_slope * np.maximum(0, T - T_cool))
+
+
+def fit_bathtub_stick(x, y, T_heat_bounds=T_BALANCE_BOUNDS,
+                      deadband_bounds=DEADBAND_BOUNDS):
+    """Fit the 5-parameter bathtub curve: ``hockey_stick`` and
+    ``cooling_stick`` sharing one base load, joined by a deadband.
+
+    Returns (base_load, heat_slope, T_heat, cool_slope, T_cool, r2). Raises
+    if curve_fit fails, same as ``fit_hockey_stick``/``fit_cooling_stick``.
+    """
+    p0 = [np.median(y), 0.5, np.mean(T_heat_bounds), 0.5, np.mean(deadband_bounds)]
+    bounds = (
+        [0, 0, T_heat_bounds[0], 0, deadband_bounds[0]],
+        [np.inf, np.inf, T_heat_bounds[1], np.inf, deadband_bounds[1]]
+    )
+    popt, _ = curve_fit(bathtub_stick, x, y, p0=p0, bounds=bounds, maxfev=10000)
+    y_pred = bathtub_stick(x, *popt)
+    ss_res = np.sum((y - y_pred) ** 2)
+    ss_tot = np.sum((y - np.mean(y)) ** 2)
+    r2 = 1 - ss_res / ss_tot if ss_tot > 0 else 0.0
+    base_load, heat_slope, T_heat, cool_slope, deadband = popt
+    T_cool = T_heat + deadband
+    return base_load, heat_slope, T_heat, cool_slope, T_cool, r2
 
 
 def daily_min_max_heating_season(temperature, load,

@@ -167,7 +167,7 @@ def fit_hdh_all(design, ids=None, thresholds=None, hdh_thresh=None, verbose=True
     return df
 
 
-def thermal_energy_estimates(design, load_fits, hdh_fits, resolution='24 h',
+def thermal_energy_estimates(design, load_fits, hdh_fits=None, resolution='24 h',
                              hdh_thresh=None):
     """Per-day thermal energy implied by each fit, against submetered ground truth.
 
@@ -207,47 +207,57 @@ def thermal_energy_estimates(design, load_fits, hdh_fits, resolution='24 h',
     underestimate of `hdh_native_kWh` whenever the threshold sits inside the
     day's temperature range -- not noise, a property of the transform.
 
+    Passing ``hdh_fits=None`` returns the hockey-stick estimate alone, without
+    the two degree-hour columns, which is the form the letter reports.
+
     Returns one row per (substation, day).
     """
     from hp_common import HDH_THRESH, daily_cumulative_hdh
     default_thresh = HDH_THRESH if hdh_thresh is None else hdh_thresh
-    has_own_thresh = 'hdh_threshold' in hdh_fits.columns
+    with_hdh = hdh_fits is not None
+    has_own_thresh = with_hdh and 'hdh_threshold' in hdh_fits.columns
 
     hs = load_fits[(load_fits.response == 'Load') &
                    (load_fits.resolution == resolution) &
                    (~load_fits.failed) & (load_fits.N_hp > 0)]
-    hdh_ok = hdh_fits[(~hdh_fits.failed) & (hdh_fits.N_hp > 0)]
-    ids = sorted(set(hs.substation_id) & set(hdh_ok.substation_id))
+    ids = sorted(set(hs.substation_id))
+    if with_hdh:
+        hdh_ok = hdh_fits[(~hdh_fits.failed) & (hdh_fits.N_hp > 0)]
+        ids = sorted(set(ids) & set(hdh_ok.substation_id))
+        hdh_ok = hdh_ok.set_index('substation_id')
 
     hs = hs.set_index('substation_id')
-    hdh_ok = hdh_ok.set_index('substation_id')
 
     rows = []
     for sid in ids:
         hs_row = hs.loc[sid]
-        hdh_row = hdh_ok.loc[sid]
-        # the base temperature this substation's HDH fit actually used, not a
-        # constant assumed here -- fit_hdh_all records it per substation
-        thresh = (float(hdh_row['hdh_threshold']) if has_own_thresh
-                  else default_thresh)
 
         temp = hd.get_series(design, sid, 'Temperature')
         hp_load = pd.Series(design['hp_load'][sid], index=design['index'])
         dt_hours = temp.index.to_series().diff().median().total_seconds() / 3600
 
         T_mean = temp.resample('D').mean()
-        hdh_true = daily_cumulative_hdh(temp, thresh)
-        hdh_approx = (thresh - T_mean).clip(lower=0) * 24.0
         actual = hp_load.resample('D').sum() * dt_hours
 
-        d = pd.DataFrame({'T_mean': T_mean, 'hdh_true': hdh_true,
-                          'hdh_approx': hdh_approx, 'actual_kWh': actual}).dropna()
+        d = pd.DataFrame({'T_mean': T_mean, 'actual_kWh': actual}).dropna()
         d['hs_kWh'] = (hs_row['slope'] *
                        (hs_row['T_threshold'] - d['T_mean']).clip(lower=0) * 24.0)
-        # HDH slope is fit against MEAN load (kW), same as the hockey stick, so
-        # both need the same power-to-energy factor of 24 h applied here.
-        d['hdh_native_kWh'] = hdh_row['slope'] * d['hdh_true'] * 24.0
-        d['hdh_meanonly_kWh'] = hdh_row['slope'] * d['hdh_approx'] * 24.0
+
+        if with_hdh:
+            hdh_row = hdh_ok.loc[sid]
+            # the base temperature this substation's HDH fit actually used, not
+            # a constant assumed here -- fit_hdh_all records it per substation
+            thresh = (float(hdh_row['hdh_threshold']) if has_own_thresh
+                      else default_thresh)
+            hdh_true = daily_cumulative_hdh(temp, thresh)
+            hdh_approx = (thresh - T_mean).clip(lower=0) * 24.0
+            d = d.join(pd.DataFrame({'hdh_true': hdh_true,
+                                     'hdh_approx': hdh_approx}), how='inner')
+            # HDH slope is fit against MEAN load (kW), same as the hockey
+            # stick, so both need the same power-to-energy factor of 24 h.
+            d['hdh_native_kWh'] = hdh_row['slope'] * d['hdh_true'] * 24.0
+            d['hdh_meanonly_kWh'] = hdh_row['slope'] * d['hdh_approx'] * 24.0
+
         d['substation_id'] = sid
         d['N_total'] = int(hs_row['N_total'])
         d['N_hp'] = int(hs_row['N_hp'])
@@ -328,6 +338,7 @@ def _fit_stats(actual, pred):
     ss_tot = np.sum((a - a.mean()) ** 2)
     return pd.Series({
         'r2': 1 - ss_res / ss_tot if ss_tot > 0 else np.nan,
+        'rmse_kWh': np.sqrt(np.mean(resid ** 2)),
         'mae_kWh': np.mean(np.abs(resid)),
         'bias_kWh': resid.mean(),
         'bias_pct': 100 * resid.mean() / a.mean() if a.mean() else np.nan,
@@ -343,7 +354,17 @@ SEASON_ORDER = ['winter', 'spring', 'summer', 'autumn']
 _THERMAL_METHODS = ('hs_kWh', 'hdh_native_kWh', 'hdh_meanonly_kWh')
 
 
-def thermal_energy_rmse_by_season(est, methods=_THERMAL_METHODS):
+def _methods_present(est, methods=_THERMAL_METHODS):
+    """The estimator columns actually built, in canonical order.
+
+    ``thermal_energy_estimates`` omits the degree-hour columns when no HDH
+    fits are supplied, so every consumer of ``est`` reports whatever is
+    there rather than assuming all three.
+    """
+    return [m for m in methods if m in est.columns]
+
+
+def thermal_energy_rmse_by_season(est, methods=None):
     """RMSE against submetered ground truth, per substation, per season.
 
     Meteorological seasons (Dec-Feb winter, ... ), not the fitted heating
@@ -353,6 +374,7 @@ def thermal_energy_rmse_by_season(est, methods=_THERMAL_METHODS):
     substations at this stage, so a substation with an unusually large error
     cannot be smoothed out by the rest before the summary sees it.
     """
+    methods = _methods_present(est) if methods is None else methods
     d = est.copy()
     d['season'] = d['date'].dt.month.map(SEASON_OF_MONTH)
 
@@ -369,9 +391,11 @@ def thermal_energy_rmse_by_season(est, methods=_THERMAL_METHODS):
     return out
 
 
-def thermal_energy_rmse_summary(rmse_df, methods=_THERMAL_METHODS,
+def thermal_energy_rmse_summary(rmse_df, methods=None,
                                 quantiles=(.25, .5, .75)):
     """Median and quantiles of the per-substation seasonal RMSE, by season."""
+    if methods is None:
+        methods = [m for m in _THERMAL_METHODS if f'rmse_{m}' in rmse_df.columns]
     cols = [f'rmse_{m}' for m in methods]
     g = rmse_df.groupby('season', observed=True)[cols]
     pieces = {f'q{int(q * 100):02d}': g.quantile(q) for q in quantiles}
@@ -386,7 +410,7 @@ def thermal_energy_summary(est, by='pooled'):
     median across substations, so one substation with unusually many days
     cannot dominate the pooled number.
     """
-    methods = ['hs_kWh', 'hdh_native_kWh', 'hdh_meanonly_kWh']
+    methods = _methods_present(est)
     if by == 'pooled':
         return pd.DataFrame({m: _fit_stats(est['actual_kWh'], est[m]) for m in methods}).T
     if by == 'substation':
@@ -397,6 +421,25 @@ def thermal_energy_summary(est, by='pooled'):
             rows[m] = per_sub.median()
         return pd.DataFrame(rows).T
     raise ValueError(f'unknown by {by!r}')
+
+
+def thermal_energy_summary_by(est, group_col, method=None):
+    """Pooled accuracy statistics, one row per distinct value of ``group_col``.
+
+    Unlike ``thermal_energy_summary``, which pools everything or splits by
+    substation, this keeps a row per group -- e.g. ETL penetration, or a
+    temperature bin -- so accuracy can be checked for uniformity across the
+    grid rather than reported as one number. ``method`` defaults to the
+    first estimator column present in ``est``.
+    """
+    if method is None:
+        method = _methods_present(est)[0]
+    rows = {}
+    for key, g in est.groupby(group_col, observed=True):
+        stats = _fit_stats(g['actual_kWh'], g[method])
+        stats['n'] = len(g)
+        rows[key] = stats
+    return pd.DataFrame(rows).T
 
 
 def parameterisation_comparison(load_fits, hdh_fits, resolution='24 h',
@@ -425,6 +468,13 @@ def roc(df_load, statistic='slope', resolution='24 h'):
     """ROC of `statistic` separating substations with heat pumps from those without.
 
     Returns (curve, auc). Positives are N_hp > 0.
+
+    The threshold grid is extended above the largest observed value so the curve
+    starts at (0, 0). Without that point the area between the origin and the
+    first threshold is dropped, which biases the AUC low by roughly 1/(2 |neg|).
+    That is negligible when the negative class is large, but reaches 0.017 in a
+    per-consumer-count stratum holding only 25 negatives, so the area is
+    reported as the exact rank statistic rather than integrated off the curve.
     """
     d = df_load[(~df_load['failed']) & (df_load['resolution'] == resolution)]
     d = d[np.isfinite(d[statistic])]
@@ -433,12 +483,16 @@ def roc(df_load, statistic='slope', resolution='24 h'):
     if not len(pos) or not len(neg):
         return None, np.nan
     thr = np.unique(np.concatenate([pos, neg]))
+    thr = np.concatenate([thr, [np.nextafter(thr[-1], np.inf)]])
     tpr = np.array([(pos >= t).mean() for t in thr])
     fpr = np.array([(neg >= t).mean() for t in thr])
-    order = np.argsort(fpr)
-    auc = float(np.trapz(tpr[order], fpr[order]))
+    # Mann-Whitney U on the pooled ranks: exact, and free of the discretisation
+    # the trapezoid rule introduces when the two classes are small.
+    r = pd.Series(np.concatenate([pos, neg])).rank().to_numpy()
+    auc = float((r[:len(pos)].sum() - len(pos) * (len(pos) + 1) / 2)
+                / (len(pos) * len(neg)))
     curve = pd.DataFrame({'threshold': thr, 'tpr': tpr, 'fpr': fpr})
-    return curve, abs(auc)
+    return curve, auc
 
 
 # Penetration bands for reporting. A triangular design realises a different
@@ -450,6 +504,41 @@ PENETRATION_BINS = (0.0, 0.05, 0.10, 0.25, 0.50, 0.75, 1.001)
 PENETRATION_LABELS = ('<=5%', '5-10%', '10-25%', '25-50%', '50-75%', '>75%')
 # nominal x position for each band, for plotting against a penetration axis
 PENETRATION_X = (0.05, 0.10, 0.25, 0.50, 0.75, 1.00)
+
+
+def confound_extremes(d24, value='slope'):
+    """The sharpest instance of the consumer/heat-pump confound in a design.
+
+    Finds the largest heat-pump-free substation (median `value` across its
+    replicates), then the smallest, most heavily penetrated substation it
+    still exceeds, if one exists. Used both to state the confound in prose and
+    to mark it on the heatmap (`hp_figures.fig3_heatmap`), so the two always
+    agree -- neither hard-codes a pair, both call this.
+
+    Returns a dict: `free_N_total`, `free_value`, and `beaten` (None if the
+    heat-pump-free cell is never exceeded within this design, else a dict with
+    `N_total`, `hp_ratio`, `value`).
+    """
+    piv = d24.pivot_table(index='hp_ratio', columns='N_total', values=value,
+                          aggfunc='median')
+    out = {'free_N_total': None, 'free_value': None, 'beaten': None}
+    if 0.0 not in piv.index or not piv.loc[0.0].notna().any():
+        return out
+    free_row = piv.loc[0.0]
+    free_col, free_val = free_row.idxmax(), free_row.max()
+    out['free_N_total'], out['free_value'] = int(free_col), float(free_val)
+
+    positives = piv.drop(index=0.0, errors='ignore').stack()
+    beaten = positives[positives < free_val]
+    if not len(beaten):
+        return out
+    b = beaten.reset_index()
+    b.columns = ['hp_ratio', 'N_total', 'value']
+    b = b.sort_values(['N_total', 'hp_ratio'], ascending=[True, False])
+    row = b.iloc[0]
+    out['beaten'] = {'N_total': int(row.N_total), 'hp_ratio': float(row.hp_ratio),
+                     'value': float(row.value)}
+    return out
 
 
 def by_penetration_quantile(pos, flag, q=5):
