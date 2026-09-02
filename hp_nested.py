@@ -55,6 +55,85 @@ def nested_levels(pool, step=4, penetration=0.5, seed=42):
     return levels
 
 
+def nested_levels_flat(households, step=2, start=4, seed=42):
+    """Nested household sets for a pool with no ETL/non-ETL split.
+
+    Austin has an air conditioner in every house, so there is no penetration
+    to hold fixed and no role to assign: each level is simply the first N of
+    one fixed random ordering. Returns [(N, members), ...] with each members
+    list a superset of the one below.
+    """
+    rng = np.random.default_rng(seed)
+    order = list(np.array(list(households))[rng.permutation(len(households))])
+    return [(n, order[:n]) for n in range(start, len(order) + 1, step)]
+
+
+def fit_levels_bathtub(daily, levels):
+    """Full V-shaped fit of every nested level, both arms free, at daily.
+
+    ``daily`` maps household -> DataFrame with columns T and load, already at
+    daily resolution. Unlike the heating-only datasets, Austin needs both arms
+    of Equation (1), so ``fit_bathtub_stick`` is used rather than the
+    hockey stick. See ``fit_levels_bathtub_multires`` for the resolution
+    sweep.
+    """
+    from hp_common import fit_bathtub_stick
+
+    rows = []
+    for n, members in levels:
+        agg = None
+        for h in members:
+            d = daily[h]
+            agg = d['load'].copy() if agg is None else agg.add(d['load'],
+                                                               fill_value=0)
+        T = daily[members[0]]['T']
+        d = pd.DataFrame({'T': T, 'y': agg}).dropna()
+        base, hs, th, cs, tc, r2 = fit_bathtub_stick(d['T'].to_numpy(),
+                                                     d['y'].to_numpy())
+        rows.append({'N_total': n, 'base': base, 'heat_slope': hs,
+                     'T_heat': th, 'cool_slope': cs, 'T_cool': tc,
+                     'r2': r2, 'n_points': len(d)})
+    return pd.DataFrame(rows)
+
+
+def fit_levels_bathtub_multires(sub, temperature, levels,
+                                resolutions=RESOLUTIONS):
+    """Bathtub fit of every nested level at every averaging window.
+
+    ``sub`` maps household -> a native-resolution consumption Series and
+    ``temperature`` is a temperature Series at least as fine as the coarsest
+    resolution requested. For every nested aggregate the summed load and the
+    temperature are re-averaged to each window in turn, then fitted with both
+    arms free. Returns one row per (level, resolution), matching the column
+    layout ``fit_levels`` produces for the heating-only datasets, so the two
+    can be plotted the same way.
+    """
+    from hp_common import fit_bathtub_stick
+
+    rows = []
+    for n, members in levels:
+        agg = None
+        for h in members:
+            s = sub[h]
+            agg = s.copy() if agg is None else agg.add(s, fill_value=0)
+        # A common origin for both resamples. The load and temperature come
+        # from different files with different start times, so a window that
+        # does not tile a day -- 16 h -- would otherwise place their bin edges
+        # on different marks and leave no overlap after alignment.
+        origin = agg.index.min().floor('D')
+        for res in resolutions:
+            rule = _RULE[res]
+            L = agg.resample(rule, origin=origin).mean()
+            T = temperature.resample(rule, origin=origin).mean()
+            d = pd.DataFrame({'T': T, 'y': L}).dropna()
+            base, hs, th, cs, tc, r2 = fit_bathtub_stick(d['T'].to_numpy(),
+                                                         d['y'].to_numpy())
+            rows.append({'N_total': n, 'resolution': res, 'base': base,
+                         'heat_slope': hs, 'T_heat': th, 'cool_slope': cs,
+                         'T_cool': tc, 'r2': r2, 'n_points': len(d)})
+    return pd.DataFrame(rows)
+
+
 def aggregate(pool, members, hp_members):
     """Net load of one substation, as a Series on the pool's own index."""
     idx = {h: i for i, h in enumerate(pool['households'])}

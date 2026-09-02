@@ -423,6 +423,31 @@ def thermal_energy_summary(est, by='pooled'):
     raise ValueError(f'unknown by {by!r}')
 
 
+def thermal_energy_per_substation(est, method=None):
+    """One row per substation, rather than the median across them.
+
+    ``thermal_energy_summary(by='substation')`` collapses to a median, which
+    hides how widely individual substations differ. That spread is the point
+    when accuracy is read against aggregation level: the median can be flat
+    while the dispersion around it collapses. Returns the design columns
+    alongside the statistics so the result can be grouped by ``N_total`` or
+    penetration directly.
+    """
+    if method is None:
+        method = _methods_present(est)[0]
+    rows = []
+    for sid, g in est.groupby('substation_id'):
+        stats = _fit_stats(g['actual_kWh'], g[method])
+        stats['substation_id'] = sid
+        stats['N_total'] = int(g['N_total'].iloc[0])
+        stats['N_hp'] = int(g['N_hp'].iloc[0])
+        stats['n_days'] = len(g)
+        rows.append(stats)
+    out = pd.DataFrame(rows)
+    out['hp_ratio'] = out['N_hp'] / out['N_total']
+    return out
+
+
 def thermal_energy_summary_by(est, group_col, method=None):
     """Pooled accuracy statistics, one row per distinct value of ``group_col``.
 

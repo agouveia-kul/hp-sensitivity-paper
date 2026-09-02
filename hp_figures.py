@@ -298,28 +298,23 @@ def fig_aggregation_quality(fits, response='Load', hp_ratio=0.5,
     into every line and flatten the very effect the figure is drawn to show.
     Pass ``hp_ratio=None`` to recover the pooled view.
 
-    Drawn as a single panel with a colour bar rather than a twelve-entry
-    legend, and deliberately without the simultaneity-factor exponents that
-    ``fig5_scaling`` carries alongside it.
+    Drawn with the shared ``_aggregation_panel`` so the training-data figure
+    and the reproduction figure (``fig_nested_aggregation``) render on
+    identical axes, and deliberately without the simultaneity-factor exponents
+    that ``fig5_scaling`` carries alongside it.
     """
     fig, ax = plt.subplots(figsize=(COL1 + 0.5, 2.9))
     if hp_ratio is not None:
         fits = fits[np.isclose(fits['hp_ratio'], hp_ratio)]
+    # quality_grid is N x resolution; the shared panel wants one row per
+    # (N, resolution), so melt it back to long form.
     grid = ha.quality_grid(fits, response)
-    cmap = plt.get_cmap('viridis')
-    ns = list(grid.index)
-    norm = mpl.colors.Normalize(vmin=min(ns), vmax=max(ns))
+    long = (grid.reset_index()
+            .melt(id_vars='N_total', var_name='resolution', value_name='r2'))
+    sm = _aggregation_panel(ax, long, ylim=(0.3, 1.0))
+    ax.set_ylabel('median $R^2$, net load')
 
-    for n in ns:
-        ax.plot(range(len(grid.columns)), grid.loc[n], marker='o', ms=2.5,
-                lw=1.1, color=cmap(norm(n)))
-    ax.set_xticks(range(len(grid.columns)))
-    ax.set_xticklabels(grid.columns)
-    ax.set_xlabel('averaging window')
-    ax.set_ylabel(f'median $R^2$, net load')
-    ax.set_ylim(0.25, 1.0)
-
-    sm = mpl.cm.ScalarMappable(cmap=cmap, norm=norm)
+    ns = sorted(long['N_total'].unique())
     cb = fig.colorbar(sm, ax=ax, pad=0.02, aspect=28)
     cb.set_label('consumers per substation, $N$', fontsize=7)
     cb.set_ticks([min(ns), 16, 32, max(ns)])
@@ -328,27 +323,164 @@ def fig_aggregation_quality(fits, response='Load', hp_ratio=0.5,
     return save(fig, name)
 
 
-def fig_nested_aggregation(nested_fits, name='fig_nested_aggregation'):
-    """Fit quality against consumer count for one nested sequence.
+def fig_energy_by_aggregation(per_sub, hp_ratio=0.25,
+                              name='fig_energy_by_aggregation'):
+    """Spread of per-substation Energy-Estimation accuracy against N.
 
-    Each point is a single substation, and the substation at N contains the
-    one at N-4, so the horizontal axis is literally the addition of consumers
-    to a fixed aggregate rather than a comparison between independent draws.
-    No band is drawn because there are no replicates to draw one from.
+    One box per aggregation level, each holding the replicates of that cell.
+    The median matters less here than the dispersion: at small N whether an
+    individual substation's estimate is any good depends heavily on which
+    consumers it happens to contain, and that dependence collapses as N grows.
+
+    ``hp_ratio`` defaults to 25 %, the lowest penetration the design realises.
+    That is both the hardest case and the least contaminated one, since
+    replicates there share at most 14 % of their ETL members, so the narrowing
+    is not an artefact of the reuse described in the paper's design section.
     """
+    d = per_sub[np.isclose(per_sub['hp_ratio'], hp_ratio)]
+    ns = sorted(d['N_total'].unique())
+    data = [d.loc[d.N_total == n, 'r2'].to_numpy() for n in ns]
+
     fig, ax = plt.subplots(figsize=(COL1 + 0.5, 2.9))
-    res = [r for r in ['1 h', '4 h', '8 h', '16 h', '24 h']
-           if r in set(nested_fits['resolution'])]
-    cmap = plt.get_cmap('viridis')
-    for k, r in enumerate(res):
-        d = nested_fits[nested_fits.resolution == r].sort_values('N_total')
-        ax.plot(d.N_total, d.r2, marker='o', ms=3, lw=1.2,
-                color=cmap(k / max(len(res) - 1, 1)), label=r)
+    bp = ax.boxplot(data, positions=range(len(ns)), widths=.62,
+                    patch_artist=True, showfliers=True,
+                    flierprops=dict(marker='.', ms=2.5, mfc='0.4', mec='none'),
+                    medianprops=dict(color='k', lw=1.1))
+    for box in bp['boxes']:
+        box.set_facecolor(C_HP)
+        box.set_alpha(.45)
+        box.set_linewidth(.8)
+    for w in bp['whiskers'] + bp['caps']:
+        w.set_linewidth(.8)
+
+    ax.set_xticks(range(len(ns)))
+    ax.set_xticklabels([f'{int(n)}' for n in ns])
     ax.set_xlabel('consumers per substation, $N$')
+    ax.set_ylabel('per-substation $R^2$, thermal energy')
+    # A handful of the smallest substations score far below zero, which would
+    # otherwise compress the range where every other box sits. The axis is cut
+    # instead, and the count of hidden points is returned for the caption.
+    lo = -0.5
+    ax.set_ylim(lo, 1.02)
+    ax.axhline(0, color='0.35', ls=':', lw=.9)
+    ax.text(0.015, 0.02, 'below 0: worse than predicting the mean',
+            transform=ax.transAxes, fontsize=6, color='0.35')
+    n_hidden = int((d['r2'] < lo).sum())
+    ax.grid(alpha=.3, axis='y')
+    fig.tight_layout()
+    save(fig, name)
+    return os.path.join(FIGDIR, name), n_hidden
+
+
+# ---------------------------------------------------------------------------
+def _aggregation_panel(ax, fits, ylim=(0.3, 1.0)):
+    """One R^2-against-averaging-window panel, one line per consumer count.
+
+    Shared by ``fig_aggregation_quality`` and ``fig_nested_aggregation`` so the
+    training-data figure and the reproduction figure read on identical axes:
+    the averaging window horizontally, one viridis line per consumer count $N$,
+    and a colour bar for $N$. Returns the ScalarMappable for the colour bar.
+    """
+    res = [r for r in ['1 h', '4 h', '8 h', '16 h', '24 h']
+           if r in set(fits['resolution'])]
+    ns = sorted(fits['N_total'].unique())
+    cmap = plt.get_cmap('viridis')
+    norm = mpl.colors.Normalize(vmin=min(ns), vmax=max(ns))
+    for n in ns:
+        d = (fits[fits.N_total == n].set_index('resolution')
+             .reindex(res)['r2'])
+        ax.plot(range(len(res)), d.to_numpy(), marker='o', ms=2.5, lw=1.1,
+                color=cmap(norm(n)))
+    ax.set_xticks(range(len(res)))
+    ax.set_xticklabels(res)
+    ax.set_xlabel('averaging window')
     ax.set_ylabel('net-load $R^2$')
-    ax.set_xticks(sorted(nested_fits.N_total.unique()))
-    ax.legend(title='averaging window', fontsize=6.5, title_fontsize=6.5,
-              loc='lower right', ncol=2, alignment='left')
+    ax.set_ylim(*ylim)
+    return mpl.cm.ScalarMappable(cmap=cmap, norm=norm)
+
+
+def fig_sf_by_aggregation(sf_fits, resolution='24 h', name='fig_sf_by_aggregation'):
+    """Simultaneity factor at the coldest observed day, against heat-pump count.
+
+    One value per substation, from ``ha.sf_at_coldest``, grouped by the number
+    of heat pumps it aggregates. The median line stays near constant while the
+    interquartile band funnels in, which is the coincidence version of the
+    predictability the rest of the section reports: a single heat pump is on or
+    off, so its coincident fraction is 0 or 1, whereas the fraction of a
+    populated substation settles to a stable value with a spread that collapses
+    as the population grows.
+    """
+    base = sf_fits[(~sf_fits['failed']) &
+                   (sf_fits['resolution'] == resolution)].copy()
+    base['sf_cold'] = ha.sf_at_coldest(sf_fits, resolution)
+    d = base[base['N_hp'] > 0]
+    ns = sorted(d['N_hp'].unique())
+    g = d.groupby('N_hp')['sf_cold']
+    med = g.median().reindex(ns)
+    q25 = g.quantile(.25).reindex(ns)
+    q75 = g.quantile(.75).reindex(ns)
+
+    fig, ax = plt.subplots(figsize=(COL1 + 0.3, 2.9))
+    ax.fill_between(ns, q25, q75, color=C_HP, alpha=.20, lw=0,
+                    label='interquartile range')
+    ax.plot(ns, med, color=C_HP, lw=1.4, marker='o', ms=2.5, label='median')
+    ax.set_xlabel(r'heat pumps per substation, $N_{\mathrm{hp}}$')
+    ax.set_ylabel('simultaneity factor, coldest day')
+    ax.set_ylim(0.25, 0.55)
+    ax.legend(loc='upper right', fontsize=6.5)
+    fig.tight_layout()
+    return save(fig, name)
+
+
+def fig_aggregation_three(swiss_fits, wpuq_fits, austin_fits,
+                          name='fig_aggregation_three'):
+    """Fit quality against averaging window for all three datasets at once.
+
+    The letter figure: three panels sharing ``_aggregation_panel``, so the
+    training result and both reproductions are read on identical axes in one
+    float. Each expects a long-form frame with columns ``N_total``,
+    ``resolution`` and ``r2``; the Swiss panel is the 50\\% penetration slice
+    melted to that shape.
+    """
+    fig, axs = plt.subplots(1, 3, figsize=(COL2, 2.5))
+    panels = [(axs[0], swiss_fits, 'Switzerland'),
+              (axs[1], wpuq_fits, 'WPUQ'),
+              (axs[2], austin_fits, 'Austin')]
+    for k, (ax, f, title) in enumerate(panels):
+        sm = _aggregation_panel(ax, f)
+        ax.set_title(title, fontsize=8)
+        if k:
+            ax.set_ylabel('')
+        cb = fig.colorbar(sm, ax=ax, pad=0.02, aspect=30)
+        ns = sorted(f['N_total'].unique())
+        cb.set_ticks([min(ns), max(ns)])
+        cb.ax.tick_params(labelsize=5.5)
+        if k == 2:
+            cb.set_label('$N$', fontsize=6.5)
+    fig.tight_layout(w_pad=0.6)
+    return save(fig, name)
+
+
+def fig_nested_aggregation(nested_fits, austin_fits, name='fig_nested_aggregation'):
+    """Fit quality against averaging window for the two nested sequences.
+
+    Structured to match ``fig_aggregation_quality``: the averaging window on
+    the horizontal axis and one line per consumer count, so the reproduction
+    can be compared with the training data at a glance. Each nested aggregate
+    contains the one below it, so a lighter line is a strict superset of a
+    darker one. WPUQ carries the heating arm only; Austin has both arms of
+    Equation (1) free.
+    """
+    fig, axs = plt.subplots(1, 2, figsize=(COL2, 2.8))
+    for ax, f, title in [(axs[0], nested_fits, 'WPUQ, heating arm'),
+                         (axs[1], austin_fits, 'Austin, both arms')]:
+        sm = _aggregation_panel(ax, f)
+        ax.set_title(title, fontsize=8)
+        cb = fig.colorbar(sm, ax=ax, pad=0.02, aspect=28)
+        cb.set_label('consumers, $N$', fontsize=6.5)
+        ns = sorted(f['N_total'].unique())
+        cb.set_ticks([min(ns), ns[len(ns) // 2], max(ns)])
+        cb.ax.tick_params(labelsize=6)
     fig.tight_layout()
     return save(fig, name)
 

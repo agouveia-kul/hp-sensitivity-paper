@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.2) (preloaded format=pdflatex 2026.4.3)  14 AUG 2026 13:47
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.2) (preloaded format=pdflatex 2026.4.3)  17 AUG 2026 13:36
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -212,73 +212,35 @@ File: pdftex.def 2025/09/29 v1.2d Graphics/color driver for pdftex
 (C:\Program Files\MiKTeX\tex/latex/base\textcomp.sty
 Package: textcomp 2024/04/24 v2.1b Standard LaTeX package
 )
-(C:\Program Files\MiKTeX\tex/latex/graphics\color.sty
-Package: color 2025/01/14 v1.3e Standard LaTeX Color (DPC)
-
-(C:\Program Files\MiKTeX\tex/latex/graphics-cfg\color.cfg
-File: color.cfg 2016/01/02 v1.6 sample color configuration
-)
-Package color Info: Driver file: pdftex.def on input line 149.
-
-(C:\Program Files\MiKTeX\tex/latex/graphics\mathcolor.ltx))
-(C:\Program Files\MiKTeX\tex/generic/soul\soul.sty
-Package: soul 2026-03-06 v3.2 Permit use of UTF-8 characters in soul (HO)
-
-(C:\Program Files\MiKTeX\tex/generic/soul\soul-ori.sty
-Package: soul-ori 2026-03-06 v3.2 letterspacing/underlining (mf)
-\SOUL@word=\toks24
-\SOUL@lasttoken=\toks25
-\SOUL@syllable=\toks26
-\SOUL@cmds=\toks27
-\SOUL@buffer=\toks28
-\SOUL@token=\toks29
-\SOUL@syllgoal=\dimen183
-\SOUL@syllwidth=\dimen184
-\SOUL@charkern=\dimen185
-\SOUL@hyphkern=\dimen186
-\SOUL@dimen=\dimen187
-\SOUL@dimeni=\dimen188
-\SOUL@minus=\count302
-\SOUL@comma=\count303
-\SOUL@apo=\count304
-\SOUL@grave=\count305
-\SOUL@spaceskip=\skip55
-\SOUL@ttwidth=\dimen189
-\SOUL@uldp=\dimen190
-\SOUL@ulht=\dimen191
-)
-(C:\Program Files\MiKTeX\tex/generic/infwarerr\infwarerr.sty
-Package: infwarerr 2019/12/03 v1.5 Providing info/warning/error messages (HO)
-)
-(C:\Program Files\MiKTeX\tex/generic/etexcmds\etexcmds.sty
-Package: etexcmds 2019/12/15 v1.7 Avoid name clashes with e-TeX commands (HO)
-
-(C:\Program Files\MiKTeX\tex/generic/iftex\iftex.sty
-Package: iftex 2024/12/12 v1.0g TeX engine tests
-)))
 (C:\Program Files\MiKTeX\tex/latex/booktabs\booktabs.sty
 Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
-\heavyrulewidth=\dimen192
-\lightrulewidth=\dimen193
-\cmidrulewidth=\dimen194
-\belowrulesep=\dimen195
-\belowbottomsep=\dimen196
-\aboverulesep=\dimen197
-\abovetopsep=\dimen198
-\cmidrulesep=\dimen199
-\cmidrulekern=\dimen256
-\defaultaddspace=\dimen257
-\@cmidla=\count306
-\@cmidlb=\count307
-\@aboverulesep=\dimen258
-\@belowrulesep=\dimen259
-\@thisruleclass=\count308
-\@lastruleclass=\count309
-\@thisrulewidth=\dimen260
+\heavyrulewidth=\dimen183
+\lightrulewidth=\dimen184
+\cmidrulewidth=\dimen185
+\belowrulesep=\dimen186
+\belowbottomsep=\dimen187
+\aboverulesep=\dimen188
+\abovetopsep=\dimen189
+\cmidrulesep=\dimen190
+\cmidrulekern=\dimen191
+\defaultaddspace=\dimen192
+\@cmidla=\count302
+\@cmidlb=\count303
+\@aboverulesep=\dimen193
+\@belowrulesep=\dimen194
+\@thisruleclass=\count304
+\@lastruleclass=\count305
+\@thisrulewidth=\dimen195
+)
+(C:\Program Files\MiKTeX\tex/latex/sttools\stfloats.sty
+Package: stfloats 2025/06/18 v3.4 Improve float mechanism and baselineskip sett
+ings
+\@dblbotnum=\count306
+\c@dblbotnumber=\count307
 )
 (C:\Program Files\MiKTeX\tex/latex/l3backend\l3backend-pdftex.def
 File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
-\l__color_backend_stack_int=\count310
+\l__color_backend_stack_int=\count308
 )
 
 LaTeX Warning: Unused global option(s):
@@ -287,35 +249,35 @@ LaTeX Warning: Unused global option(s):
 (hp_sensitivity_letter.aux)
 \openout1 = `hp_sensitivity_letter.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 12.
-LaTeX Font Info:    ... okay on input line 12.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 12.
-LaTeX Font Info:    ... okay on input line 12.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 12.
-LaTeX Font Info:    ... okay on input line 12.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 12.
-LaTeX Font Info:    ... okay on input line 12.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 12.
-LaTeX Font Info:    ... okay on input line 12.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 12.
-LaTeX Font Info:    ... okay on input line 12.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 12.
-LaTeX Font Info:    ... okay on input line 12.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 11.
+LaTeX Font Info:    ... okay on input line 11.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 11.
+LaTeX Font Info:    ... okay on input line 11.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 11.
+LaTeX Font Info:    ... okay on input line 11.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 11.
+LaTeX Font Info:    ... okay on input line 11.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 11.
+LaTeX Font Info:    ... okay on input line 11.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 11.
+LaTeX Font Info:    ... okay on input line 11.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 11.
+LaTeX Font Info:    ... okay on input line 11.
 
 -- Lines per column: 63 (exact).
 (C:\Program Files\MiKTeX\tex/context/base/mkii\supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count311
-\scratchdimen=\dimen261
+\scratchcounter=\count309
+\scratchdimen=\dimen196
 \scratchbox=\box57
-\nofMPsegments=\count312
-\nofMParguments=\count313
-\everyMPshowfont=\toks30
-\MPscratchCnt=\count314
-\MPscratchDim=\dimen262
-\MPnumerator=\count315
-\makeMPintoPDFobject=\count316
-\everyMPtoPDFconversion=\toks31
+\nofMPsegments=\count310
+\nofMParguments=\count311
+\everyMPshowfont=\toks24
+\MPscratchCnt=\count312
+\MPscratchDim=\dimen197
+\MPnumerator=\count313
+\makeMPintoPDFobject=\count314
+\everyMPtoPDFconversion=\toks25
 ) (C:\Program Files\MiKTeX\tex/latex/epstopdf-pkg\epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
 Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
@@ -324,89 +286,68 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 (C:\Program Files\MiKTeX\tex/latex/00miktex\epstopdf-sys.cfg
 File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 ))
-Underfull \hbox (badness 2460) in paragraph at lines 46--47
-[]\OT1/ptm/m/n/9 Distribution Sys-tem Op-er-a-tors (DSOs) hold net-load and
- []
+Underfull \vbox (badness 1112) has occurred while \output is active []
 
-[1{C:/Users/VENANCIA/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Progr
-am Files/MiKTeX/fonts/enc/dvips/base/8r.enc}
+ [1{C:/Users/VENANCIA/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Prog
+ram Files/MiKTeX/fonts/enc/dvips/base/8r.enc}
 
 
 ]
-<figures/fig_bathtub_example.pdf, id=15, 249.81932pt x 205.60376pt>
-File: figures/fig_bathtub_example.pdf Graphic file (type pdf)
-<use figures/fig_bathtub_example.pdf>
-Package pdftex.def Info: figures/fig_bathtub_example.pdf  used on input line 12
-1.
-(pdftex.def)             Requested size: 252.0pt x 207.4009pt.
- [2 <./figures/fig_bathtub_example.pdf>]
-<figures/fig_aggregation_quality.pdf, id=75, 280.32219pt x 205.25873pt>
-File: figures/fig_aggregation_quality.pdf Graphic file (type pdf)
-<use figures/fig_aggregation_quality.pdf>
-Package pdftex.def Info: figures/fig_aggregation_quality.pdf  used on input lin
-e 202.
-(pdftex.def)             Requested size: 252.0pt x 184.52441pt.
-<figures/fig3_confound.pdf, id=76, 492.62659pt x 212.83076pt>
-File: figures/fig3_confound.pdf Graphic file (type pdf)
-<use figures/fig3_confound.pdf>
-Package pdftex.def Info: figures/fig3_confound.pdf  used on input line 215.
-(pdftex.def)             Requested size: 516.0pt x 222.9268pt.
- [3]
-<figures/fig_within_stratum_auc.pdf, id=80, 293.32523pt x 204.44945pt>
+<figures/fig_aggregation_three.pdf, id=15, 512.72575pt x 176.77419pt>
+File: figures/fig_aggregation_three.pdf Graphic file (type pdf)
+<use figures/fig_aggregation_three.pdf>
+Package pdftex.def Info: figures/fig_aggregation_three.pdf  used on input line 
+73.
+(pdftex.def)             Requested size: 474.71906pt x 163.67pt.
+<figures/fig_within_stratum_auc.pdf, id=16, 293.32523pt x 204.44945pt>
 File: figures/fig_within_stratum_auc.pdf Graphic file (type pdf)
 <use figures/fig_within_stratum_auc.pdf>
 Package pdftex.def Info: figures/fig_within_stratum_auc.pdf  used on input line
- 226.
-(pdftex.def)             Requested size: 252.0pt x 175.65149pt.
-<figures/fig4_detection_train.pdf, id=81, 517.35281pt x 191.08456pt>
-File: figures/fig4_detection_train.pdf Graphic file (type pdf)
-<use figures/fig4_detection_train.pdf>
-Package pdftex.def Info: figures/fig4_detection_train.pdf  used on input line 2
-39.
-(pdftex.def)             Requested size: 516.0pt x 190.59715pt.
- [4 <./figures/fig_aggregation_quality.pdf>]
-<figures/fig_s3_auc_by_resolution.pdf, id=145, 249.93501pt x 205.25873pt>
-File: figures/fig_s3_auc_by_resolution.pdf Graphic file (type pdf)
-<use figures/fig_s3_auc_by_resolution.pdf>
-Package pdftex.def Info: figures/fig_s3_auc_by_resolution.pdf  used on input li
-ne 288.
-(pdftex.def)             Requested size: 252.0pt x 206.962pt.
- [5 <./figures/fig3_confound.pdf> <./figures/fig_within_stratum_auc.pdf>]
-<figures/fig_nested_aggregation.pdf, id=242, 285.20364pt x 204.44945pt>
-File: figures/fig_nested_aggregation.pdf Graphic file (type pdf)
-<use figures/fig_nested_aggregation.pdf>
-Package pdftex.def Info: figures/fig_nested_aggregation.pdf  used on input line
- 322.
-(pdftex.def)             Requested size: 252.0pt x 180.65541pt.
- [6 <./figures/fig4_detection_train.pdf> <./figures/fig_s3_auc_by_resolution.pd
-f> <./figures/fig_nested_aggregation.pdf>] [7] [8] (hp_sensitivity_letter.aux)
+ 92.
+(pdftex.def)             Requested size: 226.79846pt x 158.0848pt.
+
+Underfull \vbox (badness 1173) has occurred while \output is active []
+
+ [2 <./figures/fig_aggregation_three.pdf> <./figures/fig_within_stratum_auc.pdf
+>]
+<figures/fig_sf_by_aggregation.pdf, id=151, 271.71924pt x 204.50592pt>
+File: figures/fig_sf_by_aggregation.pdf Graphic file (type pdf)
+<use figures/fig_sf_by_aggregation.pdf>
+Package pdftex.def Info: figures/fig_sf_by_aggregation.pdf  used on input line 
+107.
+(pdftex.def)             Requested size: 226.79846pt x 170.7041pt.
+
+(hp_sensitivity_letter.bbl
+Underfull \hbox (badness 10000) in paragraph at lines 99--101
+[]\OT1/ptm/m/n/8 Pecan Street Inc., ``Dat-a-port,'' [On-line]. Avail-able:
+ []
+
+) [3 <./figures/fig_sf_by_aggregation.pdf>] (hp_sensitivity_letter.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 3565 strings out of 467867
- 60450 string characters out of 5428393
- 487486 words of memory out of 5000000
- 32413 multiletter control sequences out of 15000+600000
- 663918 words of font info for 103 fonts, out of 8000000 for 9000
+ 3136 strings out of 467867
+ 52723 string characters out of 5428393
+ 476265 words of memory out of 5000000
+ 32005 multiletter control sequences out of 15000+600000
+ 663017 words of font info for 101 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 57i,9n,65p,1161b,299s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 57i,6n,65p,1301b,251s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Program
  Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Program Files/MiKTeX
 /fonts/type1/public/amsfonts/cm/cmmi9.pfb><C:/Program Files/MiKTeX/fonts/type1/
 public/amsfonts/cm/cmr6.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfont
-s/cm/cmr8.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmr9.pfb>
-<C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy6.pfb><C:/Program F
-iles/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Program Files/MiKTeX/f
-onts/type1/public/amsfonts/cm/cmsy9.pfb><C:/Program Files/MiKTeX/fonts/type1/ur
-w/times/utmb8a.pfb><C:/Program Files/MiKTeX/fonts/type1/urw/times/utmbi8a.pfb><
-C:/Program Files/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/Program Files/MiKT
-eX/fonts/type1/urw/times/utmri8a.pfb>
-Output written on hp_sensitivity_letter.pdf (8 pages, 343870 bytes).
+s/cm/cmr9.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy6.pfb
+><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy9.pfb><C:/Program 
+Files/MiKTeX/fonts/type1/urw/times/utmb8a.pfb><C:/Program Files/MiKTeX/fonts/ty
+pe1/urw/times/utmbi8a.pfb><C:/Program Files/MiKTeX/fonts/type1/urw/times/utmr8a
+.pfb><C:/Program Files/MiKTeX/fonts/type1/urw/times/utmri8a.pfb>
+Output written on hp_sensitivity_letter.pdf (3 pages, 220191 bytes).
 PDF statistics:
- 435 PDF objects out of 1000 (max. 8388607)
+ 241 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 36 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 16 words of extra memory for PDF output out of 10000 (max. 10000000)
 
