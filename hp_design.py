@@ -213,7 +213,7 @@ def build_pool(heapo_obj, cache_path=POOL_CACHE, rebuild=False, verbose=True):
 # ---------------------------------------------------------------------------
 def generate_design(pool, n_grid=N_GRID, ratio_grid=RATIO_GRID, n_reps=N_REPS,
                     seed=42, verbose=True, eheat_frac=0.0, hp_grid=None,
-                    clean_hp=True):
+                    clean_hp=True, replace=False):
     """Generate the factorial design from a household pool.
 
     ``hp_grid`` switches the design from a penetration grid to an absolute
@@ -343,19 +343,37 @@ def generate_design(pool, n_grid=N_GRID, ratio_grid=RATIO_GRID, n_reps=N_REPS,
             for rep in range(n_reps):
                 # round-robin over eligible stations keeps replicates balanced
                 wid = eligible[rep % len(eligible)]
-                # HP members must come from the submetered tier; the remaining
-                # consumers from the rest of the same station's population.
-                hp_members = rng.choice(station_hp_pool[wid], size=n_hp,
-                                        replace=False) if n_hp else np.array([], dtype=object)
-                eheat_members = rng.choice(station_eheat_pool[wid], size=n_eheat,
-                                           replace=False) if n_eheat else np.array([], dtype=object)
-                # clean non-HP members must not re-use a household already taken
-                # as an HP member (sampling stays without replacement)
-                clean_avail = np.setdiff1d(station_clean_pool[wid], hp_members)
-                clean_members = rng.choice(clean_avail, size=n_clean,
-                                           replace=False) if n_clean else np.array([], dtype=object)
-                parts = [p for p in (hp_members, eheat_members, clean_members) if len(p)]
-                members = np.concatenate(parts) if parts else np.array([], dtype=object)
+                if replace:
+                    # Decoupled with-replacement draw: the heat pumps and the
+                    # base households are two independent samples drawn WITH
+                    # replacement, so a household (and its heat pump) may recur
+                    # within a substation and the heat-pump count no longer
+                    # constrains which base households appear. The base is the
+                    # full N_total, drawn independently of the heat pumps, which
+                    # decouples "how many houses" from "how many heat pumps".
+                    hp_members = rng.choice(station_hp_pool[wid], size=n_hp,
+                                            replace=True) if n_hp else np.array([], dtype=object)
+                    n_clean_base = n_total - n_eheat
+                    eheat_members = rng.choice(station_eheat_pool[wid], size=n_eheat,
+                                               replace=True) if n_eheat else np.array([], dtype=object)
+                    clean_members = rng.choice(station_clean_pool[wid], size=n_clean_base,
+                                               replace=True) if n_clean_base else np.array([], dtype=object)
+                    base_parts = [p for p in (clean_members, eheat_members) if len(p)]
+                    members = np.concatenate(base_parts) if base_parts else np.array([], dtype=object)
+                else:
+                    # HP members must come from the submetered tier; the remaining
+                    # consumers from the rest of the same station's population.
+                    hp_members = rng.choice(station_hp_pool[wid], size=n_hp,
+                                            replace=False) if n_hp else np.array([], dtype=object)
+                    eheat_members = rng.choice(station_eheat_pool[wid], size=n_eheat,
+                                               replace=False) if n_eheat else np.array([], dtype=object)
+                    # clean non-HP members must not re-use a household already taken
+                    # as an HP member (sampling stays without replacement)
+                    clean_avail = np.setdiff1d(station_clean_pool[wid], hp_members)
+                    clean_members = rng.choice(clean_avail, size=n_clean,
+                                               replace=False) if n_clean else np.array([], dtype=object)
+                    parts = [p for p in (hp_members, eheat_members, clean_members) if len(p)]
+                    members = np.concatenate(parts) if parts else np.array([], dtype=object)
 
                 rows_all = [row_of[h] for h in members]
                 rows_hp = [hp_row_of[h] for h in hp_members]
