@@ -52,18 +52,17 @@ def line(name, p):
     return f"{name} & {wape(p):.1f} & {np.median(np.asarray(p)/A):.2f} & {r2:.3f} \\\\"
 tex = r"""\begin{table}[t]
 \centering
-\caption{Installed-capacity accuracy on the held-out substations for three estimators}
+\caption{Installed-capacity accuracy on the held-out substations for two estimators}
 \label{tab:capacity}
 \begin{tabular}{lccc}
 \toprule
 estimator & WAPE (\%) & median ratio & $R^2$ \\
 \midrule
 """ + line(r"Eq.~\eqref{eq:capacity}, transferred SF", p_sf) + "\n" \
-    + line("regression benchmark", p_reg) + "\n" \
     + line("oracle (own SF)", p_or) + r"""
 \bottomrule
 \end{tabular}
 \end{table}"""
-open('paper/tab_capacity.tex', 'w').write(tex)
-print('wrote paper/tab_capacity.tex')
+open('paper/tables/tab_capacity.tex', 'w').write(tex)
+print('wrote paper/tables/tab_capacity.tex')
 

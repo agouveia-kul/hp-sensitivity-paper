@@ -20,8 +20,12 @@ print(f'base {base:.1f} hs {hs:.2f} th {th:.1f} cs {cs:.2f} tc {tc:.1f} R2 {r2:.
 
 fig, ax = plt.subplots(figsize=(hf.COL1, 3.0))
 ax.scatter(Tv, yv, s=8, color='0.65', alpha=.45, edgecolor='none', label='daily mean load')
-ax.plot(Tg, bathtub_stick(Tg, base, hs, th, cs, tc - th), color=hf.C_AC, lw=1.9, label='bathtub fit', zorder=4)
-ax.axvspan(th, tc, color=hf.C_AC, alpha=.08, lw=0)
+xa = np.linspace(Tv.min(), th, 100)
+xd = np.linspace(tc, Tv.max(), 100)
+ax.plot(xa, base + hs * (th - xa), color=hf.C_HP, lw=1.9, zorder=4, label='heating arm')
+ax.plot([th, tc], [base, base], color='0.2', lw=1.9, zorder=4, label='base load')
+ax.plot(xd, base + cs * (xd - tc), color=hf.C_CH, lw=1.9, zorder=4, label='cooling arm')
+ax.axvspan(th, tc, color='0.5', alpha=.08, lw=0)
 y0 = yv.min() - 3
 ax.set_ylim(y0, yv.max() * 1.06)
 
@@ -39,10 +43,10 @@ for xT, lab, dx in [(th, r'$T_h$', -1), (tc, r'$T_c$', 1)]:
 # slopes s_h, s_c on the two arms
 xh = th - (th - Tv.min()) * 0.45; yh = base + hs * (th - xh)
 ax.annotate(r'$s_h$', xy=(xh, yh), xytext=(-16, 12), textcoords='offset points',
-            fontsize=8, color=hf.C_AC, arrowprops=dict(arrowstyle='-', lw=0.6, color='0.5'))
+            fontsize=8, color=hf.C_HP, arrowprops=dict(arrowstyle='-', lw=0.6, color='0.5'))
 xc = tc + (Tv.max() - tc) * 0.45; yc = base + cs * (xc - tc)
 ax.annotate(r'$s_c$', xy=(xc, yc), xytext=(-20, 6), textcoords='offset points',
-            fontsize=8, color=hf.C_AC, arrowprops=dict(arrowstyle='-', lw=0.6, color='0.5'))
+            fontsize=8, color=hf.C_CH, arrowprops=dict(arrowstyle='-', lw=0.6, color='0.5'))
 
 ax.set_xlabel('daily mean temperature (°C)')
 ax.set_ylabel('aggregate load (kW)')

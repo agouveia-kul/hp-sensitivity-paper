@@ -81,5 +81,5 @@ $N_{hp}$ & capacity, transf.\ (\%) & capacity, hybrid (\%) & energy (\%) \\
 \bottomrule
 \end{tabular}
 \end{table}"""
-open('paper/tab_feeder_sweep.tex', 'w').write(tex)
-print('\nwrote paper/tab_feeder_sweep.tex')
+open('paper/tables/tab_feeder_sweep.tex', 'w').write(tex)
+print('\nwrote paper/tables/tab_feeder_sweep.tex')

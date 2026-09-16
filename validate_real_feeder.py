@@ -65,7 +65,7 @@ ax[1].plot([Tmin, Tmin, Tmin], [sf_own, sf_swiss, sf_hybrid], color=hf.C_HP, lw=
 # hybrid SF threshold, marked as in Figs 1-2, and shared with the net-load T_h of panel A
 hyb_base = float(np.clip(SWISS['base'], 0, 1))
 ax[1].vlines(nt, hyb_base, hyb_base + 0.11, **gth)
-ax[1].annotate('$T_h$', xy=(nt, hyb_base + 0.11), xytext=(3, 1), textcoords='offset points', fontsize=9, color='0.3')
+ax[1].annotate('$T_h$ (net-load)', xy=(nt, hyb_base + 0.11), xytext=(3, 1), textcoords='offset points', fontsize=8, color='0.3')
 ax[1].set(xlabel='daily mean temperature (°C)', ylabel='simultaneity factor SF', ylim=(0, 0.75))
 ax[1].legend(fontsize=6.5, loc='upper right')
 fig.tight_layout()

@@ -70,5 +70,5 @@ fit + integration & WAPE (\%) & median ratio \\
 \bottomrule
 \end{tabular}
 \end{table}"""
-open('paper/tab_energy.tex', 'w').write(tex)
-print('\nwrote paper/tab_energy.tex')
+open('paper/tables/tab_energy.tex', 'w').write(tex)
+print('\nwrote paper/tables/tab_energy.tex')

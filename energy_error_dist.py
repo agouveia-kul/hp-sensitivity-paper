@@ -51,7 +51,7 @@ ax[0].hist(g.spe.clip(-60, 60), bins=40, color=hf.C_CH, alpha=.8, edgecolor='non
 ax[0].axvline(0, color='0.4', lw=0.8, ls=(0, (3, 3)))
 ax[0].axvline(g.spe.median(), color=hf.C_HP, lw=1.5, label=f'median {g.spe.median():+.0f}%')
 ax[0].set(xlabel='signed % error (est $-$ actual)', ylabel='substations')
-ax[0].legend(fontsize=7, loc='upper left')
+ax[0].legend(fontsize=7, loc='upper right')
 
 order = [5, 10, 20, 30, 40, 50]
 data = [g.loc[g.N_hp == k, 'spe'].values for k in order]

@@ -8,3 +8,4 @@
 models/rf_model.sav
 __pycache__/
 *.pyc
+/paper/OLD
