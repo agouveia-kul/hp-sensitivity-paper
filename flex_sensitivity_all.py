@@ -95,8 +95,8 @@ fig.tight_layout(); hf.save(fig, 'fig_flex_distribution')
 DT_REF = 4                                                       # h, representative window
 import matplotlib.dates as mdates
 fig, ax = plt.subplots(figsize=(hf.COL1, 2.7))
-ax.plot(a.index, flex_act * DT_REF, color='0.5', lw=0.9, label='actual (submetered SF)')
-ax.plot(a.index, flex_est * DT_REF, color=hf.C_HP, lw=1.0, label='estimated (transferred SF)')
+ax.plot(a.index, flex_act * DT_REF, color='0.5', lw=0.9, label='actual')
+ax.plot(a.index, flex_est * DT_REF, color=hf.C_HP, lw=1.0, label='estimated')
 ax.set(xlabel='month', ylabel=f'daily flexible energy (kWh), $\\Delta t = {DT_REF}$ h')
 ax.xaxis.set_major_locator(mdates.MonthLocator((1, 4, 7, 10)))
 ax.xaxis.set_major_formatter(mdates.DateFormatter('%b'))

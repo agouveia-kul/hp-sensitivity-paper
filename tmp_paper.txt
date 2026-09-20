@@ -1,0 +1,1688 @@
+1
+
+Characterisation of Aggregated Electric Thermostatic Loads
+and Quantification of its Flexibility
+Alexandre M. V. Gouveia, Md. Umar Hashmi, Reinhilde D’hulst, Dirk Van Hertem
+
+Abstract—Distribution system operators (DSOs) rarely know how
+many electric thermostatic loads (ETLs), such as heat pumps, are connected to their low-voltage networks. This paper characterises aggregated
+ETL populations by estimating their installed capacity, temperaturedriven energy and flexibility potential, using a net-load and simultaneity
+factor (SF) fit. The net-load fit characterises the ETL response and
+gives its aggregated temperature-sensitive demand; the SF converts that
+demand into the summed non-coincident installed peak. The SF fit is
+stable against a population’s ETL rate and installed capacity, and its
+simultaneity sensitivity transfers across the two populations studied.
+Therefore, a curve calibrated on a submetered pilot serves that population’s un-submetered feeders. Across aggregated Swiss smart meters, the
+installed capacity is recovered to a weighted absolute percentage error of
+10%. On a real German feeder held out of sample, the estimate reaches
+7% once the threshold temperature is read from the observable net-load
+fit. After calibration on a submetered pilot, applying the method to a
+target feeder requires only net load and ambient temperature, making
+the method suitable for aggregated ETL quantification in unobservable
+low-voltage networks.
+Index Terms—Electric thermostatic loads, heat pumps, low-voltage
+networks, simultaneity factor, installed capacity, smart meter data,
+distribution system observability.
+
+N OMENCLATURE
+ETL
+Electric Thermostatic Load
+Pnet (t)
+Aggregated net load.
+PETL (t) Aggregated ETL load.
+Pnon-ETL (t) Aggregated non-ETL load.
+Pbase
+Temperature-independent base load.
+sh , sc
+Heating, cooling sensitivities [kW/◦ C].
+Th , Tc
+Heating, cooling threshold temperatures [◦ C].
+max
+ETL installed capacity [kW].
+PETL
+SF(T )
+Simultaneity factor.
+ˆ
+SF(T
+)
+Simultaneity factor fitted function.
+b, m
+SF base fraction, sensitivity [1/◦ C].
+ThSF
+SF threshold temperature [◦ C].
+Tmin
+Coldest recorded temperature [◦ C].
+i
+P̂ETL (T ) Aggregated ETL load fitted function [kW].
+αF
+Flexibility duty cycle.
+∆t
+Energy integration period [h].
+∆tT h
+Thermal-inertia window [h].
+EETL
+Temperature-driven ETL energy [kWh].
+Eflex
+Flexible energy [kWh].
+N, Nhp
+Number of consumers and heat pumps.
+I. I NTRODUCTION
+Considering this is no longer a letter, the introduction should
+highlight
+• problem and motivation
+• prior works
+• gap in research
+– possibly with a literature table
+– in case you do not have a lot of work on ETL, make the
+table for DER in general; i think there is a lot on PV, EV
+capacity identification
+• contributions
+
+The electrification of residential heating is a central lever of
+decarbonisation policy, and the heat pump (HP) is its main instrument.
+Its uptake is growing fast [1]. With it grows the share of household
+demand that follows outdoor temperature, not occupancy alone. On
+200 German LV feeders, installed HP power rose by over twenty per
+cent from 2023 to 2025 [2].
+This uptake supports decarbonisation, yet it loads low-voltage (LV)
+networks that were not sized for it. Field and simulation studies show
+HPs raise coincident feeder and transformer peaks, sharpest in cold
+weather, alongside electric vehicles and rooftop solar [3]–[7]. To plan
+and operate these networks, network operators must know how much
+thermostatic load sits behind each metering point.
+A distribution system operator (DSO) rarely holds that information.
+It meters aggregated net load and can obtain weather. It seldom holds
+the consumer count, appliance registers or nameplate ratings needed
+to interpret the thermal response [2], [8]. The installed capacity of
+the electric thermostatic loads (ETLs) behind a feeder therefore stays
+largely unobserved.
+Four lines of research attempt to close this gap. Non-intrusive load
+monitoring and HP detection recover thermostatic load from customer
+meters, either as a present-absent label [9]–[11] or as a disaggregated
+energy time series [12], [13]. Some extend to LV substations [14],
+[15]. Yet these methods stop short of the installed capacity, and their
+substation demonstrations remain largely synthetic.
+Change-point and degree-day models fit load as a piecewiselinear function of temperature. They range from canonical buildinglevel formulations [16]–[18], reviewed in [19], to aggregated and
+smart-meter populations [20]–[22]. They recover heating and cooling
+sensitivities and a threshold temperature, but stop at the coincident
+response and never reach the non-coincident installed sum.
+For photovoltaics (PV), by contrast, installed-capacity estimation
+is well developed. Methods infer the capacity from aggregated net
+load or smart-meter data [23]–[26], and even recover the servicetransformer rating this way [27]. The thermostatic-load counterpart
+is largely missing [8].
+The simultaneity of an aggregated HP population, and the coincident peak it produces, inform network planning: they set the design
+load [28]–[31] and bound the flexibility the population offers [32],
+[33]. Planners measure these quantities on submetered populations of
+known size and read them as a planning input, rather than recover
+them from an un-submetered feeder.
+To the best of the authors’ knowledge, no prior method estimates
+the installed capacity of an aggregated ETL population directly from
+feeder-level net load without submetering the target feeder. This paper
+addresses that gap. The contributions are threefold.
+1) A bathtub curve, fitted to the aggregated net load against
+ambient temperature, characterises the ETLs behind a metering
+point without any submetering. Its two arms recover the ETL
+temperature response, its thresholds mark where the population
+heats and cools, and its flat centre isolates the temperatureindependent load. Integrating the heating arm over the year
+then estimates the temperature-driven ETL energy consumption
+from data the DSO already holds.
+
+2
+
+II. P ROBLEM AND A PPROACH
+Due to privacy concerns, metering and/or data exchange limitations, distribution system operators (DSOs) do not have full observability at the individual consumer level for operational purposes.
+(CAN ADD A REAL WORLD EXAMPLE HERE) Furthermore, the
+continuous evolution of DER installations in distribution networks is
+not reliably updated by the DSOs. DERs that consume/generate with
+a high simultaneity factor are a critical detail the DSOs should have to
+operate the power network reliably. This work focuses on quantifying
+the use of spatio-temporally aggregated load profiles at the feeder
+head or substation level that the system operator may have to estimate
+the thermostatic load installed capacity and flexibility potential based
+on instantaneous load and estimated simultaneity factor. A metered
+point of an LV network, such as a substation or feeder, aggregates
+the load of the consumers downstream. Some of them run ETLs. The
+task is to quantify those ETLs from that aggregate.
+The net load is the sum of an ETL and a non-ETL component,
+Pnet (t) = PETL (t) + Pnon-ETL (t),
+
+Submetered
+ETL load
+
+SF fit Eq. (7)
+
+Ambient
+temperature
+
+Net-load
+fit Eq. (2)
+
+transferred
+
+Installed
+cap. Eq. (9)
+
+Flexibility
+Eq. (12)
+
+Energy
+Eq. (8)
+
+Aggregated
+net load
+
+Fig. 1. Method pipeline. The observable net-load fit and a submetered-pilot
+SF fit combine into the installed capacity; the net-load fit alone gives the
+temperature-driven energy, and the capacity with the SF gives the flexibility.
+The transferred SF also shapes the flexibility.
+
+50
+
+aggregate load (kW)
+
+2) The total installed capacity of the ETLs is estimated by combining the observable net-load fit with a transferred simultaneity
+factor (SF). This is possible because the SF curve, fitted on
+submetered data, transfers to the un-submetered substations of
+a similar population.
+3) The flexibility potential of the aggregated ETL population
+is derived in an energy-preserving form, as the energy the
+population can shift within a thermal-inertia window while
+still meeting its temperature-set demand. It is built entirely
+from the ETL response estimated from aggregated net load
+and ambient temperature, the transferred SF and the net-loadderived capacity, so it too needs no submetering of the target
+feeder.
+The rest of the paper is structured as follows. Section II states
+the problem and approach and defines the two temperature-response
+functions; Section III estimates energy and installed capacity and
+Section IV quantifies flexibility; Section V reports case studies on
+Swiss data and a real unseen feeder; Section VI discusses accuracy,
+generalisability and data requirements; Section VII concludes.
+
+40
+
+daily mean load
+heating arm
+base load
+cooling arm
+R 2 0.960
+
+sc
+30
+
+sh
+
+20
+
+Pbase
+10
+
+Th
+0
+
+5
+
+10
+
+Tc
+15
+
+20
+
+25
+
+daily mean temperature (°C)
+
+30
+
+35
+
+Fig. 2. Equation (2) fitted to daily mean load of an aggregation of airconditioned and furnace-heated dwellings in Austin, Texas [35].
+
+(1)
+
+where only the ETL component responds directly to temperature.
+The non-ETL component also carries a weaker, indirect temperature
+dependence, visible in the whole-home energy signature [34]. Still,
+ETLs dominate the total temperature response, so the model neglects
+the non-ETL contribution. Section VI revisits this assumption.
+The problem is to recover the aggregated ETL load PETL (t)
+from the aggregated net load. From it follow three quantities that
+aid DSO operation and planning: the ETLs’ installed capacity, their
+energy consumption and their flexibility potential. Fig. 1 sketches the
+pipeline.
+Two functions describe the ETL population’s response to ambient
+temperature. The first, the net-load function PETL (T ), fits data
+the DSO already holds, with no submetering. The second, the
+simultaneity-factor function SF(T ), needs submetered ETL data.
+Both share the same piecewise-linear form and use daily means,
+which average out building thermal inertia [21].
+A. Net-Load Function (Unsupervised)
+The spatio-temporally aggregated net-load profile plotted over the
+average temperature of the temporal aggregation window (in this
+work considered as a day) has an approximately linear relationship
+for the average power consumption values. (ADD the table here we
+discussed)
+
+The net-load function expresses the aggregated net load of Equation (1) as
+P̂net (T ) = Pbase + sh max(0, Th − T ) + sc max(0, T − Tc ), (2)
+where Pbase is the temperature-independent load [kW], sh and sc are
+the heating and cooling thermal sensitivities [kW/◦ C], and Th ≤ Tc
+are the heating and cooling threshold temperatures [◦ C] bounding
+a dead band over which no thermal response is present. The two
+temperature-dependent arms are the fitted aggregated ETL load.
+Note that (2) is an unsupervised curve fitting which needs only
+the net load and ambient temperature the DSO already holds, and no
+submetered or labelled ground truth. Fig. 2 shows the full bathtub
+recovered from aggregated Austin smart-meter data [35], with the
+parameters of Equation (2) marked.
+For an aggregation i, such as a substation, each with its own fitted
+parameters,
+i
+P̂ETL
+(T ) = shi max(0, Thi − T ) + sci max(0, T − Tci ),
+
+(3)
+
+where the hat marks a fitted function rather than a measurement.
+This estimated ETL load, not the full curve, is what the method
+carries forward; the flat term Pbase is the temperature-independent
+load, dominated by the non-ETL component of Equation (1), and is
+discarded.
+
+3
+
+Refer to the graph in 5 regions (just use figure 4 as figure 2 is just
+the same figure as 4 with some additional information)
+- R1: heating region from data
+- R2: no heating or cooling needed
+• - R3: cooling needed
+• - R4 and R5 are extrapolated regions in Figure 4. At the end of
+R4 and R5, the ETLs would be active all the time, i.e., SF=1.
+•
+•
+
+For this work, the analysis does not cover R2 and only conceptually
+describes R4 and R5. The primary goal of this work to identify
+characteristics for regions R1 and R3 where ETLs are active and
+have been observed in the dataset considered. This is encapsulated
+in Equation 3.
+Equation (2) characterizes spatio-temporally aggregated load with
+ETLs and visually looks like a bathtub with two raised ends and
+an approximately flat middle. This bathtub characteristic has the
+following characteristics CAN YOU ADD SOME OF THE OBSERVATIONS WE ALREADY DISCUSSED, such as below
+Th and Tc denote the threshold level of temperature beyond
+which heating or cooling is needed. Note that although at an
+individual level these levels of threshold may vary but with
+spatial aggregation, these levels for certain geographies become
+quite predictable. REFER TO THE TABLE SHOWING THESE
+LEVELS DO VARY FOR REGIONS
+• sh and sc are proportional to penetration of ETL in the consumers aggregated....
+•
+
+– for regions where cooling is not needed such as Scandanavian countries, sc = 0.
+– for regions where space heating is not needed such as
+Middle East nations, sh = 0
+The Pbase is not necessarily fixed and may have variation but
+this is not what we are interested in!!
+• ... CHECK THE NOTES I SHARED... MAKE SURE YOU DO
+NOT REPEAT THINGS MULTIPLE TIMES.. I listed 8 points
+but not all of them needs to come here.. if the logical order fits
+later then describe it later.
+• this subsection do not mention about SF as it comes next
+•
+
+The fitted parameters carry a physical reading. The threshold
+temperatures Th and Tc are behavioural: they mark where the
+population, on average, begins to heat or to cool, rather than a fixed
+property of any dwelling. Below Th a heating load appears and above
+Tc a cooling load appears, each growing close to linearly with the
+distance from its threshold. Between the two lies a dead band where
+the population neither heats nor cools.
+The slopes sh and sc measure how much load the population
+adds per degree beyond each threshold. A steeper arm signals more
+installed ETLs. The sensitivity therefore also carries the ETL rate
+(the share of consumers with an ETL), since a feeder with more heat
+pumps shows a steeper heating arm, all else equal. Section V-B confirms this, with sh tracking installed capacity across the substations.
+The flat centre Pbase is the temperature-independent load. It is not
+purely non-ETL, as it also absorbs the part of the ETL that runs
+regardless of weather, such as domestic water heating. The base term
+thus slightly overstates the non-ETL load, and the arms miss this
+weather-independent share of the ETL, which is out of scope for this
+paper.
+The two slopes together characterise a feeder. Where heating
+dominates, sc is near zero and the bathtub reduces to a heating
+hockey stick. Where cooling dominates, sh is near zero. The Swiss
+and German feeders studied here are heating-dominated, whereas the
+mixed-climate aggregate of Fig. 2 from Austin shows both arms. The
+balance of the two slopes varies from region to region with climate,
+
+building stock and the dominant ETL type. The fitted response is
+therefore a compact signature of a network’s thermal make-up.
+B. Simultaneity-Factor Function (Supervised)
+The second function characterises the synchronous behaviour, or
+simultaneity, of the ETL population. The SF is the fraction of the
+aggregation’s installed capacity consumed at a given temperature T ,
+SF(T ) =
+
+PETL (T )
+,
+max
+PETL
+
+(4)
+
+max
+where PETL
+is the installed capacity, or a proxy such as the summed
+peak of the individual ETLs.
+An aggregate may have a mix of ETLs with different behaviours
+with respect to temperature. While some ETLs can be active in
+different regimes of the bathtub curve, such as reversible HPs that
+can heat and cool, others are exclusive to either heating (e.g. resistive
+heating) or cooling (e.g. air-conditioning). Using the total ETL
+installed capacity in (4) would lead to an underestimation of the SF,
+since the installed capacity of cooling-exclusive devices would still
+count towards the SF in the heating regime, and vice-versa. Therefore,
+each regime will have its own capacity, which is defined as
+X max
+Pkmax =
+Pn
+(5)
+n∈Nk
+
+where k denotes the regime of the bathtub curve (heating, cooling or
+dead-band), Nk is the number of ETLs active in arm k, and Pnmax is
+the installed capacity of ETL n. The SF is then defined per regime
+as
+
+max
+
+PET L (T )/Ph , T < Th
+(6)
+SF(T ) = PET L (T )/Pbmax , Th ≤ T ≤ Tc
+
+
+PET L (T )/Pcmax , T > Tc ,
+with h denoting heating, c cooling, and b the dead-band. It is by
+definition bounded in [0, 1].
+The fitted SF curve takes the same form as Equation (2),
+ˆ
+SF(T
+) = b + mh max(0, ThSF − T ) + mc max(0, T − TcSF ), (7)
+with b a small base fraction and mh , mc the heating and cooling
+simultaneity sensitivities [1/◦ C]. The threshold temperatures are not
+fitted from the SF but taken from the net-load fit of Equation (2), so
+ThSF = Th and TcSF = Tc , and b and the sensitivities then follow
+from a linear fit on the days inside each regime. Anchoring the SF at
+this observable threshold leaves only its slope and base to transfer to
+an un-submetered feeder, since the threshold temperature itself does
+not carry across climates (Section V-G). Fig. 3 shows the SF data
+ˆ
+points and the SF(T
+) function for the same Austin population of
+Fig. 2.
+ˆ
+The calculation of SF requires ETL submetered data. Thus, SF(T
+)
+is fitted on a submetered pilot and reused on un-submetered feeders
+of the same population.
+Extending each arm of Fig. 2 to their own installed capacity Phmax
+and Pcmax , gives two critical temperatures, Thcrit and Tccrit . At these
+temperatures, the whole population would draw its maximum load
+at once, and the SF would reach 1. Fig. 4 shows these extensions
+for the Austin aggregate. They are hypothetical, lying well outside
+any observed weather. The aggregate therefore never approaches its
+installed capacity in practice, and the gap to the critical temperature
+leaves headroom for flexibility.
+The two fitted functions (3) and (7) are complementary. (3) is
+observable but mixes the ETL and non-ETL loads in its slope. (7)
+needs submetering but isolates the ETL simultaneity. Section III-B
+combines them, the net-load function supplying the aggregated ETL
+demand and the SF function scaling it to installed capacity and
+flexibility.
+
+4
+
+1.0
+
+simultaneity factor
+
+0.8
+
+A. ETL Energy Consumption Estimation
+
+daily mean SF
+heating arm
+base load
+cooling arm
+R 2 0.951
+
+The energy the ETL population draws follows from integrating its
+temperature response over the period. In the heating regime, T <
+Th , the fitted ETL load of Equation (3) reduces to its heating arm
+P̂ETL (T ) = sh max(0, Th − T ). Over a day of mean temperature
+T , the temperature-driven ETL energy is that load across the hours
+it applies,
+
+0.6
+
+EETL = P̂ETL (T ) ∆t = sh max(0, Th − T ) ∆t,
+
+0.4
+
+mh
+
+0.2
+0.0
+
+0
+
+5
+
+mc
+ThSF
+
+TcSF
+
+b
+
+10
+
+15
+
+20
+
+25
+
+daily mean temperature ( C)
+
+30
+
+35
+
+(8)
+
+with ∆t the length of the period. The fitted ETL load alone suffices.
+Given a measured temperature, it recovers the aggregated ETL load
+P̂ETL (T ) from the net load Pnet (t); given a forecast temperature, it
+forecasts that load for a future period.
+The dead band bounds the estimate. Above Th the arm is zero. It
+therefore misses any ETL energy that persists into mild weather, most
+plausibly domestic hot water. The estimate captures the temperaturedriven share, not the annual total.
+B. ETL Installed Capacity Estimation
+
+Fig. 3. Equation (7) fitted to the SF of the aggregated Austin ETLs [35],
+with each daily point normalised by the installed capacity of the ETLs active
+in its regime (Equation (6)).
+
+140
+
+daily mean load
+heating arm
+base load
+cooling arm
+extrapolation (SF 1)
+
+aggregate load (kW)
+
+120
+100
+
+Pcmax
+
+Phmax
+
+Tccrit
+
+Thcrit
+40
+
+Pˆi ETL (T )
+si (T i − T )
+= h h
+,
+ˆ
+ˆ
+SF(T
+)
+SF(T
+)
+
+T < Thi .
+
+(9)
+
+IV. F LEXIBILITY Q UANTIFICATION BASED ON THE
+S IMULTANEITY FACTOR
+
+40
+20
+
+i
+
+max
+PETL
+=
+
+The fitted ETL load supplies the numerator, which the DSO observes.
+ˆ
+The transferred curve SF(T
+) supplies the denominator, calibrated
+on a submetered reference population where the SF is not available
+locally. The estimate is therefore only as good as the transferred
+simultaneity, which Section V tests.
+
+80
+60
+
+max
+is the sum of the individual peak
+The installed capacity PETL
+demands of Section II-B. The aggregated ETLs never draw it at once,
+so the net load never exposes it directly. What the fitted ETL load
+does expose is P̂ETL (T ) at any temperature. Rearranging the SF
+definition of Equation (4), the installed capacity of an aggregation i
+follows from the estimated ETL load and SF at the same temperature,
+
+20
+
+0
+
+20
+
+40
+
+daily mean temperature (°C)
+
+Fig. 4. The bathtub of Fig. 2 with its heating and cooling arms extended
+(dashed) beyond the observed range to the critical temperatures Thcrit and
+max and the SF
+Tccrit , where each arm would reach its installed capacity PETL
+would reach one. The critical temperatures are hypothetical extrapolations,
+placed with the heating- and cooling-side SFs of 0.32 and 0.44 measured
+from the Austin submetered circuits on the coldest and hottest observed days.
+
+III. E NERGY AND I NSTALLED C APACITY E STIMATION
+
+The two functions of Section II estimate three quantities a DSO
+needs about the ETL population: its energy consumption, installed
+capacity and flexibility potential. Energy consumption follows from
+the net-load function alone. Installed capacity and flexibility also need
+the SF function, since the net load exposes the aggregated ETL load,
+not the non-coincident sum of the individual peaks. Section IV covers
+flexibility; each use case is a relation between the fitted parameters,
+evaluated in Section V.
+
+The flexibility an HP population offers is the energy it can shift
+from its baseline consumption without breaching indoor thermal
+comfort [33]. Building-stock insulation and indoor-comfort data are
+lacking, so an abstract time window ∆tT h stands in. Within it, the
+population must deliver a fixed thermal energy to stay comfortable.
+A larger ∆tT h means a better-insulated building, or wider comfort
+bands [38]. Over this ∆tT h , the aggregated HPs must deliver the
+temperature-set energy demand. This is the temperature-driven ETL
+energy of Equation (8), evaluated over the window ∆tT h and drawn
+max
+at the baseline power P̂ETL (T ) = SF(T ) PETL
+,
+max
+EETL = P̂ETL (T ) ∆tT h = SF(T ) PETL
+∆tT h .
+
+(10)
+
+The schedule that delivers this same energy while deviating most
+from the baseline is the two-level square wave of Fig. 5: full installed
+max
+power PETL
+for a fraction αF of the window and zero for the rest.
+max
+Its energy αF PETL
+∆tT h must equal Equation (10), which fixes the
+duty cycle at the simultaneity factor,
+max
+max
+αF PETL
+∆tT h = SF(T ) PETL
+∆tT h =⇒ αF = SF(T ).
+
+(11)
+
+The flexible energy is this schedule’s symmetric deviation from the
+max
+baseline. During the on phase the population draws PETL
+− P̂ETL
+above baseline for a time αF ∆tT h ; during the off phase it curtails
+P̂ETL for a time (1 − αF )∆tT h . The two areas are equal, giving an
+upward and downward flexible energy
+ max
+Eflex = SF(T ) 1 − SF(T ) PETL
+∆tT h .
+(12)
+
+5
+
+t
+
+8
+
+F
+
+Eflex
+baseline PETL(T)
+
+Eflex
+
+Eold (before flex)
+0
+
+time
+
+Fig. 5. The flexibility of Equation (12) as a square-wave schedule. The
+population must draw the baseline energy Eold = P̂ETL (T ) ∆tT h over
+each window (left). It can instead draw the same energy Enew as a full-power
+pulse of duty cycle αF = SF(T ) (centre). The deviation from baseline is
+the flexible energy, equal upward and downward (right).
+
+This use case draws on both functions and one external parameter.
+The transferred SF sets the duty cycle and the SF(1−SF) shape, and
+the capacity of Equation (9) scales it to kilowatt-hours. The window
+∆tT h , over which the population can be reshaped, is a property of
+the building stock, not of the fits. The instantaneous headroom (1 −
+max
+is the special case of the on phase drawn to full power.
+SF(T )) PETL
+The bound is an idealisation, not a dispatchable schedule. It takes
+the square wave as feasible and ignores each dwelling’s thermal state
+and the comfort limits within which its HP can shift. It therefore
+stands as a potential against temperature and window length, not as
+a firm reserve.
+V. C ASE S TUDIES
+A. Dataset and Substation Design
+The data combines two Swiss sources, the HEAPO dataset [36]
+and an additional smart-meter dataset [37], pooled into one set of LV
+consumers. The ETL used throughout is the HP. Other ETLs appear
+in the dataset. They are only flagged, not submetered, so the analysis
+withholds them. The load profiles have 15-minute resolution; ambient
+temperature is hourly. One hour is therefore the finest resolution for
+the fits.
+Synthetic substations come from this pool by iterating over a size
+and ETL-rate grid. The consumer count N and the HP count Nhp
+are each capped at 50. Every feasible cell of the grid, with Nhp ≤
+N , holds the same number of replicates, giving 1000 substations.
+Two independent samples with replacement draw the HPs and the
+base households, which decouples the HP count from the household
+composition. Each substation belongs to a single weather station, so
+one temperature series applies to all its members.
+Two error metrics recur below. The weighted absolute percentage
+error (WAPE) scores an estimate ŷi against its ground truth yi across
+the substations i,
+P
+|ŷi − yi |
+iP
+WAPE =
+× 100%,
+(13)
+i yi
+so WAPE weights each substation by its true magnitude, not equally.
+A small aggregate, with a large percentage error but a small absolute
+error, therefore cannot dominate. The metric reports the total error
+across a set of feeders, as a DSO would read it. The median ratio,
+the median of ŷi /yi , gives the direction of the error, < 1 for an
+underestimate and > 1 for an overestimate.
+B. Fit Quality across Spatial and Temporal Aggregation
+Both functions fit each substation’s aggregate. Their quality, measured by the R2 that gives the share of variance the fit explains,
+climbs with aggregation in time and space.
+
+heating sensitivity sh (kW/ C)
+
+ETL power
+
+max
+PETL
+
+50
+
+through-origin fit
+( = 0.99, m = 0.017 C 1)
+
+7
+
+45
+40
+
+6
+
+35
+
+5
+
+30
+
+4
+
+Nhp
+
+Enew (after flex)
+
+25
+
+3
+
+20
+
+2
+
+15
+
+1
+
+10
+
+0
+0
+
+100
+
+200
+
+300
+
+400
+
+5
+
+max (kW)
+installed HP capacity PETL
+
+Fig. 6. Fitted heating sensitivity sh against installed HP capacity across the
+1000 Swiss substations, coloured by the number of HPs.
+
+Averaging the load over longer windows removes the occupancy
+swings and building thermal inertia that do not track temperature oneto-one at finer time resolutions. The net-load fit rises from a median
+R2 of 0.74 at hourly resolution to 0.95 at daily, and the SF fit from
+0.71 to 0.94. Both climb monotonically through the four-, eight- and
+sixteen-hour windows in between. The daily mean, used throughout,
+sits at the top of this curve.
+Spatial aggregation acts the same way, as more meters average out
+the load that is not thermal. At daily resolution the net-load fit rises
+from a median R2 of 0.92 behind ten consumers to 0.96 behind fifty.
+It climbs more steeply with the HPs whose signal it recovers, from
+0.88 at five HPs to 0.97 at fifty. The SF fit, built from the HPs alone,
+is stable with the number of HPs, with R2 staying between 0.92 and
+0.95.
+The heating sensitivity itself scales with the population behind the
+meter. Fig. 6 plots the fitted sh against the installed HP capacity
+across the substations, coloured by the number of HPs. The two
+track almost perfectly, at a Pearson correlation ρ of 0.99, along a
+line through the origin of slope 0.017◦ C−1 . A steeper heating arm
+therefore signals more installed capacity, as Section ?? anticipated.
+C. Simultaneity Factor: Invariance and Transfer
+Beyond fitting well, the SF fit is stable. Because the SF comes
+from the submetered HPs alone, the non-HP consumers do not affect
+it. The fits in Table I therefore span substations of a constant size, 50
+consumers. So the HP count Nhp is the only variable, and the ETL
+rate spans 10% at five HPs to 100% at fifty. Its coldest-day SF and
+sensitivity m show no meaningful changes with the substation’s ETL
+rate or installed capacity over that range. m holds near 0.016 ◦ C−1
+and the maximum SF, on the coldest day, near 0.43. This sensitivity is
+close to the through-origin slope of Fig. 6, 0.017 ◦ C−1 , the two being
+max
+linked by the identity m = sh /PETL
+. They differ slightly because
+they are fitted differently: m as the median of the per-substation SF
+fits, and the slope as a single regression of sh on installed capacity
+pooled across the substations. More HPs behind the meter do not shift
+these values but tighten them, as the interquartile spread narrows with
+Nhp . This coldest-day value matches planning practice elsewhere,
+where a heat-pump coincidence factor of 0.425, drawn from field
+trials, appears in national LV network studies [39].
+
+6
+
+TABLE I
+P ER - SUBSTATION FITTED SF PARAMETERS BY NUMBER OF AGGREGATED
+HP S Nhp , AS A MEDIAN WITH ITS INTERQUARTILE RANGE
+
+TABLE II
+T OTAL WAPE OF THE SINGLE POOLED SF CURVE AGAINST THE TRAINING
+SUBSTATIONS , BY Nhp
+
+Nhp
+
+R2
+
+SFcold
+
+b
+
+m (◦ C−1 )
+
+ThSF (◦ C)
+
+Nhp
+
+total WAPE (%)
+
+5
+10
+20
+30
+40
+50
+
+0.926
+0.935
+0.947
+0.949
+0.948
+0.949
+
+0.42 (0.11)
+0.42 (0.07)
+0.43 (0.07)
+0.42 (0.04)
+0.42 (0.04)
+0.43 (0.03)
+
+0.018 (0.020)
+0.019 (0.014)
+0.025 (0.010)
+0.023 (0.006)
+0.025 (0.006)
+0.026 (0.004)
+
+0.015 (0.005)
+0.016 (0.004)
+0.016 (0.002)
+0.016 (0.002)
+0.016 (0.002)
+0.016 (0.001)
+
+16.8 (1.3)
+16.8 (1.2)
+16.5 (0.7)
+16.6 (0.6)
+16.6 (0.5)
+16.5 (0.3)
+
+5
+10
+20
+30
+40
+50
+
+21.0
+15.3
+12.5
+11.6
+11.1
+10.7
+
+all
+
+0.946
+
+0.43 (0.06)
+
+0.024 (0.008)
+
+0.016 (0.002)
+
+16.6 (0.6)
+
+all
+
+14.9
+
+TABLE III
+E NERGY- ESTIMATE ACCURACY AGAINST SUBMETERED HP ENERGY, BY
+
+0.7
+
+simultaneity factor SF
+
+0.6
+0.5
+
+THE RESOLUTION OF THE FIT AND OF THE TEMPERATURE INTEGRATION
+
+training SF
+pooled fit
+R 2 0.861
+
+0.4
+
+WAPE (%)
+
+median ratio
+
+daily + daily
+hourly + hourly
+daily + hourly
+
+15.3
+15.4
+12.4
+
+0.88
+0.86
+0.92
+
+D. Energy Consumption Estimation
+
+0.3
+
+SF(T)
+
+0.2
+0.1
+0.0
+
+fit + integration
+
+5
+
+0
+
+5
+
+10
+
+15
+
+20
+
+daily mean temperature (°C)
+
+25
+
+Fig. 7. The single SF curve fitted to the pooled daily (T, SF) points of the
+training substations (grey), used as the transferable curve, at an R2 of 0.86.
+
+ˆ
+To carry the SF onto un-submetered feeders, a single curve SF(T
+)
+fits the pooled daily (T, SF) points of the training substations, rather
+ˆ
+than averaging their individual fits. The pooled fit gives SF(T
+) =
+0.03 + 0.016 max(0, 16.4 − T ), shown over the training data in
+Fig. 7 at an R2 of 0.86. Table II reports how well this one curve
+represents the training population, as its total WAPE across all days:
+the error falls from 21% at five HPs to 11% at fifty, at 15% overall,
+as the aggregate SF settles with more HPs.
+This pooled curve serves un-submetered feeders from the same
+population, and two splits test whether its shape transfers. A
+substation-level split resamples the calibration and evaluation substations from one pool, so they share households. It reproduces the
+held-out SF at a median R2 of 0.90, which measures reproducibility
+within the pool rather than independent generalisation. A stricter
+household-disjoint split partitions the 50 HPs of the largest station
+into two halves, so no HP informs both curves. It still holds a median
+R2 of 0.88 over 120 random splits. The transferred shape therefore
+survives genuine household independence.
+A submetered pilot therefore represents a population’s ETL simultaneity with a single curve, to a total WAPE of about 15% (Table II),
+tightening to 11% once tens of HPs aggregate. Its shape transfers to
+held-out feeders at an R2 near 0.88. Section V-E uses this curve to
+estimate installed capacity.
+
+Equation (8) needs only the net-load-fitted function. The heating
+arm, integrated over the year, gives the temperature-driven HP energy,
+compared against the substation’s own submetered HP load. Across
+the 1000 substations the estimate tracks the submetered energy with
+a Pearson correlation ρ of 0.99, but underestimates it by a median
+12% (a median ratio of 0.88) at a WAPE of 15%.
+The energy estimator has two resolutions: one for the net-load fit
+and one for the temperature integration. Table III reports the WAPE
+and the median estimated-to-actual energy ratio, which falls below
+one when the estimate runs low, for each combination. Integrating
+the daily-fitted arm over the hourly temperature series, rather than
+the daily mean, lifts the ratio from 0.88 to 0.92 and cuts the WAPE
+from 15% to 12%. A day whose temperature crosses the threshold
+holds more heating-degree-hours than its single-point mean implies.
+Refitting the arm at hourly resolution instead degrades the estimate,
+to a ratio of 0.86, since the sub-daily load is noisier than its daily
+mean (Section V-B). The daily fit integrated over the finer temperature
+series is therefore the best combination.
+The estimate is temperature-driven by construction, so the dead
+band bounds it. About 7% of the HP energy falls above the threshold
+temperature, in mild weather where the heating arm is zero, most
+plausibly domestic hot water [12]. Measured against this temperaturedriven share alone, on the days below the threshold temperature, the
+estimate tightens to a WAPE of 10% at a ratio of 0.94. Equation (8)
+therefore estimates the temperature-driven energy rather than the
+annual total, the dead-band limit anticipated in Section III-A.
+Aggregation acts on the spread of the error, not its centre. Fig. 8
+shows the signed error across substations, right-skewed with a median
+of −12%, and its evolution with the HP count. The interquartile
+spread falls from 31% at five HPs to 3% at fifty, as the load that is
+not thermal averages out. The median underestimate does not follow it
+down but deepens to about −16%, arguably as the non-ETL response
+that offsets it at a low ETL rate fades. More HPs therefore sharpen
+the estimate around a biased centre rather than removing the bias.
+E. Installed Capacity Estimation
+Equation (9) estimates the installed capacity aggregated at a target
+substation. Although the equation holds at any temperature below Th ,
+the estimate uses the coldest recorded day Tmin , where the SF is at
+
+7
+
+60
+
+median -12%
+
+120
+
+40
+
+80
+
+signed % error
+
+substations
+
+100
+
+60
+40
+20
+0
+
+20
+0
+20
+
+40
+
+20
+
+0
+
+20
+
+40
+
+60
+
+signed % error (est actual)
+
+5
+
+10
+
+20
+
+30
+
+HPs aggregated Nhp
+
+40
+
+50
+
+Fig. 8. Signed percentage error of the energy estimate across the 1000 substations (left), and its distribution by number of aggregated HPs (right). Boxes
+show the interquartile range, whiskers the 5th–95th percentiles and the line the median.
+
+TABLE IV
+I NSTALLED - CAPACITY ACCURACY ON THE HELD - OUT SUBSTATIONS FOR
+
+175
+
+TWO ESTIMATORS
+
+Eq. (9), transferred SF
+oracle (own SF)
+
+WAPE (%)
+
+median ratio
+
+R2
+
+150
+
+10.3
+6.2
+
+1.06
+1.03
+
+0.969
+0.986
+
+125
+
+its largest. Dividing by the largest SF is the most stable choice, since
+a given error in the transferred SF then produces the smallest relative
+error in the capacity. The numerator is the fitted aggregated ETL
+i
+(Tmin ), read from
+load at the minimum observed temperature, P̂ETL
+the substation’s own net-load fit. The denominator is the transferred
+ˆ min ) of Section V-C, evaluated at that same temperature.
+curve SF(T
+The target substation is therefore never submetered.
+Table IV scores two estimators on the held-out half by the WAPE,
+the median ratio and the fit quality R2 . The transferred-SF estimator
+of Equation (9) recovers the installed capacity at a WAPE of 10%
+and an R2 of 0.97, with a slight 6% overestimate at a median ratio
+of 1.06.
+Dividing instead by each substation’s own coldest-day SF, an oracle
+a DSO could reach only with local submetering, sharpens the estimate
+to a WAPE of 6% at an R2 of 0.99 (Table IV). The four-point gap
+is the price of transferring the coincidence rather than measuring
+it, and the remainder is the net-load numerator. The error shrinks
+with aggregation, the transferred-SF WAPE falling from 29% at five
+HPs to 5% at fifty, as the noisy fits of a small draw settle. Part of
+the overestimate is the non-ETL temperature response the net-load fit
+adds to the heating arm, the neglected term of Equation (1) discussed
+in Section VI.
+F. Flexibility Potential
+ˆ
+Equation (12) uses the transferred SF curve, SF(T
+), to fix the
+duty cycle and the SF(1 − SF) shape, and Equation (9) supplies the
+installed capacity from the substation’s own fitted ETL load. Fig. 9
+gives the distribution across the 1000 substations of the estimatedto-actual ratio of annual flexible energy. The actual flexibility comes
+from each population’s own submetered SF and true capacity. On a
+
+substations
+
+estimator
+
+median 1.03
+
+100
+75
+50
+25
+0
+
+0.75 1.00 1.25 1.50 1.75 2.00 2.25 2.50
+
+estimated / actual annual flex
+
+Fig. 9. Distribution across the 1000 substations of the estimated-to-actual
+ratio of annual flexible energy, with the median marked. The estimate uses
+a transferred SF and the capacity of Equation (9); the actual uses each
+substation’s own submetered SF and true capacity.
+
+held-out half the estimate recovers the coldest-day flexible energy to
+a WAPE of 9% at an R2 of 0.976, and the annual ratio centres on
+1.03 with an interquartile range of [0.97, 1.16]. The estimator is thus
+close to unbiased and, because ∆tT h cancels in the ratio, its accuracy
+rests on the SF shape and the capacity alone. Holding the capacity to
+its true value isolates a 2% SF error, so the transferred coincidence
+carries the shape faithfully and the residual is the capacity it scales
+with (Section V-E).
+Fig. 10 shows the daily actual and estimated flexible energy over
+the year for an example substation with 50 HPs, drawn for an
+illustrative window ∆tT h = 4 h. The potential follows the season.
+It is largest in winter and near zero in the summer, when the energy
+that can shifted (i.e., the thermal demand) is reduced. The transferred
+curve tracks this profile day to day, flattening in summer at the SF
+base term, where it slightly exceeds the measured flex. About two
+thirds of the days offer non-trivial flexibility, and on the coldest the
+
+daily flexible energy (kWh), t = 4 h
+
+8
+
+350
+
+actual (submetered SF)
+estimated (transferred SF)
+
+300
+
+TABLE V
+U SE - CASE ESTIMATES ON THE REAL FEEDER AS HP CIRCUITS ARE
+REMOVED , AT A FIXED 37- HOUSE BASE . S IGNED MEDIAN ERROR OVER
+200 RANDOM SUBSETS PER COUNT
+
+250
+200
+150
+100
+50
+Jan
+
+Apr
+
+Jul
+
+month
+
+Oct
+
+Jan
+
+max ≈
+Fig. 10. Daily flexible energy of an example substation with 50 HPs (PETL
+315 kW) over the year, shown for an illustrative window ∆tT h = 4 h;
+because Eflex is linear in ∆tT h , the window sets only the vertical scale,
+not the shape. Estimated from a transferred SF versus computed from the
+submetered SF.
+
+max
+∆tT h .
+SF(1 − SF) product nears its 0.25 ceiling, a quarter of PETL
+The window ∆tT h enters Equation (12) as a multiplier, so it scales
+this profile linearly without changing its shape. The annual total
+then rises at 12.6 MWh per hour of window, so one thermal-inertia
+coefficient fixes the whole curve.
+
+G. Generalisation to a Real Unseen Feeder
+The Swiss results rest on synthetic aggregates of one population.
+A stronger test applies the method to a real aggregate from another
+country, summed from field meters and never seen in any fit. This
+aggregate comes from the WPuQ measurement campaign [40]: its
+net load is the sum of 37 individually metered German single-family
+houses, each with a submetered HP, giving a measured installed HP
+capacity of 239 kW. The net-load fit (Section II-A) uses the feeder’s
+own metered load, and the SF fit (Section II-B) transfers from the
+Swiss reference curve of Section V-C. Submetered data serves only
+to validate the results, never as input.
+Both fitted functions carry to the real feeder (Fig. 11). The net-load
+hockey stick fits at an R2 of 0.84, close to the Swiss median, and
+places the threshold temperature at 13.9 ◦ C. The method transfers
+only the SF slope from the Swiss reference and anchors it at this
+observable threshold, so the feeder’s own SF serves only to validate.
+That validation fit keeps the same shape and slope, though noisier on
+a single aggregate, at a below-threshold R2 of 0.72. The forms are
+therefore not an artefact of the synthetic design.
+The transfer turns on the slope alone, because the threshold is read
+locally by construction. The feeder’s simultaneity sensitivity, about
+0.016 ◦ C−1 , sits within the spread of the Swiss fits (median 0.0161,
+interquartile range 0.015–0.017; Table I), so the slope holds across
+the two populations. The threshold temperature would not carry: the
+feeder’s SF saturates near 13 ◦ C against the Swiss 16 ◦ C, a milderclimate shift of about three degrees, as the balance-point temperature
+varies with building fabric, internal gains and setpoint preference
+rather than a fixed constant [41]. Reading it from the net-load fit
+sidesteps this shift, since that fit places the threshold at 13.9 ◦ C
+and, across the Swiss substations, the net-load and SF threshold
+temperatures coincide to a median of 0.1 ◦ C. At the feeder’s coldest
+day, near −5 ◦ C, the transferred curve then reads an SF of 0.34
+against the true 0.32.
+
+Nhp
+
+capacity (%)
+
+energy (%)
+
+5
+10
+15
+20
+25
+30
+37
+
++9
+-0
+-4
+-6
+-6
+-7
+-7
+
++48
++9
+-2
+-8
+-11
+-14
+-15
+
+i
+The fitted ETL load gives P̂ETL
+(Tmin ) = 75 kW at the coldest day.
+Dividing it by the transferred SF of 0.34 yields an installed capacity
+of 222 kW, within 7% of the measured 239 kW. The estimate needs
+no submetering anywhere, since the net-load fit supplies both the
+numerator and the threshold, and only the SF slope transfers. The
+oracle that divides by the feeder’s own coldest-day SF, fitted at the
+same net-load threshold, reaches 236 kW, within 2%, which confirms
+the net-load numerator and the capacity relation are sound.
+A sensitivity test removes HP circuits from the feeder, one subset
+at a time, leaving the 37 households and their base load in place.
+Table V sweeps the retained count Nhp . For each, it reports the signed
+median capacity error and the energy error, over 200 random subsets.
+The capacity error is within about 7% for ten HPs and above. The
+energy error changes sign, from a 48% overestimate at five HPs to the
+15% underestimate at full count. Two effects drive this shift: the nonETL response inflates the estimate at low HP count, and the neglected
+dead-band consumption dominates at high HP count. The coldest-day
+SF holds near 0.32 whatever the count, so the SF(1 − SF) flexibility
+shape holds while its kilowatt-hours scale with the smaller capacity.
+Estimates from a handful of HPs are the least reliable, swinging with
+which circuits remain, so the method is best trusted on feeders that
+aggregate tens of them.
+The flexibility procedure of Section V-F transfers to this feeder as
+well. With the Swiss SF sensitivity and the feeder’s own net-load
+threshold and capacity, it gives 6.9 MWh of annual flexible energy
+per hour of window against an actual 6.5 MWh, a ratio of 1.07. Here
+the flexible-energy overestimate and the capacity underestimate carry
+opposite signs: the transferred SF overstates the feeder’s SF(1 − SF)
+coincidence spread by enough to outweigh the smaller capacity. The
+potential remains an idealisation. It takes the square wave as feasible
+and ignores each dwelling’s thermal state and comfort band, so it
+bounds the shiftable energy rather than scheduling it, and the window
+∆tT h must come from the building stock’s thermal inertia, not the
+fits.
+
+VI. D ISCUSSION
+A. Accuracy
+The capacity estimate carries two error sources, both traced in the
+results. The non-ETL temperature response that Equation (1) neglects
+biases the net-load numerator. At a low ETL rate this occupancydriven load inflates the heating slope. The energy estimate then turns
+from a 15% underestimate at full count to an overestimate as the
+HPs thin out (Table V). A zero-HP control makes this concrete:
+aggregating only HP-free households, the net-load fit still shows
+a small heating slope, and Equation (9) infers about 0.37 kW of
+spurious capacity per household where no HP exists. This floor is
+small per home but grows with feeder size, so it dominates the
+estimate at a low ETL rate and is negligible once HPs supply most of
+the temperature-driven load. The SF denominator carries the transfer
+
+100
+
+daily net load
+Pnet(T)
+
+80
+
+R 2 0.84
+
+60
+
+Th
+
+40
+
+daily feeder SF
+feeder own SF (oracle)
+transferred (Swiss slope)
+
+0.7
+0.6
+
+simultaneity factor SF
+
+feeder net load (kW)
+
+9
+
+0.5
+0.4
+0.3
+
+Th
+
+0.2
+0.1
+
+20
+5
+
+0
+
+5
+
+10
+
+15
+
+20
+
+daily mean temperature (°C)
+
+25
+
+0.0
+
+5
+
+0
+
+5
+
+10
+
+15
+
+20
+
+daily mean temperature (°C)
+
+25
+
+Fig. 11. The two functions fitted to the real German feeder. Left: the net-load fit P̂net (T ), with its heating arm and dead-band base line. Right: the feeder’s
+own SF fit (oracle) and the default transferred curve, which keeps the Swiss slope but reads its threshold temperature from the observable net-load fit; the
+two SF curves are drawn only below the threshold, and the markers give the coincidence at the feeder’s coldest day.
+
+error, which the real feeder shows to be the threshold temperature
+rather than the slope. On the synthetic held-out set the capacity WAPE
+is 10%. On the real feeder the default estimate, with the threshold
+temperature read from the observable net-load fit, reaches 7%.
+B. Generalisation
+The SF generalises in a specific and testable way. Within a
+population it is empirically stable against ETL rate and installed
+capacity over the tested range, so a curve from a submetered pilot
+serves that population’s un-submetered feeders. Across populations
+the sensitivity m transfers, at 0.0161 against 0.0162 ◦ C−1 between
+the Swiss and German data, while the threshold temperature follows
+the local climate. The net-load fit supplies that threshold temperature
+from data the DSO already meters, and the base fraction is negligible,
+so the only quantity that need travel between populations is the slope
+m. Generalisation therefore reduces to transferring a single parameter,
+and the SF need not be re-derived in full for each network. This
+mirrors the inverse problem solved for PV installed capacity against
+irradiance [26], here posed against ambient temperature.
+C. Data Requirements
+The two functions ask for different data. The net-load function
+needs only the aggregated net load and ambient temperature, both
+already held by the DSO, and runs on any feeder. The SF function
+needs submetered ETL load and installed capacity, which the DSO
+rarely holds. A single submetered pilot of the same population
+calibrates it, and it then transfers, so no feeder under study is
+submetered. A pilot of a few tens of HPs suffices, since the SF has
+settled by then (Table I).
+D. Limitations
+Several limits temper the results. The submetered pool holds
+about fifty distinct HPs on one weather station, so the synthetic
+substations reuse households and the train and test groups share
+them. A household-disjoint split narrows this concern, reproducing
+the transferred SF shape at a median R2 of 0.88 within the population
+(Section V-C). The cross-population generalisation, however, still
+
+rests on the single real feeder, one real aggregate rather than a
+population of feeders. The model neglects the non-ETL temperature
+response throughout, which the low-ETL-rate bias exposes.
+A further confounder is deliberate control. Swiss and German
+domestic HPs commonly run under interruptible tariffs with defined
+blocking periods, and since January 2024 §14a EnWG lets German
+DSOs throttle HPs above 4.2 kW [42]. Such control truncates the aggregated ETL peak. It biases the net-load numerator and the capacity
+estimate downwards, consistent with the German underestimate, and
+imprints regime-specific structure that a single-slope transfer need not
+capture. The WPuQ campaign predates §14a, but blocking-period
+tariffs do not. Underlying all of these is the broader shortage of
+submetered ETL data, which a wider pilot would relieve.
+E. Concluding Remarks
+The method trades a modest, characterised error for a large gain in
+deployability. Where a submetered pilot of the population exists, the
+installed capacity of an un-submetered feeder follows to within about
+ten percent, and its energy and flexibility from the same fits. Where
+it does not, the net-load function alone still bounds the temperaturedriven energy. The estimates are least reliable on feeders with a
+handful of HPs and most reliable once tens aggregate, which is the
+regime a substation presents.
+VII. C ONCLUSION
+This paper presented a method to quantify an aggregated ETL
+from data available to DSOs. Two temperature-response functions
+were fitted, an unsupervised net-load bathtub and a supervised SF,
+and three planning quantities were derived from them: installed
+capacity, temperature-driven energy and a flexible-energy potential.
+The SF proved empirically stable against ETL rate and installed
+capacity within a population, and its sensitivity transferred across
+the two populations studied, which lets a submetered pilot serve unsubmetered feeders. Across Swiss substations resampled from one
+pool, the method recovered the installed capacity to a WAPE of 10%.
+On a single held-out German feeder it reached 7% under the hybrid
+procedure, which reads the threshold temperature from the observable
+net-load fit, or 17% with the SF transferred whole.
+
+10
+
+Regarding future work, three directions follow. The submetered
+pool was small and drawn from one region, so a wider and more
+diverse set of metered HPs would test the transfer on genuinely
+independent populations and firm up the single transferable sensitivity. Future work will evaluate data-driven methods for HP and
+ETL quantification against the physical estimator, to see where a
+learned model earns its data cost and where the two-parameter fit
+suffices. Finally, it will address the dead-band limit by modelling
+the non-temperature-driven ETL consumption, chiefly domestic hot
+water and baseline operation. This consumption is what the heating
+arm omits, and it sets the gap between the temperature-driven and
+the annual energy.
+R EFERENCES
+[1] International Energy Agency, “The Future of Heat Pumps,” IEA, Paris,
+Tech. Rep., 2022, [Online]. Available: https://www.iea.org/reports/thefuture-of-heat-pumps.
+[2] M. Treutlein, P. Bothe, M. Schmidt, R. Hahn, O. Neumann, R. Mikut,
+and V. Hagenmeyer, “Real-world energy data of 200 feeders from
+low-voltage grids with metadata in Germany over two years,”
+arXiv:2602.03521, 2026.
+[3] E. Veldman, M. Gibescu, H. Slootweg, and W. L. Kling, “Impact of
+electrification of residential heating on loading of distribution networks,”
+in Proc. IEEE Trondheim PowerTech, 2011.
+[4] M. Akmal, B. Fox, J. D. Morrow, and T. Littler, “Impact of heat pump
+load on distribution networks,” IET Gener. Transm. Distrib., vol. 8,
+no. 12, pp. 2065–2073, 2014.
+[5] C. van Someren, M. Visser, and H. Slootweg, “Impacts of electric heat
+pumps and rooftop solar panels on residential electricity distribution
+grids,” in 2021 IEEE PES Innovative Smart Grid Technologies Europe
+(ISGT-Europe). IEEE, 2021, pp. 1–6.
+[6] T. Becker, R. Smet, B. Macharis, and K. Vanthournout, “Effect of electric
+vehicles, heat pumps, and solar panels on low-voltage feeders: Evidence
+from smart meter profiles,” Sustainable Energy, Grids and Networks,
+vol. 42, p. 101705, 2025.
+[7] R. Liao, M. Manfren, P. A. B. James, and T. Zang, “Quantifying the
+impact of residential heat pumps on primary substations under critical
+cold events: A UK case study,” Energy, 2026.
+[8] A. M. V. Gouveia, M. U. Hashmi, R. D’hulst, and D. Van Hertem,
+“Importance of Aggregated DER Installed Capacity in Distribution
+Networks,” arXiv preprint arXiv:2604.13926, 2026.
+[9] H. Fei, Y. Kim, S. Sahu, M. Naphade, S. K. Mamidipalli, and J. Hutchinson, “Heat pump detection from coarse grained smart meter data with
+positive and unlabeled learning,” in Proc. 19th ACM SIGKDD Int. Conf.
+Knowledge Discovery and Data Mining. ACM, 2013, pp. 1330–1338.
+[10] A. Weigert, K. Hopf, N. Weinig, and T. Staake, “Detection of heat pumps
+from smart meter and open data,” Energy Informatics, vol. 3, no. S1,
+2020.
+[11] G. Le Ray, M. H. Christensen, and P. Pinson, “Detection and Characterization of Domestic Heat Pumps,” in 2019 IEEE Milan PowerTech.
+IEEE, 2019, pp. 1–6.
+[12] T. Brudermueller, F. Breer, and T. Staake, “Disaggregation of Heat
+Pump Load Profiles From Low-Resolution Smart Meter Data,” in Proc.
+10th ACM Int. Conf. Systems for Energy-Efficient Buildings, Cities, and
+Transportation (BuildSys). ACM, 2023, pp. 228–231.
+[13] O. Gisiger, A. Melillo, and P. Schuetz, “Heat pump detection and load
+disaggregation in low-resolution smart meter data with convolutional
+neural networks,” Energy and AI, p. 100691, 2026.
+[14] S. Wang, R. Li, A. Evans, and F. Li, “Regional nonintrusive load
+monitoring for low voltage substations and distributed energy resources,”
+Applied Energy, vol. 260, p. 114225, 2020.
+[15] E. O’Malley, D. Pugh, J. Wu, and D. Clements, “A Deep Learning-Based
+Method for Non-Intrusive Load Monitoring and Load Disaggregation
+of 11kV/400V Electrical Substations,” in ASME 2024 18th Int. Conf.
+Energy Sustainability. ASME, 2024.
+[16] M. F. Fels, “Energy conservation scorekeeping: The PRISM method,”
+AIP Conf. Proc., vol. 135, pp. 169–183, 1985.
+[17] D. Ruch and D. E. Claridge, “A Four-Parameter Change-Point Model
+for Predicting Energy Consumption in Commercial Buildings,” J. Solar
+Energy Eng., vol. 114, no. 2, pp. 77–83, 1992.
+[18] J. K. Kissock, J. S. Haberl, and D. E. Claridge, “Inverse modeling toolkit:
+Numerical algorithms,” ASHRAE Trans., vol. 109, no. 2, pp. 425–434,
+2003.
+
+[19] R. Fazeli, M. Ruth, and B. Davidsdottir, “Temperature response functions
+for residential energy demand – a review of models,” Urban Climate,
+vol. 15, pp. 45–59, 2016.
+[20] M. T. Ali, M. Mokhtar, M. Chiesa, and P. Armstrong, “A cooling
+change-point model of community-aggregate electrical load,” Energy
+and Buildings, vol. 43, no. 1, pp. 28–37, 2011.
+[21] K. X. Perez, K. Cetin, M. Baldea, and T. F. Edgar, “Development and
+analysis of residential change-point models from smart meter data,”
+Energy and Buildings, vol. 139, pp. 351–359, 2017.
+[22] N. MacMackin, L. Miller, and R. Carriveau, “Modeling and disaggregating hourly effects of weather on sectoral electricity demand,” Energy,
+vol. 188, p. 115956, 2019.
+[23] L. Waswa, M. J. Chihota, and B. Bekker, “A probabilistic estimation
+of PV capacity in distribution networks from aggregated net-load data,”
+IEEE Access, vol. 9, pp. 140 358–140 371, 2021.
+[24] B. Liu, J. Tian, W. Luan, Y. Gao, X. Wang, and S. Luo, “Residential
+PV capacity estimation and power disaggregation using net metering
+measurements,” Global Energy Interconnection, vol. 5, no. 6, pp. 590–
+603, 2022.
+[25] A. M. V. Gouveia, R. D’hulst, M. U. Hashmi, and D. Van Hertem,
+“Data-driven photovoltaic installed capacity detection at low voltage substation level,” in 14th Mediterranean Conference on Power Generation
+Transmission, Distribution and Energy Conversion (MEDPOWER 2024),
+2024, pp. 678–683.
+[26] A. M. Gouveia, M. U. Hashmi, R. D’hulst, and D. Van Hertem, “Installed
+pv capacity detection on lv substations: Comparison of data-driven and
+model-based methods,” International Journal of Electrical Power &
+Energy Systems, vol. 177, p. 111848, 2026.
+[27] J. A. Azzolini, M. J. Reno, and J. Yusuf, “A model-free approach for
+estimating service transformer capacity using residential smart meter
+data,” IEEE J. Photovolt., vol. 14, no. 1, pp. 65–73, 2024.
+[28] J. Love, A. Z. P. Smith, S. Watson, E. Oikonomou, A. Summerfield,
+C. Gleeson, P. Biddulph, L. F. Chiu, J. Wingfield, C. Martin, A. Stone,
+and R. Lowe, “The addition of heat pump electricity load profiles to
+GB electricity demand: Evidence from a heat pump field trial,” Applied
+Energy, vol. 204, pp. 332–342, 2017.
+[29] M. Chesser, P. O’Reilly, P. Lyons, and P. Carroll, “The impact of extreme
+weather on peak electricity demand from homes heated by air source
+heat pumps,” Energy Sources, Part B: Economics, Planning, and Policy,
+vol. 16, no. 8, pp. 707–718, 2021.
+[30] A. Anderson, B. Stephen, R. Telford, and S. McArthur, “A Probabilistic
+Model for Characterising Heat Pump Electrical Demand versus Temperature,” in 2020 IEEE PES Innovative Smart Grid Technologies Europe
+(ISGT-Europe). IEEE, 2020, pp. 1030–1034.
+[31] G. Rouwhorst, A. Pondes, P. H. Nguyen, and H. Slootweg, “Mediumterm forecasting of daily aggregated peak loads from heat pumps using
+clustering-based load duration curves to calculate the annual impact on
+medium to low voltage transformers,” IET Smart Grid, vol. 7, no. 2, pp.
+157–171, 2023.
+[32] F. L. Müller and B. Jansen, “Large-scale demonstration of precise
+demand response provided by residential heat pumps,” Appl. Energy,
+vol. 239, pp. 836–845, 2019.
+[33] C. Ziras, C. Heinrich, M. Pertl, and H. W. Bindner, “Experimental
+flexibility identification of aggregated residential thermal loads using
+behind-the-meter data,” Appl. Energy, vol. 242, pp. 1407–1421, 2019.
+[34] P. Westermann, C. Deb, A. Schlueter, and R. Evins, “Unsupervised
+learning of energy signatures to identify the heating system and building
+type using smart meter data,” Applied Energy, vol. 264, p. 114715, 2020.
+[35] Pecan Street Inc., “Dataport: Residential Electricity and Water Data,”
+[Online]. Available: https://dataport.pecanstreet.org, 2018, accessed:
+2026-09-05.
+[36] T. Brudermueller, E. Fleisch, M. González Vayá, and T. Staake, “HEAPO
+– An Open Dataset for Heat Pump Optimization with Smart Electricity
+Meter Data and On-Site Inspection Protocols,” in Proc. 16th ACM Int.
+Conf. Future and Sustainable Energy Systems (e-Energy). ACM, 2025,
+pp. 699–711.
+[37] K. Kaiser, M. Kreft, M. G. Vayá, and G. Hug, “Dataset on residential
+electricity load profiles in switzerland,” arXiv:2607.19294, 2026.
+[38] N. Chapman, L. Zhang, N. Good, and P. Mancarella, “Exploring flexibility of aggregated residential electric heat pumps,” in Proc. IEEE Int.
+Energy Conf. (EnergyCon). IEEE, 2016, pp. 1–6.
+[39] S. Few, P. Djapic, and G. Strbac, “A geographically disaggregated
+approach to integrate low-carbon technologies across local electricity
+networks,” Nature Energy, vol. 9, no. 7, pp. 871–882, 2024.
+[40] M. Schlemminger, T. Ohrdes, E. Schneider, and M. Knoop, “Dataset on
+electrical single-family house and heat pump load profiles in Germany,”
+Scientific Data, vol. 9, no. 1, 2022.
+
+11
+
+[41] Q. Meng, M. Mourshed, and S. Wei, “Going beyond the mean: Distributional degree-day base temperatures for building energy analytics
+using change point quantile regression,” IEEE Access, vol. 6, pp. 39 532–
+39 540, 2018.
+
+[42] Bundesnetzagentur, “Festlegung zur netzorientierten Steuerung von
+steuerbaren Verbrauchseinrichtungen und steuerbaren Netzanschlüssen
+nach §14a EnWG (BK6-22-300),” Bundesnetzagentur, Bonn, Germany,
+Tech. Rep., 2023.
+
+

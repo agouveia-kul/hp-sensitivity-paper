@@ -42,7 +42,8 @@ def build_frames(design):
         subs.append(dict(
             sid=int(sid), hp_ratio=float(meta.loc[sid, 'hp_ratio']),
             N_total=int(meta.loc[sid, 'N_total']), HP_Peak=float(peak),
-            T=fr['T'].to_numpy(), SF=fr['SF'].to_numpy()))
+            T=fr['T'].to_numpy(), SF=fr['SF'].to_numpy(),
+            Load=fr['Load'].to_numpy()))
     return subs
 
 

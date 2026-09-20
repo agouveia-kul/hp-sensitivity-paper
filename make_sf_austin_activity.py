@@ -64,7 +64,7 @@ ax.annotate('$b$', xy=((th + tc) / 2, base), xytext=(0, 6), textcoords='offset p
             ha='center', va='bottom', fontsize=9, color='0.2')
 arw = dict(arrowstyle='-', lw=0.6, color='0.5')
 xm = th - (th - Tv.min()) * 0.5
-ax.annotate('$m$', xy=(xm, base + hs * (th - xm)), xytext=(-16, 10),
+ax.annotate('$m_h$', xy=(xm, base + hs * (th - xm)), xytext=(-2, 10),
             textcoords='offset points', fontsize=9, color=hf.C_HP, arrowprops=arw)
 xmc = tc + (Tv.max() - tc) * 0.5
 ax.annotate('$m_c$', xy=(xmc, base + cs * (xmc - tc)), xytext=(-20, 8),

@@ -19,6 +19,7 @@ Tg = np.linspace(Tv.min(), Tv.max(), 300)
 print(f'base {base:.1f} hs {hs:.2f} th {th:.1f} cs {cs:.2f} tc {tc:.1f} R2 {r2:.3f} n {len(df)}')
 
 fig, ax = plt.subplots(figsize=(hf.COL1, 3.0))
+ax.grid(False)
 ax.scatter(Tv, yv, s=8, color='0.65', alpha=.45, edgecolor='none', label='daily mean load')
 xa = np.linspace(Tv.min(), th, 100)
 xd = np.linspace(tc, Tv.max(), 100)

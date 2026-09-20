@@ -67,15 +67,15 @@ print(sp.round(1).to_string())
 # ---- LaTeX table ------------------------------------------------------------
 def row(nhp):
     r = g.loc[nhp]
-    return f"{nhp} & {r['e_cap_dep']:+.0f} & {r['e_cap_hyb']:+.0f} & {r['e_energy']:+.0f} \\\\"
+    return f"{nhp} & \\chg{{{r['e_cap_hyb']:+.0f}}} & {r['e_energy']:+.0f} \\\\"
 body = "\n".join(row(k) for k in grid)
 tex = r"""\begin{table}[t]
 \centering
 \caption{Use-case estimates on the real feeder as HP circuits are removed, at a fixed 37-house base. Signed median error over 200 random subsets per count}
 \label{tab:feeder-sweep}
-\begin{tabular}{rccc}
+\begin{tabular}{rcc}
 \toprule
-$N_{hp}$ & capacity, transf.\ (\%) & capacity, hybrid (\%) & energy (\%) \\
+$N_{hp}$ & \chg{capacity (\%)} & energy (\%) \\
 \midrule
 """ + body + r"""
 \bottomrule
