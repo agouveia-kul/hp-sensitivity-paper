@@ -10,3 +10,9 @@ __pycache__/
 *.pyc
 /paper/OLD/
 /OLD/
+
+# --- clone-and-run cache: small result artifacts paper_results.ipynb reads ---
+# (override the broad /data and *.csv rules above; keeps the repo runnable
+#  in cached mode without the multi-GB raw data)
+!scratchpad/cross_table.csv
+!scratchpad/neea_rows.csv
