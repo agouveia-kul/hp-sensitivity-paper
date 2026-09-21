@@ -967,13 +967,13 @@ def tab_cross():
         'German WPuQ (real HP)':               r'Hamelin, DE~\cite{Sch22}',
         'Swiss substation (real HP)':          r'Kloten, CH~\cite{Bru25,Kai26b}',
         'COFACTOR Norway (real HP)':           r'Oslo, NO~\cite{cofactor}',
-        'Austin Pecan St (real)':              r'Austin, US~\cite{pecanstreet}',
+        'Austin Pecan St (real)':              r'Austin, TX, US~\cite{pecanstreet}',
         'Carleton Ottawa (real AC)':           r'Ottawa, CA~\cite{carleton}',
-        'NEEA WA (real HP)':                   r'Washington, US~\cite{neea_eulr}',
-        'NEEA OR (real HP)':                   r'Oregon, US~\cite{neea_eulr}',
-        'ResStock ASHP -- Hennepin MN (cold)': r'Hennepin, US~\cite{resstock}',
-        'ResStock ASHP -- King WA (mild)':     r'King, US~\cite{resstock}',
-        'ResStock ASHP -- Maricopa AZ (hot)':  r'Maricopa, US~\cite{resstock}',
+        'NEEA WA (real HP)':                   r'WA, US~\cite{neea_eulr}',
+        'NEEA OR (real HP)':                   r'OR, US~\cite{neea_eulr}',
+        'ResStock ASHP -- Hennepin MN (cold)': r'Hennepin, MN, US~\cite{resstock}',
+        'ResStock ASHP -- King WA (mild)':     r'King, WA, US~\cite{resstock}',
+        'ResStock ASHP -- Maricopa AZ (hot)':  r'Maricopa, AZ, US~\cite{resstock}',
     }
     order = [k for k in ROW if k in df.index]
     COLS = [('$n$', 'n', '.0f'), (r'$T_{\min}$', 'T_min', '.0f'), (r'$T_{\max}$', 'T_max', '.0f'),
@@ -989,8 +989,8 @@ def tab_cross():
     head2 = 'dataset & ' + ' & '.join(h for h, _, _ in COLS) + r' \\'
     tex = (
         r"\begin{table*}[t]" "\n" r"\centering" "\n"
-        r"\caption{Net-load and SF fit parameters for one aggregate per dataset (ResStock rows are the ASHP-electrification scenario; a single hockey stick is used where only one arm is present). $n$ is the number of aggregated consumers; $T_{\min},T_{\max}$ the recorded temperature range [$^\circ$C]; $s_h,s_c$ [kW/$^\circ$C]; $T_h,T_c$ [$^\circ$C]; $m_h,m_c$ [$^\circ$C$^{-1}$]; SF$_\mathrm{c}$/SF$_\mathrm{h}$ the coldest-/hottest-day SF. The two-threshold form retained here underfits the coldest/hottest extremes, where the load is convex: adding one extra threshold (a second knee) raises the net-load $R^2$ from 0.81 to 0.98 for Hennepin (electric backup heat and heat-pump COP fall-off below ${\sim}{-}13^\circ$C) and from 0.98 to 0.99 for Maricopa (air-conditioning efficiency loss above ${\sim}33^\circ$C); the two-threshold model is kept for consistency with the transferable SF.}" "\n"
-        r"\label{tab:cross}" "\n" r"\scriptsize\setlength{\tabcolsep}{2.6pt}" "\n"
+        r"\caption{Net-load and SF fit parameters for one aggregate per dataset. $n$ is the number of aggregated consumers; $T_{\min},T_{\max}$ the recorded temperature range [$^\circ$C]; $s_h,s_c$ [kW/$^\circ$C]; $T_h,T_c$ [$^\circ$C]; $m_h,m_c$ [$^\circ$C$^{-1}$]; SF$_\mathrm{c}$/SF$_\mathrm{h}$ the coldest-/hottest-day SF.}" "\n"
+        r"\label{tab:cross}" "\n" r"% \scriptsize" "\n" r"\setlength{\tabcolsep}{4pt}" "\n"
         r"\begin{tabular}{l" + "c" * len(COLS) + "}\n" r"\toprule" "\n"
         r" & \multicolumn{3}{c}{} & \multicolumn{6}{c}{Net-load fit $\hat{P}_{\mathrm{net}}(T)$} & \multicolumn{8}{c}{SF fit $\hat{\mathrm{SF}}(T)$}\\" "\n"
         r"\cmidrule(lr){5-10}\cmidrule(lr){11-18}" "\n"
@@ -1000,17 +1000,54 @@ def tab_cross():
     print('wrote tab_cross.tex')
 
 
-def fig_cross_montage():
-    """fig_cross_montage: per-dataset net-load bathtub (left) and SF (right)."""
+def fig_cross_montage(knee_thresh=0.02):
+    """fig_cross_montage: per-dataset net-load bathtub (left) and SF (right).
+
+    Where a single linear arm is convex, a piecewise arm with one extra threshold
+    (a second knee) is overlaid dashed on that arm, but only if it raises the
+    arm's R^2 by at least ``knee_thresh`` (default 0.02). Mostly this fires on the
+    cold-climate ResStock heating arm (Hennepin), where electric backup + COP
+    fall-off make the load convex."""
+    from scipy.optimize import curve_fit
+
+    def knee_fit(x, y, thr, side):
+        """Fit a 1-knee and a 2-knee arm on the below/above-threshold subset;
+        return the extra-knee predictor and both R^2 if the fit succeeds."""
+        m = (x < thr) if side == 'h' else (x > thr)
+        if not np.isfinite(thr) or m.sum() < 25:
+            return None
+        xs_, ys_ = x[m], y[m]
+        ss = float(np.sum((ys_ - ys_.mean()) ** 2))
+        if ss <= 0:
+            return None
+        hinge = (thr - xs_) if side == 'h' else (xs_ - thr)
+        m1, b1 = np.polyfit(hinge, ys_, 1)
+        r1 = 1 - np.sum((ys_ - (b1 + m1 * hinge)) ** 2) / ss
+
+        def f(T, b, s1, s2, tk):
+            h1 = np.maximum(0, thr - T) if side == 'h' else np.maximum(0, T - thr)
+            h2 = np.maximum(0, tk - T) if side == 'h' else np.maximum(0, T - tk)
+            return b + s1 * h1 + s2 * h2
+        tk_lo, tk_hi = (xs_.min() + 1, thr - 1) if side == 'h' else (thr + 1, xs_.max() - 1)
+        if tk_hi <= tk_lo:
+            return None
+        try:
+            p, _ = curve_fit(f, xs_, ys_, p0=[np.median(ys_), max(m1, .1), max(m1, .1), (tk_lo + tk_hi) / 2],
+                             bounds=([-np.inf, 0, 0, tk_lo], [np.inf, np.inf, np.inf, tk_hi]), maxfev=20000)
+        except Exception:
+            return None
+        r2 = 1 - np.sum((ys_ - f(xs_, *p)) ** 2) / ss
+        return dict(r1=r1, r2=r2, f=(lambda T: f(T, *p)))
+
     hf.use_style()
     FR = U.pickle_load('scratchpad/cross_frames.pkl')
     FR.update(U.pickle_load('scratchpad/neea_frames.pkl'))
     ORDER = [('German WPuQ (real HP)', 'Hamelin, DE'), ('Swiss substation (real HP)', 'Kloten, CH'),
              ('COFACTOR Norway (real HP)', 'Oslo, NO'),
-             ('Austin Pecan St (real)', 'Austin, US'), ('Carleton Ottawa (real AC)', 'Ottawa, CA'),
-             ('NEEA WA (real HP)', 'Washington, US'),
-             ('NEEA OR (real HP)', 'Oregon, US'), ('ResStock ASHP -- Hennepin MN (cold)', 'Hennepin, US'),
-             ('ResStock ASHP -- King WA (mild)', 'King, US'), ('ResStock ASHP -- Maricopa AZ (hot)', 'Maricopa, US')]
+             ('Austin Pecan St (real)', 'Austin, TX'), ('Carleton Ottawa (real AC)', 'Ottawa, CA'),
+             ('NEEA WA (real HP)', 'WA, US'),
+             ('NEEA OR (real HP)', 'OR, US'), ('ResStock ASHP -- Hennepin MN (cold)', 'Hennepin, MN'),
+             ('ResStock ASHP -- King WA (mild)', 'King, WA'), ('ResStock ASHP -- Maricopa AZ (hot)', 'Maricopa, AZ')]
     ORDER = [(k, t) for k, t in ORDER if k in FR]
     nrow = len(ORDER)
     # common temperature axis across every panel, so the arms line up
@@ -1030,20 +1067,35 @@ def fig_cross_montage():
         axb.scatter(T, net, s=3, color='0.75', alpha=.4, edgecolor='none')
         lo = th if np.isfinite(th) else T.min(); hi = tc if np.isfinite(tc) else T.max()
         axb.plot([lo, hi], [base, base], color='0.3', lw=1.5, zorder=4)
+        net_r2_note = ''
         if np.isfinite(th):
             xa = xs[xs <= th]; axb.plot(xa, base + sh * (th - xa), color=hf.C_HP, lw=1.6, zorder=4)
         if np.isfinite(tc):
             xd = xs[xs >= tc]; axb.plot(xd, base + sc * (xd - tc), color=hf.C_CH, lw=1.6, zorder=4)
+        # --- net-load extra-knee overlay where an arm is convex ---
+        for side, thr, col in [('h', th, hf.C_HP), ('c', tc, hf.C_CH)]:
+            kk = knee_fit(T, net, thr, side)
+            if kk and kk['r2'] - kk['r1'] >= knee_thresh:
+                xr = xs[xs <= thr] if side == 'h' else xs[xs >= thr]
+                axb.plot(xr, kk['f'](xr), color=col, lw=1.1, ls=(0, (3, 2)), zorder=6)
+                net_r2_note = f"$\\to${kk['r2']:.2f}"
         axb.set_ylabel(title, fontsize=7.5)
-        axb.text(0.04, 0.9, f"$R^2$ {r['R2']:.2f}", transform=axb.transAxes, fontsize=6, color='0.4', va='top')
+        axb.text(0.04, 0.9, f"$R^2$ {r['R2']:.2f}{net_r2_note}", transform=axb.transAxes, fontsize=6, color='0.4', va='top')
         if np.isfinite(th) and v['cap_h']:
             mm = T < th
             axs.scatter(T[mm], np.clip(heat[mm] / v['cap_h'], 0, 1), s=3, color=hf.C_HP, alpha=.3, edgecolor='none')
             xa = xs[xs <= th]; axs.plot(xa, np.clip(r['b_h'] + r['m_h'] * (th - xa), 0, 1), color=hf.C_HP, lw=1.6, zorder=4)
+            ks = knee_fit(T, np.clip(heat / v['cap_h'], 0, 1), th, 'h')
+            if ks and ks['r2'] - ks['r1'] >= knee_thresh:
+                xa = xs[xs <= th]; axs.plot(xa, np.clip(ks['f'](xa), 0, 1), color=hf.C_HP, lw=1.1, ls=(0, (3, 2)), zorder=6)
+                axs.text(0.04, 0.9, f"$R^2$ {r['R2_SFh']:.2f}$\\to${ks['r2']:.2f}", transform=axs.transAxes, fontsize=6, color='0.4', va='top')
         if np.isfinite(tc) and v['cap_c']:
             mm = T > tc
             axs.scatter(T[mm], np.clip(cool[mm] / v['cap_c'], 0, 1), s=3, color=hf.C_CH, alpha=.3, edgecolor='none')
             xd = xs[xs >= tc]; axs.plot(xd, np.clip(r['b_c'] + r['m_c'] * (xd - tc), 0, 1), color=hf.C_CH, lw=1.6, zorder=4)
+            ks = knee_fit(T, np.clip(cool / v['cap_c'], 0, 1), tc, 'c')
+            if ks and ks['r2'] - ks['r1'] >= knee_thresh:
+                xd = xs[xs >= tc]; axs.plot(xd, np.clip(ks['f'](xd), 0, 1), color=hf.C_CH, lw=1.1, ls=(0, (3, 2)), zorder=6)
         axs.set_ylim(0, 1)
         if i == 0:
             axb.set_title('net load (kW)', fontsize=7.5); axs.set_title('simultaneity factor', fontsize=7.5)
@@ -1051,6 +1103,8 @@ def fig_cross_montage():
             axb.set_xticklabels([]); axs.set_xticklabels([])
     axes[-1, 0].set_xlabel('daily mean temperature ($^\\circ$C)', fontsize=7)
     axes[-1, 1].set_xlabel('daily mean temperature ($^\\circ$C)', fontsize=7)
-    fig.tight_layout(h_pad=0.4)
+    fig.tight_layout(h_pad=0.4, rect=[0, 0.012, 1, 1])
+    fig.text(0.5, 0.004, 'dashed: fit with one extra threshold (knee), shown where it raises the '
+             'arm $R^2$ by $\\geq$ %.2f' % knee_thresh, ha='center', fontsize=6, color='0.4')
     hf.save(fig, 'fig_cross_montage')
     print('saved -> fig_cross_montage')
