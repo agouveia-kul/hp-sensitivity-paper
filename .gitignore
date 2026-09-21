@@ -16,3 +16,6 @@ __pycache__/
 #  in cached mode without the multi-GB raw data)
 !scratchpad/cross_table.csv
 !scratchpad/neea_rows.csv
+
+# session download staging for extra cross-dataset raw (rebuilt via scripts/build_extra_frames.py)
+/scratchpad/newdata/

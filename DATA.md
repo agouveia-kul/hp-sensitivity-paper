@@ -45,6 +45,29 @@ public NREL S3 bucket (`oedi-data-lake`), using only the 3.7 MB metadata file ab
 manifest above, downloads the archive, and unpacks it into `data/` and `scratchpad/`.
 Fill in `BUNDLE_URL` (and optionally per-file checksums) before use.
 
+## Additional cross-dataset rows (COFACTOR, Carleton)
+
+Two of the cross-dataset table rows come from openly licensed external datasets that
+are **not** in the Tier-A bundle. Their fitted frames are cached in
+`scratchpad/cross_frames.pkl` (so the table/montage reproduce without the raw), and
+`scripts/build_extra_frames.py` rebuilds them from raw once the sources are placed
+under `data/`:
+
+| Row | Source | License | Download | Place raw at |
+|-----|--------|---------|----------|--------------|
+| **Oslo, NO** (COFACTOR Dataset 1, electric-heated apartment blocks; net load + submetered heating electricity + `Tout`, hourly) | Sørensen et al. 2026, *Data in Brief* 65:112580; SINTEF repo | **CC BY 4.0** | DOI [`10.60609/3ab7-ez93`](https://doi.org/10.60609/3ab7-ez93) → `COFACTOR_Res_Dataset1_files.zip` (33 MB) | `data/cofactor_ds1/building_*.txt` |
+| **Ottawa, CA** (Carleton 12-house, cooling arm; whole-house `Main` + submetered `AC`, 1-min) | Saldanha & Beausoleil-Morrison 2012, *Energy and Buildings* 49:519–530 | free with citation | [SBES page](https://carleton.ca/sbes/publications/electric-demand-profiles-downloadable/) → `Elec_loads.tar.gz` (171 MB) | `data/carleton/Saldanha_Beausoleil-Morrison/…` |
+
+Ottawa daily temperature for the Carleton row is fetched at build time from the
+open-meteo archive API (no key). After placing the raw, run:
+
+```
+PYTHONPATH=scripts;src python scripts/build_extra_frames.py
+```
+
+then regenerate with `outputs.build_cross_table(repull=False)`, `outputs.tab_cross()`
+and `outputs.fig_cross_montage()`.
+
 ## Tier B — rebuilding the pool caches from raw
 
 The pool caches (`_combined_pool_cache.pkl`, `_wpuq_pool_cache.pkl`, `design_*.pkl`)
