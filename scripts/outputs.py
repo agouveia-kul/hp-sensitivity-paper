@@ -977,7 +977,7 @@ def tab_cross():
     }
     TECH = {   # ETL technologies behind the meter for each aggregate
         'German WPuQ (real HP)':               'ASHP',
-        'Swiss substation (real HP)':          'ASHP',
+        'Swiss substation (real HP)':          'ASHP, GSHP',
         'COFACTOR Norway (real HP)':           'GSHP, ER',
         'Austin Pecan St (real)':              'AC, ER',
         'Carleton Ottawa (real AC)':           'AC',
