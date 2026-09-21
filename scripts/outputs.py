@@ -976,7 +976,7 @@ def tab_cross():
         'ResStock ASHP -- Maricopa AZ (hot)':  r'Maricopa, AZ, US~\cite{resstock}',
     }
     TECH = {   # ETL technologies behind the meter for each aggregate
-        'German WPuQ (real HP)':               'ASHP',
+        'German WPuQ (real HP)':               'WSHP',
         'Swiss substation (real HP)':          'ASHP, GSHP',
         'COFACTOR Norway (real HP)':           'GSHP, ER',
         'Austin Pecan St (real)':              'AC, ER',
@@ -1001,7 +1001,7 @@ def tab_cross():
     head2 = 'dataset & ETL tech & ' + ' & '.join(h for h, _, _ in COLS) + r' \\'
     tex = (
         r"\begin{table*}[t]" "\n" r"\centering" "\n"
-        r"\caption{Net-load and SF fit parameters for one aggregate per dataset. $n$ is the number of aggregated consumers; $T_{\min},T_{\max}$ the recorded temperature range [$^\circ$C]; $s_h,s_c$ [kW/$^\circ$C]; $T_h,T_c$ [$^\circ$C]; $m_h,m_c$ [$^\circ$C$^{-1}$]; SF$_\mathrm{c}$/SF$_\mathrm{h}$ the coldest-/hottest-day SF. ETL-technology codes: ASHP air-source heat pump; GSHP ground-source heat pump; DHP ductless (mini-split) heat pump; AC air conditioning; ER electric resistance heating.}" "\n"
+        r"\caption{Net-load and SF fit parameters for one aggregate per dataset. $n$ is the number of aggregated consumers; $T_{\min},T_{\max}$ the recorded temperature range [$^\circ$C]; $s_h,s_c$ [kW/$^\circ$C]; $T_h,T_c$ [$^\circ$C]; $m_h,m_c$ [$^\circ$C$^{-1}$]; SF$_\mathrm{c}$/SF$_\mathrm{h}$ the coldest-/hottest-day SF. ETL-technology codes: ASHP air-source heat pump; GSHP ground-source heat pump; WSHP water-source heat pump; DHP ductless (mini-split) heat pump; AC air conditioning; ER electric resistance heating.}" "\n"
         r"\label{tab:cross}" "\n" r"% \scriptsize" "\n" r"\setlength{\tabcolsep}{4pt}" "\n"
         r"\begin{tabular}{ll" + "c" * len(COLS) + "}\n" r"\toprule" "\n"
         r" & & \multicolumn{3}{c}{} & \multicolumn{6}{c}{Net-load fit $\hat{P}_{\mathrm{net}}(T)$} & \multicolumn{8}{c}{SF fit $\hat{\mathrm{SF}}(T)$}\\" "\n"
