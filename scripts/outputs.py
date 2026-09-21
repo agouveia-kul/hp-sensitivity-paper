@@ -966,7 +966,9 @@ def tab_cross():
     ROW = {
         'German WPuQ (real HP)':               r'Hamelin, DE~\cite{Sch22}',
         'Swiss substation (real HP)':          r'Kloten, CH~\cite{Bru25,Kai26b}',
+        'COFACTOR Norway (real HP)':           r'Oslo, NO~\cite{cofactor}',
         'Austin Pecan St (real)':              r'Austin, US~\cite{pecanstreet}',
+        'Carleton Ottawa (real AC)':           r'Ottawa, CA~\cite{carleton}',
         'NEEA WA (real HP)':                   r'Washington, US~\cite{neea_eulr}',
         'NEEA OR (real HP)':                   r'Oregon, US~\cite{neea_eulr}',
         'ResStock ASHP -- Hennepin MN (cold)': r'Hennepin, US~\cite{resstock}',
@@ -1004,7 +1006,9 @@ def fig_cross_montage():
     FR = U.pickle_load('scratchpad/cross_frames.pkl')
     FR.update(U.pickle_load('scratchpad/neea_frames.pkl'))
     ORDER = [('German WPuQ (real HP)', 'Hamelin, DE'), ('Swiss substation (real HP)', 'Kloten, CH'),
-             ('Austin Pecan St (real)', 'Austin, US'), ('NEEA WA (real HP)', 'Washington, US'),
+             ('COFACTOR Norway (real HP)', 'Oslo, NO'),
+             ('Austin Pecan St (real)', 'Austin, US'), ('Carleton Ottawa (real AC)', 'Ottawa, CA'),
+             ('NEEA WA (real HP)', 'Washington, US'),
              ('NEEA OR (real HP)', 'Oregon, US'), ('ResStock ASHP -- Hennepin MN (cold)', 'Hennepin, US'),
              ('ResStock ASHP -- King WA (mild)', 'King, US'), ('ResStock ASHP -- Maricopa AZ (hot)', 'Maricopa, US')]
     ORDER = [(k, t) for k, t in ORDER if k in FR]
