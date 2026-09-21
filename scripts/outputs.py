@@ -1013,7 +1013,10 @@ def fig_cross_montage():
              ('ResStock ASHP -- King WA (mild)', 'King, US'), ('ResStock ASHP -- Maricopa AZ (hot)', 'Maricopa, US')]
     ORDER = [(k, t) for k, t in ORDER if k in FR]
     nrow = len(ORDER)
-    fig, axes = plt.subplots(nrow, 2, figsize=(5.4, 1.55 * nrow))
+    # common temperature axis across every panel, so the arms line up
+    allT = np.concatenate([np.asarray(FR[k]['T'], float) for k, _ in ORDER])
+    Tlo, Thi = float(np.floor(np.nanmin(allT))) - 1, float(np.ceil(np.nanmax(allT))) + 1
+    fig, axes = plt.subplots(nrow, 2, figsize=(5.4, 1.55 * nrow), sharex=True)
     for i, (k, title) in enumerate(ORDER):
         v = FR[k]
         T, net = np.asarray(v['T']), np.asarray(v['net'])
@@ -1022,7 +1025,7 @@ def fig_cross_montage():
         th, tc, base, sh, sc = r['T_h'], r['T_c'], r['P_base'], r['s_h'], r['s_c']
         axb, axs = axes[i, 0], axes[i, 1]
         for ax in (axb, axs):
-            ax.grid(False); ax.tick_params(labelsize=6)
+            ax.grid(False); ax.tick_params(labelsize=6); ax.set_xlim(Tlo, Thi)
         xs = np.linspace(T.min(), T.max(), 200)
         axb.scatter(T, net, s=3, color='0.75', alpha=.4, edgecolor='none')
         lo = th if np.isfinite(th) else T.min(); hi = tc if np.isfinite(tc) else T.max()
