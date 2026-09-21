@@ -975,6 +975,18 @@ def tab_cross():
         'ResStock ASHP -- King WA (mild)':     r'King, WA, US~\cite{resstock}',
         'ResStock ASHP -- Maricopa AZ (hot)':  r'Maricopa, AZ, US~\cite{resstock}',
     }
+    TECH = {   # ETL technologies behind the meter for each aggregate
+        'German WPuQ (real HP)':               'ASHP',
+        'Swiss substation (real HP)':          'ASHP',
+        'COFACTOR Norway (real HP)':           'GSHP, ER',
+        'Austin Pecan St (real)':              'AC, ER',
+        'Carleton Ottawa (real AC)':           'AC',
+        'NEEA WA (real HP)':                   'DHP',
+        'NEEA OR (real HP)':                   'DHP',
+        'ResStock ASHP -- Hennepin MN (cold)': 'ASHP, ER',
+        'ResStock ASHP -- King WA (mild)':     'ASHP, ER',
+        'ResStock ASHP -- Maricopa AZ (hot)':  'ASHP, ER',
+    }
     order = [k for k in ROW if k in df.index]
     COLS = [('$n$', 'n', '.0f'), (r'$T_{\min}$', 'T_min', '.0f'), (r'$T_{\max}$', 'T_max', '.0f'),
             (r'$P_{\mathrm{base}}$', 'P_base', '.0f'), ('$s_h$', 's_h', '.1f'), ('$T_h$', 'T_h', '.1f'),
@@ -984,16 +996,16 @@ def tab_cross():
 
     def cell(v, fmt):
         return '--' if (v is None or (isinstance(v, float) and not np.isfinite(v))) else format(v, fmt)
-    body = '\n'.join(ROW[lab] + ' & ' + ' & '.join(cell(df.loc[lab, c], f) for _, c, f in COLS) + r' \\'
+    body = '\n'.join(ROW[lab] + ' & ' + TECH[lab] + ' & ' + ' & '.join(cell(df.loc[lab, c], f) for _, c, f in COLS) + r' \\'
                     for lab in order)
-    head2 = 'dataset & ' + ' & '.join(h for h, _, _ in COLS) + r' \\'
+    head2 = 'dataset & ETL tech & ' + ' & '.join(h for h, _, _ in COLS) + r' \\'
     tex = (
         r"\begin{table*}[t]" "\n" r"\centering" "\n"
-        r"\caption{Net-load and SF fit parameters for one aggregate per dataset. $n$ is the number of aggregated consumers; $T_{\min},T_{\max}$ the recorded temperature range [$^\circ$C]; $s_h,s_c$ [kW/$^\circ$C]; $T_h,T_c$ [$^\circ$C]; $m_h,m_c$ [$^\circ$C$^{-1}$]; SF$_\mathrm{c}$/SF$_\mathrm{h}$ the coldest-/hottest-day SF.}" "\n"
+        r"\caption{Net-load and SF fit parameters for one aggregate per dataset. $n$ is the number of aggregated consumers; $T_{\min},T_{\max}$ the recorded temperature range [$^\circ$C]; $s_h,s_c$ [kW/$^\circ$C]; $T_h,T_c$ [$^\circ$C]; $m_h,m_c$ [$^\circ$C$^{-1}$]; SF$_\mathrm{c}$/SF$_\mathrm{h}$ the coldest-/hottest-day SF. ETL-technology codes: ASHP air-source heat pump; GSHP ground-source heat pump; DHP ductless (mini-split) heat pump; AC air conditioning; ER electric resistance heating.}" "\n"
         r"\label{tab:cross}" "\n" r"% \scriptsize" "\n" r"\setlength{\tabcolsep}{4pt}" "\n"
-        r"\begin{tabular}{l" + "c" * len(COLS) + "}\n" r"\toprule" "\n"
-        r" & \multicolumn{3}{c}{} & \multicolumn{6}{c}{Net-load fit $\hat{P}_{\mathrm{net}}(T)$} & \multicolumn{8}{c}{SF fit $\hat{\mathrm{SF}}(T)$}\\" "\n"
-        r"\cmidrule(lr){5-10}\cmidrule(lr){11-18}" "\n"
+        r"\begin{tabular}{ll" + "c" * len(COLS) + "}\n" r"\toprule" "\n"
+        r" & & \multicolumn{3}{c}{} & \multicolumn{6}{c}{Net-load fit $\hat{P}_{\mathrm{net}}(T)$} & \multicolumn{8}{c}{SF fit $\hat{\mathrm{SF}}(T)$}\\" "\n"
+        r"\cmidrule(lr){6-11}\cmidrule(lr){12-19}" "\n"
         + head2 + "\n" r"\midrule" "\n" + body + "\n" r"\bottomrule" "\n"
         r"\end{tabular}" "\n" r"\end{table*}" "\n")
     open('paper/tables/tab_cross.tex', 'w').write(tex)
