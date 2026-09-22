@@ -92,9 +92,26 @@ def fit_row(label, n, T, net, heat, cool, cap_h, cap_c, frac_thr=0.05):
     if cool_present and cap_c:
         bc, mc, sfhot, r2c = _sf_arm(T, np.clip(cool / cap_c, 0, 1), tc, 'c')
 
+    # per-arm net-load R^2: each arm scored only on the days of its own regime
+    # (heating below T_h, cooling above T_c), excluding the dead band R2
+    pred = np.full(T.shape, base, dtype=float)
+    if np.isfinite(th) and np.isfinite(sh):
+        pred = pred + sh * np.maximum(0.0, th - T)
+    if np.isfinite(tc) and np.isfinite(sc):
+        pred = pred + sc * np.maximum(0.0, T - tc)
+
+    def _net_arm_r2(mask):
+        if int(mask.sum()) < 5:
+            return np.nan
+        y = net[mask]; ss = float(np.sum((y - y.mean()) ** 2))
+        return float(1 - np.sum((y - pred[mask]) ** 2) / ss) if ss > 0 else np.nan
+    r2_net_h = _net_arm_r2(T < th) if np.isfinite(th) else np.nan
+    r2_net_c = _net_arm_r2(T > tc) if np.isfinite(tc) else np.nan
+
     return dict(label=label, n=n, mode=mode, days=len(T),
-                T_min=float(np.min(T)), T_max=float(np.max(T)),
+                T_min=float(np.min(T)), T_max=float(np.max(T)), T_avg=float(np.mean(T)),
                 P_base=base, s_h=sh, T_h=th, s_c=sc, T_c=tc, R2=r2,
+                R2_net_h=r2_net_h, R2_net_c=r2_net_c,
                 b_h=bh, m_h=mh, SF_cold=sfcold, R2_SFh=r2h,
                 b_c=bc, m_c=mc, SF_hot=sfhot, R2_SFc=r2c,
                 cap_h=cap_h, cap_c=cap_c, heat_frac=hf, cool_frac=cf)

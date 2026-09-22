@@ -12,9 +12,8 @@
 \usepackage{hyperref}
 \graphicspath{{figures/}}
 
-% \chg is used by the shared tables/ files (v5 review highlighting). Defined here
-% as identity so this branch compiles without importing that highlighting.
-\providecommand{\chg}[1]{#1}
+\definecolor{chgblue}{HTML}{0645AD}
+\newcommand{\chg}[1]{\textcolor{chgblue}{#1}}
 
 \begin{document}
 
@@ -100,7 +99,11 @@ The rest of the paper is structured as follows. Section~\ref{sec:problem} states
 \section{Problem and Approach}
 \label{sec:problem}
 \label{sec:fits}
-\textcolor{blue}{Privacy rules, metering gaps and limited data exchange keep DSOs from observing individual consumers, and the evolving stock of DERs behind a feeder is rarely kept up to date. This work therefore quantifies the ETL installed capacity and flexibility of a feeder from the spatio-temporally aggregated load the operator already holds at the substation or feeder head, together with an estimated simultaneity factor.}
+\textcolor{red}{
+Due to privacy concerns, metering and/or data exchange limitations, distribution system operators (DSOs) do not have full observability at the individual consumer level for operational purposes. (CAN ADD A REAL WORLD EXAMPLE HERE)
+Furthermore, the continuous evolution of DER installations in distribution networks is not reliably updated by the DSOs. DERs that consume/generate with a high simultaneity factor are a critical detail the DSOs should have to operate the power network reliably.
+This work focuses on quantifying the use of spatio-temporally aggregated load profiles at the feeder head or substation level that the system operator may have, to estimate the thermostatic load installed capacity and flexibility potential based on instantaneous load and estimated simultaneity factor.
+}
 A metered point of an LV network, such as a substation or feeder, aggregates the load of the consumers downstream. Some of them run ETLs. The task is to quantify those ETLs from that aggregate.
 
 The net load is the sum of an ETL and a non-ETL component,
@@ -122,8 +125,8 @@ The problem is to recover the aggregated ETL load $P_{\mathrm{ETL}}(t)$ from the
 \node[io] (temp) {Ambient temperature};
 \node[io, above=of temp] (sub) {Submetered ETL load};
 \node[io, below=of temp] (net) {Aggregated net load};
-\node[proc, right=of temp] (bath) {Net-load fit Eq.~\eqref{eq:etlfit}};
-\node[proc, right=of sub] (sf) {SF fit Eq.~\eqref{eq:sffit}};
+\node[proc, right=of temp] (bath) {Net-load fit Eq.~\eqref{eq:etlfit} $s_h$, $s_c$};
+\node[proc, right=of sub] (sf) {SF fit Eq.~\eqref{eq:sffit} $m_h$, $m_c$};
 \node[proc, right=14mm of sf] (cap) {Installed cap. Eq.~\eqref{eq:capacity}};
 \node[proc, right=14mm of bath] (en) {Energy Eq.~\eqref{eq:energy}};
 \node[proc, right=of cap] (fl) {Flexibility Eq.~\eqref{eq:flex-energy}};
@@ -178,24 +181,25 @@ For an aggregation $i$, such as a substation, with its own fitted parameters,
 \hat{P}_{\mathrm{ETL}}^{\,i}(T) = s_h^{\,i}\,\max(0, T_h^{\,i} - T) + s_c^{\,i}\,\max(0, T - T_c^{\,i}),
 \label{eq:etlfit}
 \end{equation}
-where the hat marks a fitted function rather than a measurement. \textcolor{purple}{This estimated ETL load, not the full curve, is what the method carries forward; the flat term $P_{\mathrm{base}}$ is the temperature-independent load, dominated by the non-ETL component of Equation~\eqref{eq:decomp}, and is discarded.}
+where the hat marks a fitted function rather than a measurement. This estimated load only considers the temperature-driven component of ETL. The flat term $P_{\mathrm{base}}$ is the temperature-independent load, dominated by the non-ETL component of Equation~\eqref{eq:decomp}, and is discarded.
 
-% Equation~\eqref{eq:bathtub} is the bathtub function, named for the shape of its two arms and flat centre.
-Equation~\eqref{eq:bathtub} characterizes spatio-temporally aggregated load with ETLs and visually looks like a bathtub with two raised ends and an approximately flat middle.
-This bathtub characteristic has the following characteristics
-\textcolor{red}{CAN YOU ADD SOME OF THE OBSERVATIONS WE ALREADY DISCUSSED, such as below
-\begin{itemize}
-    \item $T_h$ and $T_c$ denote the threshold level of temperature beyond which heating or cooling is needed. Note that although at an individual level these levels of threshold may vary but with spatial aggregation, these levels for certain geographies become quite predictable. REFER TO THE TABLE SHOWING THESE LEVELS DO VARY FOR REGIONS
-    \item $s_h$ and $s_c$ are proportional to penetration of ETL in the consumers aggregated....
-    \begin{itemize}
-        \item for regions where cooling is not needed such as Scandanavian countries, $s_c=0$.
-        \item for regions where space heating is not needed such as Middle East nations, $s_h=0$
-    \end{itemize}
-    \item The $P_{base}$ is not necessarily fixed and may have variation but this is not what we are interested in!!
-    \item ... CHECK THE NOTES I SHARED... MAKE SURE YOU DO NOT REPEAT THINGS MULTIPLE TIMES.. I listed 8 points but not all of them needs to come here.. if the logical order fits later then describe it later.
-    \item this subsection do not mention about SF as it comes next
-\end{itemize}
-}
+
+% Equation~\eqref{eq:bathtub} is the bathtub function, named for the shape of its two arms and flat centre. 
+%Equation~\eqref{eq:bathtub} characterizes spatio-temporally aggregated load with ETLs and visually looks like a bathtub with two raised ends and an approximately flat middle.
+%This bathtub characteristic has the following characteristics
+%\textcolor{red}{CAN YOU ADD SOME OF THE OBSERVATIONS WE ALREADY DISCUSSED, such as below
+%\begin{itemize}
+%    \item $T_h$ and $T_c$ denote the threshold level of temperature beyond which heating or cooling is needed. Note that although at an individual level these levels of threshold may vary but with spatial aggregation, these levels for certain geographies become quite predictable. REFER TO THE TABLE SHOWING THESE LEVELS DO VARY FOR REGIONS
+%    \item $s_h$ and $s_c$ are proportional to penetration of ETL in the consumers aggregated....
+%    \begin{itemize}
+%        \item for regions where cooling is not needed such as Scandanavian countries, $s_c=0$.
+%        \item for regions where space heating is not needed such as Middle East nations, $s_h=0$
+%    \end{itemize}
+%    \item The $P_{base}$ is not necessarily fixed and may have variation but this is not what we are interested in!!
+%    \item ... CHECK THE NOTES I SHARED... MAKE SURE YOU DO NOT REPEAT THINGS MULTIPLE TIMES.. I listed 8 points but not all of them needs to come here.. if the logical order fits later then describe it later.
+%    \item this subsection do not mention about SF as it comes next
+%\end{itemize}
+%}
 
 % Where no electric cooling is present, $s_c$ is zero.
 % and the form reduces to a heating hockey stick. 
@@ -204,24 +208,23 @@ This bathtub characteristic has the following characteristics
 
 
 
-The fitted parameters carry a physical interpretation. The threshold temperatures $T_h$ and $T_c$ are behavioural: they mark where the population, on average, begins to heat or to cool, rather than a fixed property of any dwelling. Below $T_h$ a heating load appears and above $T_c$ a cooling load appears, each growing close to linearly with the distance from its threshold. Between the two lies a dead band where the population neither heats nor cools.
+The fitted parameters carry a physical interpretation. The threshold temperatures $T_h$ and $T_c$ are behavioural. They mark where the population, on average, begins to heat or cool, rather than a fixed property of any dwelling. Below $T_h$ a heating load appears and above $T_c$ a cooling load appears, each growing close to linearly with the distance from its threshold. Between the two lies a dead band where the population neither heats nor cools.
 \textcolor{blue}{Note that although at an individual level these threshold levels for $T_h$ and $T_c$ may vary, with spatial aggregation, these levels become quite predictable to indicate geographical/regional preferences for initiating space heating/cooling.}
 
 The slopes $s_h$ and $s_c$ of the bathtub curve measure how much heating or cooling load the population adds per degree change. 
-The value of the slopes indicates the installed capacity of ETLs.
+The value of the slopes is indicative of the installed capacity of ETLs.
 % A steeper arm signals more installed ETLs. 
-The sensitivity therefore also carries the ETL rate (the share of consumers with an ETL), since a feeder with more heat pumps shows a steeper heating arm, all else equal. Section~\ref{sec:res-ff} confirms this, with $s_h$ tracking installed capacity across the substations.
+The sensitivity therefore also carries the ETL rate (the share of consumers with an ETL), since a feeder with more ETLs shows a steeper heating arm, all else equal. Section~\ref{sec:res-ff} confirms this, with $s_h$ tracking installed capacity across the substations.
 
 The flat centre $P_{\mathrm{base}}$ is the 
 \textcolor{blue}{
-remaining non-ETL load consumed for periods between $T_h$ and $T_c$ average temperature levels. $P_{\mathrm{base}}$ is not necessarily fixed and may have seasonal and weather-dependent variations. 
-However, this work will not focus on this region of electricity consumption, as the ETLs are most likely not active for this range of average temperature.
+remaining temperature-independent load consumed for periods between $T_h$ and $T_c$ temperature values. The net load at these temperatures is not constant, but its trend with temperature is flat. This work will not focus on this region of electricity consumption, as it is temperature-invariant and out of scope of this paper.
 % However, this work will not focus on this region of electricity consumption, as the ETLs are most likely not active for this region of average temperature.
 }
 
 % temperature-independent load. It is not purely non-ETL, as it also absorbs the part of the ETL that runs regardless of weather, such as domestic water heating. The base term thus slightly overstates the non-ETL load, and the arms miss this weather-independent share of the ETL, which is out of scope for this paper.
 
-The two slopes together characterise a feeder. Where heating dominates, $s_c$ is near zero and the bathtub reduces to a heating hockey stick. Where cooling dominates, $s_h$ is near zero. The Swiss and German feeders studied here are heating-dominated, whereas the mixed-climate aggregate of Fig.~\ref{fig:bathtub} from Austin indicates both heating and cooling needs. 
+%The two slopes together characterise a feeder. Where heating dominates, $s_c$ is near zero and the bathtub reduces to a heating hockey stick. Where cooling dominates, $s_h$ is near zero. The Swiss and German feeders studied here are heating-dominated, whereas the mixed-climate aggregate of Fig.~\ref{fig:bathtub} from Austin indicates both heating and cooling needs. 
 % The balance of the two slopes varies from region to region with climate, building type and the dominant ETL type. The fitted response is therefore a compact signature of a network's thermal make-up.
 \textcolor{blue}{
 The slopes $s_h$ and $s_c$ indicate the regional dominance of space heating or cooling.
@@ -288,23 +291,39 @@ with $b_h$ and $b_c$ being the intercepts with the threshold temperatures, and $
 
 Extending each arm of Fig.~\ref{fig:bathtub} to their own installed capacity $P_h^{\max}$ and $P_c^{\max}$, gives two critical temperatures, $T_h^{\mathrm{crit}}$ and $T_c^{\mathrm{crit}}$. At these temperatures, the whole population would draw its maximum load at once, and the SF would reach 1. Fig.~\ref{fig:bathtub-critical} shows these extensions for the Austin aggregate. They are hypothetical, lying well outside any observed weather. The observed SF within the dataset therefore never approaches its installed capacity in practice, and the gap to the critical temperature leaves headroom for flexibility.
 
-\textcolor{blue}{Fig.~\ref{fig:bathtub-critical} marks the five regions this response spans. Regions R1 (below $T_h$) and R3 (above $T_c$) are the observed heating and cooling regimes, captured by Equation~\eqref{eq:etlfit}, and R2 is the dead band between them where the population neither heats nor cools. The extrapolated regions R4 and R5 run out to the critical temperatures, where every ETL would draw at once. This work characterises the observed regimes R1 and R3, treats the dead band R2 as out of scope, and describes R4 and R5 only conceptually.}
-% \textcolor{red}{
-% The average SF for the Austin dataset is XXX
-% }
+\textcolor{blue}{Fig.~\ref{fig:bathtub-critical} marks the five regions this response spans. Regions R1 (below $T_h$) and R3 (above $T_c$) are the observed heating and cooling regimes, captured by Equation~\eqref{eq:etlfit}, and R2 is the dead band between them where the population neither heats nor cools. The extrapolated regions R4 and R5 run out to the critical temperatures, where every ETL would draw at once (i.e. SF = 1). This work characterises the observed regimes R1 and R3, treats the dead band R2 as out of scope, and describes R4 and R5 only conceptually.}
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{figures/fig_bathtub_critical.pdf}
-\caption{The bathtub of Fig.~\ref{fig:bathtub} with its heating and cooling arms extended (dashed) beyond the observed range to the critical temperatures $T_h^{\mathrm{crit}}$ and $T_c^{\mathrm{crit}}$, where each arm would reach its installed capacity $P_{k}^{\max}$ and the SF would reach 1. \textcolor{blue}{The five regions R1--R5 are marked: observed heating (R1), dead band (R2) and cooling (R3), with the extrapolated R4 and R5 reaching the critical temperatures.}}
+\caption{The bathtub of Fig.~\ref{fig:bathtub} with its heating and cooling arms extended (dashed) beyond the observed range to the critical temperatures $T_h^{\mathrm{crit}}$ and $T_c^{\mathrm{crit}}$, where each arm would reach its installed capacity $P_{k}^{\max}$ and the SF would reach 1.}
 \label{fig:bathtub-critical}
 \end{figure}
 
-\subsection{Generalizability of SF}
+\subsection{Cross-dataset characterisation}
 
-The calculation of SF requires ETL submetered data. Thus, $\hat{\mathrm{SF}}(T)$ is fitted on a submetered pilot and reused on un-submetered feeders of the same population. 
+\input{tables/tab_cross}
 
-\textcolor{blue}{The value of the SF fit is that its slope is predictable. Across aggregations drawn from the same population, the simultaneity sensitivities $m_h$ and $m_c$ stay close to constant and, in particular, do not track the installed capacity or the ETL rate of the aggregation (Section~\ref{sec:res-sf} confirms this on the case-study data). This invariance is what makes the SF transferable: a slope calibrated on a submetered pilot can be reused on an un-submetered feeder of the same region. Fixing the slope in this way turns the SF into a proxy for the unobserved installed capacity, since Equation~\eqref{eq:capacity} then recovers $P_{\mathrm{ETL}}^{\max^i}$ from the observable net-load fit alone. This is the mechanism the rest of the paper builds on.}
+\textcolor{blue}{Table~\ref{tab:cross} reports both fitted functions, $\hat{P}_{net}(T)$ and $\hat{\mathrm{SF}}(T)$, on aggregates from five countries and a range of climates, with each climate given as its K{\"o}ppen--Geiger class \cite{beck2018koppen}. R1, R3, or both are resolved as the local climate dictates, and each is scored on the days of its own regime. R1 fits with a net-load $R^2_h$ between 0.68 and 0.94, lowest in Austin where electric heating is marginal. R3 ranges from $R^2_c$ of 0.95 in hot Maricopa to 0.42 in mild Oregon, where cooling is rare.}
+
+\textcolor{blue}{The threshold temperatures follow the local climate. $T_h$ falls between 8 and 17\,$^\circ$C, and $T_c$ between 18 and 26\,$^\circ$C. A hot county such as Maricopa carries a steep R3, whereas a cold one such as Hamelin carries none. A mild-winter, gas-heated aggregate such as Ottawa carries only R3. The absolute slopes $s_h$ and $s_c$ scale with the aggregate's total installed ETL, and therefore with its size. The 849-dwelling Norwegian pool and the electrified ResStock counties show the steepest arms for this reason. The normalised SF slopes $m_h$ and $m_c$ remove this size dependence.}
+
+\textcolor{blue}{The normalised slopes $m_h$ and $m_c$ isolate the ETL technology from the installed power. A well-modulated heat pump keeps $m_h$ near $0.016\,^\circ$C$^{-1}$, as in the water-source Hamelin and the mixed-source Kloten pools. A ductless mini-split cycles rather than modulates, which roughly doubles the slope, to $0.033$--$0.036$ across the Pacific Northwest. The Norwegian pool sits at $0.026$, its heating split $64\%$ ground-source and $36\%$ direct resistance, both drawing more coincidentally than a modulating pump. The slope therefore reads the dominant device, not the climate.}
+
+\textcolor{blue}{The K{\"o}ppen class then sets how far up its arm a population climbs. The coldest-day SF, the practical maximum of the curve, is the slope times the depth of the local winter, plus a baseline. The two cold-continental sites, Oslo (Dfb) and Minnesota (Dfa), reach a comparable maximum, $0.81$ and $0.74$, as their deep winters carry the population far up its arm. Their arms differ in shape, however. Oslo's resistance and ground-source load is linear, so a single slope fits it. Minnesota's air-source pumps lose efficiency and switch to electric backup near $-13\,^\circ$C, turning the arm convex and adding a second, steeper slope. A single arm reads the Minnesota maximum as only $0.45$ and hides this agreement, so Table~\ref{tab:cross} gives its two-slope value. Technology can override the class: the Pacific-Northwest mini-splits reach $0.66$--$0.75$ in a mild marine winter, on a steep slope alone. A transferred SF therefore needs a matching climate class and a matching dominant technology.}
+
+\subsection{Transferability of SF}
+
+\textcolor{blue}{The SF is computed from submetered ETL data. So $\hat{\mathrm{SF}}(T)$ is fitted on a submetered pilot, then reused on un-submetered feeders of the same population. The value of the fit is that its slope is predictable. Within a population, the simultaneity slopes $m_h$ and $m_c$ stay close to constant. In particular, they do not track the installed capacity or the ETL rate of the aggregation. Section~\ref{sec:res-sf} confirms this on the case-study data. This invariance is what makes the SF transferable. A slope calibrated on a submetered pilot can be reused on an un-submetered feeder of the same region. Fixing the slope also turns the SF into a proxy for the unobserved installed capacity. Equation~\eqref{eq:capacity} then recovers $P_{\mathrm{ETL}}^{\max}$ from the observable net-load fit alone. This is the mechanism the rest of the paper builds on.}
+
+%\textcolor{blue}{A single linear arm can underfit at the most extreme climates, where a convex load (backup heat and COP fall-off in deep cold, or air-conditioning saturation in extreme heat) would justify a second threshold, e.g.\ a kneepoint near $-13^\circ$C raises Hennepin's net-load $R^2$ from 0.81 to 0.98 and its SF $R^2$ from 0.77 to 0.97. However, this is out of scope and not considered for the datasets used in the rest of this paper.}
+
+% \textcolor{red}{
+% The interesting property of SF we skip mentioning is that SF is fairly predictable. Can we measure predictability based on varying aggregation?
+% Since SF is predictable which implies the slope is predictable, i.e., $m_h, m_c$. If i remember correctly, these slopes where not a function of installed capacity. Now if we can fix the SF slopes, we can make an estimation of $P_{\mathrm{ETL}}^{\max^i}$ using predicted SF. 
+% I think in this subsection you should discuss how $m_h, m_c$ varies and how we can use this for other combination of consumers for the dataset from the same region.
+% The whole idea is to find a proxy for estimating $P_{\mathrm{ETL}}^{\max^i}$. Presently I do not see it till section 3.
+% }
 
 \section{Aggregated ETL Quantification}
 \label{sec:estimation}
@@ -318,20 +337,25 @@ The energy the ETL population draws follows from integrating its temperature res
 %In the heating regime, $T < T_h$, the fitted ETL load of Equation~\eqref{eq:etlfit} reduces to its heating arm $\hat{P}_{\mathrm{ETL}}(T) = s_h (T_h - T)$. 
 Over a day of mean temperature $T$, the temperature-driven ETL energy is given by,
 \begin{equation}
-\hat{E}_{\mathrm{ETL}} = \left ( s_h \max(0, T_h - T) + s_c \max(0, T_c - T) \right ) \,\Delta t,
+\hat{E}_{\mathrm{ETL}} = \left ( s_h \max(0, T_h - T) + s_c \max(0, T-T_c) \right ) \,\Delta t,
 \label{eq:energy}
 \end{equation}
 with $\Delta t$ being the length of the period. The fitted ETL load alone suffices. Given a measured temperature, it recovers the aggregated ETL load $\hat{P}_{\mathrm{ETL}}(T)$ from the net load $P_{\mathrm{net}}(t)$; given a forecast temperature, it forecasts that load for a future period.
 
-The dead band bounds the estimate. Above $T_h$ the arm is zero. It therefore misses any ETL energy that persists into mild weather, most plausibly domestic hot water. The estimate captures the temperature-driven share, not the annual total.
+R2 bounds the estimate. Above $T_h$ the arm is zero. It therefore misses any ETL energy that persists into mild weather, most plausibly domestic hot water. The estimate captures the temperature-driven share, not the annual total.
 
 \subsection{ETL Installed Capacity Estimation}
 \label{sec:uc-capacity}
 
-The installed capacity $P_{\mathrm{ETL}}^{\max}$ is the sum of the individual peak demands of Section~\ref{sec:fits-sf}. The aggregated ETLs never draw it at once, so the net load never exposes it directly. What the fitted ETL load does expose is $\hat{P}_{\mathrm{ETL}}(T)$ at any temperature. Rearranging the SF definition of Equation~\eqref{eq:sf}, the installed capacity of an aggregation $i$ follows from the estimated ETL load and SF at the same temperature,
+The installed capacity $P_{\mathrm{ETL}}^{\max}$ is the sum of the individual peak demands of Section~\ref{sec:fits-sf}. The aggregated ETLs never draw it at once, so the net load never exposes it directly. What the fitted ETL load does expose is $\hat{P}_{\mathrm{ETL}}(T)$ at any temperature. Rearranging the SF definition of Equation~\eqref{eq:sf}, the installed capacity follows from the estimated ETL load and SF at the same temperature,
 \begin{equation}
-	P_{\mathrm{ETL}}^{\max^i} = \frac{\hat{P^i}_{\mathrm{ETL}}(T)}{\hat{\mathrm{SF}}(T)} =  \frac{s^i_h \, (T^i_h - T)}{\hat{\mathrm{SF}}(T)}, \quad T < T^i_h.
-	\label{eq:capacity}
+\begin{aligned}
+    P_{\mathrm{ETL}}^{\max} &= \frac{\hat{P}_{\mathrm{ETL}}(T)}{\hat{\mathrm{SF}}(T)} = \\
+    &= \frac{s_h \, \max(0, T_h - T)}{\hat{\mathrm{SF}_h}(T)} + \frac{s_c \, \max(0, T - T_c)}{\hat{\mathrm{SF}_c}(T)} \\
+    &=\frac{s_h}{m_h} + \frac{s_c}{m_c}.
+    %= \frac{s_h \, (T_h - T)}{\hat{\mathrm{SF}}(T)}, \quad T < T_h.
+\end{aligned}
+\label{eq:capacity}
 \end{equation}
 The fitted ETL load supplies the numerator, which the DSO observes. The transferred curve $\hat{\mathrm{SF}}(T)$ supplies the denominator, calibrated on a submetered reference population where the SF is not available locally. The estimate is therefore only as good as the transferred simultaneity, which Section~\ref{sec:results} tests.
 
@@ -340,14 +364,14 @@ The fitted ETL load supplies the numerator, which the DSO observes. The transfer
 % }
 
 % =====================================================================
-\subsection{Flexibility Quantification Based on the Simultaneity Factor}
+\subsection{Flexibility Quantification}
 \label{sec:uc-flex}
 \label{sec:flex}
 
 The flexibility an HP population offers is the energy it can shift from its baseline consumption without breaching indoor thermal comfort \cite{Zir19}. Building-stock insulation and indoor-comfort data are lacking, so an abstract time window $\Delta t_{Th}$ stands in. Within it, the population must deliver a fixed thermal energy to stay comfortable. A larger $\Delta t_{Th}$ means a better-insulated building, or wider comfort bands \cite{Cha16}.
-Over this $\Delta t_{Th}$, the aggregated HPs must deliver the temperature-set energy demand. This is the temperature-driven ETL energy of Equation~\eqref{eq:energy}, evaluated over the window $\Delta t_{Th}$ and drawn at the baseline power $\hat{P}_{\mathrm{ETL}}(T) = \mathrm{SF}(T)\,P_{\mathrm{ETL}}^{\max}$,
+Over this $\Delta t_{Th}$, the aggregated HPs must deliver the temperature-set energy demand. This is the temperature-driven ETL energy of Equation~\eqref{eq:energy}, evaluated over the window $\Delta t_{Th}$ and drawn at the baseline power $\hat{P}_{\mathrm{ETL}}(T) = \hat{\mathrm{SF}}(T)\,\hat{P}_{\mathrm{ETL}}^{\max}$,
 \begin{equation}
-E_{\mathrm{ETL}} = \hat{P}_{\mathrm{ETL}}(T)\,\Delta t_{Th} = \mathrm{SF}(T)\,P_{\mathrm{ETL}}^{\max}\,\Delta t_{Th}.
+\hat{E}_{\mathrm{ETL}} = \hat{P}_{\mathrm{ETL}}(T)\,\Delta t_{Th} = \hat{\mathrm{SF}}(T)\,\hat{P}_{\mathrm{ETL}}^{\max}\,\Delta t_{Th}.
 \label{eq:flex-baseline}
 \end{equation}
 The schedule that delivers this same energy while deviating most from the baseline is the two-level square wave of Fig.~\ref{fig:flex-schedule}: full installed power $P_{\mathrm{ETL}}^{\max}$ for a fraction $\alpha_F$ of the window and zero for the rest. Its energy $\alpha_F\,P_{\mathrm{ETL}}^{\max}\,\Delta t_{Th}$ must equal Equation~\eqref{eq:flex-baseline}, which fixes the duty cycle at the simultaneity factor,
@@ -393,13 +417,11 @@ so WAPE weights each substation by its true magnitude, not equally. A small aggr
 \subsection{Fit Quality across Spatial and Temporal Aggregation}
 \label{sec:res-ff}
 
-Both functions fit each substation's aggregate. Their quality, measured by the $R^2$ that gives the share of variance the fit explains, climbs with aggregation in time and space.
-
-Averaging the load over longer windows removes the occupancy swings and building thermal inertia that do not track temperature one-to-one at finer time resolutions. The net-load fit rises from a median $R^2$ of 0.74 at hourly resolution to 0.95 at daily, and the SF fit from 0.71 to 0.94. Both climb monotonically through the four-, eight- and sixteen-hour windows in between. The daily mean, used throughout, sits at the top of this curve.
+Both functions \eqref{eq:bathtub} and \eqref{eq:sffit} are fitted to each substation's aggregated measurements. Averaging the load over longer windows removes the occupancy swings and building thermal inertia that do not track temperature one-to-one at finer time resolutions. The net-load fit rises from a median $R^2$ of 0.74 at hourly resolution to 0.95 at daily, and the SF fit from 0.71 to 0.94. Both climb monotonically through the four-, eight- and sixteen-hour windows in between. The daily mean, used throughout, sits at the top of this curve.
 
 Spatial aggregation acts the same way, as more meters average out the load that is not thermal. At daily resolution the net-load fit rises from a median $R^2$ of 0.92 behind ten consumers to 0.96 behind fifty. It climbs more steeply with the HPs whose signal it recovers, from 0.88 at five HPs to 0.97 at fifty. The SF fit, built from the HPs alone, is stable with the number of HPs, with $R^2$ staying between 0.92 and 0.95.
 
-The heating sensitivity itself scales with the population behind the meter. Fig.~\ref{fig:slope-capacity} plots the fitted $s_h$ against the installed HP capacity across the substations, coloured by the number of HPs. The two track almost perfectly, at a Pearson correlation $\rho$ of 0.99, along a line through the origin of slope $0.017^\circ$C$^{-1}$. A steeper heating arm therefore signals more installed capacity, as Section~\ref{sec:fits-net} anticipated.
+The heating sensitivity itself scales with the population behind the meter. Fig.~\ref{fig:slope-capacity} plots the fitted $s_h$ against the installed HP capacity across the substations, coloured by the number of HPs. The two track almost perfectly, at a Pearson correlation $\rho$ of 0.99, along a line through the origin of slope $0.017^\circ$C$^{-1}$. A steeper R1 slope therefore signals more installed capacity, as Section~\ref{sec:fits-net} anticipated.
 
 \begin{figure}[t]
 \centering
@@ -411,7 +433,9 @@ The heating sensitivity itself scales with the population behind the meter. Fig.
 \subsection{Simultaneity Factor: Invariance and Transfer}
 \label{sec:res-sf}
 
-Beyond fitting well, the SF fit is stable. Because the SF comes from the submetered HPs alone, the non-HP consumers do not affect it. The fits in Table~\ref{tab:sf} therefore span substations of a constant size, 50 consumers. So the HP count $N_{hp}$ is the only variable, and the ETL rate spans 10\% at five HPs to 100\% at fifty. Its coldest-day SF and sensitivity $m$ show no meaningful changes with the substation's ETL rate or installed capacity over that range. $m$ holds near $0.016^{-1}$ and the maximum SF, on the coldest day, near 0.43. This sensitivity is close to the through-origin slope of Fig.~\ref{fig:slope-capacity}, $0.017~^\circ$C$^{-1}$, the two being linked by the identity $m = s_h / P_{\mathrm{ETL}}^{\max}$. They differ slightly because they are fitted differently: $m$ as the median of the per-substation SF fits, and the slope as a single regression of $s_h$ on installed capacity pooled across the substations. More HPs behind the meter do not shift these values but tighten them, as the interquartile spread narrows with $N_{hp}$. This coldest-day value matches planning practice elsewhere, where a heat-pump coincidence factor of 0.425, drawn from field trials, appears in national LV network studies \cite{Few24}.
+Beyond fitting well, the SF fit is stable. Because the SF comes from the submetered HPs alone, the non-HP consumers do not affect it. The fits in Table~\ref{tab:sf} therefore span substations of a constant size, 50 consumers. The HP count $N_{hp}$ is the only variable, and the ETL rate spans 10\% at five HPs to 100\% at fifty. Its max heating SF and sensitivity $m_h$ show no meaningful changes with the substation's ETL rate or installed capacity over that range. $m_h$ holds near $0.016^{-1}$ and the maximum SF, near 0.43. This sensitivity is close to the through-origin slope of Fig.~\ref{fig:slope-capacity}, $0.017~^\circ$C$^{-1}$, the two being linked by Equation~\eqref{eq:capacity}. 
+%They differ slightly because they are fitted differently: $m$ as the median of the per-substation SF fits, and the slope as a single regression of $s_h$ on installed capacity pooled across the substations. 
+More HPs behind the meter do not shift these values but tighten them, as the interquartile spread narrows with $N_{hp}$. This coldest-day value matches planning practice elsewhere, where a heat-pump coincidence factor of 0.425, drawn from field trials, appears in national LV network studies \cite{Few24}.
 
 \input{tables/tab_sf}
 
@@ -433,13 +457,13 @@ A submetered pilot therefore represents a population's ETL simultaneity with a s
 \subsection{Energy Consumption Estimation}
 \label{sec:res-energy}
 
-Equation~\eqref{eq:energy} needs only the net-load-fitted function. The heating arm, integrated over the year, gives the temperature-driven HP energy, compared against the substation's own submetered HP load. Across the 1000 substations the estimate tracks the submetered energy with a Pearson correlation $\rho$ of 0.99, but underestimates it by a median 12\% (a median ratio of 0.88) at a WAPE of 15\%.
+Equation~\eqref{eq:energy} needs only the net-load-fitted function. R1, integrated over the year, gives the temperature-driven HP energy, compared against the substation's own submetered HP load. Across the 1000 substations the estimate tracks the submetered energy with a Pearson correlation $\rho$ of 0.99, but underestimates it by a median 12\% (a median ratio of 0.88) at a WAPE of 15\%.
 
 The energy estimator has two resolutions: one for the net-load fit and one for the temperature integration. Table~\ref{tab:energy} reports the WAPE and the median estimated-to-actual energy ratio, which falls below one when the estimate runs low, for each combination. Integrating the daily-fitted arm over the hourly temperature series, rather than the daily mean, lifts the ratio from 0.88 to 0.92 and cuts the WAPE from 15\% to 12\%. A day whose temperature crosses the threshold holds more heating-degree-hours than its single-point mean implies. Refitting the arm at hourly resolution instead degrades the estimate, to a ratio of 0.86, since the sub-daily load is noisier than its daily mean (Section~\ref{sec:res-ff}). The daily fit integrated over the finer temperature series is therefore the best combination.
 
 \input{tables/tab_energy}
 
-The estimate is temperature-driven by construction, so the dead band bounds it. About 7\% of the HP energy falls above the threshold temperature, in mild weather where the heating arm is zero, most plausibly domestic hot water \cite{Bru23}. Measured against this temperature-driven share alone, on the days below the threshold temperature, the estimate tightens to a WAPE of 10\% at a ratio of 0.94. Equation~\eqref{eq:energy} therefore estimates the temperature-driven energy rather than the annual total, the dead-band limit anticipated in Section~\ref{sec:uc-energy}.
+The estimate is temperature-driven by construction, so R2 bounds it. About 7\% of the HP energy falls above the threshold temperature, in mild weather where the heating term is zero, most plausibly domestic hot water \cite{Bru23}. Measured against this temperature-driven share alone, on the days below the threshold temperature, the estimate tightens to a WAPE of 10\% at a ratio of 0.94. Equation~\eqref{eq:energy} therefore estimates the temperature-driven energy rather than the annual total, the R2 limit anticipated in Section~\ref{sec:uc-energy}.
 
 Aggregation acts on the spread of the error, not its centre. Fig.~\ref{fig:energy-error} shows the signed error across substations, right-skewed with a median of $-12\%$, and its evolution with the HP count. The interquartile spread falls from 31\% at five HPs to 3\% at fifty, as the load that is not thermal averages out. The median underestimate does not follow it down but deepens to about $-16\%$, arguably as the non-ETL response that offsets it at a low ETL rate fades. More HPs therefore sharpen the estimate around a biased centre rather than removing the bias.
 
@@ -453,11 +477,11 @@ Aggregation acts on the spread of the error, not its centre. Fig.~\ref{fig:energ
 \subsection{Installed Capacity Estimation}
 \label{sec:res-capacity}
 
-Equation~\eqref{eq:capacity} estimates the installed capacity aggregated at a target substation. Although the equation holds at any temperature below $T_h$, the estimate uses the coldest recorded day $T_{\min}$, where the SF is at its largest. Dividing by the largest SF is the most stable choice, since a given error in the transferred SF then produces the smallest relative error in the capacity. The numerator is the fitted aggregated ETL load at the minimum observed temperature, $\hat{P}_{\mathrm{ETL}}^{\,i}(T_{\min})$, read from the substation's own net-load fit. The denominator is the transferred curve $\hat{\mathrm{SF}}(T_{\min})$ of Section~\ref{sec:res-sf}, evaluated at that same temperature. The target substation is therefore never submetered.
+Equation~\eqref{eq:capacity} estimates the installed capacity aggregated at a target substation. Although the equation holds anywhere in R1 (below $T_h$), the estimate uses the coldest recorded day $T_{\min}$, where the SF is at its largest. Dividing by the largest SF is the most stable choice, since a given error in the transferred SF then produces the smallest relative error in the capacity. The numerator is the fitted aggregated ETL load at the minimum observed temperature, $\hat{P}_{\mathrm{ETL}}^{\,i}(T_{\min})$, read from the substation's own net-load fit. The denominator is the transferred curve $\hat{\mathrm{SF}}(T_{\min})$ of Section~\ref{sec:res-sf}, evaluated at that same temperature. The target substation is therefore never submetered.
 
-Table~\ref{tab:capacity} scores two estimators on the held-out half by the WAPE, the median ratio and the fit quality $R^2$. The transferred-SF estimator of Equation~\eqref{eq:capacity} recovers the installed capacity at a WAPE of 10\% and an $R^2$ of 0.97, with a slight 6\% overestimate at a median ratio of 1.06.
+Table~\ref{tab:capacity} scores two estimators on the held-out half by the WAPE, the median ratio $\hat{P}^{\max}_{\mathrm{ETL}}/{P}^{\max}_{\mathrm{ETL}}$ and the fit quality $R^2$. The transferred-SF estimator of Equation~\eqref{eq:capacity} recovers the installed capacity at a WAPE of 10\% and an $R^2$ of 0.97, with a slight 6\% overestimate at a median ratio of 1.06.
 
-Dividing instead by each substation's own coldest-day SF, an oracle a DSO could reach only with local submetering, sharpens the estimate to a WAPE of 6\% at an $R^2$ of 0.99 (Table~\ref{tab:capacity}). The four-point gap is the price of transferring the coincidence rather than measuring it, and the remainder is the net-load numerator. The error shrinks with aggregation, the transferred-SF WAPE falling from 29\% at five HPs to 5\% at fifty, as the noisy fits of a small draw settle. Part of the overestimate is the non-ETL temperature response the net-load fit adds to the heating arm, the neglected term of Equation~\eqref{eq:decomp} discussed in Section~\ref{sec:discussion}.
+Dividing instead by each substation's own coldest-day SF, an oracle a DSO could reach only with local submetering, sharpens the estimate to a WAPE of 6\% at an $R^2$ of 0.99 (Table~\ref{tab:capacity}). The four-point gap is the price of transferring the simultaneity rather than measuring it, and the remainder comes from the net-load numerator. The error shrinks with aggregation, the transferred-SF WAPE falling from 29\% at five HPs to 5\% at fifty, as the noisy fits of a small aggregation average out at a larger one. Part of the overestimate is the non-ETL temperature response the net-load fit adds to the R1 slope, the neglected term of Equation~\eqref{eq:decomp} discussed in Section~\ref{sec:discussion}.
 
 \input{tables/tab_capacity}
 
@@ -482,9 +506,10 @@ Equation~\eqref{eq:flex-energy} uses the transferred SF curve, $\hat{\mathrm{SF}
 
 Fig.~\ref{fig:flex-season} shows the daily actual and estimated flexible energy over the year for an example substation with 50 HPs, drawn for an illustrative window $\Delta t_{Th} = 4$~h. The potential follows the season. It is largest in winter and near zero in the summer, when the energy that can shifted (i.e., the thermal demand) is reduced. The transferred curve tracks this profile day to day, flattening in summer at the SF base term, where it slightly exceeds the measured flex. About two thirds of the days offer non-trivial flexibility, and on the coldest the $\mathrm{SF}(1-\mathrm{SF})$ product nears its 0.25 ceiling, a quarter of $P_{\mathrm{ETL}}^{\max}\,\Delta t_{Th}$. The window $\Delta t_{Th}$ enters Equation~\eqref{eq:flex-energy} as a multiplier, so it scales this profile linearly without changing its shape. The annual total then rises at 12.6\,MWh per hour of window, so one thermal-inertia coefficient fixes the whole curve.
 
-\subsection{Generalisation to a Real Unseen Feeder}
+\section{Generalisation}
 \label{sec:validation}
 
+\subsection{Direct}
 The Swiss results rest on synthetic aggregates of one population. A stronger test applies the method to a real aggregate from another country, summed from field meters and never seen in any fit. This aggregate comes from the WPuQ measurement campaign \cite{Sch22}: its net load is the sum of 37 individually metered German single-family houses, each with a submetered HP, giving a measured installed HP capacity of 239~kW. The net-load fit (Section~\ref{sec:fits-net}) uses the feeder's own metered load, and the SF fit (Section~\ref{sec:fits-sf}) transfers from the Swiss reference curve of Section~\ref{sec:res-sf}. Submetered data serves only to validate the results, never as input.
 
 Both fitted functions carry to the real feeder (Fig.~\ref{fig:real-feeder}). The net-load hockey stick fits at an $R^2$ of 0.84, close to the Swiss median, and places the threshold temperature at $13.9\,^\circ$C. The method transfers only the SF slope from the Swiss reference and anchors it at this observable threshold, so the feeder's own SF serves only to validate. That validation fit keeps the same shape and slope, though noisier on a single aggregate, at a below-threshold $R^2$ of 0.72. The forms are therefore not an artefact of the synthetic design.
@@ -502,7 +527,7 @@ The flexibility procedure of Section~\ref{sec:res-flex} transfers to this feeder
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{figures/fig_real_feeder.pdf}
-\caption{The two functions fitted to the real German feeder. Left: the net-load hockey stick. Right: the feeder's own SF fit against the Swiss curve transferred to it and the hybrid curve that keeps the Swiss slope but takes its threshold temperature from the observable net-load fit; the sensitivity matches while the threshold temperature sits about three degrees lower, and the markers give the coincidence at the feeder's coldest day under each curve.}
+\caption{The two functions fitted to the real German feeder. Left: the net-load fit $\hat{P}_{\mathrm{net}}(T)$, with its heating arm and dead-band base line. Right: the feeder's own SF fit (oracle) and the transferred curve, which keeps the Swiss slope but reads its threshold temperature from the observable net-load fit; the two SF curves are drawn only below the threshold, and the markers give the coincidence at the feeder's coldest day.}
 \label{fig:real-feeder}
 \end{figure*}
 
@@ -512,7 +537,7 @@ The flexibility procedure of Section~\ref{sec:res-flex} transfers to this feeder
 
 \subsection{Accuracy}
 
-The capacity estimate carries two error sources, both traced in the results. The non-ETL temperature response that Equation~\eqref{eq:decomp} neglects biases the net-load numerator. At a low ETL rate this occupancy-driven load inflates the heating slope. The energy estimate then turns from a 15\% underestimate at full count to an overestimate as the HPs thin out (Table~\ref{tab:feeder-sweep}). A zero-HP control makes this concrete: aggregating only HP-free households, the net-load fit still shows a small heating slope, and Equation~\eqref{eq:capacity} infers about 0.37~kW of spurious capacity per household where no HP exists. This floor is small per home but grows with feeder size, so it dominates the estimate at a low ETL rate and is negligible once HPs supply most of the temperature-driven load. The SF denominator carries the transfer error, which the real feeder shows to be the threshold temperature rather than the slope. On the synthetic held-out set the capacity WAPE is 10\%. On the real feeder the hybrid estimate, with the threshold temperature read from the observable net-load fit, reaches 7\%, against 17\% for the fully transferred curve.
+The capacity estimate carries two error sources, both traced in the results. The non-ETL temperature response that Equation~\eqref{eq:decomp} neglects biases the net-load numerator. At a low ETL rate this occupancy-driven load inflates the heating slope. The energy estimate then turns from a 15\% underestimate at full count to an overestimate as the HPs thin out (Table~\ref{tab:feeder-sweep}). A zero-HP control makes this concrete: aggregating only HP-free households, the net-load fit still shows a small heating slope, and Equation~\eqref{eq:capacity} infers about 0.37~kW of spurious capacity per household where no HP exists. This floor is small per home but grows with feeder size, so it dominates the estimate at a low ETL rate and is negligible once HPs supply most of the temperature-driven load. The SF denominator carries the transfer error, which the real feeder shows to be the threshold temperature rather than the slope. On the synthetic held-out set the capacity WAPE is 10\%. On the real feeder, the installed capacity estimate has a 7\% error.
 
 \subsection{Generalisation}
 
@@ -524,7 +549,7 @@ The two functions ask for different data. The net-load function needs only the a
 
 \subsection{Limitations}
 
-Several limits temper the results. The submetered pool holds about fifty distinct HPs on one weather station, so the synthetic substations reuse households and the train and test groups share them. A household-disjoint split narrows this concern, reproducing the transferred SF shape at a median $R^2$ of 0.93 within the population (Section~\ref{sec:res-sf}). The cross-population generalisation, however, still rests on the single real feeder, one real aggregate rather than a population of feeders. The model neglects the non-ETL temperature response throughout, which the low-ETL-rate bias exposes.
+Several limits temper the results. The submetered pool holds about fifty distinct HPs on one weather station, so the synthetic substations reuse households and the train and test groups share them. A household-disjoint split narrows this concern, reproducing the transferred SF shape at a median $R^2$ of 0.88 within the population (Section~\ref{sec:res-sf}). The cross-population generalisation, however, still rests on the single real feeder, one real aggregate rather than a population of feeders. The model neglects the non-ETL temperature response throughout, which the low-ETL-rate bias exposes.
 
 A further confounder is deliberate control. Swiss and German domestic HPs commonly run under interruptible tariffs with defined blocking periods, and since January 2024 {\S}14a EnWG lets German DSOs throttle HPs above 4.2~kW \cite{Bna23}. Such control truncates the aggregated ETL peak. It biases the net-load numerator and the capacity estimate downwards, consistent with the German underestimate, and imprints regime-specific structure that a single-slope transfer need not capture. The WPuQ campaign predates {\S}14a, but blocking-period tariffs do not. Underlying all of these is the broader shortage of submetered ETL data, which a wider pilot would relieve.
 

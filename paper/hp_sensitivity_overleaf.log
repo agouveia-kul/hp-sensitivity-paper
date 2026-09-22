@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.2) (preloaded format=pdflatex 2026.4.3)  20 SEP 2026 14:16
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.2) (preloaded format=pdflatex 2026.4.3)  22 SEP 2026 18:36
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -654,24 +654,24 @@ LaTeX Warning: Unused global option(s):
 (hp_sensitivity_overleaf.aux)
 \openout1 = `hp_sensitivity_overleaf.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 19.
-LaTeX Font Info:    ... okay on input line 19.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 19.
-LaTeX Font Info:    ... okay on input line 19.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 19.
-LaTeX Font Info:    ... okay on input line 19.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 19.
-LaTeX Font Info:    ... okay on input line 19.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 19.
-LaTeX Font Info:    ... okay on input line 19.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 19.
-LaTeX Font Info:    ... okay on input line 19.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 19.
-LaTeX Font Info:    ... okay on input line 19.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 19.
-LaTeX Font Info:    ... okay on input line 19.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 19.
-LaTeX Font Info:    ... okay on input line 19.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
 
 -- Lines per column: 63 (exact).
 (C:\Program Files\MiKTeX\tex/context/base/mkii\supp-pdf.mkii
@@ -695,7 +695,7 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 (C:\Program Files\MiKTeX\tex/latex/00miktex\epstopdf-sys.cfg
 File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 ))
-Package hyperref Info: Link coloring OFF on input line 19.
+Package hyperref Info: Link coloring OFF on input line 18.
 
 (hp_sensitivity_overleaf.out) (hp_sensitivity_overleaf.out)
 \@outlinefile=\write4
@@ -706,131 +706,162 @@ ram Files/MiKTeX/fonts/enc/dvips/base/8r.enc}
 
 
 ]
-<figures/fig_bathtub_example.pdf, id=189, 249.81932pt x 212.83076pt>
+<figures/fig_bathtub_example.pdf, id=197, 249.81932pt x 212.83076pt>
 File: figures/fig_bathtub_example.pdf Graphic file (type pdf)
 <use figures/fig_bathtub_example.pdf>
 Package pdftex.def Info: figures/fig_bathtub_example.pdf  used on input line 17
-1.
+4.
 (pdftex.def)             Requested size: 252.0pt x 214.69106pt.
  [2 <./figures/fig_bathtub_example.pdf>]
-<figures/fig_sf_arms_anchored.pdf, id=273, 248.74863pt x 211.3314pt>
+<figures/fig_sf_arms_anchored.pdf, id=281, 248.74863pt x 211.3314pt>
 File: figures/fig_sf_arms_anchored.pdf Graphic file (type pdf)
 <use figures/fig_sf_arms_anchored.pdf>
 Package pdftex.def Info: figures/fig_sf_arms_anchored.pdf  used on input line 2
-81.
+84.
 (pdftex.def)             Requested size: 252.0pt x 214.10406pt.
-<figures/fig_bathtub_critical.pdf, id=284, 249.09906pt x 212.48398pt>
+<figures/fig_bathtub_critical.pdf, id=292, 249.09906pt x 212.48398pt>
 File: figures/fig_bathtub_critical.pdf Graphic file (type pdf)
 <use figures/fig_bathtub_critical.pdf>
 Package pdftex.def Info: figures/fig_bathtub_critical.pdf  used on input line 2
 98.
 (pdftex.def)             Requested size: 252.0pt x 214.96051pt.
- [3]
-Underfull \vbox (badness 1728) has occurred while \output is active []
 
- [4 <./figures/fig_sf_arms_anchored.pdf> <./figures/fig_bathtub_critical.pdf>]
-<figures/fig_flex_schedule.pdf, id=443, 517.43123pt x 206.64201pt>
+(tables/tab_cross.tex
+Overfull \hbox (62.15286pt too wide) in paragraph at lines 7--26
+ [][] 
+ []
+
+) [3 <./figures/fig_sf_arms_anchored.pdf>] [4 <./figures/fig_bathtub_critical.p
+df>]
+<figures/fig_flex_schedule.pdf, id=472, 517.43123pt x 206.64201pt>
 File: figures/fig_flex_schedule.pdf Graphic file (type pdf)
 <use figures/fig_flex_schedule.pdf>
-Package pdftex.def Info: figures/fig_flex_schedule.pdf  used on input line 367.
+Package pdftex.def Info: figures/fig_flex_schedule.pdf  used on input line 391.
 
 (pdftex.def)             Requested size: 412.80157pt x 164.86293pt.
-<figures/fig_slope_capacity.pdf, id=450, 246.89568pt x 212.03404pt>
+ [5]
+<figures/fig_slope_capacity.pdf, id=490, 246.89568pt x 212.03404pt>
 File: figures/fig_slope_capacity.pdf Graphic file (type pdf)
 <use figures/fig_slope_capacity.pdf>
-Package pdftex.def Info: figures/fig_slope_capacity.pdf  used on input line 406
+Package pdftex.def Info: figures/fig_slope_capacity.pdf  used on input line 428
 .
 (pdftex.def)             Requested size: 252.0pt x 216.42067pt.
- [5 <./figures/fig_flex_schedule.pdf>] (tables/tab_sf.tex
+ (tables/tab_sf.tex
 Overfull \hbox (6.639pt too wide) in paragraph at lines 5--19
  [][] 
  []
 
 )
-<figures/fig_sf_pooled.pdf, id=509, 249.95383pt x 212.83076pt>
+<figures/fig_sf_pooled.pdf, id=497, 249.95383pt x 212.83076pt>
 File: figures/fig_sf_pooled.pdf Graphic file (type pdf)
 <use figures/fig_sf_pooled.pdf>
-Package pdftex.def Info: figures/fig_sf_pooled.pdf  used on input line 422.
+Package pdftex.def Info: figures/fig_sf_pooled.pdf  used on input line 446.
 (pdftex.def)             Requested size: 252.0pt x 214.5709pt.
- (tables/tab_sf_train.tex) [6 <./figures/fig_slope_capacity.pdf> <./figures/fig
-_sf_pooled.pdf>] (tables/tab_energy.tex)
-<figures/fig_energy_error_belowTh.pdf, id=644, 517.41241pt x 212.07796pt>
+ (tables/tab_sf_train.tex) [6 <./figures/fig_flex_schedule.pdf> <./figures/fig_
+slope_capacity.pdf>] (tables/tab_energy.tex)
+<figures/fig_energy_error_belowTh.pdf, id=627, 517.41241pt x 212.07796pt>
 File: figures/fig_energy_error_belowTh.pdf Graphic file (type pdf)
 <use figures/fig_energy_error_belowTh.pdf>
 Package pdftex.def Info: figures/fig_energy_error_belowTh.pdf  used on input li
-ne 448.
+ne 472.
 (pdftex.def)             Requested size: 516.0pt x 211.51111pt.
- (tables/tab_capacity.tex) [7 <./figures/fig_energy_error_belowTh.pdf>]
-<figures/fig_flex_ratio.pdf, id=708, 249.93814pt x 191.14975pt>
+ (tables/tab_capacity.tex)
+[7 <./figures/fig_sf_pooled.pdf>]
+<figures/fig_flex_ratio.pdf, id=697, 249.93814pt x 191.14975pt>
 File: figures/fig_flex_ratio.pdf Graphic file (type pdf)
 <use figures/fig_flex_ratio.pdf>
-Package pdftex.def Info: figures/fig_flex_ratio.pdf  used on input line 471.
+Package pdftex.def Info: figures/fig_flex_ratio.pdf  used on input line 495.
 (pdftex.def)             Requested size: 252.0pt x 192.72429pt.
-<figures/fig_flex_season.pdf, id=711, 248.85912pt x 191.14975pt>
+<figures/fig_flex_season.pdf, id=700, 248.85912pt x 191.14975pt>
 File: figures/fig_flex_season.pdf Graphic file (type pdf)
 <use figures/fig_flex_season.pdf>
-Package pdftex.def Info: figures/fig_flex_season.pdf  used on input line 478.
+Package pdftex.def Info: figures/fig_flex_season.pdf  used on input line 502.
 (pdftex.def)             Requested size: 252.0pt x 193.57306pt.
- [8 <./figures/fig_flex_ratio.pdf> <./figures/fig_flex_season.pdf>] (tables/tab
-_feeder_sweep.tex)
-<figures/fig_real_feeder.pdf, id=809, 517.41241pt x 212.83076pt>
+ [8 <./figures/fig_energy_error_belowTh.pdf> <./figures/fig_flex_ratio.pdf> <./
+figures/fig_flex_season.pdf>]
+(tables/tab_feeder_sweep.tex)
+<figures/fig_real_feeder.pdf, id=837, 517.41241pt x 212.83076pt>
 File: figures/fig_real_feeder.pdf Graphic file (type pdf)
 <use figures/fig_real_feeder.pdf>
-Package pdftex.def Info: figures/fig_real_feeder.pdf  used on input line 504.
+Package pdftex.def Info: figures/fig_real_feeder.pdf  used on input line 529.
 (pdftex.def)             Requested size: 516.0pt x 212.2619pt.
+ [9]
 LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 5
-29.
+54.
 
 (C:\Program Files\MiKTeX\tex/latex/psnfss\ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
-) [9 <./figures/fig_real_feeder.pdf>] (hp_sensitivity_overleaf.bbl
+)
+(hp_sensitivity_overleaf.bbl
 Underfull \hbox (badness 3417) in paragraph at lines 30--33
 \OT1/ptm/m/n/8 low-voltage grids with meta-data in Ger-many over two years,''
  []
 
 
-Overfull \vbox (15.04585pt too high) has occurred while \output is active []
+Package balance Warning: You have called \balance in second column
+(balance)                Columns might not be balanced.
 
-
-[10]
+[10 <./figures/fig_real_feeder.pdf>]
 Underfull \hbox (badness 1629) in paragraph at lines 213--216
 \OT1/ptm/m/n/8 [On-line]. Avail-able: https://dataport.pecanstreet.org, 2018, a
 c-cessed:
  []
 
-) [11] (hp_sensitivity_overleaf.aux)
+
+Underfull \hbox (badness 10000) in paragraph at lines 264--268
+[]\OT1/ptm/m/n/8 Northwest En-ergy Ef-fi-ciency Al-liance, ``North-west End-Use
+
+ []
+
+
+Underfull \hbox (badness 2913) in paragraph at lines 264--268
+\OT1/ptm/m/n/8 Load Re-search Project: Home En-ergy Me-ter-ing Study (HEMS)
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 264--268
+\OT1/ptm/m/n/8 15-minute Data,'' [On-line]. Avail-able: []$https : / / neea . o
+rg / data /
+ []
+
+)
+Overfull \vbox (0.75574pt too high) has occurred while \output is active []
+
+
+[11] (hp_sensitivity_overleaf.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
  ***********
 Package rerunfilecheck Info: File `hp_sensitivity_overleaf.out' has not changed
 .
-(rerunfilecheck)             Checksum: FE666BBFC6598BF998C27105D012CACE;4685.
+(rerunfilecheck)             Checksum: E78B3DF2CCAFC8EC90CBBA6A48DFD18E;4650.
  ) 
 Here is how much of TeX's memory you used:
- 21468 strings out of 467867
- 403570 string characters out of 5428393
- 837968 words of memory out of 5000000
- 49879 multiletter control sequences out of 15000+600000
- 668032 words of font info for 108 fonts, out of 8000000 for 9000
+ 21500 strings out of 467867
+ 404152 string characters out of 5428393
+ 847245 words of memory out of 5000000
+ 49899 multiletter control sequences out of 15000+600000
+ 668259 words of font info for 109 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 84i,11n,104p,1321b,889s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 84i,12n,104p,1312b,889s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cmextra/cmex9.pfb><C:/Pr
 ogram Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi5.pfb><C:/Program Files/M
 iKTeX/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Program Files/MiKTeX/fonts/t
-ype1/public/amsfonts/cm/cmmi8.pfb><C:/Program Files/MiKTeX/fonts/type1/public/a
-msfonts/cm/cmmi9.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cm
-r6.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Pro
-gram Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmr9.pfb><C:/Program Files/MiK
-TeX/fonts/type1/public/amsfonts/cm/cmsy6.pfb><C:/Program Files/MiKTeX/fonts/typ
-e1/public/amsfonts/cm/cmsy8.pfb><C:/Program Files/MiKTeX/fonts/type1/public/ams
-fonts/cm/cmsy9.pfb><C:/Program Files/MiKTeX/fonts/type1/urw/times/utmb8a.pfb><C
-:/Program Files/MiKTeX/fonts/type1/urw/times/utmbi8a.pfb><C:/Program Files/MiKT
-eX/fonts/type1/urw/times/utmr8a.pfb><C:/Program Files/MiKTeX/fonts/type1/urw/ti
-mes/utmri8a.pfb>
-Output written on hp_sensitivity_overleaf.pdf (11 pages, 602430 bytes).
+ype1/public/amsfonts/cm/cmmi7.pfb><C:/Program Files/MiKTeX/fonts/type1/public/a
+msfonts/cm/cmmi8.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cm
+mi9.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/Pr
+ogram Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Program Files/Mi
+KTeX/fonts/type1/public/amsfonts/cm/cmr9.pfb><C:/Program Files/MiKTeX/fonts/typ
+e1/public/amsfonts/cm/cmsy6.pfb><C:/Program Files/MiKTeX/fonts/type1/public/ams
+fonts/cm/cmsy8.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy
+9.pfb><C:/Program Files/MiKTeX/fonts/type1/urw/times/utmb8a.pfb><C:/Program Fil
+es/MiKTeX/fonts/type1/urw/times/utmbi8a.pfb><C:/Program Files/MiKTeX/fonts/type
+1/urw/times/utmr8a.pfb><C:/Program Files/MiKTeX/fonts/type1/urw/times/utmri8a.p
+fb>
+Output written on hp_sensitivity_overleaf.pdf (11 pages, 624175 bytes).
 PDF statistics:
- 983 PDF objects out of 1000 (max. 8388607)
- 113 named destinations out of 1000 (max. 500000)
- 263 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1030 PDF objects out of 1200 (max. 8388607)
+ 122 named destinations out of 1000 (max. 500000)
+ 279 words of extra memory for PDF output out of 10000 (max. 10000000)
 

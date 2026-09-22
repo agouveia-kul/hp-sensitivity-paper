@@ -211,6 +211,12 @@ P.~Westermann, C.~Deb, A.~Schlueter, and R.~Evins, ``{Unsupervised learning of
   [Online]. Available: https://dataport.pecanstreet.org, 2018, accessed:
   2026-09-05.
 
+\bibitem{Cha16}
+N.~Chapman, L.~Zhang, N.~Good, and P.~Mancarella, ``{Exploring flexibility of
+  aggregated residential electric heat pumps},'' in \emph{Proc. IEEE Int.
+  Energy Conf. (EnergyCon)}.\hskip 1em plus 0.5em minus 0.4em\relax IEEE, 2016,
+  pp. 1--6.
+
 \bibitem{Bru25}
 T.~Brudermueller, E.~Fleisch, M.~Gonz\'{a}lez~Vay\'{a}, and T.~Staake, ``{HEAPO
   -- An Open Dataset for Heat Pump Optimization with Smart Electricity Meter
@@ -221,12 +227,6 @@ T.~Brudermueller, E.~Fleisch, M.~Gonz\'{a}lez~Vay\'{a}, and T.~Staake, ``{HEAPO
 \bibitem{Kai26b}
 K.~Kaiser, M.~Kreft, M.~G. Vay\'{a}, and G.~Hug, ``Dataset on residential
   electricity load profiles in switzerland,'' arXiv:2607.19294, 2026.
-
-\bibitem{Cha16}
-N.~Chapman, L.~Zhang, N.~Good, and P.~Mancarella, ``{Exploring flexibility of
-  aggregated residential electric heat pumps},'' in \emph{Proc. IEEE Int.
-  Energy Conf. (EnergyCon)}.\hskip 1em plus 0.5em minus 0.4em\relax IEEE, 2016,
-  pp. 1--6.
 
 \bibitem{Few24}
 S.~Few, P.~Djapic, and G.~Strbac, ``{A geographically disaggregated approach to

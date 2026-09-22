@@ -966,6 +966,7 @@ def tab_cross():
     ROW = {
         'German WPuQ (real HP)':               r'Hamelin, DE~\cite{Sch22}',
         'Swiss substation (real HP)':          r'Kloten, CH~\cite{Bru25,Kai26b}',
+        'LCL London ASHP (real HP)':           r'London, UK$^\dagger$~\cite{lcl_heatpump}',
         'COFACTOR Norway (real HP)':           r'Oslo, NO~\cite{cofactor}',
         'Austin Pecan St (real)':              r'Austin, TX, US~\cite{pecanstreet}',
         'Carleton Ottawa (real AC)':           r'Ottawa, CA~\cite{carleton}',
@@ -978,6 +979,7 @@ def tab_cross():
     TECH = {   # ETL technologies behind the meter for each aggregate
         'German WPuQ (real HP)':               'WSHP',
         'Swiss substation (real HP)':          'ASHP, GSHP',
+        'LCL London ASHP (real HP)':           'ASHP',
         'COFACTOR Norway (real HP)':           'GSHP, ER',
         'Austin Pecan St (real)':              'AC, ER',
         'Carleton Ottawa (real AC)':           'AC',
@@ -987,25 +989,51 @@ def tab_cross():
         'ResStock ASHP -- King WA (mild)':     'ASHP, ER',
         'ResStock ASHP -- Maricopa AZ (hot)':  'ASHP, ER',
     }
+    KOPPEN = {   # Koppen-Geiger climate class of each location (verify against your source)
+        'German WPuQ (real HP)':               'Cfb',
+        'Swiss substation (real HP)':          'Cfb',
+        'LCL London ASHP (real HP)':           'Cfb',
+        'COFACTOR Norway (real HP)':           'Dfb',
+        'Austin Pecan St (real)':              'Cfa',
+        'Carleton Ottawa (real AC)':           'Dfb',
+        'NEEA WA (real HP)':                   'Csb',
+        'NEEA OR (real HP)':                   'Csb',
+        'ResStock ASHP -- Hennepin MN (cold)': 'Dfa',
+        'ResStock ASHP -- King WA (mild)':     'Csb',
+        'ResStock ASHP -- Maricopa AZ (hot)':  'BWh',
+    }
     order = [k for k in ROW if k in df.index]
-    COLS = [('$n$', 'n', '.0f'), (r'$T_{\min}$', 'T_min', '.0f'), (r'$T_{\max}$', 'T_max', '.0f'),
-            (r'$P_{\mathrm{base}}$', 'P_base', '.0f'), ('$s_h$', 's_h', '.1f'), ('$T_h$', 'T_h', '.1f'),
-            ('$s_c$', 's_c', '.1f'), ('$T_c$', 'T_c', '.1f'), ('$R^2$', 'R2', '.2f'),
+    COLS = [('$n$', 'n', '.0f'),
+            (r'$P_{\mathrm{base}}$', 'P_base', '.0f'), ('$s_h$', 's_h', '.1f'), ('$T_h$', 'T_h', '.1f'), ('$R^2_h$', 'R2_net_h', '.2f'),
+            ('$s_c$', 's_c', '.1f'), ('$T_c$', 'T_c', '.1f'), ('$R^2_c$', 'R2_net_c', '.2f'),
             ('$b_h$', 'b_h', '.3f'), ('$m_h$', 'm_h', '.3f'), (r'SF$_\mathrm{c}$', 'SF_cold', '.2f'), ('$R^2_h$', 'R2_SFh', '.2f'),
             ('$b_c$', 'b_c', '.3f'), ('$m_c$', 'm_c', '.3f'), (r'SF$_\mathrm{h}$', 'SF_hot', '.2f'), ('$R^2_c$', 'R2_SFc', '.2f')]
 
+    # Two-slope coldest-day SF, reported in parentheses where a single arm underfits
+    # the deepest cold. Hennepin: air-source COP fall-off + electric backup add a
+    # second, steeper slope at a knee near -13 C, lifting SF_cold 0.45 -> 0.74.
+    KNEE_SFC = {'ResStock ASHP -- Hennepin MN (cold)': 0.74}
+
     def cell(v, fmt):
         return '--' if (v is None or (isinstance(v, float) and not np.isfinite(v))) else format(v, fmt)
-    body = '\n'.join(ROW[lab] + ' & ' + TECH[lab] + ' & ' + ' & '.join(cell(df.loc[lab, c], f) for _, c, f in COLS) + r' \\'
-                    for lab in order)
-    head2 = 'dataset & ETL tech & ' + ' & '.join(h for h, _, _ in COLS) + r' \\'
+
+    def cell_at(lab, c, fmt):
+        s = cell(df.loc[lab, c], fmt)
+        if c == 'SF_cold' and lab in KNEE_SFC:
+            s = s + r'\,(' + format(KNEE_SFC[lab], '.2f') + ')'
+        return s
+    rest = COLS[1:]
+    body = '\n'.join(ROW[lab] + ' & ' + TECH[lab] + ' & ' + cell(df.loc[lab, 'n'], '.0f') + ' & ' + KOPPEN[lab]
+                     + ' & ' + ' & '.join(cell_at(lab, c, f) for _, c, f in rest) + r' \\'
+                     for lab in order)
+    head2 = 'dataset & ETL tech & $n$ & Climate & ' + ' & '.join(h for h, _, _ in rest) + r' \\'
     tex = (
         r"\begin{table*}[t]" "\n" r"\centering" "\n"
-        r"\caption{Net-load and SF fit parameters for one aggregate per dataset. $n$ is the number of aggregated consumers; $T_{\min},T_{\max}$ the recorded temperature range [$^\circ$C]; $s_h,s_c$ [kW/$^\circ$C]; $T_h,T_c$ [$^\circ$C]; $m_h,m_c$ [$^\circ$C$^{-1}$]; SF$_\mathrm{c}$/SF$_\mathrm{h}$ the coldest-/hottest-day SF. ETL-technology codes: ASHP air-source heat pump; GSHP ground-source heat pump; WSHP water-source heat pump; DHP ductless (mini-split) heat pump; AC air conditioning; ER electric resistance heating.}" "\n"
+        r"\caption{Net-load and SF fit parameters for one aggregate per dataset. $n$ is the number of aggregated consumers; Climate is the K{\"o}ppen--Geiger class~\cite{beck2018koppen}; under the net-load fit, $R^2_h$ and $R^2_c$ score the heating and cooling arms separately, each on the days of its own regime; $s_h,s_c$ [kW/$^\circ$C]; $T_h,T_c$ [$^\circ$C]; $m_h,m_c$ [$^\circ$C$^{-1}$]; SF$_\mathrm{c}$/SF$_\mathrm{h}$ the coldest-/hottest-day SF, a parenthetical SF$_\mathrm{c}$ giving the two-slope value where a single arm underfits the deepest cold (Hennepin, whose air-source backup adds a second slope near $-13\,^\circ$C). ETL-technology codes: ASHP air-source heat pump; GSHP ground-source heat pump; WSHP water-source heat pump; DHP ductless (mini-split) heat pump; AC air conditioning; ER electric resistance heating. $^\dagger$The LCL London aggregate is submetered heat-pump load only (6 homes, no other household load), so its net-load fit coincides with the HP load and $P_{\mathrm{base}}$ is the summer standby/hot-water floor; the small aggregation raises its SF slope relative to the larger pools.}" "\n"
         r"\label{tab:cross}" "\n" r"% \scriptsize" "\n" r"\setlength{\tabcolsep}{4pt}" "\n"
-        r"\begin{tabular}{ll" + "c" * len(COLS) + "}\n" r"\toprule" "\n"
-        r" & & \multicolumn{3}{c}{} & \multicolumn{6}{c}{Net-load fit $\hat{P}_{\mathrm{net}}(T)$} & \multicolumn{8}{c}{SF fit $\hat{\mathrm{SF}}(T)$}\\" "\n"
-        r"\cmidrule(lr){6-11}\cmidrule(lr){12-19}" "\n"
+        r"\begin{tabular}{ll" + "c" * (len(COLS) + 1) + "}\n" r"\toprule" "\n"
+        r" & & & & \multicolumn{7}{c}{Net-load fit $\hat{P}_{\mathrm{net}}(T)$} & \multicolumn{8}{c}{SF fit $\hat{\mathrm{SF}}(T)$}\\" "\n"
+        r"\cmidrule(lr){5-11}\cmidrule(lr){12-19}" "\n"
         + head2 + "\n" r"\midrule" "\n" + body + "\n" r"\bottomrule" "\n"
         r"\end{tabular}" "\n" r"\end{table*}" "\n")
     open('paper/tables/tab_cross.tex', 'w').write(tex)
