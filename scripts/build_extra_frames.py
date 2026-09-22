@@ -37,6 +37,7 @@ from hp_capacity import robust_series_peak
 
 COFACTOR_DIR = 'data/cofactor_ds1'
 CARLETON_DIR = 'data/carleton/Saldanha_Beausoleil-Morrison/processed_data'
+LCL_DIR = 'data/lcl_heatpump'
 CACHE = 'scratchpad/cross_frames.pkl'
 # electric-heated blocks (GSHP / electric resistance / electric floor heating);
 # district-heating blocks (6479-6495, 6892-6893) carry non-electric heat and are excluded.
@@ -134,14 +135,59 @@ def build_carleton_frame(min_houses=10):
 
 
 # ---------------------------------------------------------------------------
+def build_lcl_frame(year=2014, min_hours=200):
+    """Low Carbon London heat-pump homes (UK Power Networks trial): a real
+    air-source-HP aggregate. HP-only -- each file carries the submetered
+    ``heat_pump_energy_consumption`` (cumulative kWh) and its own
+    ``external_temperature``, but no whole-house load, so net == HP here.
+
+    Restricted to ``year`` (2014), the single year in which all nine homes are
+    metered together. cap_h is the sum of the nine per-home robust peaks in that
+    year (installed-capacity convention, matching the ResStock rows). The
+    aggregate is summed only over hours when all nine report, so the coincident
+    demand and the summed peak refer to the same nine homes. Note the 2014 data
+    ends in March, so the window is winter-only and does not reach $T_h$.
+    Source: UK Power Networks, Low Carbon London (2011-2014).
+    Expected raw: data/lcl_heatpump/S1_Customer_L_*.csv
+    """
+    pows, temps, caps = {}, {}, []
+    for f in sorted(glob.glob(f'{LCL_DIR}/S1_Customer_L_*.csv')):
+        df = pd.read_csv(f, usecols=['timestamp', 'external_temperature',
+                                     'heat_pump_energy_consumption'])
+        df['timestamp'] = pd.to_datetime(df['timestamp'], errors='coerce')
+        df = df.dropna(subset=['timestamp']).sort_values('timestamp').set_index('timestamp')
+        e = pd.to_numeric(df['heat_pump_energy_consumption'], errors='coerce')   # cumulative kWh
+        T = pd.to_numeric(df['external_temperature'], errors='coerce')
+        dt = e.index.to_series().diff().dt.total_seconds() / 3600.0
+        p = e.diff() / dt                                                        # kW
+        p[(dt <= 0) | (dt > 1.5) | (e.diff() < 0) | (p > 12)] = np.nan           # resets/gaps/spikes
+        ph = p.resample('h').mean(); Th = T.resample('h').mean()
+        ph = ph[ph.index.year == year]; Th = Th[Th.index.year == year]
+        if ph.notna().sum() < min_hours:
+            continue
+        cid = os.path.basename(f).replace('.csv', '')
+        pows[cid] = ph; temps[cid] = Th
+        caps.append(float(robust_series_peak(ph.dropna())))                      # per-home peak in `year`
+    P = pd.concat(pows, axis=1); Tm = pd.concat(temps, axis=1)
+    allp = P.notna().sum(axis=1) == P.shape[1]                                   # all homes present
+    agg = P[allp].sum(axis=1); Tag = Tm[allp].mean(axis=1)
+    dd = pd.DataFrame({'T': Tag.resample('D').mean(), 'p': agg.resample('D').mean()}).dropna()
+    return dict(n=len(pows), T=dd['T'].to_numpy(), net=dd['p'].to_numpy(),
+                heat=dd['p'].to_numpy(), cool=np.zeros(len(dd)),
+                cap_h=float(np.sum(caps)), cap_c=0.0)
+
+
 def main():
     cof = build_cofactor_frame()
     car = build_carleton_frame()
+    lcl = build_lcl_frame()
+    print(f"LCL London ASHP:      n={lcl['n']}, {len(lcl['T'])} days, cap_h={lcl['cap_h']:.0f} kW")
     print(f"COFACTOR Norway pool: n={cof['n']}, {len(cof['T'])} days, cap_h={cof['cap_h']:.0f} kW")
     print(f"Carleton Ottawa:      n={car['n']}, {len(car['T'])} days, cap_c={car['cap_c']:.0f} kW")
     FR = pickle.load(open(CACHE, 'rb'))
     FR['COFACTOR Norway (real HP)'] = cof
     FR['Carleton Ottawa (real AC)'] = car
+    FR['LCL London ASHP (real HP)'] = lcl
     pickle.dump(FR, open(CACHE, 'wb'))
     print('updated', CACHE, '->', list(FR.keys()))
     print('now run: outputs.build_cross_table(repull=False); outputs.tab_cross(); outputs.fig_cross_montage()')

@@ -219,11 +219,15 @@ H.~Fani, M.~U. Hashmi, and G.~Deconinck, ``Impact of electric vehicle charging
   simultaneity factor on the hosting capacity of lv feeder,'' \emph{Sustainable
   Energy, Grids and Networks}, vol.~40, p. 101581, 2024.
 
-\bibitem{Cha16}
-N.~Chapman, L.~Zhang, N.~Good, and P.~Mancarella, ``{Exploring flexibility of
-  aggregated residential electric heat pumps},'' in \emph{Proc. IEEE Int.
-  Energy Conf. (EnergyCon)}.\hskip 1em plus 0.5em minus 0.4em\relax IEEE, 2016,
-  pp. 1--6.
+\bibitem{beck2018koppen}
+H.~E. Beck, N.~E. Zimmermann, T.~R. McVicar, N.~Vergopolan, A.~Berg, and E.~F.
+  Wood, ``Present and future k{\"o}ppen-geiger climate classification maps at
+  1-km resolution,'' \emph{Scientific Data}, vol.~5, no.~1, p. 180214, 2018.
+
+\bibitem{Sch22}
+M.~Schlemminger, T.~Ohrdes, E.~Schneider, and M.~Knoop, ``{Dataset on
+  electrical single-family house and heat pump load profiles in Germany},''
+  \emph{Scientific Data}, vol.~9, no.~1, 2022.
 
 \bibitem{Bru25}
 T.~Brudermueller, E.~Fleisch, M.~Gonz\'{a}lez~Vay\'{a}, and T.~Staake, ``{HEAPO
@@ -236,15 +240,50 @@ T.~Brudermueller, E.~Fleisch, M.~Gonz\'{a}lez~Vay\'{a}, and T.~Staake, ``{HEAPO
 K.~Kaiser, M.~Kreft, M.~G. Vay\'{a}, and G.~Hug, ``Dataset on residential
   electricity load profiles in switzerland,'' arXiv:2607.19294, 2026.
 
+\bibitem{lcl_heatpump}
+{UK Power Networks}, ``{Low Carbon London Heat Pump Load Profiles},'' 2014,
+  heat-pump power-quality monitoring trials, 19 customers, 2011--2014.
+  [Online]. Available:
+  \url{https://innovation.ukpowernetworks.co.uk/projects/low-carbon-london/}.
+
+\bibitem{cofactor}
+{\AA}.~L. S{\o}rensen, S.~K. Lien, and H.~T. Walnum, ``{COFACTOR-residential:
+  Hourly electricity and heating data from residential buildings in Norway},''
+  \emph{Data in Brief}, vol.~65, p. 112580, 2026, dataset 1 (Oslo/B{\ae}rum
+  apartment blocks), CC BY 4.0. [Online]. Available:
+  \url{https://doi.org/10.60609/3ab7-ez93}.
+
+\bibitem{carleton}
+N.~Saldanha and I.~Beausoleil-Morrison, ``{Measured end-use electric load
+  profiles for 12 Canadian houses at high temporal resolution},'' \emph{Energy
+  and Buildings}, vol.~49, pp. 519--530, 2012, ottawa, Canada; 1-minute end-use
+  data. [Online]. Available:
+  \url{https://carleton.ca/sbes/publications/electric-demand-profiles-downloadable/}.
+
+\bibitem{neea_eulr}
+{Northwest Energy Efficiency Alliance}, ``{Northwest End-Use Load Research
+  Project: Home Energy Metering Study (HEMS) 15-minute Data},'' [Online].
+  Available: \url{https://neea.org/data/nw-end-use-load-research-project},
+  2025.
+
+\bibitem{resstock}
+E.~J.~H. Wilson, A.~Parker, A.~Fontanini, E.~Present, J.~L. Reyna
+  \emph{et~al.}, ``{End-Use Load Profiles for the U.S. Building Stock:
+  Methodology and Results of Model Calibration, Validation, and Uncertainty
+  Quantification},'' National Renewable Energy Laboratory (NREL), Tech. Rep.
+  NREL/TP-5500-80889, 2022, resStock EUSS 2024.2 release. [Online]. Available:
+  \url{https://data.openei.org/s3_viewer?bucket=oedi-data-lake}.
+
+\bibitem{Cha16}
+N.~Chapman, L.~Zhang, N.~Good, and P.~Mancarella, ``{Exploring flexibility of
+  aggregated residential electric heat pumps},'' in \emph{Proc. IEEE Int.
+  Energy Conf. (EnergyCon)}.\hskip 1em plus 0.5em minus 0.4em\relax IEEE, 2016,
+  pp. 1--6.
+
 \bibitem{Few24}
 S.~Few, P.~Djapic, and G.~Strbac, ``{A geographically disaggregated approach to
   integrate low-carbon technologies across local electricity networks},''
   \emph{Nature Energy}, vol.~9, no.~7, pp. 871--882, 2024.
-
-\bibitem{Sch22}
-M.~Schlemminger, T.~Ohrdes, E.~Schneider, and M.~Knoop, ``{Dataset on
-  electrical single-family house and heat pump load profiles in Germany},''
-  \emph{Scientific Data}, vol.~9, no.~1, 2022.
 
 \bibitem{Men18}
 Q.~Meng, M.~Mourshed, and S.~Wei, ``{Going beyond the mean: Distributional

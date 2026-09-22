@@ -1,0 +1,27 @@
+\begin{table*}[t]
+\centering
+\caption{Representative work on detecting and quantifying distributed energy resources (DERs) from grid or meter measurements, and the gap this paper addresses. Cap.: recovers installed capacity. Submet.: needs submetered device data or labels. Transf.: a calibration transfers to un-submetered feeders. Level: individual meter, feeder/substation/transformer, or a submetered population.}
+\label{tab:litreview}
+\footnotesize\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lllllllll}
+\toprule
+Ref. & DER & Task & Level & Method & Input & Cap.? & Submet.? & Transf.? \\
+\midrule
+\cite{Zha16b} & PV & Detection + capacity & Meter & ML & Smart meter & Y & Y & N \\
+\cite{Li19d} & PV & Capacity + energy & Meter & ML & Smart meter & Y & Y & N \\
+\cite{Was21} & PV & Capacity & Feeder & Probabilistic & Aggr.\ net load & Y & N & N \\
+\cite{Sos17} & PV & Disaggregation & Feeder & Physics & Power flow + GHI & N & N & N \\
+\cite{gouveia2026pvcapacity} & PV & Installed capacity & Substation & ML / physics & Aggr.\ net load + GHI & Y & N & Part \\
+\cite{Azz24} & Transformer & Nameplate capacity & Transformer & ML (model-free) & Smart meter & Y & N & N \\
+\cite{Jar22} & PV/EV/HP & Detection & Meter & ML & Net-demand & N & Y & N \\
+\cite{Bec24} & PV/EV/HP & Coincidence / impact & Feeder & Empirical & Smart-meter profiles & N & N & N \\
+\cite{Wei20b} & HP & Detection & Meter & ML & Smart meter + weather & N & Y & N \\
+\cite{Bru23} & HP & Disaggregation / energy & Meter & ML (deep) & 15-min smart meter & N & Y & N \\
+\cite{Per17b} & HVAC & Change-point disaggregation & Meter & Change-point & Smart meter + temp. & N & N & N \\
+\cite{And20b} & HP & Transferable load profile & Feeder & Physics (thermal) & Temp.\ + housing & N & N & Y \\
+\cite{Lov17} & HP & Coincidence / ADMD & Population & Field study & Submetered HP (2-min) & N & Y & N \\
+\cite{Mul19} & HP & Flexibility / DR & Population & Field study & Submetered HP & N & Y & N \\
+This work & HP / ETL & Capacity + energy + flexibility & Feeder & Physics & Net load + temp.\ + transferred SF & Y & N & Y \\
+\bottomrule
+\end{tabular}
+\end{table*}

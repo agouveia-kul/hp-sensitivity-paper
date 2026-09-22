@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.2) (preloaded format=pdflatex 2026.4.3)  19 SEP 2026 13:52
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.2) (preloaded format=pdflatex 2026.4.3)  21 SEP 2026 14:50
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -837,9 +837,9 @@ fonts/cm/cmsy9.pfb><C:/Program Files/MiKTeX/fonts/type1/urw/times/utmb8a.pfb><C
 :/Program Files/MiKTeX/fonts/type1/urw/times/utmbi8a.pfb><C:/Program Files/MiKT
 eX/fonts/type1/urw/times/utmr8a.pfb><C:/Program Files/MiKTeX/fonts/type1/urw/ti
 mes/utmri8a.pfb>
-Output written on hp_sensitivity_v5.pdf (11 pages, 601245 bytes).
+Output written on hp_sensitivity_v5.pdf (11 pages, 600152 bytes).
 PDF statistics:
- 971 PDF objects out of 1000 (max. 8388607)
+ 969 PDF objects out of 1000 (max. 8388607)
  111 named destinations out of 1000 (max. 500000)
  255 words of extra memory for PDF output out of 10000 (max. 10000000)
 
