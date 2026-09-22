@@ -310,13 +310,16 @@ def tab_sf():
 
     def wape(pred, true):
         return np.abs(np.asarray(pred) - np.asarray(true)).sum() / np.asarray(true).sum() * 100
+    # tab_sf_train reports how well the pooled curve (fitted on the training half
+    # ``ref``) transfers to the held-out testing substations ``tgt`` -- an
+    # out-of-sample WAPE, not the in-sample fit on the training substations.
     wrows = []
-    for s in ref:
+    for s in tgt:
         pred = np.clip(U.predict(curve, s['T']), 0, 1)
         wrows.append(dict(N_hp=s['N_hp'], num=np.abs(pred - s['SF']).sum(), den=np.sum(s['SF'])))
     W = pd.DataFrame(wrows)
-    train_wape = W.groupby('N_hp').apply(lambda x: x.num.sum() / x.den.sum() * 100)
-    overall_train = W.num.sum() / W.den.sum() * 100
+    test_wape = W.groupby('N_hp').apply(lambda x: x.num.sum() / x.den.sum() * 100)
+    overall_test = W.num.sum() / W.den.sum() * 100
 
     trows = []
     for s in tgt:
@@ -351,7 +354,7 @@ def tab_sf():
 \label{tab:sf}
 \begin{tabular}{rccccc}
 \toprule
-$N_{hp}$ & $R^2$ & SF$_{\mathrm{cold}}$ & $b$ & $m$ ($^\circ$C$^{-1}$) & $T_h^{\mathrm{SF}}$ ($^\circ$C) \\
+$N_{hp}$ & $R^2$ & SF$^{\max}_h$ & $b_h$ & $m_h$ ($^\circ$C$^{-1}$) & $T_h^{\mathrm{SF}}$ ($^\circ$C) \\
 \midrule
 """ + body + "\n\\midrule\n" + allr + r"""
 \bottomrule
@@ -359,16 +362,16 @@ $N_{hp}$ & $R^2$ & SF$_{\mathrm{cold}}$ & $b$ & $m$ ($^\circ$C$^{-1}$) & $T_h^{\
 \end{table}"""
     open('paper/tables/tab_sf.tex', 'w').write(tex)
 
-    wbody = "\n".join(f"{int(n)} & {v:.1f} \\\\" for n, v in train_wape.items())
+    wbody = "\n".join(f"{int(n)} & {v:.1f} \\\\" for n, v in test_wape.items())
     wtex = r"""\begin{table}[t]
 \centering
-\caption{Total WAPE of the single pooled SF curve against the training substations, by $N_{hp}$}
+\caption{Total WAPE of the single pooled SF curve, fitted on the training substations, against the held-out testing substations, by $N_{hp}$}
 \label{tab:sf-train}
 \begin{tabular}{rc}
 \toprule
 $N_{hp}$ & total WAPE (\%) \\
 \midrule
-""" + wbody + "\n\\midrule\n" + f"all & {overall_train:.1f} \\\\" + r"""
+""" + wbody + "\n\\midrule\n" + f"all & {overall_test:.1f} \\\\" + r"""
 \bottomrule
 \end{tabular}
 \end{table}"""
@@ -852,13 +855,25 @@ $N_{hp}$ & \chg{capacity (\%)} & energy (\%) \\
 # ===========================================================================
 # Section 6 -- cross-dataset characterization
 # ===========================================================================
+# Hennepin-only: the ASHP compressor's own SF regression drops days colder than
+# this from the fit -- below it the compressor is visibly derating and the
+# HP-backup resistance element engages (binned backup share is <0.1% in every
+# 2 C bin down to -10 C, then 6.5%/13%/35%/saturated as it gets colder), so
+# those days are a different (backup-contaminated) regime, not SF noise.
+SF_TMIN_H = {'ResStock ASHP -- Hennepin MN (cold)': -10.0}
+
+
 def build_cross_table(repull=False):
     """Refit the cross-dataset table from scratchpad/cross_frames.pkl.
 
     ``repull=True`` re-pulls the three ResStock ASHP rows from the NREL S3
-    bucket with the electric backup element folded into ETL heating (compressor
-    + heating_hp_bkup), then refits. ``repull=False`` (default) just refits from
-    the cached frames. Writes scratchpad/cross_table.csv.
+    bucket. Hennepin's ``heat`` is the ASHP compressor's own draw only
+    (``out.electricity.heating``) -- the HP-backup resistance element
+    (``heating_hp_bkup``) is genuinely backup here (every home in this upgrade
+    has the ASHP as primary), not heating, so it is excluded from both the SF
+    numerator and ``cap_h``. King WA and Maricopa AZ keep compressor+backup
+    folded together, unchanged. ``repull=False`` (default) just refits from the
+    cached frames. Writes scratchpad/cross_table.csv.
     """
     cache = 'scratchpad/cross_frames.pkl'
     INPUTS = U.pickle_load(cache)
@@ -892,12 +907,13 @@ def build_cross_table(repull=False):
                             ('G5300330', 'WA', 'ResStock ASHP -- King WA (mild)'),
                             ('G0400130', 'AZ', 'ResStock ASHP -- Maricopa AZ (hot)')]:
             bids = list(np.random.default_rng(0).choice(meta[meta['in.county'] == gj]['bldg_id'].tolist(), 150, replace=False))
+            hennepin = lab == 'ResStock ASHP -- Hennepin MN (cold)'
             heat = cool = tot = None; hpk = cpk = 0.0
             with ThreadPoolExecutor(max_workers=16) as ex:
                 for r in ex.map(lambda b: read_one(b, st), bids):
                     if r is None:
                         continue
-                    h = (r[HC] + r[BK]) * 4
+                    h = (r[HC] if hennepin else (r[HC] + r[BK])) * 4
                     c, s2 = r[CC] * 4, r[TC] * 4
                     heat = h if heat is None else heat.add(h, fill_value=0)
                     cool = c if cool is None else cool.add(c, fill_value=0)
@@ -911,8 +927,8 @@ def build_cross_table(repull=False):
             print(lab, 'done: cap_h', round(hpk), 'cap_c', round(cpk), flush=True)
         pickle.dump(INPUTS, open(cache, 'wb'))
 
-    rows = [U.fit_row(lab, v['n'], v['T'], v['net'], v['heat'], v['cool'], v['cap_h'], v['cap_c'])
-            for lab, v in INPUTS.items()]
+    rows = [U.fit_row(lab, v['n'], v['T'], v['net'], v['heat'], v['cool'], v['cap_h'], v['cap_c'],
+                       sf_tmin_h=SF_TMIN_H.get(lab)) for lab, v in INPUTS.items()]
     pd.DataFrame(rows).to_csv('scratchpad/cross_table.csv', index=False)
     print('wrote scratchpad/cross_table.csv')
 
@@ -963,17 +979,18 @@ def tab_cross():
     """tab_cross: cross-dataset fit-parameter table from the cached CSVs."""
     df = pd.concat([pd.read_csv('scratchpad/cross_table.csv'),
                     pd.read_csv('scratchpad/neea_rows.csv')], ignore_index=True).set_index('label')
+    # Row order is fixed here (Ottawa dropped from the table); the AC-only Carleton
+    # Ottawa aggregate stays in the cache and the montage but is excluded from ROW.
     ROW = {
         'German WPuQ (real HP)':               r'Hamelin, DE~\cite{Sch22}',
         'Swiss substation (real HP)':          r'Kloten, CH~\cite{Bru25,Kai26b}',
-        'LCL London ASHP (real HP)':           r'London, UK$^\dagger$~\cite{lcl_heatpump}',
+        'LCL London ASHP (real HP)':           r'London, UK\tnote{a}~\cite{lcl_heatpump}',
         'COFACTOR Norway (real HP)':           r'Oslo, NO~\cite{cofactor}',
-        'Austin Pecan St (real)':              r'Austin, TX, US~\cite{pecanstreet}',
-        'Carleton Ottawa (real AC)':           r'Ottawa, CA~\cite{carleton}',
+        'ResStock ASHP -- Hennepin MN (cold)': r'Hennepin, MN, US~\cite{resstock}',
         'NEEA WA (real HP)':                   r'WA, US~\cite{neea_eulr}',
         'NEEA OR (real HP)':                   r'OR, US~\cite{neea_eulr}',
-        'ResStock ASHP -- Hennepin MN (cold)': r'Hennepin, MN, US~\cite{resstock}',
         'ResStock ASHP -- King WA (mild)':     r'King, WA, US~\cite{resstock}',
+        'Austin Pecan St (real)':              r'Austin, TX, US~\cite{pecanstreet}',
         'ResStock ASHP -- Maricopa AZ (hot)':  r'Maricopa, AZ, US~\cite{resstock}',
     }
     TECH = {   # ETL technologies behind the meter for each aggregate
@@ -981,12 +998,11 @@ def tab_cross():
         'Swiss substation (real HP)':          'ASHP, GSHP',
         'LCL London ASHP (real HP)':           'ASHP',
         'COFACTOR Norway (real HP)':           'GSHP, ER',
-        'Austin Pecan St (real)':              'AC, ER',
-        'Carleton Ottawa (real AC)':           'AC',
+        'ResStock ASHP -- Hennepin MN (cold)': 'ASHP, ER',
         'NEEA WA (real HP)':                   'DHP',
         'NEEA OR (real HP)':                   'DHP',
-        'ResStock ASHP -- Hennepin MN (cold)': 'ASHP, ER',
         'ResStock ASHP -- King WA (mild)':     'ASHP, ER',
+        'Austin Pecan St (real)':              'AC, ER',
         'ResStock ASHP -- Maricopa AZ (hot)':  'ASHP, ER',
     }
     KOPPEN = {   # Koppen-Geiger climate class of each location (verify against your source)
@@ -994,12 +1010,11 @@ def tab_cross():
         'Swiss substation (real HP)':          'Cfb',
         'LCL London ASHP (real HP)':           'Cfb',
         'COFACTOR Norway (real HP)':           'Dfb',
-        'Austin Pecan St (real)':              'Cfa',
-        'Carleton Ottawa (real AC)':           'Dfb',
+        'ResStock ASHP -- Hennepin MN (cold)': 'Dfa',
         'NEEA WA (real HP)':                   'Csb',
         'NEEA OR (real HP)':                   'Csb',
-        'ResStock ASHP -- Hennepin MN (cold)': 'Dfa',
         'ResStock ASHP -- King WA (mild)':     'Csb',
+        'Austin Pecan St (real)':              'Cfa',
         'ResStock ASHP -- Maricopa AZ (hot)':  'BWh',
     }
     order = [k for k in ROW if k in df.index]
@@ -1009,18 +1024,20 @@ def tab_cross():
             ('$b_h$', 'b_h', '.3f'), ('$m_h$', 'm_h', '.3f'), (r'SF$_\mathrm{c}$', 'SF_cold', '.2f'), ('$R^2_h$', 'R2_SFh', '.2f'),
             ('$b_c$', 'b_c', '.3f'), ('$m_c$', 'm_c', '.3f'), (r'SF$_\mathrm{h}$', 'SF_hot', '.2f'), ('$R^2_c$', 'R2_SFc', '.2f')]
 
-    # Two-slope coldest-day SF, reported in parentheses where a single arm underfits
-    # the deepest cold. Hennepin: air-source COP fall-off + electric backup add a
-    # second, steeper slope at a knee near -13 C, lifting SF_cold 0.45 -> 0.74.
-    KNEE_SFC = {'ResStock ASHP -- Hennepin MN (cold)': 0.74}
+    # Hennepin's heat is the ASHP compressor only (electric-resistance HP-backup
+    # excluded, see build_cross_table); its SF arm additionally drops days colder
+    # than SF_TMIN_H, where the backup element engages and the compressor's own
+    # SF is no longer a clean function of temperature. So SF_cold here is the SF
+    # at that cutoff, not at the coldest day in the record -- footnote (b) flags it.
+    KNEE_TNOTE = {'ResStock ASHP -- Hennepin MN (cold)': r'\tnote{b}'}
 
     def cell(v, fmt):
         return '--' if (v is None or (isinstance(v, float) and not np.isfinite(v))) else format(v, fmt)
 
     def cell_at(lab, c, fmt):
         s = cell(df.loc[lab, c], fmt)
-        if c == 'SF_cold' and lab in KNEE_SFC:
-            s = s + r'\,(' + format(KNEE_SFC[lab], '.2f') + ')'
+        if c == 'SF_cold' and lab in KNEE_TNOTE:
+            s = s + KNEE_TNOTE[lab]
         return s
     rest = COLS[1:]
     body = '\n'.join(ROW[lab] + ' & ' + TECH[lab] + ' & ' + cell(df.loc[lab, 'n'], '.0f') + ' & ' + KOPPEN[lab]
@@ -1029,13 +1046,19 @@ def tab_cross():
     head2 = 'dataset & ETL tech & $n$ & Climate & ' + ' & '.join(h for h, _, _ in rest) + r' \\'
     tex = (
         r"\begin{table*}[t]" "\n" r"\centering" "\n"
-        r"\caption{Net-load and SF fit parameters for one aggregate per dataset. $n$ is the number of aggregated consumers; Climate is the K{\"o}ppen--Geiger class~\cite{beck2018koppen}; under the net-load fit, $R^2_h$ and $R^2_c$ score the heating and cooling arms separately, each on the days of its own regime; $s_h,s_c$ [kW/$^\circ$C]; $T_h,T_c$ [$^\circ$C]; $m_h,m_c$ [$^\circ$C$^{-1}$]; SF$_\mathrm{c}$/SF$_\mathrm{h}$ the coldest-/hottest-day SF, a parenthetical SF$_\mathrm{c}$ giving the two-slope value where a single arm underfits the deepest cold (Hennepin, whose air-source backup adds a second slope near $-13\,^\circ$C). ETL-technology codes: ASHP air-source heat pump; GSHP ground-source heat pump; WSHP water-source heat pump; DHP ductless (mini-split) heat pump; AC air conditioning; ER electric resistance heating. $^\dagger$The LCL London aggregate is submetered heat-pump load only (6 homes, no other household load), so its net-load fit coincides with the HP load and $P_{\mathrm{base}}$ is the summer standby/hot-water floor; the small aggregation raises its SF slope relative to the larger pools.}" "\n"
+        r"\begin{threeparttable}" "\n"
+        r"\caption{Net-load and SF fit parameters for one aggregate per dataset. $n$ is the number of aggregated consumers; Climate is the K{\"o}ppen--Geiger class~\cite{beck2018koppen}; under the net-load fit, $R^2_h$ and $R^2_c$ score the heating and cooling arms separately, each on the days of its own regime; $s_h,s_c$ [kW/$^\circ$C]; $T_h,T_c$ [$^\circ$C]; $m_h,m_c$ [$^\circ$C$^{-1}$]; SF$_\mathrm{c}$/SF$_\mathrm{h}$ the coldest-/hottest-day SF. Installed capacity is the sum of the individual observed ETL peaks for every row, so the SF normalises against the non-coincident installed peak. ETL-technology codes: ASHP air-source heat pump; GSHP ground-source heat pump; WSHP water-source heat pump; DHP ductless (mini-split) heat pump; AC air conditioning; ER electric resistance heating.}" "\n"
         r"\label{tab:cross}" "\n" r"% \scriptsize" "\n" r"\setlength{\tabcolsep}{4pt}" "\n"
         r"\begin{tabular}{ll" + "c" * (len(COLS) + 1) + "}\n" r"\toprule" "\n"
         r" & & & & \multicolumn{7}{c}{Net-load fit $\hat{P}_{\mathrm{net}}(T)$} & \multicolumn{8}{c}{SF fit $\hat{\mathrm{SF}}(T)$}\\" "\n"
         r"\cmidrule(lr){5-11}\cmidrule(lr){12-19}" "\n"
         + head2 + "\n" r"\midrule" "\n" + body + "\n" r"\bottomrule" "\n"
-        r"\end{tabular}" "\n" r"\end{table*}" "\n")
+        r"\end{tabular}" "\n"
+        r"\begin{tablenotes}[flushleft]\footnotesize" "\n"
+        r"\item[a] The LCL London aggregate is submetered heat-pump load only (nine homes, no other household load), restricted to 2014, the single year all nine are metered together. Its net-load fit therefore coincides with the HP load, $P_{\mathrm{base}}$ is the winter standby/hot-water floor, and the installed capacity is the sum of the nine per-home 2014 peaks. The 2014 record ends in March, so the window is winter-only and never reaches $T_h$, which weakens the fit." "\n"
+        r"\item[b] Hennepin's SF uses the ASHP compressor's own draw only, excluding its electric-resistance HP-backup element; days colder than $-10\,^\circ$C, where that backup measurably engages (binned share rises from $<$0.1\% above $-10\,^\circ$C to 35\% by $-16\,^\circ$C), are dropped from the SF regression, so SF$_\mathrm{c}$ here is the SF at $-10\,^\circ$C rather than at the coldest day on record." "\n"
+        r"\end{tablenotes}" "\n"
+        r"\end{threeparttable}" "\n" r"\end{table*}" "\n")
     open('paper/tables/tab_cross.tex', 'w').write(tex)
     print('wrote tab_cross.tex')
 
@@ -1098,7 +1121,8 @@ def fig_cross_montage(knee_thresh=0.02):
         v = FR[k]
         T, net = np.asarray(v['T']), np.asarray(v['net'])
         heat, cool = np.asarray(v['heat']), np.asarray(v['cool'])
-        r = U.fit_row(k, v['n'], T, net, heat, cool, v['cap_h'], v['cap_c'])
+        tmin_h = SF_TMIN_H.get(k)
+        r = U.fit_row(k, v['n'], T, net, heat, cool, v['cap_h'], v['cap_c'], sf_tmin_h=tmin_h)
         th, tc, base, sh, sc = r['T_h'], r['T_c'], r['P_base'], r['s_h'], r['s_c']
         axb, axs = axes[i, 0], axes[i, 1]
         for ax in (axb, axs):
@@ -1123,12 +1147,19 @@ def fig_cross_montage(knee_thresh=0.02):
         axb.text(0.04, 0.9, f"$R^2$ {r['R2']:.2f}{net_r2_note}", transform=axb.transAxes, fontsize=6, color='0.4', va='top')
         if np.isfinite(th) and v['cap_h']:
             mm = T < th
-            axs.scatter(T[mm], np.clip(heat[mm] / v['cap_h'], 0, 1), s=3, color=hf.C_HP, alpha=.3, edgecolor='none')
-            xa = xs[xs <= th]; axs.plot(xa, np.clip(r['b_h'] + r['m_h'] * (th - xa), 0, 1), color=hf.C_HP, lw=1.6, zorder=4)
-            ks = knee_fit(T, np.clip(heat / v['cap_h'], 0, 1), th, 'h')
-            if ks and ks['r2'] - ks['r1'] >= knee_thresh:
-                xa = xs[xs <= th]; axs.plot(xa, np.clip(ks['f'](xa), 0, 1), color=hf.C_HP, lw=1.1, ls=(0, (3, 2)), zorder=6)
-                axs.text(0.04, 0.9, f"$R^2$ {r['R2_SFh']:.2f}$\\to${ks['r2']:.2f}", transform=axs.transAxes, fontsize=6, color='0.4', va='top')
+            fit_mm = mm & (T >= tmin_h) if tmin_h is not None else mm
+            if tmin_h is not None:
+                excl = mm & (T < tmin_h)
+                axs.scatter(T[excl], np.clip(heat[excl] / v['cap_h'], 0, 1), s=3, color='0.75', alpha=.4, edgecolor='none')
+                axs.axvline(tmin_h, color='0.4', lw=.7, ls=(0, (3, 2)), zorder=3)
+            axs.scatter(T[fit_mm], np.clip(heat[fit_mm] / v['cap_h'], 0, 1), s=3, color=hf.C_HP, alpha=.3, edgecolor='none')
+            lo_h = tmin_h if tmin_h is not None else T.min()
+            xa = xs[(xs <= th) & (xs >= lo_h)]; axs.plot(xa, np.clip(r['b_h'] + r['m_h'] * (th - xa), 0, 1), color=hf.C_HP, lw=1.6, zorder=4)
+            if tmin_h is None:      # knee overlay only where sub-threshold days weren't already excluded
+                ks = knee_fit(T, np.clip(heat / v['cap_h'], 0, 1), th, 'h')
+                if ks and ks['r2'] - ks['r1'] >= knee_thresh:
+                    xa = xs[xs <= th]; axs.plot(xa, np.clip(ks['f'](xa), 0, 1), color=hf.C_HP, lw=1.1, ls=(0, (3, 2)), zorder=6)
+                    axs.text(0.04, 0.9, f"$R^2$ {r['R2_SFh']:.2f}$\\to${ks['r2']:.2f}", transform=axs.transAxes, fontsize=6, color='0.4', va='top')
         if np.isfinite(tc) and v['cap_c']:
             mm = T > tc
             axs.scatter(T[mm], np.clip(cool[mm] / v['cap_c'], 0, 1), s=3, color=hf.C_CH, alpha=.3, edgecolor='none')

@@ -87,7 +87,10 @@ def build_cofactor_frame():
             tout = df['Tout']
     net_h = pd.concat(nets, axis=1).sum(axis=1, min_count=1) / 1000.0        # kW
     etl_h = pd.concat(etls, axis=1).sum(axis=1, min_count=1) / 1000.0        # kW
-    cap_h = float(robust_series_peak(etl_h.dropna()))
+    # installed capacity = sum of the individual (per-block) observed peaks, the
+    # non-coincident installed-capacity convention shared by every cross-table row
+    # (ResStock, LCL, NEEA, Austin, WPuQ, KLO); not the coincident aggregate peak.
+    cap_h = float(sum(robust_series_peak((e / 1000.0).dropna()) for e in etls))
     d = pd.DataFrame({'T': tout, 'net': net_h, 'etl': etl_h}).dropna()
     dd = pd.DataFrame({'T': d['T'].resample('D').mean(), 'net': d['net'].resample('D').mean(),
                        'etl': d['etl'].resample('D').mean()}).dropna()
@@ -177,10 +180,36 @@ def build_lcl_frame(year=2014, min_hours=200):
                 cap_h=float(np.sum(caps)), cap_c=0.0)
 
 
+def build_klo_frame():
+    """Real Kloten (CH) aggregate: every HEAPO heat-pump household mapped to the
+    MeteoSwiss KLO (Zurich-Kloten) weather station -- HEAPO station ``8jB`` is the
+    same physical station and is relabelled KLO in ``hp_pools``. net is the summed
+    total load of those HP homes; heat is their summed HP load; T is the KLO
+    temperature. cap_h is the sum of the individual per-home robust peaks
+    (installed-capacity convention, matching the other cross-table rows).
+    """
+    import hp_pools as hpp
+    p = hpp.build_pool_combined(verbose=False)
+    idx = p['index']; w = p['weather_of']
+    orow = {h: i for i, h in enumerate(p['households'])}
+    klo = [h for h in p['hp_households'] if w.get(h) == 'KLO']
+    hrow = [p['hp_households'].index(h) for h in klo]
+    cap_h = float(sum(robust_series_peak(p['hp_mat'][r]) for r in hrow))       # sum of per-home peaks
+    Td = pd.Series(p['temperature']['KLO'], index=idx).resample('D').mean()
+    hp_agg = pd.Series(p['hp_mat'][hrow].sum(axis=0), index=idx).resample('D').mean()
+    net = pd.Series((p['hp_mat'][hrow] + p['other_mat'][[orow[h] for h in klo]]).sum(axis=0),
+                    index=idx).resample('D').mean()
+    dd = pd.DataFrame({'T': Td, 'net': net, 'heat': hp_agg}).dropna()
+    return dict(n=len(klo), T=dd['T'].to_numpy(), net=dd['net'].to_numpy(),
+                heat=dd['heat'].to_numpy(), cool=np.zeros(len(dd)), cap_h=cap_h, cap_c=0.0)
+
+
 def main():
     cof = build_cofactor_frame()
     car = build_carleton_frame()
     lcl = build_lcl_frame()
+    klo = build_klo_frame()
+    print(f"KLO Kloten CH:        n={klo['n']}, {len(klo['T'])} days, cap_h={klo['cap_h']:.0f} kW")
     print(f"LCL London ASHP:      n={lcl['n']}, {len(lcl['T'])} days, cap_h={lcl['cap_h']:.0f} kW")
     print(f"COFACTOR Norway pool: n={cof['n']}, {len(cof['T'])} days, cap_h={cof['cap_h']:.0f} kW")
     print(f"Carleton Ottawa:      n={car['n']}, {len(car['T'])} days, cap_c={car['cap_c']:.0f} kW")
@@ -188,6 +217,7 @@ def main():
     FR['COFACTOR Norway (real HP)'] = cof
     FR['Carleton Ottawa (real AC)'] = car
     FR['LCL London ASHP (real HP)'] = lcl
+    FR['Swiss substation (real HP)'] = klo
     pickle.dump(FR, open(CACHE, 'wb'))
     print('updated', CACHE, '->', list(FR.keys()))
     print('now run: outputs.build_cross_table(repull=False); outputs.tab_cross(); outputs.fig_cross_montage()')
