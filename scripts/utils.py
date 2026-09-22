@@ -33,11 +33,21 @@ import hp_design as hd
 # ===========================================================================
 # Cross-dataset fitter  (was cross_fit.py)
 # ===========================================================================
-def _sf_arm(T, sf, thr, side):
-    """OLS SF arm anchored at ``thr``: heating below (side='h'), cooling above."""
+def _sf_arm(T, sf, thr, side, tmin=None):
+    """OLS SF arm anchored at ``thr``: heating below (side='h'), cooling above.
+
+    ``tmin`` (heating side only) drops days colder than ``tmin`` from the
+    regression -- for a dataset where sub-``tmin`` days are contaminated by a
+    different regime (e.g. HP backup engaging), so only backup-free days set
+    the slope. The reported "coldest-day" SF is then extrapolated to
+    ``max(T.min(), tmin)`` instead of the true coldest day, i.e. the coldest
+    day actually covered by the fit.
+    """
     if not np.isfinite(thr):
         return (np.nan,) * 4
     m = (T < thr) if side == 'h' else (T > thr)
+    if side == 'h' and tmin is not None:
+        m = m & (T >= tmin)
     if m.sum() < 10:
         return (np.nan,) * 4
     x = (thr - T[m]) if side == 'h' else (T[m] - thr)
@@ -47,15 +57,21 @@ def _sf_arm(T, sf, thr, side):
     mm, bb = np.polyfit(x, y, 1)
     ss = np.sum((y - y.mean()) ** 2)
     r2 = 1 - np.sum((y - (bb + mm * x)) ** 2) / ss if ss > 0 else np.nan
-    ext = (thr - T.min()) if side == 'h' else (T.max() - thr)
+    if side == 'h':
+        lo = max(T.min(), tmin) if tmin is not None else T.min()
+        ext = thr - lo
+    else:
+        ext = T.max() - thr
     return float(bb), float(mm), float(np.clip(bb + mm * ext, 0, 1)), float(r2)
 
 
-def fit_row(label, n, T, net, heat, cool, cap_h, cap_c, frac_thr=0.05):
+def fit_row(label, n, T, net, heat, cool, cap_h, cap_c, frac_thr=0.05, sf_tmin_h=None):
     """Fit the net-load curve and SF arms for one aggregated dataset row.
 
     Bathtub when both arms carry temperature-driven energy, otherwise a single
-    hockey stick. SF arms are anchored at the net-load thresholds.
+    hockey stick. SF arms are anchored at the net-load thresholds. ``sf_tmin_h``
+    excludes heating days colder than it from the SF-arm regression only (see
+    ``_sf_arm``); the net-load fit still uses every day.
     """
     T = np.asarray(T, float); net = np.asarray(net, float)
     heat = np.asarray(heat, float) if heat is not None else np.zeros_like(T)
@@ -88,7 +104,7 @@ def fit_row(label, n, T, net, heat, cool, cap_h, cap_c, frac_thr=0.05):
     bh = mh = sfcold = r2h = np.nan
     bc = mc = sfhot = r2c = np.nan
     if heat_present and cap_h:
-        bh, mh, sfcold, r2h = _sf_arm(T, np.clip(heat / cap_h, 0, 1), th, 'h')
+        bh, mh, sfcold, r2h = _sf_arm(T, np.clip(heat / cap_h, 0, 1), th, 'h', tmin=sf_tmin_h)
     if cool_present and cap_c:
         bc, mc, sfhot, r2c = _sf_arm(T, np.clip(cool / cap_c, 0, 1), tc, 'c')
 
