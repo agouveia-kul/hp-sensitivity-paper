@@ -1,0 +1,19 @@
+\begin{table}[t]
+\centering
+\caption{SF transfer with complete heating submetering (heat pump and backup heat). Top: disjoint halves of BPA pools, median and interquartile range over 600 transfers. Bottom: across the BPA and NREL studies, with the 10th--90th percentiles of a bootstrap over homes. The target's numerator is its own heating load, so the capacity error isolates the transfer}
+\label{tab:bpa-nrel}
+\setlength{\tabcolsep}{3pt}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lcccc}
+\toprule
+pilot $\rightarrow$ target & homes & $m_h$ ($^\circ$C$^{-1}$) & $m_h$ ratio & capacity error (\%) \\
+\midrule
+BPA Tacoma, HZ1 & 8/9 & 0.026 & 1.00 [0.88, 1.13] & -12 to +13 \\
+BPA W. Washington, HZ1 & 11/11 & 0.025 & 1.00 [0.89, 1.12] & -11 to +12 \\
+BPA inland, HZ2 & 6/6 & 0.015 & 1.00 [0.81, 1.23] & -19 to +23 \\
+\midrule
+BPA inland $\rightarrow$ NREL & 12/10 & 0.015/0.014 & 0.96 (0.85, 1.08) & -4 (-15, +8) \\
+NREL $\rightarrow$ BPA inland & 10/12 & 0.014/0.015 & 1.05 (0.92, 1.19) & +5 (-8, +19) \\
+\bottomrule
+\end{tabular}}
+\end{table}

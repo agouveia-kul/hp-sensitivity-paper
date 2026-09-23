@@ -1,13 +1,13 @@
 \begin{table}[t]
 \centering
-\caption{Installed-capacity accuracy on the held-out substations for two estimators}
+\caption{Capacity error on the Kloten aggregates}
 \label{tab:capacity}
-\begin{tabular}{lccc}
+\begin{tabular}{lcc}
 \toprule
-estimator & WAPE (\%) & median $\hat{P}^{\max}_{\mathrm{ETL}}/{P}^{\max}_{\mathrm{ETL}}$ & $R^2$ \\
+$m_h$ in \eqref{eq:capacity} & WAPE (\%) & median $\hat{P}^{\max}_{h}/{P}^{\max}_{h}$ \\
 \midrule
-Eq.~\eqref{eq:capacity}, transferred SF & 10.3 & 1.06 & 0.969 \\
-oracle (own SF) & 6.2 & 1.03 & 0.986 \\
+transferred (pilot) & 19.3 & 1.16 \\
+oracle (own SF) & 14.5 & 1.13 \\
 \bottomrule
 \end{tabular}
 \end{table}

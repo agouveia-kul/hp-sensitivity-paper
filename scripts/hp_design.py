@@ -164,7 +164,9 @@ def build_pool(heapo_obj, cache_path=POOL_CACHE, rebuild=False, verbose=True):
             hp = (df['kWh_received_HeatPump'] * 4).reindex(index).interpolate(
                 method='time').fillna(0.0)
             hp_rows.append(hp.to_numpy(dtype=np.float32))
-            hp_peaks.append(float(np.nanmax(hp.to_numpy())))
+            # robust 99.9th-percentile peak, the same capacity definition as
+            # hp_capacity.robust_series_peak (used for the Kloten and WPUQ truths)
+            hp_peaks.append(float(np.nanquantile(hp.to_numpy(), 0.999)))
             hp_kept.append(hid)
 
         if verbose and (k + 1) % 200 == 0:

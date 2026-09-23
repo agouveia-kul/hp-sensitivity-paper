@@ -6,6 +6,27 @@
 \citation{Tre26}
 \citation{Vel11,Akm14,Som21,Bec24,Lia26}
 \citation{Gou26,Tre26}
+\citation{Fei13}
+\citation{Wei20b}
+\citation{Bru23}
+\citation{Gis26}
+\citation{Jar22}
+\citation{Wan20}
+\citation{Oma24}
+\citation{Ali11}
+\citation{Per17b}
+\citation{Mac19}
+\citation{Zha16b}
+\citation{Li19d}
+\citation{Sos17}
+\citation{Was21}
+\citation{gouveia2026pvcapacity}
+\citation{Azz24}
+\citation{Bec24}
+\citation{Lov17}
+\citation{Che21b}
+\citation{And20b}
+\citation{Mul19}
 \citation{Fei13,Wei20b,Ray19}
 \citation{Bru23,Gis26}
 \citation{Wan20,Oma24}
@@ -21,22 +42,27 @@
 \newlabel{sec:intro}{{I}{1}{Introduction}{section.1}{}}
 \citation{Wes20}
 \citation{Per17b}
-\citation{pecanstreet}
-\citation{pecanstreet}
-\citation{pecanstreet}
+\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Prior work on detecting and quantifying DERs}}{2}{table.1}\protected@file@percent }
+\newlabel{tab:litreview}{{I}{2}{Prior work on detecting and quantifying DERs}{table.1}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {II}Problem and Approach}{2}{section.2}\protected@file@percent }
 \newlabel{sec:problem}{{II}{2}{Problem and Approach}{section.2}{}}
 \newlabel{sec:fits}{{II}{2}{Problem and Approach}{section.2}{}}
 \newlabel{eq:decomp}{{1}{2}{Problem and Approach}{equation.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-A}}Net-Load Function (Unsupervised)}{2}{subsection.2.1}\protected@file@percent }
-\newlabel{sec:fits-net}{{\mbox  {II-A}}{2}{Net-Load Function (Unsupervised)}{subsection.2.1}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Method pipeline. The observable net-load fit and a submetered-pilot SF fit combine into the installed capacity; the net-load fit alone gives the temperature-driven energy, and the capacity with the SF gives the flexibility. The transferred SF also shapes the flexibility.}}{2}{figure.1}\protected@file@percent }
-\newlabel{fig:pipeline}{{1}{2}{Method pipeline. The observable net-load fit and a submetered-pilot SF fit combine into the installed capacity; the net-load fit alone gives the temperature-driven energy, and the capacity with the SF gives the flexibility. The transferred SF also shapes the flexibility}{figure.1}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Equation~\eqref  {eq:bathtub} fitted to daily mean load of an aggregation of air-conditioned and furnace-heated dwellings in Austin, Texas \cite  {pecanstreet}.}}{2}{figure.2}\protected@file@percent }
-\newlabel{fig:bathtub}{{2}{2}{Equation~\eqref {eq:bathtub} fitted to daily mean load of an aggregation of air-conditioned and furnace-heated dwellings in Austin, Texas \cite {pecanstreet}}{figure.2}{}}
-\newlabel{eq:bathtub}{{2}{2}{Net-Load Function (Unsupervised)}{equation.2}{}}
-\newlabel{eq:etlfit}{{3}{2}{Net-Load Function (Unsupervised)}{equation.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-A}}Net-Load Fit}{2}{subsection.2.1}\protected@file@percent }
+\newlabel{sec:fits-net}{{\mbox  {II-A}}{2}{Net-Load Fit}{subsection.2.1}{}}
+\citation{pecanstreet}
+\citation{pecanstreet}
+\citation{pecanstreet}
 \citation{fani2024impact}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Method pipeline. The observable net-load fit supplies the sensitivities $s_h$, $s_c$ and the thresholds $T_h$, $T_c$; the SF fit of a submetered pilot supplies only the SF sensitivities $m_h$, $m_c$. Their ratio gives the installed capacity per regime. The net-load fit alone gives the temperature-driven energy, and the capacity with the transferred sensitivity gives the flexibility.}}{3}{figure.1}\protected@file@percent }
+\newlabel{fig:pipeline}{{1}{3}{Method pipeline. The observable net-load fit supplies the sensitivities $s_h$, $s_c$ and the thresholds $T_h$, $T_c$; the SF fit of a submetered pilot supplies only the SF sensitivities $m_h$, $m_c$. Their ratio gives the installed capacity per regime. The net-load fit alone gives the temperature-driven energy, and the capacity with the transferred sensitivity gives the flexibility}{figure.1}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Net-load fit \eqref  {eq:bathtub} to the daily mean load of an aggregate of air-conditioned and furnace-heated dwellings in Austin, Texas \cite  {pecanstreet}, with the heating (R1), dead-band (R2) and cooling (R3) regimes.}}{3}{figure.2}\protected@file@percent }
+\newlabel{fig:bathtub}{{2}{3}{Net-load fit \eqref {eq:bathtub} to the daily mean load of an aggregate of air-conditioned and furnace-heated dwellings in Austin, Texas \cite {pecanstreet}, with the heating (R1), dead-band (R2) and cooling (R3) regimes}{figure.2}{}}
+\newlabel{eq:bathtub}{{2}{3}{Net-Load Fit}{equation.2}{}}
+\newlabel{eq:etlfit}{{3}{3}{Net-Load Fit}{equation.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-B}}Simultaneity-Factor Fit}{3}{subsection.2.2}\protected@file@percent }
+\newlabel{sec:fits-sf}{{\mbox  {II-B}}{3}{Simultaneity-Factor Fit}{subsection.2.2}{}}
+\newlabel{eq:sf}{{4}{3}{Simultaneity-Factor Fit}{equation.4}{}}
 \citation{pecanstreet}
 \citation{pecanstreet}
 \citation{Sch22}
@@ -50,89 +76,81 @@
 \citation{resstock}
 \citation{beck2018koppen}
 \citation{beck2018koppen}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-B}}Simultaneity-Factor Function (Supervised)}{3}{subsection.2.2}\protected@file@percent }
-\newlabel{sec:fits-sf}{{\mbox  {II-B}}{3}{Simultaneity-Factor Function (Supervised)}{subsection.2.2}{}}
-\newlabel{eq:sf}{{4}{3}{Simultaneity-Factor Function (Supervised)}{equation.4}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Equations~\eqref  {eq:sffit} fitted to the SF of the aggregated Austin ETLs \cite  {pecanstreet}, with each daily point normalised by the installed capacity of the ETLs active in its regime (Equations~\eqref  {eq:sf-piecewise}).}}{3}{figure.3}\protected@file@percent }
-\newlabel{fig:sf}{{3}{3}{Equations~\eqref {eq:sffit} fitted to the SF of the aggregated Austin ETLs \cite {pecanstreet}, with each daily point normalised by the installed capacity of the ETLs active in its regime (Equations~\eqref {eq:sf-piecewise})}{figure.3}{}}
-\newlabel{eq:sf-piecewise}{{6}{3}{Simultaneity-Factor Function (Supervised)}{equation.6}{}}
-\newlabel{eq:sffit}{{7}{3}{Simultaneity-Factor Function (Supervised)}{equation.7}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-C}}Cross-dataset characterisation}{3}{subsection.2.3}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Net-load and SF fit parameters for one aggregate per dataset. $n$ is the number of aggregated consumers; Climate is the K{\"o}ppen--Geiger class~\cite  {beck2018koppen}; $R^2_h$ and $R^2_c$ score the fits in R1 and R3 separately. ETL-technology codes: ASHP air-source heat pump; GSHP ground-source heat pump; WSHP water-source heat pump; DHP ductless (mini-split) heat pump; AC air conditioning; ER electric resistance heating.}}{4}{table.1}\protected@file@percent }
-\newlabel{tab:cross}{{I}{4}{Net-load and SF fit parameters for one aggregate per dataset. $n$ is the number of aggregated consumers; Climate is the K{\"o}ppen--Geiger class~\cite {beck2018koppen}; $R^2_h$ and $R^2_c$ score the fits in R1 and R3 separately. ETL-technology codes: ASHP air-source heat pump; GSHP ground-source heat pump; WSHP water-source heat pump; DHP ductless (mini-split) heat pump; AC air conditioning; ER electric resistance heating}{table.1}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces The bathtub of Fig.~\ref {fig:bathtub} with its heating and cooling arms extended (dashed) beyond the observed range to the critical temperatures $T_h^{\mathrm  {crit}}$ and $T_c^{\mathrm  {crit}}$, where each arm would reach its installed capacity $P_{k}^{\max }$ and the SF would reach 1.}}{4}{figure.4}\protected@file@percent }
-\newlabel{fig:bathtub-critical}{{4}{4}{The bathtub of Fig.~\ref {fig:bathtub} with its heating and cooling arms extended (dashed) beyond the observed range to the critical temperatures $T_h^{\mathrm {crit}}$ and $T_c^{\mathrm {crit}}$, where each arm would reach its installed capacity $P_{k}^{\max }$ and the SF would reach 1}{figure.4}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces SF fit \eqref  {eq:sffit} to the aggregated Austin ETLs \cite  {pecanstreet}, with each daily point normalised by the installed capacity of the ETLs active in its regime \eqref  {eq:sf-piecewise}.}}{4}{figure.3}\protected@file@percent }
+\newlabel{fig:sf}{{3}{4}{SF fit \eqref {eq:sffit} to the aggregated Austin ETLs \cite {pecanstreet}, with each daily point normalised by the installed capacity of the ETLs active in its regime \eqref {eq:sf-piecewise}}{figure.3}{}}
+\newlabel{eq:pk}{{5}{4}{Simultaneity-Factor Fit}{equation.5}{}}
+\newlabel{eq:sf-piecewise}{{6}{4}{Simultaneity-Factor Fit}{equation.6}{}}
+\newlabel{eq:sffit}{{7}{4}{Simultaneity-Factor Fit}{equation.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-C}}Cross-dataset characterisation}{4}{subsection.2.3}\protected@file@percent }
+\newlabel{sec:cross}{{\mbox  {II-C}}{4}{Cross-dataset characterisation}{subsection.2.3}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-D}}Transferability of SF}{4}{subsection.2.4}\protected@file@percent }
+\newlabel{sec:transfer}{{\mbox  {II-D}}{4}{Transferability of SF}{subsection.2.4}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {III}Aggregated ETL Quantification}{4}{section.3}\protected@file@percent }
 \newlabel{sec:estimation}{{III}{4}{Aggregated ETL Quantification}{section.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-A}}ETL Energy Consumption Estimation}{4}{subsection.3.1}\protected@file@percent }
-\newlabel{sec:uc-energy}{{\mbox  {III-A}}{4}{ETL Energy Consumption Estimation}{subsection.3.1}{}}
-\newlabel{eq:energy}{{8}{4}{ETL Energy Consumption Estimation}{equation.8}{}}
 \citation{Zir19}
 \citation{Cha16}
-\citation{Bru25}
-\citation{Kai26b}
-\citation{Few24}
+\@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces Net-load and SF fits, one aggregate per dataset}}{5}{table.2}\protected@file@percent }
+\newlabel{tab:cross}{{II}{5}{Net-load and SF fits, one aggregate per dataset}{table.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-A}}ETL Energy Consumption Estimation}{5}{subsection.3.1}\protected@file@percent }
+\newlabel{sec:uc-energy}{{\mbox  {III-A}}{5}{ETL Energy Consumption Estimation}{subsection.3.1}{}}
+\newlabel{eq:energy}{{8}{5}{ETL Energy Consumption Estimation}{equation.8}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-B}}ETL Installed Capacity Estimation}{5}{subsection.3.2}\protected@file@percent }
 \newlabel{sec:uc-capacity}{{\mbox  {III-B}}{5}{ETL Installed Capacity Estimation}{subsection.3.2}{}}
-\newlabel{eq:capacity}{{9}{5}{ETL Installed Capacity Estimation}{equation.9}{}}
+\newlabel{eq:sf-target}{{9}{5}{ETL Installed Capacity Estimation}{equation.9}{}}
+\newlabel{eq:capacity}{{10}{5}{ETL Installed Capacity Estimation}{equation.10}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-C}}Flexibility Quantification}{5}{subsection.3.3}\protected@file@percent }
 \newlabel{sec:uc-flex}{{\mbox  {III-C}}{5}{Flexibility Quantification}{subsection.3.3}{}}
 \newlabel{sec:flex}{{\mbox  {III-C}}{5}{Flexibility Quantification}{subsection.3.3}{}}
-\newlabel{eq:flex-baseline}{{10}{5}{Flexibility Quantification}{equation.10}{}}
-\newlabel{eq:flex-duty}{{11}{5}{Flexibility Quantification}{equation.11}{}}
-\newlabel{eq:flex-energy}{{12}{5}{Flexibility Quantification}{equation.12}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {IV}Numerical Results}{5}{section.4}\protected@file@percent }
-\newlabel{sec:results}{{IV}{5}{Numerical Results}{section.4}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-A}}Dataset and Substation Design}{5}{subsection.4.1}\protected@file@percent }
-\newlabel{sec:data}{{\mbox  {IV-A}}{5}{Dataset and Substation Design}{subsection.4.1}{}}
-\newlabel{eq:wape}{{13}{5}{Dataset and Substation Design}{equation.13}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-B}}Fit Quality across Spatial and Temporal Aggregation}{5}{subsection.4.2}\protected@file@percent }
-\newlabel{sec:res-ff}{{\mbox  {IV-B}}{5}{Fit Quality across Spatial and Temporal Aggregation}{subsection.4.2}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces The flexibility of Equation~\eqref  {eq:flex-energy} as a square-wave schedule. The population must draw the baseline energy $E_{\mathrm  {old}} = \hat  {P}_{\mathrm  {ETL}}(T)\,\Delta t_{Th}$ over each window (left). It can instead draw the same energy $E_{\mathrm  {new}}$ as a full-power pulse of duty cycle $\alpha _F = \mathrm  {SF}(T)$ (centre). The deviation from baseline is the flexible energy, equal upward and downward (right).}}{6}{figure.5}\protected@file@percent }
-\newlabel{fig:flex-schedule}{{5}{6}{The flexibility of Equation~\eqref {eq:flex-energy} as a square-wave schedule. The population must draw the baseline energy $E_{\mathrm {old}} = \hat {P}_{\mathrm {ETL}}(T)\,\Delta t_{Th}$ over each window (left). It can instead draw the same energy $E_{\mathrm {new}}$ as a full-power pulse of duty cycle $\alpha _F = \mathrm {SF}(T)$ (centre). The deviation from baseline is the flexible energy, equal upward and downward (right)}{figure.5}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Fitted heating sensitivity $s_h$ against installed HP capacity across the 1000 Swiss substations, coloured by the number of HPs.}}{6}{figure.6}\protected@file@percent }
-\newlabel{fig:slope-capacity}{{6}{6}{Fitted heating sensitivity $s_h$ against installed HP capacity across the 1000 Swiss substations, coloured by the number of HPs}{figure.6}{}}
+\newlabel{eq:flex-baseline}{{11}{5}{Flexibility Quantification}{equation.11}{}}
+\newlabel{eq:flex-duty}{{12}{5}{Flexibility Quantification}{equation.12}{}}
+\newlabel{eq:flex-energy}{{13}{5}{Flexibility Quantification}{equation.13}{}}
+\citation{Bru25}
+\citation{Kai26b}
+\citation{Few24}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces The flexibility of \eqref  {eq:flex-energy} over one cycle of the square-wave schedule. The aggregate must draw the baseline energy $E^{\mathrm  {old}}_{\mathrm  {ETL}} = \hat  {P}_{\mathrm  {ETL}}(T)\,\Delta t_{Th}$ (hatched) over the window. It can instead draw the same energy as the full-power pulse $P^{\mathrm  {new}}_{\mathrm  {ETL}}$ of duty cycle $\alpha _F = \hat  {\mathrm  {SF}}(T)$. The deviation from baseline is the flexible energy, equal upward ($E_{\mathrm  {flex}}^{\uparrow }$) and downward ($E_{\mathrm  {flex}}^{\downarrow }$).}}{6}{figure.4}\protected@file@percent }
+\newlabel{fig:flex-schedule}{{4}{6}{The flexibility of \eqref {eq:flex-energy} over one cycle of the square-wave schedule. The aggregate must draw the baseline energy $E^{\mathrm {old}}_{\mathrm {ETL}} = \hat {P}_{\mathrm {ETL}}(T)\,\Delta t_{Th}$ (hatched) over the window. It can instead draw the same energy as the full-power pulse $P^{\mathrm {new}}_{\mathrm {ETL}}$ of duty cycle $\alpha _F = \hat {\mathrm {SF}}(T)$. The deviation from baseline is the flexible energy, equal upward ($E_{\mathrm {flex}}^{\uparrow }$) and downward ($E_{\mathrm {flex}}^{\downarrow }$)}{figure.4}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {IV}Numerical Results}{6}{section.4}\protected@file@percent }
+\newlabel{sec:results}{{IV}{6}{Numerical Results}{section.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-A}}Kloten Data and Evaluation Design}{6}{subsection.4.1}\protected@file@percent }
+\newlabel{sec:data}{{\mbox  {IV-A}}{6}{Kloten Data and Evaluation Design}{subsection.4.1}{}}
+\newlabel{eq:wape}{{14}{6}{Kloten Data and Evaluation Design}{equation.14}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-B}}Fit Quality across Spatial and Temporal Aggregation}{6}{subsection.4.2}\protected@file@percent }
+\newlabel{sec:res-ff}{{\mbox  {IV-B}}{6}{Fit Quality across Spatial and Temporal Aggregation}{subsection.4.2}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-C}}Simultaneity Factor: Invariance and Transfer}{6}{subsection.4.3}\protected@file@percent }
 \newlabel{sec:res-sf}{{\mbox  {IV-C}}{6}{Simultaneity Factor: Invariance and Transfer}{subsection.4.3}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces Per-substation fitted SF parameters by number of aggregated HPs $N_{hp}$, as a median with its interquartile range}}{6}{table.2}\protected@file@percent }
-\newlabel{tab:sf}{{II}{6}{Per-substation fitted SF parameters by number of aggregated HPs $N_{hp}$, as a median with its interquartile range}{table.2}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces The single $\hat  {\mathrm  {SF}}$ curve fitted to the pooled daily $(T, \mathrm  {SF})$ points of the training substations (grey), used as the transferable curve, at an $R^2$ of 0.861.}}{6}{figure.7}\protected@file@percent }
-\newlabel{fig:sf-pooled}{{7}{6}{The single $\hat {\mathrm {SF}}$ curve fitted to the pooled daily $(T, \mathrm {SF})$ points of the training substations (grey), used as the transferable curve, at an $R^2$ of 0.861}{figure.7}{}}
 \citation{Bru23}
-\@writefile{lot}{\contentsline {table}{\numberline {III}{\ignorespaces Total WAPE of the single pooled SF curve, fitted on the training substations, against the held-out testing substations, by $N_{hp}$}}{7}{table.3}\protected@file@percent }
-\newlabel{tab:sf-train}{{III}{7}{Total WAPE of the single pooled SF curve, fitted on the training substations, against the held-out testing substations, by $N_{hp}$}{table.3}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {IV}{\ignorespaces Energy-estimate accuracy against submetered HP energy, by the resolution of the fit and of the temperature integration}}{7}{table.4}\protected@file@percent }
-\newlabel{tab:energy}{{IV}{7}{Energy-estimate accuracy against submetered HP energy, by the resolution of the fit and of the temperature integration}{table.4}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-D}}Energy Consumption Estimation}{7}{subsection.4.4}\protected@file@percent }
-\newlabel{sec:res-energy}{{\mbox  {IV-D}}{7}{Energy Consumption Estimation}{subsection.4.4}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {V}{\ignorespaces Installed-capacity accuracy on the held-out substations for two estimators}}{7}{table.5}\protected@file@percent }
-\newlabel{tab:capacity}{{V}{7}{Installed-capacity accuracy on the held-out substations for two estimators}{table.5}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-E}}Installed Capacity Estimation}{7}{subsection.4.5}\protected@file@percent }
-\newlabel{sec:res-capacity}{{\mbox  {IV-E}}{7}{Installed Capacity Estimation}{subsection.4.5}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-F}}Flexibility Potential}{7}{subsection.4.6}\protected@file@percent }
-\newlabel{sec:res-flex}{{\mbox  {IV-F}}{7}{Flexibility Potential}{subsection.4.6}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Median $R^2_h$ of the net-load fit (left) and the SF fit (right) of the Kloten aggregates against spatial aggregation (consumers per aggregate, $N$) and temporal aggregation (averaging window), at a fixed 50\% ETL rate.}}{7}{figure.5}\protected@file@percent }
+\newlabel{fig:quality-heatmap}{{5}{7}{Median $R^2_h$ of the net-load fit (left) and the SF fit (right) of the Kloten aggregates against spatial aggregation (consumers per aggregate, $N$) and temporal aggregation (averaging window), at a fixed 50\% ETL rate}{figure.5}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Fitted heating sensitivity $s_h$ against installed HP capacity across the 1260 Kloten aggregates, coloured by the number of HPs.}}{7}{figure.6}\protected@file@percent }
+\newlabel{fig:slope-capacity}{{6}{7}{Fitted heating sensitivity $s_h$ against installed HP capacity across the 1260 Kloten aggregates, coloured by the number of HPs}{figure.6}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {III}{\ignorespaces SF fits of the Kloten aggregates, median (IQR)}}{7}{table.3}\protected@file@percent }
+\newlabel{tab:sf}{{III}{7}{SF fits of the Kloten aggregates, median (IQR)}{table.3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces SF fit to the aggregated pilot half of the Kloten HPs in one random split (grey), at an $R^2_h$ of 0.94. Its sensitivity $m_h$ is the parameter transferred to the target aggregates.}}{7}{figure.7}\protected@file@percent }
+\newlabel{fig:sf-pooled}{{7}{7}{SF fit to the aggregated pilot half of the Kloten HPs in one random split (grey), at an $R^2_h$ of 0.94. Its sensitivity $m_h$ is the parameter transferred to the target aggregates}{figure.7}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Capacity error of \eqref  {eq:capacity} on the Kloten aggregates against spatial aggregation (consumers per aggregate, $N$) and temporal aggregation (averaging window), at a fixed 50\% ETL rate. Left: WAPE; right: median signed error.}}{8}{figure.8}\protected@file@percent }
+\newlabel{fig:capacity-heatmap}{{8}{8}{Capacity error of \eqref {eq:capacity} on the Kloten aggregates against spatial aggregation (consumers per aggregate, $N$) and temporal aggregation (averaging window), at a fixed 50\% ETL rate. Left: WAPE; right: median signed error}{figure.8}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-D}}Energy Consumption Estimation}{8}{subsection.4.4}\protected@file@percent }
+\newlabel{sec:res-energy}{{\mbox  {IV-D}}{8}{Energy Consumption Estimation}{subsection.4.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-E}}Installed Capacity Estimation}{8}{subsection.4.5}\protected@file@percent }
+\newlabel{sec:res-capacity}{{\mbox  {IV-E}}{8}{Installed Capacity Estimation}{subsection.4.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-F}}Flexibility Potential}{8}{subsection.4.6}\protected@file@percent }
+\newlabel{sec:res-flex}{{\mbox  {IV-F}}{8}{Flexibility Potential}{subsection.4.6}{}}
 \citation{Sch22}
-\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Signed percentage error of the energy estimate across the 1000 substations (left), and its distribution by number of aggregated HPs (right). Boxes show the interquartile range, whiskers the 5th--95th percentiles and the line the median.}}{8}{figure.8}\protected@file@percent }
-\newlabel{fig:energy-error}{{8}{8}{Signed percentage error of the energy estimate across the 1000 substations (left), and its distribution by number of aggregated HPs (right). Boxes show the interquartile range, whiskers the 5th--95th percentiles and the line the median}{figure.8}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Distribution across the 1000 substations of the estimated-to-actual ratio of annual flexible energy, with the median marked. The estimate uses a transferred SF and the capacity of Equation~\eqref  {eq:capacity}; the actual uses each substation's own submetered SF and true capacity.}}{8}{figure.9}\protected@file@percent }
-\newlabel{fig:flex-ratio}{{9}{8}{Distribution across the 1000 substations of the estimated-to-actual ratio of annual flexible energy, with the median marked. The estimate uses a transferred SF and the capacity of Equation~\eqref {eq:capacity}; the actual uses each substation's own submetered SF and true capacity}{figure.9}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {V}Generalisation}{8}{section.5}\protected@file@percent }
-\newlabel{sec:validation}{{V}{8}{Generalisation}{section.5}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-A}}Direct}{8}{subsection.5.1}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Daily flexible energy of an example substation with 50 HPs ($P_{\mathrm  {ETL}}^{\max } \approx 315$~kW) over the year, shown for an illustrative window $\Delta t_{Th} = 4$~h; because $E_{\mathrm  {flex}}$ is linear in $\Delta t_{Th}$, the window sets only the vertical scale, not the shape. Estimated from a transferred SF versus computed from the submetered SF.}}{8}{figure.10}\protected@file@percent }
-\newlabel{fig:flex-season}{{10}{8}{Daily flexible energy of an example substation with 50 HPs ($P_{\mathrm {ETL}}^{\max } \approx 315$~kW) over the year, shown for an illustrative window $\Delta t_{Th} = 4$~h; because $E_{\mathrm {flex}}$ is linear in $\Delta t_{Th}$, the window sets only the vertical scale, not the shape. Estimated from a transferred SF versus computed from the submetered SF}{figure.10}{}}
 \citation{Men18}
-\citation{gouveia2026pvcapacity}
-\citation{Bna23}
-\@writefile{lot}{\contentsline {table}{\numberline {VI}{\ignorespaces Use-case estimates on the real feeder as HP circuits are removed, at a fixed 37-house base. Signed median error over 200 random subsets per count}}{9}{table.6}\protected@file@percent }
-\newlabel{tab:feeder-sweep}{{VI}{9}{Use-case estimates on the real feeder as HP circuits are removed, at a fixed 37-house base. Signed median error over 200 random subsets per count}{table.6}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Distribution across the 1260 Kloten aggregates of the estimated-to-actual ratio of annual flexible energy on the R1 days, with the median marked. The estimate uses the net-load fit and the transferred sensitivity; the actual uses each aggregate's own hourly submetered SF and true capacity.}}{9}{figure.9}\protected@file@percent }
+\newlabel{fig:flex-ratio}{{9}{9}{Distribution across the 1260 Kloten aggregates of the estimated-to-actual ratio of annual flexible energy on the R1 days, with the median marked. The estimate uses the net-load fit and the transferred sensitivity; the actual uses each aggregate's own hourly submetered SF and true capacity}{figure.9}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Daily flexible energy of a held-out half of the Kloten HPs (25 HPs, $P_h^{\max } = 144$~kW) over the year, for an illustrative window $\Delta t_{Th} = 4$~h; since $E_{\mathrm  {flex}}$ is linear in $\Delta t_{Th}$, the window sets only the vertical scale. Estimated from the pilot sensitivity of the same split versus computed from the hourly submetered SF; the shaded days of R2 are not counted.}}{9}{figure.10}\protected@file@percent }
+\newlabel{fig:flex-season}{{10}{9}{Daily flexible energy of a held-out half of the Kloten HPs (25 HPs, $P_h^{\max } = 144$~kW) over the year, for an illustrative window $\Delta t_{Th} = 4$~h; since $E_{\mathrm {flex}}$ is linear in $\Delta t_{Th}$, the window sets only the vertical scale. Estimated from the pilot sensitivity of the same split versus computed from the hourly submetered SF; the shaded days of R2 are not counted}{figure.10}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {V}Real Aggregates}{9}{section.5}\protected@file@percent }
+\newlabel{sec:validation}{{V}{9}{Real Aggregates}{section.5}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {IV}{\ignorespaces Transfer to real aggregates outside Kloten}}{9}{table.4}\protected@file@percent }
+\newlabel{tab:real}{{IV}{9}{Transfer to real aggregates outside Kloten}{table.4}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {VI}Discussion}{9}{section.6}\protected@file@percent }
 \newlabel{sec:discussion}{{VI}{9}{Discussion}{section.6}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-A}}Accuracy}{9}{subsection.6.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-B}}Generalisation}{9}{subsection.6.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-C}}Data Requirements}{9}{subsection.6.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-D}}Limitations}{9}{subsection.6.4}\protected@file@percent }
+\citation{gouveia2026pvcapacity}
+\citation{Bna23}
 \bibstyle{IEEEtran}
 \bibdata{references}
 \bibcite{Iea22}{1}
@@ -145,49 +163,52 @@
 \bibcite{Gou26}{8}
 \bibcite{Fei13}{9}
 \bibcite{Wei20b}{10}
-\bibcite{Ray19}{11}
-\bibcite{Bru23}{12}
-\bibcite{Gis26}{13}
-\bibcite{Wan20}{14}
-\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces The two functions fitted to the real German feeder. Left: the net-load fit $\hat  {P}_{\mathrm  {net}}(T)$, with its heating arm and dead-band base line. Right: the feeder's own SF fit (oracle) and the transferred curve, which keeps the Swiss slope but reads its threshold temperature from the observable net-load fit; the two SF curves are drawn only below the threshold, and the markers give the coincidence at the feeder's coldest day.}}{10}{figure.11}\protected@file@percent }
-\newlabel{fig:real-feeder}{{11}{10}{The two functions fitted to the real German feeder. Left: the net-load fit $\hat {P}_{\mathrm {net}}(T)$, with its heating arm and dead-band base line. Right: the feeder's own SF fit (oracle) and the transferred curve, which keeps the Swiss slope but reads its threshold temperature from the observable net-load fit; the two SF curves are drawn only below the threshold, and the markers give the coincidence at the feeder's coldest day}{figure.11}{}}
+\bibcite{Bru23}{11}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-C}}Data Requirements}{10}{subsection.6.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-D}}Limitations}{10}{subsection.6.4}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-E}}Concluding Remarks}{10}{subsection.6.5}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {VII}Conclusion}{10}{section.7}\protected@file@percent }
 \newlabel{sec:conclusion}{{VII}{10}{Conclusion}{section.7}{}}
 \@writefile{toc}{\contentsline {section}{References}{10}{section*.2}\protected@file@percent }
+\bibcite{Gis26}{12}
+\bibcite{Jar22}{13}
+\bibcite{Wan20}{14}
 \bibcite{Oma24}{15}
-\bibcite{Fel08}{16}
-\bibcite{Ruc92}{17}
-\bibcite{Kis04}{18}
-\bibcite{Faz16}{19}
-\bibcite{Ali11}{20}
-\bibcite{Per17b}{21}
-\bibcite{Mac19}{22}
-\bibcite{Was21}{23}
-\bibcite{Liu22}{24}
-\bibcite{Gou25}{25}
-\bibcite{gouveia2026pvcapacity}{26}
-\bibcite{Azz24}{27}
-\bibcite{Lov17}{28}
-\bibcite{Che21b}{29}
-\bibcite{And20}{30}
-\bibcite{Rou23}{31}
-\bibcite{Mul19}{32}
-\bibcite{Zir19}{33}
-\bibcite{Wes20}{34}
-\bibcite{pecanstreet}{35}
-\bibcite{fani2024impact}{36}
-\bibcite{beck2018koppen}{37}
-\bibcite{Sch22}{38}
-\bibcite{Bru25}{39}
-\bibcite{Kai26b}{40}
-\bibcite{lcl_heatpump}{41}
-\bibcite{cofactor}{42}
-\bibcite{carleton}{43}
-\bibcite{neea_eulr}{44}
-\bibcite{resstock}{45}
-\bibcite{Cha16}{46}
-\bibcite{Few24}{47}
-\bibcite{Men18}{48}
-\bibcite{Bna23}{49}
+\bibcite{Ali11}{16}
+\bibcite{Per17b}{17}
+\bibcite{Mac19}{18}
+\bibcite{Zha16b}{19}
+\bibcite{Li19d}{20}
+\bibcite{Sos17}{21}
+\bibcite{Was21}{22}
+\bibcite{gouveia2026pvcapacity}{23}
+\bibcite{Azz24}{24}
+\bibcite{Lov17}{25}
+\bibcite{Che21b}{26}
+\bibcite{And20b}{27}
+\bibcite{Mul19}{28}
+\bibcite{Ray19}{29}
+\bibcite{Fel08}{30}
+\bibcite{Ruc92}{31}
+\bibcite{Kis04}{32}
+\bibcite{Faz16}{33}
+\bibcite{Liu22}{34}
+\bibcite{Gou25}{35}
+\bibcite{And20}{36}
+\bibcite{Rou23}{37}
+\bibcite{Zir19}{38}
+\bibcite{Wes20}{39}
+\bibcite{pecanstreet}{40}
+\bibcite{fani2024impact}{41}
+\bibcite{Sch22}{42}
+\bibcite{Bru25}{43}
+\bibcite{Kai26b}{44}
+\bibcite{cofactor}{45}
+\bibcite{resstock}{46}
+\bibcite{neea_eulr}{47}
+\bibcite{beck2018koppen}{48}
+\bibcite{Cha16}{49}
+\bibcite{Few24}{50}
+\bibcite{Men18}{51}
+\bibcite{Bna23}{52}
 \gdef \@abspage@last{11}
