@@ -1,10 +1,10 @@
 \begin{table*}[t]
 \centering
 \begin{threeparttable}
-\caption{Net-load and SF fit parameters for one aggregate per dataset. $n$ is the number of aggregated consumers; Climate is the K{\"o}ppen--Geiger class~\cite{beck2018koppen}; $R^2_h$ and $R^2_c$ score the fits in R1 and R3 separately. ETL-technology codes: ASHP air-source heat pump; GSHP ground-source heat pump; WSHP water-source heat pump; DHP ductless (mini-split) heat pump; AC air conditioning; ER electric resistance heating.}
+\caption{Net-load and SF fits, one aggregate per dataset}
 \label{tab:cross}
 \scriptsize
-\setlength{\tabcolsep}{4pt}
+\setlength{\tabcolsep}{3.5pt}
 \begin{tabular}{llccccccccccccccccc}
 \toprule
  & & & & \multicolumn{7}{c}{Net-load fit $\hat{P}_{\mathrm{net}}(T)$} & \multicolumn{8}{c}{SF fit $\hat{\mathrm{SF}}(T)$}\\
@@ -13,19 +13,22 @@ dataset & ETL tech & $n$ & Climate & $P_{\mathrm{base}}$ & $s_h$ & $T_h$ & $R^2_
 \midrule
 Hamelin, DE~\cite{Sch22} & WSHP & 37 & Cfb & 16 & 3.9 & 13.9 & 0.72 & -- & -- & -- & 0.014 & 0.016 & 0.32 & 0.72 & -- & -- & -- & -- \\
 Kloten, CH~\cite{Bru25,Kai26b} & ASHP, GSHP & 50 & Cfb & 54 & 6.1 & 16.5 & 0.92 & -- & -- & -- & 0.029 & 0.018 & 0.47 & 0.95 & -- & -- & -- & -- \\
-%London, UK\tnote{a}~\cite{lcl_heatpump} & ASHP & 9 & Cfb & 5 & 0.9 & 12.8 & 0.26 & -- & -- & -- & 0.123 & 0.022 & 0.34 & 0.26 & -- & -- & -- & -- \\
+%London, UK~\cite{lcl_heatpump} & ASHP & 9 & Cfb & 5 & 0.9 & 12.8 & 0.26 & -- & -- & -- & 0.123 & 0.022 & 0.34 & 0.26 & -- & -- & -- & -- \\
 Oslo, NO~\cite{cofactor} & GSHP, ER & 849 & Dfb & 516 & 52.5 & 15.2 & 0.88 & -- & -- & -- & 0.106 & 0.022 & 0.70 & 0.80 & -- & -- & -- & -- \\
 Hennepin, MN, US~\cite{resstock}\tnote{a} & ASHP & 150 & Dfa & 118 & 42.3 & 8.0 & 0.74 & -- & -- & -- & 0.061 & 0.022 & 0.46 & 0.93 & -- & -- & -- & -- \\
-WA, US~\cite{neea_eulr} & DHP & 23 & Csb & 25 & 2.5 & 14.5 & 0.90 & 1.8 & 20.8 & 0.68 & 0.078 & 0.035 & 0.75 & 0.91 & 0.078 & 0.037 & 0.30 & 0.82 \\
-OR, US~\cite{neea_eulr} & DHP & 21 & Csb & 24 & 2.1 & 13.6 & 0.87 & 0.9 & 19.8 & 0.42 & 0.055 & 0.033 & 0.66 & 0.91 & 0.076 & 0.032 & 0.32 & 0.69 \\
+WA, US~\cite{neea_eulr}\tnote{b} & DHP, ER & 22 & Csb & 25 & 2.4 & 14.6 & 0.90 & 2.0 & 21.3 & 0.79 & 0.058 & 0.024 & 0.53 & 0.91 & 0.067 & 0.031 & 0.24 & 0.83 \\
+OR, US~\cite{neea_eulr}\tnote{b} & DHP, ER & 21 & Csb & 25 & 2.1 & 13.3 & 0.87 & 2.0 & 21.8 & 0.75 & 0.044 & 0.023 & 0.46 & 0.91 & 0.097 & 0.024 & 0.22 & 0.79 \\
 King, WA, US~\cite{resstock} & ASHP, ER & 150 & Csb & 146 & 21.1 & 13.3 & 0.89 & 11.0 & 18.4 & 0.93 & 0.036 & 0.036 & 0.53 & 0.90 & 0.091 & 0.038 & 0.37 & 0.96 \\
 Austin, TX, US~\cite{pecanstreet} & AC, ER & 22 & Cfa & 12 & 0.7 & 11.2 & 0.68 & 3.0 & 19.8 & 0.91 & 0.078 & 0.019 & 0.34 & 0.84 & 0.025 & 0.033 & 0.49 & 0.94 \\
 Maricopa, AZ, US~\cite{resstock} & ASHP, ER & 150 & BWh & 172 & 15.3 & 11.6 & 0.83 & 25.7 & 26.0 & 0.95 & 0.144 & 0.063 & 0.52 & 0.86 & 0.047 & 0.024 & 0.39 & 0.95 \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}[flushleft]\footnotesize
+\item[] $n$: aggregated consumers. Climate: K{\"o}ppen--Geiger class~\cite{beck2018koppen}. $R^2_h$, $R^2_c$: fit scores in R1 and R3. ASHP, GSHP, WSHP: air-, ground-, water-source HP; DHP: ductless (mini-split) HP; AC: air conditioning; ER: electric resistance heating.
 %\item[a] The LCL London aggregate is submetered heat-pump load only (nine homes, no other household load), restricted to 2014, the single year all nine are metered together. Its net-load fit therefore coincides with the HP load, $P_{\mathrm{base}}$ is the winter standby/hot-water floor, and the installed capacity is the sum of the nine per-home 2014 peaks. The 2014 record ends in March, so the window is winter-only and never reaches $T_h$, which weakens the fit.
 \item[a] Hennepin's SF uses the ASHP compressor's own draw only, excluding its electric-resistance HP-backup element
+\item[b] The SF uses the submetered ductless HPs only. Most of these homes also have electric baseboard, furnace or other zonal heating circuits (17 of 22 in WA, 16 of 21 in OR), which the net load includes.
+
 \end{tablenotes}
 \end{threeparttable}
 \end{table*}

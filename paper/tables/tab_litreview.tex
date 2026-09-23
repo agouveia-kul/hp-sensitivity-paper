@@ -1,27 +1,43 @@
 \begin{table*}[t]
 \centering
-\caption{Representative work on detecting and quantifying distributed energy resources (DERs) from grid or meter measurements, and the gap this paper addresses. Cap.: recovers installed capacity. Submet.: needs submetered device data or labels. Transf.: a calibration transfers to un-submetered feeders. Level: individual meter, feeder/substation/transformer, or a submetered population.}
+\caption{Prior work on detecting and quantifying DERs}
 \label{tab:litreview}
-\footnotesize\setlength{\tabcolsep}{4pt}
-\begin{tabular}{lllllllll}
+\footnotesize\setlength{\tabcolsep}{2.7pt}
+\begin{tabular}{llllllccc}
 \toprule
-Ref. & DER & Task & Level & Method & Input & Cap.? & Submet.? & Transf.? \\
+Reference & DER & Task & Level & Method & Input & \begin{tabular}[b]{@{}c@{}}Installed\\capacity\end{tabular} & \begin{tabular}[b]{@{}c@{}}Submetering\\needed\end{tabular} & Transferable \\
 \midrule
-\cite{Zha16b} & PV & Detection + capacity & Meter & ML & Smart meter & Y & Y & N \\
-\cite{Li19d} & PV & Capacity + energy & Meter & ML & Smart meter & Y & Y & N \\
-\cite{Was21} & PV & Capacity & Feeder & Probabilistic & Aggr.\ net load & Y & N & N \\
-\cite{Sos17} & PV & Disaggregation & Feeder & Physics & Power flow + GHI & N & N & N \\
-\cite{gouveia2026pvcapacity} & PV & Installed capacity & Substation & ML / physics & Aggr.\ net load + GHI & Y & N & Part \\
-\cite{Azz24} & Transformer & Nameplate capacity & Transformer & ML (model-free) & Smart meter & Y & N & N \\
-\cite{Jar22} & PV/EV/HP & Detection & Meter & ML & Net-demand & N & Y & N \\
-\cite{Bec24} & PV/EV/HP & Coincidence / impact & Feeder & Empirical & Smart-meter profiles & N & N & N \\
-\cite{Wei20b} & HP & Detection & Meter & ML & Smart meter + weather & N & Y & N \\
-\cite{Bru23} & HP & Disaggregation / energy & Meter & ML (deep) & 15-min smart meter & N & Y & N \\
-\cite{Per17b} & HVAC & Change-point disaggregation & Meter & Change-point & Smart meter + temp. & N & N & N \\
-\cite{And20b} & HP & Transferable load profile & Feeder & Physics (thermal) & Temp.\ + housing & N & N & Y \\
-\cite{Lov17} & HP & Coincidence / ADMD & Population & Field study & Submetered HP (2-min) & N & Y & N \\
-\cite{Mul19} & HP & Flexibility / DR & Population & Field study & Submetered HP & N & Y & N \\
-This work & HP / ETL & Capacity + energy + flexibility & Feeder & Physics & Net load + temp.\ + transferred SF & Y & N & Y \\
+\multicolumn{9}{l}{\textit{Detection and disaggregation}} \\
+\cite{Fei13} & HP & Detection & Meter & ML (PU learning) & Smart meter &  & \checkmark &  \\
+\cite{Wei20b} & HP & Detection & Meter & ML & Smart meter + weather &  & \checkmark &  \\
+\cite{Bru23} & HP & Disaggregation & Meter & ML (deep) & 15-min smart meter &  & \checkmark &  \\
+\cite{Gis26} & HP & Detection + disaggregation & Meter & ML (CNN) & Smart meter &  & \checkmark &  \\
+\cite{Jar22} & PV/EV/HP & Detection & Meter & ML & Net demand &  & \checkmark &  \\
+\cite{Wan20} & Loads/DER & Regional NILM & Substation & NILM & Substation load &  & \checkmark &  \\
+\cite{Oma24} & Loads & Disaggregation & Substation & ML (deep) & Substation load &  & \checkmark &  \\
+\midrule
+\multicolumn{9}{l}{\textit{Temperature-response models}} \\
+\cite{Ali11} & Cooling & Change-point model & Community & Change-point & Aggr.\ load + temp. &  &  &  \\
+\cite{Per17b} & HVAC & Change-point model & Meter & Change-point & Smart meter + temp. &  &  &  \\
+\cite{Mac19} & Sector load & Weather effects & System & Regression & Sector load + weather &  &  &  \\
+\midrule
+\multicolumn{9}{l}{\textit{PV and transformer capacity}} \\
+\cite{Zha16b} & PV & Detection + capacity & Meter & ML & Smart meter & \checkmark & \checkmark &  \\
+\cite{Li19d} & PV & Capacity + energy & Meter & ML & Smart meter & \checkmark & \checkmark &  \\
+\cite{Sos17} & PV & Disaggregation & Feeder & Physics & Power flow + GHI &  &  &  \\
+\cite{Was21} & PV & Capacity & Feeder & Probabilistic & Aggr.\ net load & \checkmark &  &  \\
+\cite{gouveia2026pvcapacity} & PV & Capacity & Substation & ML / model-based & Aggr.\ net load + GHI & \checkmark &  & \checkmark \\
+\cite{Azz24} & Transformer & Nameplate rating & Transformer & Model-free & Smart meter & \checkmark &  &  \\
+\midrule
+\multicolumn{9}{l}{\textit{HP coincidence, profiles and flexibility}} \\
+\cite{Bec24} & PV/EV/HP & Coincidence / impact & Feeder & Empirical & Smart-meter profiles &  &  &  \\
+\cite{Lov17} & HP & Coincidence / ADMD & Population & Field study & Submetered HP &  & \checkmark &  \\
+\cite{Che21b} & HP & Peak in cold weather & Population & Field study & Submetered HP &  & \checkmark &  \\
+\cite{And20b} & HP & Load profiles & Feeder & Physics (thermal) & Temp.\ + housing &  &  & \checkmark \\
+\cite{Mul19} & HP & Flexibility / DR & Population & Field study & Submetered HP &  & \checkmark &  \\
+\midrule
+This work & HP / ETL & Capacity, energy, flexibility & Feeder & Change-point + SF & Net load + temp.\ + pilot SF & \checkmark &  & \checkmark \\
 \bottomrule
 \end{tabular}
+\par\smallskip{\footnotesize Installed capacity: recovers the installed capacity. Submetering needed: needs submetered device data or labels. Transferable: a calibration transfers to un-submetered aggregates. Level: individual meter, feeder, substation or transformer, or a submetered population.}
 \end{table*}
