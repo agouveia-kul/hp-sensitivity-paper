@@ -1,0 +1,41 @@
+\begin{table}[t]
+\centering
+\caption{Ratio of the target's own to the pilot's SF sensitivity [IQR over random splits or a bootstrap over homes]}
+\label{tab:transfer}
+\setlength{\tabcolsep}{2.5pt}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{llcc}
+\toprule
+pilot $\rightarrow$ target & & homes & $m_h^{\mathrm{own}}/m_h^{\mathrm{pilot}}$ \\
+\midrule
+\multicolumn{4}{l}{\textit{Random splits}} \\
+Kloten $\rightarrow$ Kloten & CH & 25/25 & 1.00 [0.92, 1.08] \\
+Oslo $\rightarrow$ Oslo & NO & 5/5 blocks & 1.00 [0.91, 1.10] \\
+RHPP $\rightarrow$ RHPP & GB & 10/10 & 1.00 [0.83, 1.20] \\
+RHPP $\rightarrow$ RHPP & GB & 91/91 & 1.00 [0.93, 1.07] \\
+BPA HZ1 $\rightarrow$ BPA HZ1 & US & 11/11 & 1.00 [0.89, 1.12] \\
+BPA HZ2 $\rightarrow$ BPA HZ2 & US & 6/6 & 1.00 [0.81, 1.23] \\
+\midrule
+\multicolumn{4}{l}{\textit{Between studies, same country and climate zone}} \\
+Kloten $\rightarrow$ Hg & CH & 50/21 & 0.97 [0.92, 1.01] \\
+Kloten $\rightarrow$ MqO & CH & 50/6 & 0.90 [0.83, 0.96] \\
+BPA HZ2 $\rightarrow$ NREL & US & 12/10 & 0.96 [0.91, 1.01] \\
+NREL $\rightarrow$ BPA HZ2 & US & 10/12 & 1.05 [1.00, 1.12] \\
+\midrule
+\multicolumn{4}{l}{\textit{Between countries, same climate class (Cfb)}} \\
+Kloten $\rightarrow$ Hamelin & CH$\rightarrow$DE & 50/37 & 0.88 [0.85, 0.92] \\
+\midrule
+\multicolumn{4}{l}{\textit{Between HP technologies}} \\
+RHPP ASHP $\rightarrow$ RHPP GSHP & GB & 137/45 & 1.14 [1.12, 1.20] \\
+RHPP GSHP $\rightarrow$ RHPP ASHP & GB & 45/137 & 0.87 [0.84, 0.90] \\
+\midrule
+\multicolumn{4}{l}{\textit{Between social and private housing}} \\
+RHPP social $\rightarrow$ RHPP private & GB & 128/54 & 1.65 [1.62, 1.70] \\
+RHPP private $\rightarrow$ RHPP social & GB & 54/128 & 0.61 [0.58, 0.62] \\
+\midrule
+\multicolumn{4}{l}{\textit{Between climate zones}} \\
+BPA HZ1 $\rightarrow$ BPA HZ2 & US & 22/12 & 0.60 [0.57, 0.63] \\
+BPA HZ2 $\rightarrow$ BPA HZ1 & US & 12/22 & 1.67 [1.60, 1.76] \\
+\bottomrule
+\end{tabular}}
+\end{table}

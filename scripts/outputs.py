@@ -26,6 +26,7 @@ import utils as U
 
 SWISS_SF = dict(base=0.0288, slope=0.01795, t_thr=16.55)  # full Kloten pilot SF fit at its net-load T_h (50 HPs, 2023, robust peaks)
 WPUQ_TRUE_KW = 238.51424035310907                       # measured WPUQ installed HP capacity
+SF_PLAN = 0.425                                          # planning HP SF of national LV studies [Few24]
 
 # Only the SF slope m_h transfers from the submetered pilot to a target. The
 # target's temperature-driven SF is m_h * (T_h - T), anchored at zero at the
@@ -394,7 +395,7 @@ def _wape(est, act):
 
 
 def tab_sf():
-    """Table II (SF invariance, N = 50) and the pilot SF figure (fig_sf_pooled)."""
+    """Table II (SF invariance, N = 50) and the pilot SF figure (fig_sf_pilot)."""
     from scipy.stats import spearmanr
     Dz = _kloten_design(); G = Dz['rows']
     g50 = G[G.N == 50]
@@ -408,7 +409,7 @@ def tab_sf():
                      f"{r.mm:.4f}\\,({r.mi:.4f}) \\\\" for n, r in par.iterrows())
     tex = r"""\begin{table}[t]
 \centering
-\caption{SF fits of the Kloten aggregates, median (IQR)}
+\caption{SF fits of the Kloten aggregates, median (interquartile range, IQR)}
 \label{tab:sf}
 \begin{tabular}{rcccc}
 \toprule
@@ -440,8 +441,8 @@ $N_{hp}$ & $R^2_h$ & SF$^{\max}_h$ & $b_h$ & $m_h$ ($^\circ$C$^{-1}$) \\
     ax.legend(fontsize=7, loc='upper right')
     ax.text(0.035, 0.55 / 0.75, f"$R^2_h$ {r2p:.2f}\n$m_h$ {p0['m']:.4f}", transform=ax.transAxes,
             ha='left', va='center', fontsize=7, color='0.3')
-    fig.tight_layout(); hf.save(fig, 'fig_sf_pooled')
-    print('wrote tab_sf.tex, fig_sf_pooled')
+    fig.tight_layout(); hf.save(fig, 'fig_sf_pilot')
+    print('wrote tab_sf.tex, fig_sf_pilot')
 
 
 def sf_controls(n_splits=120, n_reps=50, station='KLO', seed=0):
@@ -642,7 +643,7 @@ def tab_energy():
 \label{tab:energy}
 \begin{tabular}{lcc}
 \toprule
-fit + integration & WAPE (\%) & median $\hat{E}_{\mathrm{ETL}}/E_{\mathrm{ETL}}$ \\
+fit + integration & WAPE (\%) & median $\hat{E}_{\mathrm{TCL}}/E_{\mathrm{TCL}}$ \\
 \midrule
 """ + r("daily + daily", 'e_dd') + "\n" + r("hourly + hourly", 'e_hh') + "\n" + r("daily + hourly", 'e_dh') + r"""
 \bottomrule
@@ -702,6 +703,151 @@ def fig_slope_capacity():
     cb = fig.colorbar(sc, ax=ax, pad=0.02); cb.set_label('$N_{hp}$', fontsize=8)
     fig.tight_layout(); hf.save(fig, 'fig_slope_capacity')
     print('saved -> fig_slope_capacity')
+
+
+def _hinge_slope(T, y, th):
+    """OLS slope of y on max(0, th - T) with an intercept, all days. At a fixed threshold
+    the net-load slope of fit_hockey_stick is this OLS slope, so it is linear in y and
+    splits exactly into the TCL and non-TCL parts of the net load."""
+    x = np.maximum(0.0, th - T)
+    X = np.column_stack([np.ones_like(x), x])
+    return float(np.linalg.lstsq(X, y, rcond=None)[0][1])
+
+
+NONTCL_CORR = 'data/_kloten_nontcl_corr.pkl'
+
+
+def kloten_nontcl_correction(n_splits=60, reps=3, seed=0, rebuild=False):
+    """Non-TCL correction of the capacity estimate, (s_h - N sigma(T_h)) / m_h (Kloten).
+
+    Mirrors ``_kloten_design`` (same HP halves, grid and reps), with one change: in each
+    split the HP-free households are halved too. The calibration half gives sigma(t),
+    the per-household non-TCL sensitivity at threshold t (``_hinge_slope`` of their mean
+    daily load); the aggregates draw their HP-free households from the other half only,
+    so no household informs both sigma and a target. sigma is evaluated at each target's
+    own net-load threshold and multiplied by its consumer count N. Cached.
+    """
+    if os.path.exists(NONTCL_CORR) and not rebuild:
+        with open(NONTCL_CORR, 'rb') as fh:
+            return pickle.load(fh)
+    K = _daily_pools()['KLO']; T = K['T']
+    rng = np.random.default_rng(seed); nfree = K['free'].shape[0]
+    rows, sig = [], []
+    for s in range(n_splits):
+        A, B = _pilot_split(len(K['cap']), rng)
+        _, pm, _ = _pilot_fit(T, K, A)
+        C, F = _pilot_split(nfree, rng)
+        yC = K['free'][C].mean(0)
+        _, sC, tC, _ = fit_hockey_stick(T, yC, T_BALANCE_BOUNDS)       # load correction: own hinge of the pool
+        sig.append(dict(split=s, sigma_16=_hinge_slope(T, yC, 16.5), sigma_14=_hinge_slope(T, yC, 14.0),
+                        s_C=sC, t_C=tC))
+        for N in N_GRID_K:
+            for nh in NHP_GRID_K:
+                if nh > N:
+                    continue
+                for _ in range(reps):
+                    H = rng.choice(B, nh, replace=False)
+                    Fd = rng.choice(F, N - nh, replace=False) if N > nh else np.array([], int)
+                    hp = K['hp'][H].sum(0); net = hp + K['own'][H].sum(0) + K['free'][Fd].sum(0)
+                    cap = float(K['cap'][H].sum())
+                    _, sh, th, _ = fit_hockey_stick(T, net, T_BALANCE_BOUNDS)
+                    sg = _hinge_slope(T, yC, th)
+                    m_own = U._sf_arm(T, np.clip(hp / cap, 0, 1), th, 'h')[1]
+                    s_nontcl = _hinge_slope(T, net - hp, th)          # true non-TCL part of s_h
+                    _, shL, thL, _ = fit_hockey_stick(T, net - N * sC * np.maximum(0.0, tC - T), T_BALANCE_BOUNDS)
+                    rows.append(dict(split=s, N=N, N_hp=nh, cap=cap, s_h=sh, T_h=th, m_pilot=pm, m_own=m_own,
+                                     sigma=sg, s_nontcl=s_nontcl, T_h_load=thL,
+                                     cap_est=sh / pm, cap_corr=max(sh - N * sg, 0.0) / pm,
+                                     cap_lcorr=shL / pm, cap_own_lcorr=shL / m_own,
+                                     cap_own=sh / m_own, cap_own_corr=max(sh - N * sg, 0.0) / m_own))
+    out = dict(rows=pd.DataFrame(rows), sigma=pd.DataFrame(sig))
+    with open(NONTCL_CORR, 'wb') as fh:
+        pickle.dump(out, fh, protocol=pickle.HIGHEST_PROTOCOL)
+    return out
+
+
+def report_nontcl_correction():
+    """Print the Kloten correction by HP share and the Hamelin sweep with and without it."""
+    R = kloten_nontcl_correction(); G = R['rows']; S = R['sigma']
+    print(f"sigma (kW/C per household) at T_h=16.5: median {S.sigma_16.median():.4f} "
+          f"[{S.sigma_16.quantile(.25):.4f}, {S.sigma_16.quantile(.75):.4f}]; at 14.0: {S.sigma_14.median():.4f}")
+    per = G.s_nontcl / G.N
+    print(f"true non-TCL slope per household in the targets: median {per.median():.4f} "
+          f"[{per.quantile(.25):.4f}, {per.quantile(.75):.4f}]; share of s_h {np.median(G.s_nontcl / G.s_h) * 100:.0f}%")
+    bins = pd.cut(G.N_hp / G.N, [0, .15, .35, .65, 1.0])
+    for c in ('cap_est', 'cap_corr', 'cap_lcorr', 'cap_own', 'cap_own_corr', 'cap_own_lcorr'):
+        w = [_wape(G[c], G.cap)] + [_wape(g[c], g.cap) for _, g in G.groupby(bins, observed=True)]
+        r = [np.median(G[c] / G.cap)] + [np.median(g[c] / g.cap) for _, g in G.groupby(bins, observed=True)]
+        print(f"{c:13s} WAPE " + ' '.join(f'{x:5.1f}' for x in w) + ' | median ratio ' + ' '.join(f'{x:.2f}' for x in r))
+    # Hamelin: HP circuits removed, every household's other load kept (tab_feeder_sweep design)
+    X = _daily_pools()['WPUQ']; Tw = X['T']; n = len(X['cap']); base = X['own'].sum(0)
+    K = _daily_pools()['KLO']; yK = K['free'].mean(0)          # every Kloten HP-free household
+    _, sK, tK, _ = fit_hockey_stick(K['T'], yK, T_BALANCE_BOUNDS)
+    _, sHm, tHm, _ = fit_hockey_stick(Tw, X['own'].mean(0), T_BALANCE_BOUNDS)
+    print(f"non-TCL hinge per household: Kloten HP-free {sK:.4f} kW/C below {tK:.1f} C; "
+          f"Hamelin non-HP load {sHm:.4f} kW/C below {tHm:.1f} C")
+    sig_ham = _hinge_slope(Tw, X['own'].mean(0), 13.9)
+    print(f"sigma at 13.9 C: Hamelin non-HP load of its HP homes {sig_ham:.4f}, "
+          f"Kloten HP-free {_hinge_slope(K['T'], yK, 13.9):.4f} kW/C per household")
+    rng = np.random.default_rng(0); rows = []
+    for nhp in (5, 10, 15, 20, 25, 30, 37):
+        for Sx in ([np.arange(n)] if nhp == n else [rng.choice(n, nhp, replace=False) for _ in range(200)]):
+            cap = X['cap'][Sx].sum(); net = base + X['hp'][Sx].sum(0)
+            _, sh, th, _ = fit_hockey_stick(Tw, net, T_BALANCE_BOUNDS)
+            rows.append(dict(N_hp=nhp, e=(sh / M_SWISS - cap) / cap * 100,
+                             e_klo=(max(sh - n * _hinge_slope(K['T'], yK, th), 0) / M_SWISS - cap) / cap * 100,
+                             e_ham=(max(sh - n * _hinge_slope(Tw, X['own'].mean(0), th), 0) / M_SWISS - cap) / cap * 100,
+                             l_klo=(fit_hockey_stick(Tw, net - n * sK * np.maximum(0, tK - Tw), T_BALANCE_BOUNDS)[1]
+                                    / M_SWISS - cap) / cap * 100,
+                             l_ham=(fit_hockey_stick(Tw, net - n * sHm * np.maximum(0, tHm - Tw), T_BALANCE_BOUNDS)[1]
+                                    / M_SWISS - cap) / cap * 100))
+    H = pd.DataFrame(rows).groupby('N_hp').median()
+    print('Hamelin sweep, median capacity error (%): uncorrected | slope corr. (Kloten, Hamelin sigma) | '
+          'load corr. (Kloten, Hamelin hinge)')
+    print(H.round(1).to_string())
+    return G, S, H
+
+
+def tab_baselines():
+    """tab_baselines: capacity WAPE of the proposed estimate and three alternatives (Kloten),
+    overall and by HP share N_hp / N.
+
+    pilot m_h: s_h / m_pilot (Eq. capacity). target m_h: s_h / the aggregate's own SF
+    sensitivity, so only the net-load sensitivity errs. Whole curve: the pilot's full SF
+    fit (intercept and threshold) evaluated on the coldest day. Planning SF: coldest-day
+    TCL load of the net-load fit divided by SF_PLAN.
+    """
+    Dz = _kloten_design(); G = Dz['rows'].copy(); Tmin = float(Dz['T'].min())
+    P = {p['split']: p for p in Dz['pilots']}
+    G['cap_whole'] = [r.s_h * (r.T_h - Tmin) / (P[r.split]['b'] + P[r.split]['m'] * (P[r.split]['t'] - Tmin))
+                      for r in G.itertuples()]
+    G['cap_plan'] = G.s_h * (G.T_h - Tmin) / SF_PLAN
+    bins = pd.cut(G.N_hp / G.N, [0, .15, .35, .65, 1.0])
+    rows = [(r'$s_h/m_h$, pilot $m_h$ \eqref{eq:capacity}', 'cap_est'),
+            (r'$s_h/m_h$, target $m_h$', 'cap_or'),
+            (r'full pilot SF curve', 'cap_whole'),
+            (r'planning SF, $\hat{P}_{\mathrm{TCL}}(T_{\min})/0.425$', 'cap_plan')]
+    lines = []
+    for name, c in rows:
+        w = [_wape(G[c], G.cap)] + [_wape(g[c], g.cap) for _, g in G.groupby(bins, observed=True)]
+        print(f'{c:10s} ' + ' '.join(f'{x:5.1f}' for x in w) + f'  median ratio {np.median(G[c] / G.cap):.3f}')
+        lines.append(name + ' & ' + ' & '.join(f'{x:.1f}' for x in w) + r' \\')
+    tex = r"""\begin{table}[t]
+\centering
+\caption{Capacity WAPE (\%) on the Kloten aggregates, by HP penetration $N_{hp}/N$}
+\label{tab:baselines}
+\setlength{\tabcolsep}{2.5pt}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lccccc}
+\toprule
+estimate & all & $\le 15\%$ & 15--35\% & 35--65\% & $> 65\%$ \\
+\midrule
+""" + "\n".join(lines) + r"""
+\bottomrule
+\end{tabular}}
+\end{table}"""
+    open('paper/tables/tab_baselines.tex', 'w').write(tex)
+    print('wrote tab_baselines.tex')
 
 
 def tab_capacity():
@@ -1001,12 +1147,12 @@ def fig_flex_schedule():
     ax.axhline(Pmax, color='0.6', lw=0.8, zorder=1)
     ax.axhline(base, color='0.35', lw=0.9, ls=(0, (4, 2)), zorder=2)
 
-    # E^old_ETL: the baseline energy drawn over the whole window, marked with
+    # E^old_TCL: the baseline energy drawn over the whole window, marked with
     # diagonal hatching rather than a solid fill.
     ax.fill_between([0, 1], 0, base, facecolor='none', edgecolor='0.4',
                      hatch='////', lw=0, zorder=2)
 
-    # P^new_ETL: the full-power pulse of duty cycle alpha_F.
+    # P^new_TCL: the full-power pulse of duty cycle alpha_F.
     xs = [0, 0, af, af, 1]
     ys = [0, Pmax, Pmax, 0, 0]
     ax.step(xs, ys, where='post', color=RED, lw=1.9, zorder=6)
@@ -1016,7 +1162,7 @@ def fig_flex_schedule():
     ax.fill_between([af, 1], 0, base, color=BLU, alpha=.28, lw=0, zorder=3)
 
     label_bg = dict(facecolor='white', edgecolor='none', alpha=.72, pad=1.2)
-    ax.annotate('$E^{\\mathrm{old}}_{\\mathrm{ETL}}$', (af / 2, base / 2),
+    ax.annotate('$E^{\\mathrm{old}}_{\\mathrm{TCL}}$', (af / 2, base / 2),
                 ha='center', va='center', fontsize=8.5, color='0.3', zorder=7, bbox=label_bg)
     ax.annotate('$E_{\\mathrm{flex}}^{\\uparrow}$', (af / 2, (base + Pmax) / 2),
                 ha='center', va='center', fontsize=9, color=RED, zorder=7)
@@ -1024,12 +1170,12 @@ def fig_flex_schedule():
                 ha='center', va='center', fontsize=9, color='#1f6f78', zorder=7, bbox=label_bg)
 
     ax.plot([af / 2, af / 2], [Pmax, 1.07], color=RED, lw=0.6, zorder=6)
-    ax.annotate('$P^{\\mathrm{new}}_{\\mathrm{ETL}}$', (af / 2, 1.08),
+    ax.annotate('$P^{\\mathrm{new}}_{\\mathrm{TCL}}$', (af / 2, 1.08),
                 ha='center', va='bottom', fontsize=8.5, color=RED, zorder=7)
 
-    ax.annotate('$P_{\\mathrm{ETL}}^{\\max}$', (0.72, Pmax), xytext=(0, 3),
+    ax.annotate('$P_{\\mathrm{TCL}}^{\\max}$', (0.72, Pmax), xytext=(0, 3),
                 textcoords='offset points', ha='center', va='bottom', fontsize=8, color='0.3')
-    ax.annotate('baseline $\\bar P_{\\mathrm{ETL}}(T)$', (0.72, base), xytext=(0, 4),
+    ax.annotate('baseline $\\bar P_{\\mathrm{TCL}}(T)$', (0.72, base), xytext=(0, 4),
                 textcoords='offset points', ha='center', va='bottom', fontsize=8, color='0.25')
 
     def bracket(x0, x1, y, label):
@@ -1042,7 +1188,7 @@ def fig_flex_schedule():
 
     ax.set_xlim(0, 1); ax.set_ylim(0, 1.55)
     ax.set_xticks([]); ax.set_yticks([0, base, Pmax]); ax.set_yticklabels(['0', '', ''])
-    ax.set_xlabel('time'); ax.set_ylabel('ETL power')
+    ax.set_xlabel('time'); ax.set_ylabel('TCL power')
     fig.tight_layout()
     hf.save(fig, 'fig_flex_schedule')
     print('saved -> fig_flex_schedule')
@@ -1190,6 +1336,7 @@ def tab_real():
         om = U._sf_arm(T, sf, th, 'h')[1]
         below = T < th; sf_e = sf_target(T, th, km); cap_e = sh / km
         whole = sh * (th - T.min()) / (kb + km * (kt - T.min()))
+        plan = sh * (th - T.min()) / SF_PLAN                  # coldest-day TCL load / planning SF
         e_est = sh * np.maximum(0, th - T) * 24
         fe = sf_e * (1 - sf_e) * cap_e
         fa = _hourly_flex(_station_hourly(st).sum(0).reshape(len(T), 24), cap)        # hourly reference
@@ -1198,6 +1345,7 @@ def tab_real():
                          fe_r1=fe[below].sum(), fa_r1=fa[below].sum(), r1_days=int(below.sum()),
                          agg=names[st], n=len(X['cap']), cap=cap, cap_e=cap_e, err=(cap_e - cap) / cap * 100,
                          oracle=(sh / om - cap) / cap * 100, whole=(whole - cap) / cap * 100,
+                         plan=(plan - cap) / cap * 100,
                          m_own=om, T_h=th, net_r2=r2,
                          e_all=(e_est.sum() - hp.sum() * 24) / (hp.sum() * 24) * 100,
                          e_below=(e_est[below].sum() - hp[below].sum() * 24) / (hp[below].sum() * 24) * 100,
@@ -1205,17 +1353,20 @@ def tab_real():
                          flex_true_cap=(sf_e * (1 - sf_e)).sum() * cap / fa.sum()))
     R = pd.DataFrame(rows)
     print(R.round(3).to_string(index=False))
-    body = "\n".join(f"{r.agg} & {r.n} & {r.cap:.0f} & {r.cap_e:.0f} & {r.err:+.0f} & "
-                     f"{r.flex_b:.2f} \\\\" for r in R.itertuples())
+    s = lambda v: f"${v:+.0f}$"
+    body = "\n".join(f"{r.agg} & {r.n} & {r.cap:.0f} & {r.cap_e:.0f} & {s(r.err)} & {s(r.oracle)} & "
+                     f"{s(r.whole)} & {s(r.plan)} & {r.flex_b:.2f} \\\\" for r in R.itertuples())
     tex = r"""\begin{table}[t]
 \centering
 \caption{Transfer to real aggregates outside Kloten}
 \label{tab:real}
-\setlength{\tabcolsep}{3pt}
+\setlength{\tabcolsep}{2.5pt}
 \resizebox{\columnwidth}{!}{%
-\begin{tabular}{lccccc}
+\begin{tabular}{lcccccccc}
 \toprule
-aggregate & $N_{hp}$ & $P_h^{\max}$ (kW) & $\hat{P}_h^{\max}$ (kW) & cap. (\%) & flex \\
+ & & & & \multicolumn{4}{c}{capacity error (\%)} & \\
+\cmidrule(lr){5-8}
+aggregate & $N_{hp}$ & $P_h^{\max}$ (kW) & $\hat{P}_h^{\max}$ (kW) & \begin{tabular}[b]{@{}c@{}}pilot\\$m_h$\end{tabular} & \begin{tabular}[b]{@{}c@{}}target\\$m_h$\end{tabular} & \begin{tabular}[b]{@{}c@{}}full\\curve\end{tabular} & \begin{tabular}[b]{@{}c@{}}planning\\SF\end{tabular} & flex \\
 \midrule
 """ + body + r"""
 \bottomrule
@@ -1974,6 +2125,105 @@ pilot $\rightarrow$ target & homes & $m_h$ ($^\circ$C$^{-1}$) & $m_h$ ratio & ca
     print('wrote tab_rhpp.tex')
 
 
+def _daily_bootstrap(Dp, Dt, n_boot=300, frac=0.8, seed=0):
+    """Own/pilot SF-slope ratios of a bootstrap that redraws ``frac`` of the HP homes of
+    a pilot and a target daily pool (``_daily_pools`` entries), each SF fit anchored at
+    its own net-load threshold (``_pilot_fit``)."""
+    rng = np.random.default_rng(seed)
+    npil, ntgt = len(Dp['cap']), len(Dt['cap'])
+    out = []
+    for _ in range(n_boot):
+        A = rng.choice(npil, max(2, int(round(frac * npil))), replace=False)
+        B = rng.choice(ntgt, max(2, int(round(frac * ntgt))), replace=False)
+        out.append(_pilot_fit(Dt['T'], Dt, B)[1] / _pilot_fit(Dp['T'], Dp, A)[1])
+    return pd.Series(out)
+
+
+def tab_transfer(n_splits=300, seed=0):
+    """tab_transfer: own/pilot SF-slope ratio between populations, all with the IQR.
+
+    Random splits: disjoint halves (or pools of k homes), both directions; the median
+    ratio and its IQR. Between groups: the ratio of the full pools and the IQR of a
+    bootstrap that redraws 80% of the homes of each pool. The ratio minus one is the
+    capacity error caused by the transfer alone.
+    """
+    q = lambda s: f"[{s.quantile(.25):.2f}, {s.quantile(.75):.2f}]"
+    rows = {}
+    # Kloten halves, from the daily pools
+    D = _daily_pools(); K = D['KLO']; nk = len(K['cap'])
+    rng = np.random.default_rng(seed); r = []
+    for _ in range(n_splits):
+        A, B = _pilot_split(nk, rng)
+        ma, mb = _pilot_fit(K['T'], K, A)[1], _pilot_fit(K['T'], K, B)[1]
+        r += [mb / ma, ma / mb]
+    r = pd.Series(r); mk = _pilot_fit(K['T'], K, np.arange(nk))[1]
+    rows['kk'] = (r'Kloten $\rightarrow$ Kloten', 'CH', f'{nk // 2}/{nk - nk // 2}', f'{mk:.3f}', r.median(), r)
+    # Oslo block halves
+    Ro = oslo_pool_transfer()
+    rows['oo'] = (r'Oslo $\rightarrow$ Oslo', 'NO', '5/5 blocks', f'{Ro.m_pilot.median():.3f}',
+                  Ro.slope_ratio.median(), Ro.slope_ratio)
+    # RHPP pools, technologies and tenures
+    Hr = _rhpp_concurrent(); homes = list(Hr); mr = _pool_sf(Hr, homes, 0.7)['m']
+    for k in (10, len(homes) // 2):
+        R = bpa_pool_transfer(homes, H=Hr, min_frac=0.7, size=k, n_splits=n_splits, seed=seed)
+        rows[f'rr{k}'] = (r'RHPP $\rightarrow$ RHPP', 'GB', f'{k}/{k}', f'{mr:.3f}', R.ratio.median(), R.ratio)
+    grp = {'ASHP': [h for h in homes if Hr[h]['hp'] == 'ASHP'], 'GSHP': [h for h in homes if Hr[h]['hp'] == 'GSHP'],
+           'social': [h for h in homes if Hr[h]['tenure'] == 'rsl'],
+           'private': [h for h in homes if Hr[h]['tenure'] == 'domestic']}
+    for a, b in (('ASHP', 'GSHP'), ('GSHP', 'ASHP'), ('social', 'private'), ('private', 'social')):
+        P, Q = _pool_sf(Hr, grp[a], 0.7), _pool_sf(Hr, grp[b], 0.7)
+        R = cross_study_transfer(Hr, grp[a], grp[b], label=f'{a} -> {b}', min_frac=0.7, seed=seed)
+        rows[a + b] = (rf'RHPP {a} $\rightarrow$ RHPP {b}', 'GB', f'{len(grp[a])}/{len(grp[b])}',
+                       f"{P['m']:.3f}/{Q['m']:.3f}", Q['m'] / P['m'], R.ratio)
+    # BPA heating zones and NREL
+    Hb = _bpa_homes(); Hb.update(_nrel_homes())
+    hz1 = [h for h in Hb if h[:3] in ('TAC', 'SNO')]; hz2 = list(BPA_INLAND); nrel = list(NREL_WA)
+    for key, lab, hs in (('b1', 'HZ1', hz1), ('b2', 'HZ2', hz2)):
+        R = bpa_pool_transfer(hs, H=Hb, n_splits=n_splits, seed=seed)
+        rows[key] = (rf'BPA {lab} $\rightarrow$ BPA {lab}', 'US', f'{len(hs) // 2}/{len(hs) - len(hs) // 2}',
+                     f"{_pool_sf(Hb, hs)['m']:.3f}", R.ratio.median(), R.ratio)
+    for key, lab, pil, tgt in (('b2n', r'BPA HZ2 $\rightarrow$ NREL', hz2, nrel), ('nb2', r'NREL $\rightarrow$ BPA HZ2', nrel, hz2),
+                               ('b12', r'BPA HZ1 $\rightarrow$ BPA HZ2', hz1, hz2), ('b21', r'BPA HZ2 $\rightarrow$ BPA HZ1', hz2, hz1)):
+        P, Q = _pool_sf(Hb, pil), _pool_sf(Hb, tgt)
+        R = cross_study_transfer(Hb, pil, tgt, label=lab, seed=seed)
+        rows[key] = (lab, 'US', f'{len(pil)}/{len(tgt)}', f"{P['m']:.3f}/{Q['m']:.3f}", Q['m'] / P['m'], R.ratio)
+    # Kloten -> real aggregates outside the pilot
+    for st, lab, c in (('Hg', 'Hg', 'CH'), ('MqO', 'MqO', 'CH'), ('WPUQ', 'Hamelin', r'CH$\rightarrow$DE')):
+        X = D[st]; mx = _pilot_fit(X['T'], X, np.arange(len(X['cap'])))[1]
+        rows[st] = (rf'Kloten $\rightarrow$ {lab}', c, f"{nk}/{len(X['cap'])}", f'{mk:.3f}/{mx:.3f}', mx / mk,
+                    _daily_bootstrap(K, X, seed=seed))
+    blocks = [('Random splits', ['kk', 'oo', 'rr10', f'rr{len(homes) // 2}', 'b1', 'b2']),
+              ('Between studies, same country and climate zone', ['Hg', 'MqO', 'b2n', 'nb2']),
+              ('Between countries, same climate class (Cfb)', ['WPUQ']),
+              ('Between HP technologies', ['ASHPGSHP', 'GSHPASHP']),
+              ('Between social and private housing', ['socialprivate', 'privatesocial']),
+              ('Between climate zones', ['b12', 'b21'])]
+    body = []
+    for title, keys in blocks:
+        body.append(r'\multicolumn{4}{l}{\textit{' + title + r'}} \\')
+        for k in keys:
+            lab, c, n, m, est, dist = rows[k]
+            print(f'{lab:45s} m_h {m:12s} {est:.2f} {q(dist)}')
+            body.append(f'{lab} & {c} & {n} & {est:.2f} {q(dist)} \\\\')
+        body.append(r'\midrule')
+    tex = r"""\begin{table}[t]
+\centering
+\caption{Ratio of the target's own to the pilot's SF sensitivity [IQR over random splits or a bootstrap over homes]}
+\label{tab:transfer}
+\setlength{\tabcolsep}{2.5pt}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{llcc}
+\toprule
+pilot $\rightarrow$ target & & homes & $m_h^{\mathrm{own}}/m_h^{\mathrm{pilot}}$ \\
+\midrule
+""" + '\n'.join(body[:-1]) + r"""
+\bottomrule
+\end{tabular}}
+\end{table}"""
+    open('paper/tables/tab_transfer.tex', 'w', encoding='utf-8', newline='\n').write(tex)
+    print('wrote tab_transfer.tex')
+
+
 NEEA_BASE = 'data/_neea_base_homes.pkl'
 NEEA_ETL = NEEA_HEAT + tuple(u for u in NEEA_COOL if u not in NEEA_HEAT) + ('Gas Furnace (Component)',)
 
@@ -2599,7 +2849,7 @@ def tab_cross():
              + ' & ' + ' & '.join(vals) + r' \\')
         return ('%' + s) if lab in COMMENTED else s
     body = '\n'.join(row(lab) for lab in order)
-    head = 'dataset & ETL tech & $n$ & Climate & ' + ' & '.join(h for h, _, _ in COLS) + r' \\'
+    head = 'dataset & TCL tech & $n$ & Climate & ' + ' & '.join(h for h, _, _ in COLS) + r' \\'
     tex = (
         r"\begin{table*}[t]" "\n" r"\centering" "\n"
         r"\begin{threeparttable}" "\n"
@@ -2611,7 +2861,7 @@ def tab_cross():
         + head + "\n" r"\midrule" "\n" + body + "\n" r"\bottomrule" "\n"
         r"\end{tabular}" "\n"
         r"\begin{tablenotes}[flushleft]\footnotesize" "\n"
-        r"\item[] $n$: aggregated consumers. Climate: K{\"o}ppen--Geiger class~\cite{beck2018koppen}. $R^2_h$, $R^2_c$: fit scores in R1 and R3. ASHP, GSHP, WSHP: air-, ground-, water-source HP; DHP: ductless (mini-split) HP; AC: air conditioning; ER: electric resistance heating." "\n"
+        r"\item[] $n$: aggregated consumers. Climate: K{\"o}ppen--Geiger class~\cite{beck2018koppen}: Cfb, temperate oceanic; Dfa, Dfb, humid continental; Csb, warm-summer Mediterranean; Cfa, humid subtropical; BWh, hot desert. $R^2_h$, $R^2_c$: fit scores in R1 and R3. ASHP, GSHP, WSHP: air-, ground-, water-source HP; DHP: ductless (mini-split) HP; AC: air conditioning; ER: electric resistance heating." "\n"
         r"%\item[a] The LCL London aggregate is submetered heat-pump load only (nine homes, no other household load), restricted to 2014, the single year all nine are metered together. Its net-load fit therefore coincides with the HP load, $P_{\mathrm{base}}$ is the winter standby/hot-water floor, and the installed capacity is the sum of the nine per-home 2014 peaks. The 2014 record ends in March, so the window is winter-only and never reaches $T_h$, which weakens the fit." "\n"
         r"\item[a] Hennepin's SF uses the ASHP compressor's own draw only, excluding its electric-resistance HP-backup element" "\n"
         r"\item[b] The SF uses the submetered ductless HPs only. Most of these homes also have electric baseboard, furnace or other zonal heating circuits (17 of 22 in WA, 16 of 21 in OR), which the net load includes." "\n"

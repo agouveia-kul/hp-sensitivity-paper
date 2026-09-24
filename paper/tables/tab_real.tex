@@ -2,15 +2,17 @@
 \centering
 \caption{Transfer to real aggregates outside Kloten}
 \label{tab:real}
-\setlength{\tabcolsep}{3pt}
+\setlength{\tabcolsep}{2.5pt}
 \resizebox{\columnwidth}{!}{%
-\begin{tabular}{lccccc}
+\begin{tabular}{lcccccccc}
 \toprule
-aggregate & $N_{hp}$ & $P_h^{\max}$ (kW) & $\hat{P}_h^{\max}$ (kW) & cap. (\%) & flex \\
+ & & & & \multicolumn{4}{c}{capacity error (\%)} & \\
+\cmidrule(lr){5-8}
+aggregate & $N_{hp}$ & $P_h^{\max}$ (kW) & $\hat{P}_h^{\max}$ (kW) & \begin{tabular}[b]{@{}c@{}}pilot\\$m_h$\end{tabular} & \begin{tabular}[b]{@{}c@{}}target\\$m_h$\end{tabular} & \begin{tabular}[b]{@{}c@{}}full\\curve\end{tabular} & \begin{tabular}[b]{@{}c@{}}planning\\SF\end{tabular} & flex \\
 \midrule
-Hg, CH & 21 & 109 & 112 & +2 & 0.96 \\
-MqO, CH & 6 & 51 & 48 & -6 & 0.93 \\
-Hamelin, DE & 37 & 239 & 217 & -9 & 0.93 \\
+Hg, CH & 21 & 109 & 112 & $+2$ & $+6$ & $-3$ & $+4$ & 0.96 \\
+MqO, CH & 6 & 51 & 48 & $-6$ & $+5$ & $-20$ & $-6$ & 0.93 \\
+Hamelin, DE & 37 & 239 & 217 & $-9$ & $+3$ & $-26$ & $-26$ & 0.93 \\
 \bottomrule
 \end{tabular}}
 \end{table}
