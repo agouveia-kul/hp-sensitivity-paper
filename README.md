@@ -1,36 +1,55 @@
-# Heat-pump sensitivity from LV net load and temperature
+# Installed capacity of aggregated TCLs from net load and temperature
 
-Estimating aggregated heat-pump (ETL) **installed capacity, energy and flexibility**
+Estimating the **installed capacity, energy and flexibility** of aggregated
+thermostatically controlled loads (heat pumps, electric heating, air conditioning)
 from low-voltage net load and ambient temperature, using a net-load "bathtub" fit
-plus a transferable **simultaneity factor** (SF). Companion code and results for the
-paper *Estimating aggregated heat-pump installed capacity, energy and flexibility
-from LV net load and ambient temperature*.
+plus a transferable **simultaneity factor** (SF). Companion code for the paper
+*Estimating the Installed Capacity of Aggregated Thermostatically Controlled Loads
+from Net Load and Temperature*.
 
-## Quick start (cached mode — no large data needed)
+## Replicating the results
 
 ```bash
 pip install -r requirements.txt
-jupyter lab paper_results.ipynb   # run top to bottom
+python -m jupyterlab paper_results.ipynb      # then run all cells
 ```
 
-[`paper_results.ipynb`](paper_results.ipynb) reproduces and displays **every figure
-and table** in the paper. It runs in **cached mode**: it reads the small artifacts
-committed under [`paper/figures/`](paper/figures), [`paper/tables/`](paper/tables)
-and [`scratchpad/`](scratchpad) (≈3 MB total) and never touches the multi-GB raw
-datasets. The committed notebook already has its figures embedded, so it renders in
-full on GitHub without running anything.
+[`paper_results.ipynb`](paper_results.ipynb) recomputes **every figure and table** of the
+paper from the raw datasets:
+
+1. Download the datasets and place them under `data/` as described in
+   **[DATA.md](DATA.md)**. The data is not in this repository. Eight of the eleven
+   datasets are public downloads; Pecan Street, NEEA and RHPP need registration or a
+   licence from their providers.
+2. Run the notebook. Each cell checks the datasets its artifact needs, recomputes it,
+   and compares recomputed tables line by line with the published ones.
+3. Where a dataset is missing or in an unexpected format, the cell warns and shows the
+   published result from `paper/` instead. The notebook runs to the end with any subset
+   of the data, including none.
+
+Recomputed artifacts go to `results/`; the published copies in `paper/` are never
+overwritten. To check which datasets are in place, or to recompute headless:
+
+```bash
+python scripts/replication.py            # data status
+python scripts/replication.py --run      # recompute everything
+```
+
+On machines that block unsigned programs, `jupyter lab` fails with *Access is denied*.
+`python -m jupyterlab` works there.
 
 ## Repository layout
 
 | Path | What |
 |------|------|
-| `paper_results.ipynb` | The results walkthrough (main entry point). |
-| `scripts/utils.py` | Fitting primitives, data loaders, and the notebook's `show_fig` / `show_table` display helpers. |
-| `scripts/outputs.py` | One function per paper figure/table; rebuilds it from source. |
-| `scripts/hp_*.py`, `scripts/pecan_street.py`, `src/heapo.py` | Supporting model / data-pipeline modules. |
-| `paper/figures/`, `paper/tables/` | Compiled figures (PDF+PNG) and LaTeX tables shown in the notebook. |
-| `paper/` | The manuscript sources. |
-| `OLD/` | Retired exploration scripts and notebooks (kept on disk, not version-controlled). |
+| `paper_results.ipynb` | Recomputes and shows every figure and table (main entry point). |
+| `scripts/replication.py` | Dataset checks, placement instructions and the recompute-or-fallback runner. |
+| `scripts/outputs.py` | One generator per paper figure/table. |
+| `scripts/utils.py` | Fitting primitives, data loaders and table display helpers. |
+| `scripts/hp_*.py`, `scripts/pecan_street.py`, `src/heapo.py` | Model and data-pipeline modules. |
+| `scripts/neea_extract.py`, `scripts/rhpp_extract.py`, `scripts/build_extra_frames.py` | Reduce the raw NEEA, RHPP, COFACTOR and other downloads to the series the generators use. |
+| `scripts/gen_litreview.py` | Table I (literature review). |
+| `paper/` | Manuscript sources, with the published figures (`figures/`) and tables (`tables/`). |
 
 `HeatPump_Hypotheses.ipynb` is the exploratory working notebook (slopes, thresholds,
 detectability, resolution) that preceded the paper; it is not required to reproduce it.
@@ -41,35 +60,10 @@ holds the data-driven (XGBoost / PLS / ridge) heat-pump capacity estimation.
 `scripts/hp_common.py`, `hp_pools.py`, `hp_capacity.py` and `src/heapo.py` are
 shared with hp-capacity-detection (identical at the split).
 
-## Reproducing from source (optional)
-
-The last section of the notebook regenerates artifacts behind a `REGENERATE` switch:
-
-```python
-REGENERATE = True     # rebuild every cached figure/table from source
-```
-
-This needs the **regeneration data bundle** (~750 MB), which is too large for GitHub
-and is archived separately — see **[DATA.md](DATA.md)**. Download it into `data/` and
-`scratchpad/` (a helper is scaffolded in [`scripts/fetch_data.py`](scripts/fetch_data.py)),
-then run the notebook with `REGENERATE = True`. The one heavy step,
-`outputs.build_cross_table(repull=True)`, re-pulls ~450 ResStock building profiles
-from the public NREL S3 bucket and is left out of the default rebuild.
-
-Two reproducibility tiers:
-
-- **Tier A — regeneration bundle (~750 MB):** rebuilds all figures/tables from the
-  cached pool/design intermediates. This is what the archive holds.
-- **Tier B — from raw (~13 GB more):** rebuilding the pool caches themselves from the
-  raw Swiss / heapo / Pecan Street data. Optional, and partly restricted by dataset
-  licensing (see **[LICENSING.md](LICENSING.md)**).
-
 ## Data and licensing
 
-Raw and intermediate data are **not** in this repository. See **[DATA.md](DATA.md)**
-for what the bundle contains and where to get it, and **[LICENSING.md](LICENSING.md)**
-for the redistribution status of each source dataset (Pecan Street, WPuQ, the Swiss
-smart-meter pool, NEEA, ResStock).
+See **[DATA.md](DATA.md)** for where to get each dataset and where to place it, and
+**[LICENSING.md](LICENSING.md)** for the redistribution status of each one.
 
 ## Citation
 

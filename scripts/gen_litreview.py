@@ -7,6 +7,7 @@ modelling, PV and transformer capacity, and HP demand, coincidence and flexibili
 Every field is kept in ROWS so any column can be switched in via DEFAULT_COLS.
 Writes paper/tables/tab_litreview.tex.
 """
+import os
 
 G_DET = 'Detection and disaggregation'
 G_TRF = 'Temperature-response models'
@@ -111,7 +112,7 @@ def cite(ref):
     return r'This work' if ref == 'THIS' else r'\cite{%s}' % ref
 
 
-def build():
+def build(tabdir=os.path.join('paper', 'tables')):
     cols = DEFAULT_COLS
     spec = ''.join('c' if k in FLAGS else 'l' for _, k in cols)
 
@@ -147,8 +148,11 @@ def build():
         + head + "\n" r"\midrule" "\n" + '\n'.join(lines) + "\n" r"\bottomrule" "\n"
         r"\end{tabular}}" "\n"
         + KEY + "\n" r"\end{table*}" "\n")
-    open('paper/tables/tab_litreview.tex', 'w', encoding='utf-8', newline='\n').write(tex)
-    print('wrote paper/tables/tab_litreview.tex  (%d rows, %d columns)' % (len(ROWS), len(cols)))
+    os.makedirs(tabdir, exist_ok=True)
+    out = os.path.join(tabdir, 'tab_litreview.tex')
+    with open(out, 'w', encoding='utf-8', newline='\n') as fh:
+        fh.write(tex)
+    print('wrote %s  (%d rows, %d columns)' % (out, len(ROWS), len(cols)))
 
 
 if __name__ == '__main__':

@@ -49,10 +49,46 @@ def main(sites=None, keep=KEEP, out_path=OUT):
     print(out['End Use'].value_counts().to_string(), flush=True)
 
 
+POWER_OUT = 'data/neea_power_2023.parquet'
+TEMP_ZIP = 'data/TEMPERATURE15 v9.2.zip'
+TEMP_OUT = 'data/neea_temp_2023.parquet'
+
+
+def extract_power_temp():
+    """Mains and ductless-HP power, and 2023 outdoor temperature, as compact parquets.
+
+    Writes ``data/neea_power_2023.parquet`` (Mains, Mains With Solar, Ductless Heatpump
+    circuits) and ``data/neea_temp_2023.parquet`` (outdoor-air sensors, 2023, plausible
+    range -40..115 F). These feed the NEEA rows of Table I (``outputs.neea_fit``).
+    """
+    keep = {'Mains', 'Mains With Solar', 'Ductless Heatpump'}
+    parts = []
+    for ch in pd.read_csv(ZIP, compression='zip', usecols=['ee_site_id', 'End Use', 'power', 'MIN_T_l', 'state', 'cz'],
+                          chunksize=3_000_000):
+        parts.append(ch[ch['End Use'].isin(keep)])
+    p = pd.concat(parts, ignore_index=True)
+    p['MIN_T_l'] = pd.to_datetime(p['MIN_T_l'])
+    p.to_parquet(POWER_OUT)
+    print(f'wrote {POWER_OUT}: {len(p):,} rows, {p.ee_site_id.nunique()} sites', flush=True)
+
+    tparts = []
+    for ch in pd.read_csv(TEMP_ZIP, compression='zip', usecols=['ee_site_id', 'regname', 'temp', 'MIN_T_l'],
+                          chunksize=2_000_000):
+        oa = ch[ch['regname'].str.contains('oa_temp', case=False, na=False)].copy()
+        oa['MIN_T_l'] = pd.to_datetime(oa['MIN_T_l'])
+        tparts.append(oa[oa['MIN_T_l'].dt.year == 2023])
+    t = pd.concat(tparts, ignore_index=True)
+    t = t[(t.temp > -40) & (t.temp < 115)]
+    t.to_parquet(TEMP_OUT)
+    print(f'wrote {TEMP_OUT}: {len(t):,} rows, {t.ee_site_id.nunique()} sites', flush=True)
+
+
 if __name__ == '__main__':
     import sys
     os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
-    if len(sys.argv) > 1 and sys.argv[1] == '--all-circuits':
+    if len(sys.argv) > 1 and sys.argv[1] == '--power-temp':
+        extract_power_temp()
+    elif len(sys.argv) > 1 and sys.argv[1] == '--all-circuits':
         # every circuit of the homes in the NEEA WA/OR aggregates (scratchpad/neea_full_aggs.pkl)
         import pickle
         A = pickle.load(open('scratchpad/neea_full_aggs.pkl', 'rb'))

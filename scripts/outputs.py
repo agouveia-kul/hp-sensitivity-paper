@@ -8,9 +8,11 @@ notebooks also use (``hp_pools``, ``hp_design``, ``hp_analysis``,
 ``hp_capacity``, ``pecan_street``) are imported lazily inside each function so
 ``import outputs`` stays cheap and never triggers a data load on its own.
 
-Every function writes its PDF/PNG to ``paper/figures`` or its ``.tex`` to
-``paper/tables`` (via ``utils.save`` / direct write) and returns nothing except
-where noted.
+Every function writes its PDF/PNG to ``hp_figures.FIGDIR`` or its ``.tex`` to
+``TABDIR`` (``paper/figures`` and ``paper/tables`` by default) and returns
+nothing except where noted. Intermediate cross-dataset files go to ``WORKDIR``
+(``scratchpad`` by default). ``replication.py`` points all three at
+``results/`` so a recompute never overwrites the published artifacts.
 """
 import os
 import pickle
@@ -39,6 +41,21 @@ M_SWISS = SWISS_SF['slope']
 def sf_target(T, t_h, m=M_SWISS):
     """Transferred temperature-driven SF of a target: m * (T_h - T), clipped."""
     return np.clip(m * np.maximum(0.0, t_h - np.asarray(T)), 0, 1)
+
+
+TABDIR = os.path.join('paper', 'tables')      # where the .tex tables are written
+WORKDIR = 'scratchpad'                        # cross-dataset frames and fitted rows
+
+
+def _write_table(name, tex):
+    os.makedirs(TABDIR, exist_ok=True)
+    with open(os.path.join(TABDIR, name + '.tex'), 'w', encoding='utf-8', newline='\n') as fh:
+        fh.write(tex)
+
+
+def _work(name):
+    os.makedirs(WORKDIR, exist_ok=True)
+    return os.path.join(WORKDIR, name)
 
 
 # ===========================================================================
@@ -297,9 +314,19 @@ N_GRID_K = (10, 20, 30, 40, 50)
 NHP_GRID_K = (5, 10, 15, 20, 25)
 
 
+_KLOTEN_HOURLY = {}
+
+
 def _kloten_hourly():
     """Hourly means of the Kloten HP, own and HP-free household loads, in the
-    same row order as ``_daily_pools()['KLO']`` (energy-resolution comparison)."""
+    same row order as ``_daily_pools()['KLO']`` (energy-resolution comparison).
+    Memoized for the session."""
+    if 'KLO' not in _KLOTEN_HOURLY:
+        _KLOTEN_HOURLY['KLO'] = _kloten_hourly_build()
+    return _KLOTEN_HOURLY['KLO']
+
+
+def _kloten_hourly_build():
     import hp_pools as hpp
     p = hpp.build_pool_combined(verbose=False)
     w = p['weather_of']; eheat = set(p.get('eheat_households', []))
@@ -362,7 +389,7 @@ def _kloten_design(n_splits=20, reps=3, seed=0, rebuild=False):
     if os.path.exists(KLOTEN_DESIGN) and not rebuild:
         with open(KLOTEN_DESIGN, 'rb') as fh:
             return pickle.load(fh)
-    K = _daily_pools()['KLO']; Kh = _kloten_hourly()
+    K = _daily_pools(include_wpuq=False)['KLO']; Kh = _kloten_hourly()
     T, Th = K['T'], Kh['T']
     rng = np.random.default_rng(seed); nfree = K['free'].shape[0]
     pilots, rows = [], []
@@ -419,7 +446,7 @@ $N_{hp}$ & $R^2_h$ & SF$^{\max}_h$ & $b_h$ & $m_h$ ($^\circ$C$^{-1}$) \\
 \bottomrule
 \end{tabular}
 \end{table}"""
-    open('paper/tables/tab_sf.tex', 'w').write(tex)
+    _write_table('tab_sf', tex)
     pm = pd.Series([p['m'] for p in Dz['pilots']])
     print(f'{len(g50)} aggregates at N=50; Spearman m_anch vs N_hp {spearmanr(g50.N_hp, g50.m_anch).statistic:+.3f}, '
           f'vs capacity {spearmanr(g50.cap, g50.m_anch).statistic:+.3f}')
@@ -520,12 +547,22 @@ def sf_controls(n_splits=120, n_reps=50, station='KLO', seed=0):
 # Hybrid evaluation -- real aggregates (headline) + without-replacement
 # synthetic aggregates (sensitivity). Calendar 2023 (WPUQ: 2019), robust peaks.
 # ===========================================================================
-def _daily_pools():
+_DAILY_POOLS = {}
+
+
+def _daily_pools(include_wpuq=True):
     """Per-household daily means of HP and other load, robust peaks, daily T.
 
     A sum of daily means is the daily mean of the sum, so any aggregate's daily
     net load and SF follow from these matrices without touching 15-min data.
+    ``include_wpuq=False`` skips the German pool, so the Swiss (Kloten, Hg, MqO)
+    analyses need only the Swiss data. Memoized for the session.
     """
+    key = bool(include_wpuq)
+    if key in _DAILY_POOLS:
+        return _DAILY_POOLS[key]
+    if not key and True in _DAILY_POOLS:
+        return _DAILY_POOLS[True]
     import hp_pools as hpp
     from hp_capacity import robust_series_peak
 
@@ -547,16 +584,18 @@ def _daily_pools():
                        own=otD.iloc[:, [orow[h] for h in hps]].to_numpy().T,
                        free=otD.iloc[:, [orow[h] for h in free]].to_numpy().T,
                        cap=np.array([robust_series_peak(p['hp_mat'][i]) for i in hrows]))
-    q = hpp.build_pool_wpuq(verbose=False)
-    T = pd.Series(q['temperature']['WPUQ'], index=q['index']).resample('D').mean()
-    out['WPUQ'] = dict(T=T.to_numpy(), hp=daily_mat(q['hp_mat'], q['index']).to_numpy().T,
-                       own=daily_mat(q['other_mat'], q['index']).to_numpy().T,
-                       free=np.zeros((0, len(T))),
-                       cap=np.array([robust_series_peak(q['hp_mat'][i]) for i in range(q['hp_mat'].shape[0])]))
+    if include_wpuq:
+        q = hpp.build_pool_wpuq(verbose=False)
+        T = pd.Series(q['temperature']['WPUQ'], index=q['index']).resample('D').mean()
+        out['WPUQ'] = dict(T=T.to_numpy(), hp=daily_mat(q['hp_mat'], q['index']).to_numpy().T,
+                           own=daily_mat(q['other_mat'], q['index']).to_numpy().T,
+                           free=np.zeros((0, len(T))),
+                           cap=np.array([robust_series_peak(q['hp_mat'][i]) for i in range(q['hp_mat'].shape[0])]))
     for k, v in out.items():
         ok = np.isfinite(v['T'])
         for f in ('T', 'hp', 'own', 'free'):
             v[f] = v[f][..., ok]
+    _DAILY_POOLS[key] = out
     return out
 
 
@@ -591,7 +630,7 @@ def norepl_sensitivity(n_splits=20, reps=5, seed=1, D=None,
     N_hp/rate - N_hp distinct HP-free households. No HP is shared between pilot
     and target, and none recurs within an aggregate.
     """
-    D = _daily_pools() if D is None else D
+    D = _daily_pools(include_wpuq=False) if D is None else D
     rng = np.random.default_rng(seed)
     K = D['KLO']; nfree = K['free'].shape[0]; rows = []
     for s in range(n_splits):
@@ -649,7 +688,7 @@ fit + integration & WAPE (\%) & median $\hat{E}_{\mathrm{TCL}}/E_{\mathrm{TCL}}$
 \bottomrule
 \end{tabular}
 \end{table}"""
-    open('paper/tables/tab_energy.tex', 'w').write(tex)
+    _write_table('tab_energy', tex)
     rho = np.corrcoef(G.e_dd, G.e_act)[0, 1]
     print(f'{len(G)} aggregates; daily+daily Pearson {rho:.3f}, WAPE {_wape(G.e_dd, G.e_act):.1f}%, '
           f'median ratio {np.median(G.e_dd / G.e_act):.3f}')
@@ -730,7 +769,7 @@ def kloten_nontcl_correction(n_splits=60, reps=3, seed=0, rebuild=False):
     if os.path.exists(NONTCL_CORR) and not rebuild:
         with open(NONTCL_CORR, 'rb') as fh:
             return pickle.load(fh)
-    K = _daily_pools()['KLO']; T = K['T']
+    K = _daily_pools(include_wpuq=False)['KLO']; T = K['T']
     rng = np.random.default_rng(seed); nfree = K['free'].shape[0]
     rows, sig = [], []
     for s in range(n_splits):
@@ -846,7 +885,7 @@ estimate & all & $\le 15\%$ & 15--35\% & 35--65\% & $> 65\%$ \\
 \bottomrule
 \end{tabular}}
 \end{table}"""
-    open('paper/tables/tab_baselines.tex', 'w').write(tex)
+    _write_table('tab_baselines', tex)
     print('wrote tab_baselines.tex')
 
 
@@ -874,7 +913,7 @@ $m_h$ in \eqref{eq:capacity} & WAPE (\%) & median $\hat{P}^{\max}_{h}/{P}^{\max}
 \bottomrule
 \end{tabular}
 \end{table}"""
-    open('paper/tables/tab_capacity.tex', 'w').write(tex)
+    _write_table('tab_capacity', tex)
     print('wrote tab_capacity.tex')
 
 
@@ -914,7 +953,7 @@ def _kloten_flex_hourly(rebuild=False):
     if os.path.exists(KLOTEN_FLEX_H) and not rebuild:
         return pd.read_pickle(KLOTEN_FLEX_H)
     Dz = _kloten_design(); G = Dz['rows']
-    K = _daily_pools()['KLO']; Kh = _kloten_hourly()
+    K = _daily_pools(include_wpuq=False)['KLO']; Kh = _kloten_hourly()
     T = K['T']; nd = len(T); k = int(np.argmin(T))
     rng = np.random.default_rng(0); nfree = K['free'].shape[0]
     out = []
@@ -1017,7 +1056,7 @@ def _kloten_quality(n_splits=20, reps=3, seed=0, rebuild=False):
     """
     if os.path.exists(KLOTEN_QUALITY) and not rebuild:
         return pd.read_pickle(KLOTEN_QUALITY)
-    K = _daily_pools()['KLO']; Kh = _kloten_hourly()
+    K = _daily_pools(include_wpuq=False)['KLO']; Kh = _kloten_hourly()
     idx = pd.date_range('2023-01-01', periods=len(Kh['T']), freq='h')
     rng = np.random.default_rng(seed); nfree = Kh['free'].shape[0]
     rows = []
@@ -1317,7 +1356,7 @@ $N_{hp}$ & \chg{capacity (\%)} \\
 \bottomrule
 \end{tabular}
 \end{table}"""
-    open('paper/tables/tab_feeder_sweep.tex', 'w').write(tex)
+    _write_table('tab_feeder_sweep', tex)
     print('wrote tab_feeder_sweep.tex')
 
 
@@ -1372,7 +1411,7 @@ aggregate & $N_{hp}$ & $P_h^{\max}$ (kW) & $\hat{P}_h^{\max}$ (kW) & \begin{tabu
 \bottomrule
 \end{tabular}}
 \end{table}"""
-    open('paper/tables/tab_real.tex', 'w').write(tex)
+    _write_table('tab_real', tex)
     print('wrote tab_real.tex')
     return R
 
@@ -1850,7 +1889,7 @@ def _read_xlsx_zip(raw):
 def _hadcet():
     """Daily Central England Temperature (Met Office HadCET), deg C, indexed by date."""
     t = pd.read_csv('data/hadcet/meantemp_daily_totals.txt', sep=r'\s+', skiprows=1, names=['date', 'T'])
-    t['date'] = pd.to_datetime(t['date'], errors='coerce')
+    t['date'] = pd.to_datetime(t['date'], format='%Y-%m-%d', errors='coerce')
     return t.dropna().set_index('date')['T'].astype(float)
 
 
@@ -2029,7 +2068,7 @@ pilot $\rightarrow$ target & homes & $m_h$ ($^\circ$C$^{-1}$) & $m_h$ ratio & ca
 \bottomrule
 \end{tabular}}
 \end{table}"""
-    open('paper/tables/tab_bpa_nrel.tex', 'w', encoding='utf-8', newline='\n').write(tex)
+    _write_table('tab_bpa_nrel', tex)
     print('wrote tab_bpa_nrel.tex')
 
 
@@ -2078,7 +2117,7 @@ def extra_cross_rows():
     T, load, cap, _ = _pool_frame(R, list(R), 0.7)
     rows.append(U.fit_row('RHPP GB', len(R), T, load, load, None, cap, 0.0))
     out = pd.DataFrame(rows)
-    out.to_csv('scratchpad/extra_rows.csv', index=False)
+    out.to_csv(_work('extra_rows.csv'), index=False)
     print(out[['label', 'n', 'mode', 'T_h', 'T_c', 'b_h', 'm_h', 'SF_cold', 'R2_SFh', 'm_c', 'SF_hot', 'R2_SFc']].round(3).to_string())
     return out
 
@@ -2121,7 +2160,7 @@ pilot $\rightarrow$ target & homes & $m_h$ ($^\circ$C$^{-1}$) & $m_h$ ratio & ca
 \bottomrule
 \end{tabular}}
 \end{table}"""
-    open('paper/tables/tab_rhpp.tex', 'w', encoding='utf-8', newline='\n').write(tex)
+    _write_table('tab_rhpp', tex)
     print('wrote tab_rhpp.tex')
 
 
@@ -2220,7 +2259,7 @@ pilot $\rightarrow$ target & & homes & $m_h^{\mathrm{own}}/m_h^{\mathrm{pilot}}$
 \bottomrule
 \end{tabular}}
 \end{table}"""
-    open('paper/tables/tab_transfer.tex', 'w', encoding='utf-8', newline='\n').write(tex)
+    _write_table('tab_transfer', tex)
     print('wrote tab_transfer.tex')
 
 
@@ -2663,7 +2702,7 @@ regime & $m_k$ (WA) & $m_k$ (OR) & $\hat{P}_k^{\max}$ (kW) & cap. (\%) & oracle 
 \bottomrule
 \end{tabular}
 \end{table}"""
-        open('paper/tables/tab_neea.tex', 'w').write(tex)
+        _write_table('tab_neea', tex)
         print('wrote tab_neea.tex')
     return R
 
@@ -2691,62 +2730,133 @@ def build_cross_table(repull=False):
     folded together, unchanged. ``repull=False`` (default) just refits from the
     cached frames. Writes scratchpad/cross_table.csv.
     """
-    cache = 'scratchpad/cross_frames.pkl'
+    cache = _work('cross_frames.pkl')
     INPUTS = U.pickle_load(cache)
     if repull:
-        import s3fs
-        import pyarrow.parquet as pq
-        from concurrent.futures import ThreadPoolExecutor
-        fs = s3fs.S3FileSystem(anon=True)
-        R2 = ("oedi-data-lake/nrel-pds-building-stock/end-use-load-profiles-for-us-building-stock/"
-              "2024/resstock_amy2018_release_2")
-        HTTP = "https://oedi-data-lake.s3.amazonaws.com/" + R2.split('/', 1)[1]
-        HC = 'out.electricity.heating.energy_consumption'
-        BK = 'out.electricity.heating_hp_bkup.energy_consumption'
-        CC = 'out.electricity.cooling.energy_consumption'
-        TC = 'out.electricity.total.energy_consumption'
-        meta = pd.read_parquet('scratchpad/resstock_meta_sfd.parquet'); UP = 3
-
-        def read_one(bid, st):
-            try:
-                t = pq.read_table(fs.open(f"{R2}/timeseries_individual_buildings/by_state/upgrade={UP}/state={st}/{bid}-{UP}.parquet"),
-                                  columns=['timestamp', HC, BK, CC, TC]).to_pandas(ignore_metadata=True)
-            except Exception:
-                return None
-            t['timestamp'] = pd.to_datetime(t['timestamp']); return t.set_index('timestamp')
-
-        def wx(gj, st):
-            w = pd.read_csv(f"{HTTP}/weather/state={st}/{gj}_2018.csv", parse_dates=['date_time'])
-            return w.set_index('date_time')['Dry Bulb Temperature [°C]'].resample('D').mean()
-
-        for gj, st, lab in [('G2700530', 'MN', 'ResStock ASHP -- Hennepin MN (cold)'),
-                            ('G5300330', 'WA', 'ResStock ASHP -- King WA (mild)'),
-                            ('G0400130', 'AZ', 'ResStock ASHP -- Maricopa AZ (hot)')]:
-            bids = list(np.random.default_rng(0).choice(meta[meta['in.county'] == gj]['bldg_id'].tolist(), 150, replace=False))
-            hennepin = lab == 'ResStock ASHP -- Hennepin MN (cold)'
-            heat = cool = tot = None; hpk = cpk = 0.0
-            with ThreadPoolExecutor(max_workers=16) as ex:
-                for r in ex.map(lambda b: read_one(b, st), bids):
-                    if r is None:
-                        continue
-                    h = (r[HC] if hennepin else (r[HC] + r[BK])) * 4
-                    c, s2 = r[CC] * 4, r[TC] * 4
-                    heat = h if heat is None else heat.add(h, fill_value=0)
-                    cool = c if cool is None else cool.add(c, fill_value=0)
-                    tot = s2 if tot is None else tot.add(s2, fill_value=0)
-                    hpk += float(h.max()); cpk += float(c.max())
-            Td = wx(gj, st)
-            dd = pd.DataFrame({'T': Td, 'net': tot.resample('D').mean(),
-                               'heat': heat.resample('D').mean(), 'cool': cool.resample('D').mean()}).dropna()
-            INPUTS[lab] = dict(n=150, T=dd['T'].to_numpy(), net=dd['net'].to_numpy(),
-                               heat=dd['heat'].to_numpy(), cool=dd['cool'].to_numpy(), cap_h=hpk, cap_c=cpk)
-            print(lab, 'done: cap_h', round(hpk), 'cap_c', round(cpk), flush=True)
+        INPUTS.update(_resstock_frames())
         pickle.dump(INPUTS, open(cache, 'wb'))
 
     rows = [U.fit_row(lab, v['n'], v['T'], v['net'], v['heat'], v['cool'], v['cap_h'], v['cap_c'],
                        sf_tmin_h=SF_TMIN_H.get(lab)) for lab, v in INPUTS.items()]
-    pd.DataFrame(rows).to_csv('scratchpad/cross_table.csv', index=False)
-    print('wrote scratchpad/cross_table.csv')
+    pd.DataFrame(rows).to_csv(_work('cross_table.csv'), index=False)
+    print('wrote', _work('cross_table.csv'))
+
+
+RESSTOCK_COUNTIES = [('G2700530', 'MN', 'ResStock ASHP -- Hennepin MN (cold)'),
+                     ('G5300330', 'WA', 'ResStock ASHP -- King WA (mild)'),
+                     ('G0400130', 'AZ', 'ResStock ASHP -- Maricopa AZ (hot)')]
+RESSTOCK_R2 = ("oedi-data-lake/nrel-pds-building-stock/end-use-load-profiles-for-us-building-stock/"
+               "2024/resstock_amy2018_release_2")
+
+
+def _resstock_frames():
+    """Daily frames of the three ResStock ASHP aggregates, streamed from NREL's public S3.
+
+    150 single-family homes per county (fixed draw, seed 0) from the ASHP upgrade (3)
+    of the 2024.2 AMY2018 release. Hennepin's ``heat`` is the compressor's own draw
+    only (see ``build_cross_table``).
+    """
+    import s3fs
+    import pyarrow.parquet as pq
+    from concurrent.futures import ThreadPoolExecutor
+    fs = s3fs.S3FileSystem(anon=True)
+    R2 = RESSTOCK_R2
+    HTTP = "https://oedi-data-lake.s3.amazonaws.com/" + R2.split('/', 1)[1]
+    HC = 'out.electricity.heating.energy_consumption'
+    BK = 'out.electricity.heating_hp_bkup.energy_consumption'
+    CC = 'out.electricity.cooling.energy_consumption'
+    TC = 'out.electricity.total.energy_consumption'
+    meta = pd.read_parquet('scratchpad/resstock_meta_sfd.parquet'); UP = 3
+
+    def read_one(bid, st):
+        try:
+            t = pq.read_table(fs.open(f"{R2}/timeseries_individual_buildings/by_state/upgrade={UP}/state={st}/{bid}-{UP}.parquet"),
+                              columns=['timestamp', HC, BK, CC, TC]).to_pandas(ignore_metadata=True)
+        except Exception:
+            return None
+        t['timestamp'] = pd.to_datetime(t['timestamp']); return t.set_index('timestamp')
+
+    def wx(gj, st):
+        w = pd.read_csv(f"{HTTP}/weather/state={st}/{gj}_2018.csv", parse_dates=['date_time'])
+        return w.set_index('date_time')['Dry Bulb Temperature [°C]'].resample('D').mean()
+
+    out = {}
+    for gj, st, lab in RESSTOCK_COUNTIES:
+        bids = list(np.random.default_rng(0).choice(meta[meta['in.county'] == gj]['bldg_id'].tolist(), 150, replace=False))
+        hennepin = lab == 'ResStock ASHP -- Hennepin MN (cold)'
+        heat = cool = tot = None; hpk = cpk = 0.0; n_ok = 0
+        with ThreadPoolExecutor(max_workers=16) as ex:
+            for r in ex.map(lambda b: read_one(b, st), bids):
+                if r is None:
+                    continue
+                n_ok += 1
+                h = (r[HC] if hennepin else (r[HC] + r[BK])) * 4
+                c, s2 = r[CC] * 4, r[TC] * 4
+                heat = h if heat is None else heat.add(h, fill_value=0)
+                cool = c if cool is None else cool.add(c, fill_value=0)
+                tot = s2 if tot is None else tot.add(s2, fill_value=0)
+                hpk += float(h.max()); cpk += float(c.max())
+        if n_ok < len(bids):
+            raise RuntimeError(f'{lab}: only {n_ok} of {len(bids)} ResStock buildings could be read from S3')
+        Td = wx(gj, st)
+        dd = pd.DataFrame({'T': Td, 'net': tot.resample('D').mean(),
+                           'heat': heat.resample('D').mean(), 'cool': cool.resample('D').mean()}).dropna()
+        out[lab] = dict(n=150, T=dd['T'].to_numpy(), net=dd['net'].to_numpy(),
+                        heat=dd['heat'].to_numpy(), cool=dd['cool'].to_numpy(), cap_h=hpk, cap_c=cpk)
+        print(lab, 'done: cap_h', round(hpk), 'cap_c', round(cpk), flush=True)
+    return out
+
+
+def _wpuq_feeder_frame():
+    """Daily frame of the real Hamelin (WPuQ) feeder: all 37 houses, HP + household load.
+
+    Capacity is the sum of each HP's robust (99.9th-percentile) peak.
+    """
+    import hp_pools as hpp
+    from hp_capacity import robust_series_peak
+    q = hpp.build_pool_wpuq(verbose=False)
+    idx = q['index']
+    cap = float(sum(robust_series_peak(q['hp_mat'][i]) for i in range(q['hp_mat'].shape[0])))
+    d = pd.DataFrame({'T': pd.Series(q['temperature']['WPUQ'], index=idx),
+                      'net': (q['hp_mat'] + q['other_mat']).sum(axis=0),
+                      'heat': q['hp_mat'].sum(axis=0)}, index=idx).resample('D').mean().dropna()
+    return dict(n=int(q['hp_mat'].shape[0]), T=d['T'].to_numpy(), net=d['net'].to_numpy(),
+                heat=d['heat'].to_numpy(), cool=None, cap_h=cap, cap_c=0.0)
+
+
+def _austin_frame():
+    """Daily frame of the Austin (Pecan Street) aggregate, per-arm ETL load and capacity."""
+    m = U.load_austin_arm_capacity()
+    idx = m.Tds.index
+
+    def arm_sum(flag):
+        acc = pd.Series(0.0, index=idx)
+        for dv in m.devices:
+            if dv[flag]:
+                acc = acc.add(dv['daily'].reindex(idx).fillna(0.0), fill_value=0)
+        return acc
+    dd = pd.DataFrame({'T': m.d['T'], 'net': m.d['net'], 'heat': arm_sum('a_h'), 'cool': arm_sum('a_c')}).dropna()
+    return dict(n=len({dv['hid'] for dv in m.devices}), T=dd['T'].to_numpy(), net=dd['net'].to_numpy(),
+                heat=dd['heat'].to_numpy(), cool=dd['cool'].to_numpy(), cap_h=m.capH, cap_c=m.capC)
+
+
+def build_cross_frames():
+    """Rebuild every Table I input frame from raw data -> ``WORKDIR/cross_frames.pkl``.
+
+    Hamelin (WPuQ), Kloten (HEAPO + Swiss smart meters), Oslo (COFACTOR), Austin
+    (Pecan Street) and the three ResStock counties (public S3). The NEEA rows come
+    from ``neea_fit``. The London (LCL) row is commented out of the paper's table and
+    the Ottawa (Carleton) aggregate appears only in the montage, so neither is built.
+    """
+    from build_extra_frames import build_klo_frame, build_cofactor_frame
+    FR = {'German WPuQ (real HP)': _wpuq_feeder_frame(),
+          'Swiss substation (real HP)': build_klo_frame(),
+          'COFACTOR Norway (real HP)': build_cofactor_frame(),
+          'Austin Pecan St (real)': _austin_frame()}
+    FR.update(_resstock_frames())
+    pickle.dump(FR, open(_work('cross_frames.pkl'), 'wb'))
+    print('wrote', _work('cross_frames.pkl'), '->', list(FR))
+    return FR
 
 
 def neea_fit():
@@ -2766,8 +2876,8 @@ def neea_fit():
         rows.append(U.fit_row(lab, X['n'], T, netv, heat, cool, X['cap'], X['cap']))
         FR[lab] = dict(n=X['n'], T=T, net=netv, heat=hpv, cool=hpv, cap_h=X['cap'], cap_c=X['cap'])
         print(f"{st}: {X['n']} homes, {X['days']} days, cap {X['cap']:.1f} kW")
-    pd.DataFrame(rows).to_csv('scratchpad/neea_rows.csv', index=False)
-    pickle.dump(FR, open('scratchpad/neea_frames.pkl', 'wb'))
+    pd.DataFrame(rows).to_csv(_work('neea_rows.csv'), index=False)
+    pickle.dump(FR, open(_work('neea_frames.pkl'), 'wb'))
     print('wrote scratchpad/neea_rows.csv + neea_frames.pkl')
 
 
@@ -2778,9 +2888,9 @@ def tab_cross():
     row, Hennepin carries footnote (a) and the NEEA rows footnote (b). The NEEA
     rows come from ``neea_fit`` (99.9th-percentile capacity, >= 330 days).
     """
-    parts = [pd.read_csv('scratchpad/cross_table.csv'), pd.read_csv('scratchpad/neea_rows.csv')]
-    if False and os.path.exists('scratchpad/extra_rows.csv'):   # BPA, NREL, RHPP rows (extra_cross_rows) -- not shown
-        parts.append(pd.read_csv('scratchpad/extra_rows.csv'))
+    parts = [pd.read_csv(_work('cross_table.csv')), pd.read_csv(_work('neea_rows.csv'))]
+    if False and os.path.exists(_work('extra_rows.csv')):   # BPA, NREL, RHPP rows (extra_cross_rows) -- not shown
+        parts.append(pd.read_csv(_work('extra_rows.csv')))
     df = pd.concat(parts, ignore_index=True).set_index('label')
     # Row order is fixed here (Ottawa dropped from the table); the AC-only Carleton
     # Ottawa aggregate stays in the cache and the montage but is excluded from ROW.
@@ -2868,7 +2978,7 @@ def tab_cross():
         "\n"
         r"\end{tablenotes}" "\n"
         r"\end{threeparttable}" "\n" r"\end{table*}")
-    open('paper/tables/tab_cross.tex', 'w', encoding='utf-8', newline='\n').write(tex)
+    _write_table('tab_cross', tex)
     print('wrote tab_cross.tex')
 
 
@@ -2912,8 +3022,8 @@ def fig_cross_montage(knee_thresh=0.02):
         return dict(r1=r1, r2=r2, f=(lambda T: f(T, *p)))
 
     hf.use_style()
-    FR = U.pickle_load('scratchpad/cross_frames.pkl')
-    FR.update(U.pickle_load('scratchpad/neea_frames.pkl'))
+    FR = U.pickle_load(_work('cross_frames.pkl'))
+    FR.update(U.pickle_load(_work('neea_frames.pkl')))
     ORDER = [('German WPuQ (real HP)', 'Hamelin, DE'), ('Swiss substation (real HP)', 'Kloten, CH'),
              ('COFACTOR Norway (real HP)', 'Oslo, NO'),
              ('Austin Pecan St (real)', 'Austin, TX'), ('Carleton Ottawa (real AC)', 'Ottawa, CA'),

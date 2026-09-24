@@ -296,8 +296,14 @@ def build_pool_combined(heapo_pool=None, swiss_pool=None,
             return _pickle.load(fh)
 
     if heapo_pool is None:
-        with open('data/_design_pool_cache.pkl', 'rb') as fh:
-            heapo_pool = _pickle.load(fh)
+        import hp_design as hd
+        if os.path.exists(hd.POOL_CACHE):
+            with open(hd.POOL_CACHE, 'rb') as fh:
+                heapo_pool = _pickle.load(fh)
+        else:                                   # first run: build it from the raw HEAPO files
+            from heapo import HEAPO
+            heapo_pool = hd.build_pool(HEAPO(data_path='data/heapo_data', use_local_time=False,
+                                             suppress_warning=True), verbose=verbose)
     if swiss_pool is None:
         swiss_pool = build_pool_swiss(verbose=False)
 
