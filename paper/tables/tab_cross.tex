@@ -9,7 +9,7 @@
 \toprule
  & & & & \multicolumn{7}{c}{Net-load fit $\hat{P}_{\mathrm{net}}(T)$} & \multicolumn{8}{c}{SF fit $\hat{\mathrm{SF}}(T)$}\\
 \cmidrule(lr){5-11}\cmidrule(lr){12-19}
-dataset & ETL tech & $n$ & Climate & $P_{\mathrm{base}}$ & $s_h$ & $T_h$ & $R^2_h$ & $s_c$ & $T_c$ & $R^2_c$ & $b_h$ & $m_h$ & SF$^{\max}_h$ & $R^2_h$ & $b_c$ & $m_c$ & SF$^{\max}_c$ & $R^2_c$ \\
+dataset & TCL tech & $n$ & Climate & $P_{\mathrm{base}}$ & $s_h$ & $T_h$ & $R^2_h$ & $s_c$ & $T_c$ & $R^2_c$ & $b_h$ & $m_h$ & SF$^{\max}_h$ & $R^2_h$ & $b_c$ & $m_c$ & SF$^{\max}_c$ & $R^2_c$ \\
 \midrule
 Hamelin, DE~\cite{Sch22} & WSHP & 37 & Cfb & 16 & 3.9 & 13.9 & 0.72 & -- & -- & -- & 0.014 & 0.016 & 0.32 & 0.72 & -- & -- & -- & -- \\
 Kloten, CH~\cite{Bru25,Kai26b} & ASHP, GSHP & 50 & Cfb & 54 & 6.1 & 16.5 & 0.92 & -- & -- & -- & 0.029 & 0.018 & 0.47 & 0.95 & -- & -- & -- & -- \\
@@ -24,7 +24,7 @@ Maricopa, AZ, US~\cite{resstock} & ASHP, ER & 150 & BWh & 172 & 15.3 & 11.6 & 0.
 \bottomrule
 \end{tabular}
 \begin{tablenotes}[flushleft]\footnotesize
-\item[] $n$: aggregated consumers. Climate: K{\"o}ppen--Geiger class~\cite{beck2018koppen}. $R^2_h$, $R^2_c$: fit scores in R1 and R3. ASHP, GSHP, WSHP: air-, ground-, water-source HP; DHP: ductless (mini-split) HP; AC: air conditioning; ER: electric resistance heating.
+\item[] $n$: aggregated consumers. Climate: K{\"o}ppen--Geiger class~\cite{beck2018koppen}: Cfb, temperate oceanic; Dfa, Dfb, humid continental; Csb, warm-summer Mediterranean; Cfa, humid subtropical; BWh, hot desert. $R^2_h$, $R^2_c$: fit scores in R1 and R3. ASHP, GSHP, WSHP: air-, ground-, water-source HP; DHP: ductless (mini-split) HP; AC: air conditioning; ER: electric resistance heating.
 %\item[a] The LCL London aggregate is submetered heat-pump load only (nine homes, no other household load), restricted to 2014, the single year all nine are metered together. Its net-load fit therefore coincides with the HP load, $P_{\mathrm{base}}$ is the winter standby/hot-water floor, and the installed capacity is the sum of the nine per-home 2014 peaks. The 2014 record ends in March, so the window is winter-only and never reaches $T_h$, which weakens the fit.
 \item[a] Hennepin's SF uses the ASHP compressor's own draw only, excluding its electric-resistance HP-backup element
 \item[b] The SF uses the submetered ductless HPs only. Most of these homes also have electric baseboard, furnace or other zonal heating circuits (17 of 22 in WA, 16 of 21 in OR), which the net load includes.
