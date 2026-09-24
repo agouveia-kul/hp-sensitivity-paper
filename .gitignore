@@ -19,3 +19,4 @@ __pycache__/
 
 # session download staging for extra cross-dataset raw (rebuilt via scripts/build_extra_frames.py)
 /scratchpad/newdata/
+/.venv/

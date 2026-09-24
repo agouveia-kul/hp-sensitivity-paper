@@ -181,3 +181,4 @@ widgetsnbextension==4.0.10
 wrapt==1.16.0
 xgboost==2.0.3
 xyzservices==2025.4.0
+s3fs==2026.9.0
