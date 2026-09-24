@@ -27,14 +27,19 @@ full on GitHub without running anything.
 | `paper_results.ipynb` | The results walkthrough (main entry point). |
 | `scripts/utils.py` | Fitting primitives, data loaders, and the notebook's `show_fig` / `show_table` display helpers. |
 | `scripts/outputs.py` | One function per paper figure/table; rebuilds it from source. |
-| `scripts/hp_*.py`, `scripts/pecan_street.py`, `scripts/backend.py`, `src/heapo.py` | Supporting model / data-pipeline modules (also used by the other notebooks). |
+| `scripts/hp_*.py`, `scripts/pecan_street.py`, `src/heapo.py` | Supporting model / data-pipeline modules. |
 | `paper/figures/`, `paper/tables/` | Compiled figures (PDF+PNG) and LaTeX tables shown in the notebook. |
 | `paper/` | The manuscript sources. |
 | `OLD/` | Retired exploration scripts and notebooks (kept on disk, not version-controlled). |
 
-The other notebooks at the top level (`HeatPumpDetection_clean.ipynb`,
-`HeatPump_Hypotheses.ipynb`, `InstalledCapClean.ipynb`, `PVInstalledCapLean.ipynb`)
-are working notebooks and are not required to reproduce the paper.
+`HeatPump_Hypotheses.ipynb` is the exploratory working notebook (slopes, thresholds,
+detectability, resolution) that preceded the paper; it is not required to reproduce it.
+
+**Related repositories** (split from the original `NILM` repository in 2026-09):
+**NILM** holds the earlier PV installed-capacity work, and **hp-capacity-detection**
+holds the data-driven (XGBoost / PLS / ridge) heat-pump capacity estimation.
+`scripts/hp_common.py`, `hp_pools.py`, `hp_capacity.py` and `src/heapo.py` are
+shared with hp-capacity-detection (identical at the split).
 
 ## Reproducing from source (optional)
 
