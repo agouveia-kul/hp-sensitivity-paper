@@ -36,7 +36,7 @@ full on GitHub without running anything.
 detectability, resolution) that preceded the paper; it is not required to reproduce it.
 
 **Related repositories** (split from the original `NILM` repository in 2026-09):
-**NILM** holds the earlier PV installed-capacity work, and **hp-capacity-detection**
+[**NILM**](https://github.com/agouveia-kul/NILM) holds the earlier PV installed-capacity work, and [**hp-capacity-detection**](https://github.com/agouveia-kul/hp-capacity-detection)
 holds the data-driven (XGBoost / PLS / ridge) heat-pump capacity estimation.
 `scripts/hp_common.py`, `hp_pools.py`, `hp_capacity.py` and `src/heapo.py` are
 shared with hp-capacity-detection (identical at the split).
