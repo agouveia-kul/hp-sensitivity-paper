@@ -1931,9 +1931,11 @@ def _lcl_base(window=('2013-09-01', '2014-02-28'), tariffs=('n',)):
     """Daily mean load (kW) of gas-heated LCL households (UKDA SN 7857), by heater count.
 
     Returns (daily DataFrame days x households, Series household -> portable electric
-    heaters). Only gas central-heating households are kept. The survey's heating
-    answers sit one label off in survey_questions.csv: the heating-system answers are
-    in Q248 and the number of portable electric heaters in Q304.
+    heaters). Only gas central-heating households are kept. In survey_answers.csv
+    column Qn holds the answers to the question that survey_questions.csv labels
+    Q(n+1), so the boiler / heating-system answers (form Q12) are in Q248 and the
+    number of portable electric heaters (form Q15) is in Q303. Q304 is the number of
+    televisions. See ``scripts/lcl_survey_check.py`` and ``results/lcl_survey_check/``.
     """
     import io
     import zipfile
@@ -1942,7 +1944,7 @@ def _lcl_base(window=('2013-09-01', '2014-02-28'), tariffs=('n',)):
         a = pd.read_csv(io.BytesIO(Z.read(p + 'survey_answers.csv')), encoding='latin-1', low_memory=False)
         sys_ = a['Q248'].astype(str)
         gas = sys_.str.contains('gas boiler', case=False) & sys_.str.contains('central heating', case=False)
-        heaters = pd.to_numeric(a['Q304'], errors='coerce')
+        heaters = pd.to_numeric(a['Q303'], errors='coerce')
         sel = a.loc[gas & heaters.notna(), 'Household_id'].astype(str)
         htr = pd.Series(heaters[gas & heaters.notna()].to_numpy(), index=sel.to_numpy())
         parts = []
@@ -2458,7 +2460,7 @@ def bpa_nrel_base_capacity(n_splits=200, seed=0, window=30):
 
 
 REAL_BOXES = 'data/_real_transfer_boxes.pkl'
-RHPP_LCL_BOXES = 'data/_rhpp_lcl_boxes.pkl'
+RHPP_LCL_BOXES = 'data/_rhpp_lcl_boxes_v2.pkl'      # v1 used the TV-count column as heaters
 BPA_BASE_BOXES = 'data/_bpa_nrel_base_boxes.pkl'
 
 
