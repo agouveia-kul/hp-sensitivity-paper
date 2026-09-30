@@ -1,0 +1,345 @@
+answer_column,survey_questions_label_as_labelled,question_actually_answered
+Q01,Q1 - Our household DOES NOT HAVE this appliance,"Q1 - For this appliance, our household managed to avoid the High rate... Washing machine"
+Q02,"Q1 - For this appliance, our household managed to avoid the High rate... Washing machine","Q1 - For this appliance, our household managed to avoid the High rate... Tumble dryer"
+Q03,"Q1 - For this appliance, our household managed to avoid the High rate... Tumble dryer","Q1 - For this appliance, our household managed to avoid the High rate... Dishwasher"
+Q04,"Q1 - For this appliance, our household managed to avoid the High rate... Dishwasher","Q1 - For this appliance, our household managed to avoid the High rate... Immersion water heater"
+Q05,"Q1 - For this appliance, our household managed to avoid the High rate... Immersion water heater","Q1 - For this appliance, our household managed to avoid the High rate... Electric oven"
+Q06,"Q1 - For this appliance, our household managed to avoid the High rate... Electric oven","Q1 - For this appliance, our household managed to avoid the High rate... Electric hob"
+Q07,"Q1 - For this appliance, our household managed to avoid the High rate... Electric hob","Q1 - For this appliance, our household managed to avoid the High rate... Ironing"
+Q08,"Q1 - For this appliance, our household managed to avoid the High rate... Ironing","Q1 - For this appliance, our household managed to avoid the High rate... Electric shower"
+Q09,"Q1 - For this appliance, our household managed to avoid the High rate... Electric shower","Q1 - For this appliance, our household managed to avoid the High rate... Kettle"
+Q10,"Q1 - For this appliance, our household managed to avoid the High rate... Kettle","Q1 - For this appliance, our household managed to avoid the High rate... Lighting"
+Q11,"Q1 - For this appliance, our household managed to avoid the High rate... Lighting","Q1 - For this appliance, our household managed to avoid the High rate... Electric heater"
+Q12,"Q1 - For this appliance, our household managed to avoid the High rate... Electric heater","Q1 - For this appliance, our household managed to avoid the High rate... Other 1"
+Q13,"Q1 - For this appliance, our household managed to avoid the High rate... Other 1","Q1 - For this appliance, our household managed to avoid the High rate... Other 2"
+Q14,"Q1 - For this appliance, our household managed to avoid the High rate... Other 2","Q1 - For this appliance, our household managed to avoid the High rate... Other 3"
+Q15,"Q1 - For this appliance, our household managed to avoid the High rate... Other 3","Q1 - For this appliance, our household managed to avoid the High rate... Other 4"
+Q16,"Q1 - For this appliance, our household managed to avoid the High rate... Other 4","Q1 - For this appliance, our household managed to avoid the High rate... Other 5"
+Q17,"Q1 - For this appliance, our household managed to avoid the High rate... Other 5","Q1 - For this appliance, our household managed to move some consumption onto the Low rate... Washing machine"
+Q18,"Q1 - For this appliance, our household managed to move some consumption onto the Low rate... Washing machine","Q1 - For this appliance, our household managed to move some consumption onto the Low rate... Tumble dryer"
+Q19,"Q1 - For this appliance, our household managed to move some consumption onto the Low rate... Tumble dryer","Q1 - For this appliance, our household managed to move some consumption onto the Low rate... Dishwasher"
+Q20,"Q1 - For this appliance, our household managed to move some consumption onto the Low rate... Dishwasher","Q1 - For this appliance, our household managed to move some consumption onto the Low rate... Immersion water heater"
+Q21,"Q1 - For this appliance, our household managed to move some consumption onto the Low rate... Immersion water heater","Q1 - For this appliance, our household managed to move some consumption onto the Low rate... Electric oven"
+Q22,"Q1 - For this appliance, our household managed to move some consumption onto the Low rate... Electric oven","Q1 - For this appliance, our household managed to move some consumption onto the Low rate... Electric hob"
+Q23,"Q1 - For this appliance, our household managed to move some consumption onto the Low rate... Electric hob","Q1 - For this appliance, our household managed to move some consumption onto the Low rate... Ironing"
+Q24,"Q1 - For this appliance, our household managed to move some consumption onto the Low rate... Ironing","Q1 - For this appliance, our household managed to move some consumption onto the Low rate... Electric shower"
+Q25,"Q1 - For this appliance, our household managed to move some consumption onto the Low rate... Electric shower","Q1 - For this appliance, our household managed to move some consumption onto the Low rate... Kettle"
+Q26,"Q1 - For this appliance, our household managed to move some consumption onto the Low rate... Kettle","Q1 - For this appliance, our household managed to move some consumption onto the Low rate... Lighting"
+Q27,"Q1 - For this appliance, our household managed to move some consumption onto the Low rate... Lighting","Q1 - For this appliance, our household managed to move some consumption onto the Low rate... Electric heater"
+Q28,"Q1 - For this appliance, our household managed to move some consumption onto the Low rate... Electric heater","Q1 - For this appliance, our household managed to move some consumption onto the Low rate... Other 1"
+Q29,"Q1 - For this appliance, our household managed to move some consumption onto the Low rate... Other 1","Q1 - For this appliance, our household managed to move some consumption onto the Low rate... Other 2"
+Q30,"Q1 - For this appliance, our household managed to move some consumption onto the Low rate... Other 2","Q1 - For this appliance, our household managed to move some consumption onto the Low rate... Other 3"
+Q31,"Q1 - For this appliance, our household managed to move some consumption onto the Low rate... Other 3","Q1 - For this appliance, our household managed to move some consumption onto the Low rate... Other 4"
+Q32,"Q1 - For this appliance, our household managed to move some consumption onto the Low rate... Other 4","Q1 - For this appliance, our household managed to move some consumption onto the Low rate... Other 5"
+Q33,"Q1 - For this appliance, our household managed to move some consumption onto the Low rate... Other 5",Q1 - Other appliance/activity Other 1
+Q34,Q1 - Other appliance/activity Other 1,Q1 - Other appliance/activity Other 2
+Q35,Q1 - Other appliance/activity Other 2,Q1 - Other appliance/activity Other 3
+Q36,Q1 - Other appliance/activity Other 3,Q1 - Other appliance/activity Other 4
+Q37,Q1 - Other appliance/activity Other 4,Q1 - Other appliance/activity Other 5
+Q38,Q1 - Other appliance/activity Other 5,Q2 - Our household DOES NOT HAVE this appliance
+Q39,Q2 - Our household DOES NOT HAVE this appliance,Q2 - Does your household tend to have a fixed routine for WHEN this appliance is used (same days of the week or times of the day)? Washing machine
+Q40,Q2 - Does your household tend to have a fixed routine for WHEN this appliance is used (same days of the week or times of the day)? Washing machine,Q2 - Does your household tend to have a fixed routine for WHEN this appliance is used (same days of the week or times of the day)? Tumble dryer
+Q41,Q2 - Does your household tend to have a fixed routine for WHEN this appliance is used (same days of the week or times of the day)? Tumble dryer,Q2 - Does your household tend to have a fixed routine for WHEN this appliance is used (same days of the week or times of the day)? Dishwasher
+Q42,Q2 - Does your household tend to have a fixed routine for WHEN this appliance is used (same days of the week or times of the day)? Dishwasher,Q2 - Does your household tend to have a fixed routine for WHEN this appliance is used (same days of the week or times of the day)? Immersion water heater
+Q43,Q2 - Does your household tend to have a fixed routine for WHEN this appliance is used (same days of the week or times of the day)? Immersion water heater,Q2 - Does your household tend to have a fixed routine for WHEN this appliance is used (same days of the week or times of the day)? Electric oven
+Q44,Q2 - Does your household tend to have a fixed routine for WHEN this appliance is used (same days of the week or times of the day)? Electric oven,Q2 - Does your household tend to have a fixed routine for WHEN this appliance is used (same days of the week or times of the day)? Electric hob
+Q45,Q2 - Does your household tend to have a fixed routine for WHEN this appliance is used (same days of the week or times of the day)? Electric hob,Q2 - Does your household tend to have a fixed routine for WHEN this appliance is used (same days of the week or times of the day)? Ironing
+Q46,Q2 - Does your household tend to have a fixed routine for WHEN this appliance is used (same days of the week or times of the day)? Ironing,Q2 - Does your household tend to have a fixed routine for WHEN this appliance is used (same days of the week or times of the day)? Electric shower
+Q47,Q2 - Does your household tend to have a fixed routine for WHEN this appliance is used (same days of the week or times of the day)? Electric shower,Q2 - Does your household tend to have a fixed routine for WHEN this appliance is used (same days of the week or times of the day)? Kettle
+Q48,Q2 - Does your household tend to have a fixed routine for WHEN this appliance is used (same days of the week or times of the day)? Kettle,Q2 - Does your household tend to have a fixed routine for WHEN this appliance is used (same days of the week or times of the day)? Lighting
+Q49,Q2 - Does your household tend to have a fixed routine for WHEN this appliance is used (same days of the week or times of the day)? Lighting,Q2 - Does your household tend to have a fixed routine for WHEN this appliance is used (same days of the week or times of the day)? Electric heater
+Q50,Q2 - Does your household tend to have a fixed routine for WHEN this appliance is used (same days of the week or times of the day)? Electric heater,Q2 - Does your household tend to have a fixed routine for WHEN this appliance is used (same days of the week or times of the day)? Other 1
+Q51,Q2 - Does your household tend to have a fixed routine for WHEN this appliance is used (same days of the week or times of the day)? Other 1,Q2 - Does your household tend to have a fixed routine for WHEN this appliance is used (same days of the week or times of the day)? Other 2
+Q52,Q2 - Does your household tend to have a fixed routine for WHEN this appliance is used (same days of the week or times of the day)? Other 2,Q2 - Does your household tend to have a fixed routine for WHEN this appliance is used (same days of the week or times of the day)? Other 3
+Q53,Q2 - Does your household tend to have a fixed routine for WHEN this appliance is used (same days of the week or times of the day)? Other 3,Q2 - Does your household tend to have a fixed routine for WHEN this appliance is used (same days of the week or times of the day)? Other 4
+Q54,Q2 - Does your household tend to have a fixed routine for WHEN this appliance is used (same days of the week or times of the day)? Other 4,Q2 - Does your household tend to have a fixed routine for WHEN this appliance is used (same days of the week or times of the day)? Other 5
+Q55,Q2 - Does your household tend to have a fixed routine for WHEN this appliance is used (same days of the week or times of the day)? Other 5,Q2 - Please tell us WHO within your household uses this appliance regularly Washing machine
+Q56,Q2 - Please tell us WHO within your household uses this appliance regularly Washing machine,Q2 - Please tell us WHO within your household uses this appliance regularly Tumble dryer
+Q57,Q2 - Please tell us WHO within your household uses this appliance regularly Tumble dryer,Q2 - Please tell us WHO within your household uses this appliance regularly Dishwasher
+Q58,Q2 - Please tell us WHO within your household uses this appliance regularly Dishwasher,Q2 - Please tell us WHO within your household uses this appliance regularly Immersion water heater
+Q59,Q2 - Please tell us WHO within your household uses this appliance regularly Immersion water heater,Q2 - Please tell us WHO within your household uses this appliance regularly Electric oven
+Q60,Q2 - Please tell us WHO within your household uses this appliance regularly Electric oven,Q2 - Please tell us WHO within your household uses this appliance regularly Electric hob
+Q61,Q2 - Please tell us WHO within your household uses this appliance regularly Electric hob,Q2 - Please tell us WHO within your household uses this appliance regularly Ironing
+Q62,Q2 - Please tell us WHO within your household uses this appliance regularly Ironing,Q2 - Please tell us WHO within your household uses this appliance regularly Electric shower
+Q63,Q2 - Please tell us WHO within your household uses this appliance regularly Electric shower,Q2 - Please tell us WHO within your household uses this appliance regularly Kettle
+Q64,Q2 - Please tell us WHO within your household uses this appliance regularly Kettle,Q2 - Please tell us WHO within your household uses this appliance regularly Lighting
+Q65,Q2 - Please tell us WHO within your household uses this appliance regularly Lighting,Q2 - Please tell us WHO within your household uses this appliance regularly Electric heater
+Q66,Q2 - Please tell us WHO within your household uses this appliance regularly Electric heater,Q2 - Please tell us WHO within your household uses this appliance regularly Other 1
+Q67,Q2 - Please tell us WHO within your household uses this appliance regularly Other 1,Q2 - Please tell us WHO within your household uses this appliance regularly Other 2
+Q68,Q2 - Please tell us WHO within your household uses this appliance regularly Other 2,Q2 - Please tell us WHO within your household uses this appliance regularly Other 3
+Q69,Q2 - Please tell us WHO within your household uses this appliance regularly Other 3,Q2 - Please tell us WHO within your household uses this appliance regularly Other 4
+Q70,Q2 - Please tell us WHO within your household uses this appliance regularly Other 4,Q2 - Please tell us WHO within your household uses this appliance regularly Other 5
+Q71,Q2 - Please tell us WHO within your household uses this appliance regularly Other 5,Q2 - Other appliance/activity Other 1
+Q72,Q2 - Other appliance/activity Other 1,Q2 - Other appliance/activity Other 2
+Q73,Q2 - Other appliance/activity Other 2,Q2 - Other appliance/activity Other 3
+Q74,Q2 - Other appliance/activity Other 3,Q2 - Other appliance/activity Other 4
+Q75,Q2 - Other appliance/activity Other 4,Q2 - Other appliance/activity Other 5
+Q76,Q2 - Other appliance/activity Other 5,"Q3 - For this time period, our household has managed to shift electricity use off the High rate... Saturdays"
+Q77,"Q3 - For this time period, our household has managed to shift electricity use off the High rate... Saturdays","Q3 - For this time period, our household has managed to shift electricity use off the High rate... Sundays"
+Q78,"Q3 - For this time period, our household has managed to shift electricity use off the High rate... Sundays","Q3 - For this time period, our household has managed to shift electricity use off the High rate... Mon-Fri mornings (7am-noon)"
+Q79,"Q3 - For this time period, our household has managed to shift electricity use off the High rate... Mon-Fri mornings (7am-noon)","Q3 - For this time period, our household has managed to shift electricity use off the High rate... Mon-Fri afternoons (noon-5pm)"
+Q80,"Q3 - For this time period, our household has managed to shift electricity use off the High rate... Mon-Fri afternoons (noon-5pm)","Q3 - For this time period, our household has managed to shift electricity use off the High rate... Mon-Fri evenings (5-10pm)"
+Q81,"Q3 - For this time period, our household has managed to shift electricity use off the High rate... Mon-Fri evenings (5-10pm)","Q3 - For this time period, our household has managed to shift electricity use off the High rate... Night-time (10pm-7am)"
+Q82,"Q3 - For this time period, our household has managed to shift electricity use off the High rate... Night-time (10pm-7am)","Q3 - For this time period, our household has managed to shift electricity use off the High rate... Other 1"
+Q83,"Q3 - For this time period, our household has managed to shift electricity use off the High rate... Other 1","Q3 - For this time period, our household has managed to shift electricity use off the High rate... Other 2"
+Q84,"Q3 - For this time period, our household has managed to shift electricity use off the High rate... Other 2","Q3 - For this time period, our household has managed to shift electricity use off the High rate... Other 3"
+Q85,"Q3 - For this time period, our household has managed to shift electricity use off the High rate... Other 3","Q3 - For this time period, our household has managed to shift electricity use off the High rate... Other 4"
+Q86,"Q3 - For this time period, our household has managed to shift electricity use off the High rate... Other 4","Q3 - For this time period, our household has managed to shift electricity use off the High rate... Other 5"
+Q87,"Q3 - For this time period, our household has managed to shift electricity use off the High rate... Other 5","Q3 - For this time period, our household has managed to shift electricity usage onto the Low rate... Saturdays"
+Q88,"Q3 - For this time period, our household has managed to shift electricity usage onto the Low rate... Saturdays","Q3 - For this time period, our household has managed to shift electricity usage onto the Low rate... Sundays"
+Q89,"Q3 - For this time period, our household has managed to shift electricity usage onto the Low rate... Sundays","Q3 - For this time period, our household has managed to shift electricity usage onto the Low rate... Mon-Fri mornings (7am-noon)"
+Q90,"Q3 - For this time period, our household has managed to shift electricity usage onto the Low rate... Mon-Fri mornings (7am-noon)","Q3 - For this time period, our household has managed to shift electricity usage onto the Low rate... Mon-Fri afternoons (noon-5pm)"
+Q91,"Q3 - For this time period, our household has managed to shift electricity usage onto the Low rate... Mon-Fri afternoons (noon-5pm)","Q3 - For this time period, our household has managed to shift electricity usage onto the Low rate... Mon-Fri evenings (5-10pm)"
+Q92,"Q3 - For this time period, our household has managed to shift electricity usage onto the Low rate... Mon-Fri evenings (5-10pm)","Q3 - For this time period, our household has managed to shift electricity usage onto the Low rate... Night-time (10pm-7am)"
+Q93,"Q3 - For this time period, our household has managed to shift electricity usage onto the Low rate... Night-time (10pm-7am)","Q3 - For this time period, our household has managed to shift electricity usage onto the Low rate... Other 1"
+Q94,"Q3 - For this time period, our household has managed to shift electricity usage onto the Low rate... Other 1","Q3 - For this time period, our household has managed to shift electricity usage onto the Low rate... Other 2"
+Q95,"Q3 - For this time period, our household has managed to shift electricity usage onto the Low rate... Other 2","Q3 - For this time period, our household has managed to shift electricity usage onto the Low rate... Other 3"
+Q96,"Q3 - For this time period, our household has managed to shift electricity usage onto the Low rate... Other 3","Q3 - For this time period, our household has managed to shift electricity usage onto the Low rate... Other 4"
+Q97,"Q3 - For this time period, our household has managed to shift electricity usage onto the Low rate... Other 4","Q3 - For this time period, our household has managed to shift electricity usage onto the Low rate... Other 5"
+Q98,"Q3 - For this time period, our household has managed to shift electricity usage onto the Low rate... Other 5",Q3 - Other day/time of day Other 1
+Q99,Q3 - Other day/time of day Other 1,Q3 - Other day/time of day Other 2
+Q100,Q3 - Other day/time of day Other 2,Q3 - Other day/time of day Other 3
+Q101,Q3 - Other day/time of day Other 3,Q3 - Other day/time of day Other 4
+Q102,Q3 - Other day/time of day Other 4,Q3 - Other day/time of day Other 5
+Q103,Q3 - Other day/time of day Other 5,"Q4 - For each appliance, please circle one code to indicate how you have used timer switches to turn appliances on/off to respond to the High or Low rates Washer-dryer (combined)"
+Q104,"Q4 - For each appliance, please circle one code to indicate how you have used timer switches to turn appliances on/off to respond to the High or Low rates Washer-dryer (combined)","Q4 - For each appliance, please circle one code to indicate how you have used timer switches to turn appliances on/off to respond to the High or Low rates Washing machine"
+Q105,"Q4 - For each appliance, please circle one code to indicate how you have used timer switches to turn appliances on/off to respond to the High or Low rates Washing machine","Q4 - For each appliance, please circle one code to indicate how you have used timer switches to turn appliances on/off to respond to the High or Low rates Tumble dryer"
+Q106,"Q4 - For each appliance, please circle one code to indicate how you have used timer switches to turn appliances on/off to respond to the High or Low rates Tumble dryer","Q4 - For each appliance, please circle one code to indicate how you have used timer switches to turn appliances on/off to respond to the High or Low rates Dishwasher"
+Q107,"Q4 - For each appliance, please circle one code to indicate how you have used timer switches to turn appliances on/off to respond to the High or Low rates Dishwasher","Q4 - For each appliance, please circle one code to indicate how you have used timer switches to turn appliances on/off to respond to the High or Low rates Electric space heating (plug-in radiators/underfloor heating etc)"
+Q108,"Q4 - For each appliance, please circle one code to indicate how you have used timer switches to turn appliances on/off to respond to the High or Low rates Electric space heating (plug-in radiators/underfloor heating etc)","Q4 - For each appliance, please circle one code to indicate how you have used timer switches to turn appliances on/off to respond to the High or Low rates Electric water heating (eg, immersion heater)"
+Q109,"Q4 - For each appliance, please circle one code to indicate how you have used timer switches to turn appliances on/off to respond to the High or Low rates Electric water heating (eg, immersion heater)","Q4 - For each appliance, please circle one code to indicate how you have used timer switches to turn appliances on/off to respond to the High or Low rates Other 1"
+Q110,"Q4 - For each appliance, please circle one code to indicate how you have used timer switches to turn appliances on/off to respond to the High or Low rates Other 1","Q4 - For each appliance, please circle one code to indicate how you have used timer switches to turn appliances on/off to respond to the High or Low rates Other 2"
+Q111,"Q4 - For each appliance, please circle one code to indicate how you have used timer switches to turn appliances on/off to respond to the High or Low rates Other 2","Q4 - For each appliance, please circle one code to indicate how you have used timer switches to turn appliances on/off to respond to the High or Low rates Other 3"
+Q112,"Q4 - For each appliance, please circle one code to indicate how you have used timer switches to turn appliances on/off to respond to the High or Low rates Other 3","Q4 - For each appliance, please circle one code to indicate how you have used timer switches to turn appliances on/off to respond to the High or Low rates Other 4"
+Q113,"Q4 - For each appliance, please circle one code to indicate how you have used timer switches to turn appliances on/off to respond to the High or Low rates Other 4","Q4 - For each appliance, please circle one code to indicate how you have used timer switches to turn appliances on/off to respond to the High or Low rates Other 5"
+Q114,"Q4 - For each appliance, please circle one code to indicate how you have used timer switches to turn appliances on/off to respond to the High or Low rates Other 5",Q4 - Other appliance Other 1
+Q115,Q4 - Other appliance Other 1,Q4 - Other appliance Other 2
+Q116,Q4 - Other appliance Other 2,Q4 - Other appliance Other 3
+Q117,Q4 - Other appliance Other 3,Q4 - Other appliance Other 4
+Q118,Q4 - Other appliance Other 4,Q4 - Other appliance Other 5
+Q119,Q4 - Other appliance Other 5,"Q5 - Thinking about what you and other members of your household have done to take advantage of the Economy Alert rate changes, please indicate how often you have used each of the actions below We have been flexible in our working hours or worked from home"
+Q120,"Q5 - Thinking about what you and other members of your household have done to take advantage of the Economy Alert rate changes, please indicate how often you have used each of the actions below We have been flexible in our working hours or worked from home","Q5 - Thinking about what you and other members of your household have done to take advantage of the Economy Alert rate changes, please indicate how often you have used each of the actions below We have been flexible in when we go out of the home (other than for work)"
+Q121,"Q5 - Thinking about what you and other members of your household have done to take advantage of the Economy Alert rate changes, please indicate how often you have used each of the actions below We have been flexible in when we go out of the home (other than for work)","Q5 - Thinking about what you and other members of your household have done to take advantage of the Economy Alert rate changes, please indicate how often you have used each of the actions below We have changed who uses appliances (eg, washing machine/dishwasher/ironing)"
+Q122,"Q5 - Thinking about what you and other members of your household have done to take advantage of the Economy Alert rate changes, please indicate how often you have used each of the actions below We have changed who uses appliances (eg, washing machine/dishwasher/ironing)","Q5 - Thinking about what you and other members of your household have done to take advantage of the Economy Alert rate changes, please indicate how often you have used each of the actions below We have switched between electric and gas for cooking or water/space heating"
+Q123,"Q5 - Thinking about what you and other members of your household have done to take advantage of the Economy Alert rate changes, please indicate how often you have used each of the actions below We have switched between electric and gas for cooking or water/space heating","Q5 - Thinking about what you and other members of your household have done to take advantage of the Economy Alert rate changes, please indicate how often you have used each of the actions below We have used appliances on a different cycle (eg, running a shorter/cooler cycle on your dishwasher/washing machine during a High rate period)"
+Q124,"Q5 - Thinking about what you and other members of your household have done to take advantage of the Economy Alert rate changes, please indicate how often you have used each of the actions below We have used appliances on a different cycle (eg, running a shorter/cooler cycle on your dishwasher/washing machine during a High rate period)","Q5 - Thinking about what you and other members of your household have done to take advantage of the Economy Alert rate changes, please indicate how often you have used each of the actions below We have used a microwave (or slow cooker etc) instead of electric oven or hob"
+Q125,"Q5 - Thinking about what you and other members of your household have done to take advantage of the Economy Alert rate changes, please indicate how often you have used each of the actions below We have used a microwave (or slow cooker etc) instead of electric oven or hob","Q5 - Thinking about what you and other members of your household have done to take advantage of the Economy Alert rate changes, please indicate how often you have used each of the actions below We have used less lighting than before Economy Alert began"
+Q126,"Q5 - Thinking about what you and other members of your household have done to take advantage of the Economy Alert rate changes, please indicate how often you have used each of the actions below We have used less lighting than before Economy Alert began","Q5 - Thinking about what you and other members of your household have done to take advantage of the Economy Alert rate changes, please indicate how often you have used each of the actions below Other 1"
+Q127,"Q5 - Thinking about what you and other members of your household have done to take advantage of the Economy Alert rate changes, please indicate how often you have used each of the actions below Other 1","Q5 - Thinking about what you and other members of your household have done to take advantage of the Economy Alert rate changes, please indicate how often you have used each of the actions below Other 2"
+Q128,"Q5 - Thinking about what you and other members of your household have done to take advantage of the Economy Alert rate changes, please indicate how often you have used each of the actions below Other 2","Q5 - Thinking about what you and other members of your household have done to take advantage of the Economy Alert rate changes, please indicate how often you have used each of the actions below Other 3"
+Q129,"Q5 - Thinking about what you and other members of your household have done to take advantage of the Economy Alert rate changes, please indicate how often you have used each of the actions below Other 3","Q5 - Thinking about what you and other members of your household have done to take advantage of the Economy Alert rate changes, please indicate how often you have used each of the actions below Other 4"
+Q130,"Q5 - Thinking about what you and other members of your household have done to take advantage of the Economy Alert rate changes, please indicate how often you have used each of the actions below Other 4","Q5 - Thinking about what you and other members of your household have done to take advantage of the Economy Alert rate changes, please indicate how often you have used each of the actions below Other 5"
+Q131,"Q5 - Thinking about what you and other members of your household have done to take advantage of the Economy Alert rate changes, please indicate how often you have used each of the actions below Other 5",Q5 - Other actions Other 1
+Q132,Q5 - Other actions Other 1,Q5 - Other actions Other 2
+Q133,Q5 - Other actions Other 2,Q5 - Other actions Other 3
+Q134,Q5 - Other actions Other 3,Q5 - Other actions Other 4
+Q135,Q5 - Other actions Other 4,Q5 - Other actions Other 5
+Q136,Q5 - Other actions Other 5,Q6 - Our response to Economy Alert High and Low rates has been limited by... ... no-one being at home when the Low rate periods occur
+Q137,Q6 - Our response to Economy Alert High and Low rates has been limited by... ... no-one being at home when the Low rate periods occur,Q6 - Our response to Economy Alert High and Low rates has been limited by... ... our inflexible working hours
+Q138,Q6 - Our response to Economy Alert High and Low rates has been limited by... ... our inflexible working hours,Q6 - Our response to Economy Alert High and Low rates has been limited by... ... our children's daily/weekly routines which can't be changed
+Q139,Q6 - Our response to Economy Alert High and Low rates has been limited by... ... our children's daily/weekly routines which can't be changed,Q6 - Our response to Economy Alert High and Low rates has been limited by... ... having fixed routines for when we use appliances (do the laundry/dishwasher/ironing etc) that we did not want to change
+Q140,Q6 - Our response to Economy Alert High and Low rates has been limited by... ... having fixed routines for when we use appliances (do the laundry/dishwasher/ironing etc) that we did not want to change,Q6 - Our response to Economy Alert High and Low rates has been limited by... ... having fixed routines for who uses appliances (washing machine/dishwasher/ironing etc) that we did not want to change
+Q141,Q6 - Our response to Economy Alert High and Low rates has been limited by... ... having fixed routines for who uses appliances (washing machine/dishwasher/ironing etc) that we did not want to change,Q6 - Our response to Economy Alert High and Low rates has been limited by... ... not wanting to reduce comfort and/or convenience
+Q142,Q6 - Our response to Economy Alert High and Low rates has been limited by... ... not wanting to reduce comfort and/or convenience,Q6 - Our response to Economy Alert High and Low rates has been limited by... ... the hassle of moving electricity usage around
+Q143,Q6 - Our response to Economy Alert High and Low rates has been limited by... ... the hassle of moving electricity usage around,Q6 - Our response to Economy Alert High and Low rates has been limited by... ... the Economy Alert rate changes being too complicated/confusing
+Q144,Q6 - Our response to Economy Alert High and Low rates has been limited by... ... the Economy Alert rate changes being too complicated/confusing,Q6 - Our response to Economy Alert High and Low rates has been limited by... ... not being sure when the High and Low rates were occurring
+Q145,Q6 - Our response to Economy Alert High and Low rates has been limited by... ... not being sure when the High and Low rates were occurring,Q6 - Our response to Economy Alert High and Low rates has been limited by... ... thinking that we would only have saved a small amount on our bill
+Q146,Q6 - Our response to Economy Alert High and Low rates has been limited by... ... thinking that we would only have saved a small amount on our bill,Q6 - Our response to Economy Alert High and Low rates has been limited by... ... the notice period before rate changes not being long enough
+Q147,Q6 - Our response to Economy Alert High and Low rates has been limited by... ... the notice period before rate changes not being long enough,Q6 - Our response to Economy Alert High and Low rates has been limited by... ... because I/we forget when the High/Low rate periods are
+Q148,Q6 - Our response to Economy Alert High and Low rates has been limited by... ... because I/we forget when the High/Low rate periods are,Q6 - Our response to Economy Alert High and Low rates has been limited by... ... because it was too complex
+Q149,Q6 - Our response to Economy Alert High and Low rates has been limited by... ... because it was too complex,"Q7 - Which of the following has your household found useful, to help you respond to the High/Low electricity rates? The In-home display unit"
+Q150,"Q7 - Which of the following has your household found useful, to help you respond to the High/Low electricity rates? The In-home display unit","Q7 - Which of the following has your household found useful, to help you respond to the High/Low electricity rates? Writing the alerts down on a calendar or notepad"
+Q151,"Q7 - Which of the following has your household found useful, to help you respond to the High/Low electricity rates? Writing the alerts down on a calendar or notepad","Q7 - Which of the following has your household found useful, to help you respond to the High/Low electricity rates? Having rate messages/alerts sent to your mobile phone"
+Q152,"Q7 - Which of the following has your household found useful, to help you respond to the High/Low electricity rates? Having rate messages/alerts sent to your mobile phone","Q7 - Which of the following has your household found useful, to help you respond to the High/Low electricity rates? Being able to work from home"
+Q153,"Q7 - Which of the following has your household found useful, to help you respond to the High/Low electricity rates? Being able to work from home","Q7 - Which of the following has your household found useful, to help you respond to the High/Low electricity rates? Being able to choose work shifts flexibly"
+Q154,"Q7 - Which of the following has your household found useful, to help you respond to the High/Low electricity rates? Being able to choose work shifts flexibly","Q7 - Which of the following has your household found useful, to help you respond to the High/Low electricity rates? Talking between household members about how to coordinate household activities"
+Q155,"Q7 - Which of the following has your household found useful, to help you respond to the High/Low electricity rates? Talking between household members about how to coordinate household activities","Q7 - Which of the following has your household found useful, to help you respond to the High/Low electricity rates? Other 1"
+Q156,"Q7 - Which of the following has your household found useful, to help you respond to the High/Low electricity rates? Other 1","Q7 - Which of the following has your household found useful, to help you respond to the High/Low electricity rates? Other 2"
+Q157,"Q7 - Which of the following has your household found useful, to help you respond to the High/Low electricity rates? Other 2","Q7 - Which of the following has your household found useful, to help you respond to the High/Low electricity rates? Other 3"
+Q158,"Q7 - Which of the following has your household found useful, to help you respond to the High/Low electricity rates? Other 3","Q7 - Which of the following has your household found useful, to help you respond to the High/Low electricity rates? Other 4"
+Q159,"Q7 - Which of the following has your household found useful, to help you respond to the High/Low electricity rates? Other 4","Q7 - Which of the following has your household found useful, to help you respond to the High/Low electricity rates? Other 5"
+Q160,"Q7 - Which of the following has your household found useful, to help you respond to the High/Low electricity rates? Other 5",Q7 - Others Other 1
+Q161,Q7 - Others Other 1,Q7 - Others Other 2
+Q162,Q7 - Others Other 2,Q7 - Others Other 3
+Q163,Q7 - Others Other 3,Q7 - Others Other 4
+Q164,Q7 - Others Other 4,Q7 - Others Other 5
+Q165,Q7 - Others Other 5,"Q8 - Which of the following do you think your household might find helpful in the future, for responding to High/Low electricity rates? Having more appliances with timer switches (eg washing machine/dishwasher/oven/heating)"
+Q166,"Q8 - Which of the following do you think your household might find helpful in the future, for responding to High/Low electricity rates? Having more appliances with timer switches (eg washing machine/dishwasher/oven/heating)","Q8 - Which of the following do you think your household might find helpful in the future, for responding to High/Low electricity rates? A mobile phone app to allow you to turn appliances on/off when you are out of the home"
+Q167,"Q8 - Which of the following do you think your household might find helpful in the future, for responding to High/Low electricity rates? A mobile phone app to allow you to turn appliances on/off when you are out of the home","Q8 - Which of the following do you think your household might find helpful in the future, for responding to High/Low electricity rates? Automated controls which turn appliances on/off according to electricity rate changes"
+Q168,"Q8 - Which of the following do you think your household might find helpful in the future, for responding to High/Low electricity rates? Automated controls which turn appliances on/off according to electricity rate changes","Q8 - Which of the following do you think your household might find helpful in the future, for responding to High/Low electricity rates? Better information on energy use through the display unit/bills/online/smart phone"
+Q169,"Q8 - Which of the following do you think your household might find helpful in the future, for responding to High/Low electricity rates? Better information on energy use through the display unit/bills/online/smart phone","Q8 - Which of the following do you think your household might find helpful in the future, for responding to High/Low electricity rates? More predictable timing of High and Low rate electricity"
+Q170,"Q8 - Which of the following do you think your household might find helpful in the future, for responding to High/Low electricity rates? More predictable timing of High and Low rate electricity","Q8 - Which of the following do you think your household might find helpful in the future, for responding to High/Low electricity rates? If the in-home display always showed the current rate being charged using a traffic light system as it does now for your current usage (green for Low rate, amber for normal rate, red for High rate"
+Q171,"Q8 - Which of the following do you think your household might find helpful in the future, for responding to High/Low electricity rates? If the in-home display always showed the current rate being charged using a traffic light system as it does now for your current usage (green for Low rate, amber for normal rate, red for High rate","Q8 - Which of the following do you think your household might find helpful in the future, for responding to High/Low electricity rates? If the in-home display always showed two sets of traffic lights - one for current rate/price and another for current usage"
+Q172,"Q8 - Which of the following do you think your household might find helpful in the future, for responding to High/Low electricity rates? If the in-home display always showed two sets of traffic lights - one for current rate/price and another for current usage","Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert Avoiding the High rate electricity is easy"
+Q173,"Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert Avoiding the High rate electricity is easy","Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert Taking advantage of the Low rate electricity is easy"
+Q174,"Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert Taking advantage of the Low rate electricity is easy","Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert The changes I/we have made to our electricity consumption while on the Economy Alert trial have reduced our comfort or quality of life"
+Q175,"Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert The changes I/we have made to our electricity consumption while on the Economy Alert trial have reduced our comfort or quality of life","Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert I/We actually enjoyed some aspects of changing my routine or electricity usage for Economy Alert"
+Q176,"Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert I/We actually enjoyed some aspects of changing my routine or electricity usage for Economy Alert","Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert I/We found the information via the in-home-display unit clear"
+Q177,"Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert I/We found the information via the in-home-display unit clear","Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert I/We found the information via the in-home-display unit useful for responding to High/Low rates"
+Q178,"Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert I/We found the information via the in-home-display unit useful for responding to High/Low rates","Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert I/We found the information via the monthly feedback letter clear"
+Q179,"Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert I/We found the information via the monthly feedback letter clear","Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert I/We found the information via the monthly feedback letter useful for responding to High/Low rates"
+Q180,"Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert I/We found the information via the monthly feedback letter useful for responding to High/Low rates","Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert I/We feel more in control of my electricity bill by being on the Economy Alert tariff"
+Q181,"Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert I/We feel more in control of my electricity bill by being on the Economy Alert tariff","Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert Our household managed to reduce our overall consumption of electricity while on Economy Alert"
+Q182,"Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert Our household managed to reduce our overall consumption of electricity while on Economy Alert","Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert I could see our household maintaining the effort we have made long-term if we were on a tariff similar to Economy Alert"
+Q183,"Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert I could see our household maintaining the effort we have made long-term if we were on a tariff similar to Economy Alert","Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert Without the guarantee that we will be reimbursed (if we spend more than the cost would have been on our previous tariff) I/we would never have signed up"
+Q184,"Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert Without the guarantee that we will be reimbursed (if we spend more than the cost would have been on our previous tariff) I/we would never have signed up","Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert Without the guarantee that we will be reimbursed (if we spend more than the cost would have been on our previous tariff) I/we would have made more effort in responding to the High and Low rates"
+Q185,"Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert Without the guarantee that we will be reimbursed (if we spend more than the cost would have been on our previous tariff) I/we would have made more effort in responding to the High and Low rates","Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert Our household finds the Economy Alert tariff too complex"
+Q186,"Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert Our household finds the Economy Alert tariff too complex","Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert Convenience and comfort are more important to my household than saving a bit on our bill"
+Q187,"Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert Convenience and comfort are more important to my household than saving a bit on our bill","Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert Avoiding the High rate and chasing the Low rate periods is more hassle than it's worth"
+Q188,"Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert Avoiding the High rate and chasing the Low rate periods is more hassle than it's worth","Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert The price alerts for High and Low rates are frustrating when you cannot respond to them by changing your electricity usage"
+Q189,"Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert The price alerts for High and Low rates are frustrating when you cannot respond to them by changing your electricity usage","Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert We often talked about the Economy Alert High/Low rate events to plan our energy use"
+Q190,"Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert We often talked about the Economy Alert High/Low rate events to plan our energy use","Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert Some members of the household do not make an effort with Economy Alert and this has been frustrating"
+Q191,"Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert Some members of the household do not make an effort with Economy Alert and this has been frustrating","Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert Our household have found it frustrating not knowing the reasons for the timing of the High and Low rates"
+Q192,"Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert Our household have found it frustrating not knowing the reasons for the timing of the High and Low rates","Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert I would be curious to know how other households on the trial did on the Economy Alert"
+Q193,"Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert I would be curious to know how other households on the trial did on the Economy Alert","Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert I would be curious to hear/swap experiences with other households on the Economy Alert trial"
+Q194,"Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert I would be curious to hear/swap experiences with other households on the Economy Alert trial","Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert If it encourages more efficient use of electricity and resources, multi-rate tariffs like Economy Alert should be offered to everyone"
+Q195,"Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert If it encourages more efficient use of electricity and resources, multi-rate tariffs like Economy Alert should be offered to everyone","Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert If it is a fairer way of charging people for the real cost of electricity at different times, multi-rate tariffs like Economy Alert should be the standard tariff for everyone"
+Q196,"Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert If it is a fairer way of charging people for the real cost of electricity at different times, multi-rate tariffs like Economy Alert should be the standard tariff for everyone","Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert Being on the Economy Alert tariff has lead to our household using less electricity overall"
+Q197,"Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert Being on the Economy Alert tariff has lead to our household using less electricity overall","Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert If it was possible, we would want to stay on the Economy Alert tariff after the end of the trial"
+Q198,"Q9 - Based on your experience, please indicate your agreement with the following statements about Economy Alert If it was possible, we would want to stay on the Economy Alert tariff after the end of the trial","Q10i - If you had to guess, how much would you estimate you will have saved over the 12 months of being on Economy Alert, when compared to your previous flat rate tariff or similar?"
+Q199,"Q10i - If you had to guess, how much would you estimate you will have saved over the 12 months of being on Economy Alert, when compared to your previous flat rate tariff or similar?",Q10ii - How much would you want to save on your bill (compared to being on a standard flat rate tariff) for you to be happy staying on a tariff like Economy Alert? GBP per year
+Q200,Q10ii - How much would you want to save on your bill (compared to being on a standard flat rate tariff) for you to be happy staying on a tariff like Economy Alert? GBP per year,Q10ii - How much would you want to save on your bill (compared to being on a standard flat rate tariff) for you to be happy staying on a tariff like Economy Alert? % saving on annual bill
+Q201,Q10ii - How much would you want to save on your bill (compared to being on a standard flat rate tariff) for you to be happy staying on a tariff like Economy Alert? % saving on annual bill,"Q11 - If, in the future, you were offered a multi-rate tariff similar to Economy Alert, how would you feel about the price changes being linked to the varying generation of wind and solar power in order to support more renewable power? This would make me more likely to sign up to the tariff"
+Q202,"Q11 - If, in the future, you were offered a multi-rate tariff similar to Economy Alert, how would you feel about the price changes being linked to the varying generation of wind and solar power in order to support more renewable power? This would make me more likely to sign up to the tariff","Q11 - If, in the future, you were offered a multi-rate tariff similar to Economy Alert, how would you feel about the price changes being linked to the varying generation of wind and solar power in order to support more renewable power? This would make me more likely to try to adapt my behaviour to the price changes"
+Q203,"Q11 - If, in the future, you were offered a multi-rate tariff similar to Economy Alert, how would you feel about the price changes being linked to the varying generation of wind and solar power in order to support more renewable power? This would make me more likely to try to adapt my behaviour to the price changes","Q11 - If in the future you were offered a multi-rate tariff similar to Economy Alert, which of the following would describe your motivations for signing up?"
+Q204,"Q11 - If in the future you were offered a multi-rate tariff similar to Economy Alert, which of the following would describe your motivations for signing up?",Q11 - Comments
+Q205,Q11 - Comments,"Q12 - If in the future you were offered a multi-rate tariff similar to Economy Alert, how would the following possible variations to the tariff affect your interest in signing up? If High/Low rates occurred only on weekends (fixed normal rate during weekdays)?"
+Q206,"Q12 - If in the future you were offered a multi-rate tariff similar to Economy Alert, how would the following possible variations to the tariff affect your interest in signing up? If High/Low rates occurred only on weekends (fixed normal rate during weekdays)?","Q12 - If in the future you were offered a multi-rate tariff similar to Economy Alert, how would the following possible variations to the tariff affect your interest in signing up? If High/Low Economy Alert rates occurred only on Mon-Fri daytimes?"
+Q207,"Q12 - If in the future you were offered a multi-rate tariff similar to Economy Alert, how would the following possible variations to the tariff affect your interest in signing up? If High/Low Economy Alert rates occurred only on Mon-Fri daytimes?","Q12 - If in the future you were offered a multi-rate tariff similar to Economy Alert, how would the following possible variations to the tariff affect your interest in signing up? If there were no High/Low rates during evening peak-time (eg, 5.30pm to 9.30pm)"
+Q208,"Q12 - If in the future you were offered a multi-rate tariff similar to Economy Alert, how would the following possible variations to the tariff affect your interest in signing up? If there were no High/Low rates during evening peak-time (eg, 5.30pm to 9.30pm)","Q12 - If in the future you were offered a multi-rate tariff similar to Economy Alert, how would the following possible variations to the tariff affect your interest in signing up? If the High and Low rates were more predictable, eg, Low rate every Sunday"
+Q209,"Q12 - If in the future you were offered a multi-rate tariff similar to Economy Alert, how would the following possible variations to the tariff affect your interest in signing up? If the High and Low rates were more predictable, eg, Low rate every Sunday","Q12 - If in the future you were offered a multi-rate tariff similar to Economy Alert, how would the following possible variations to the tariff affect your interest in signing up? If the High/Low rate periods were longer, simpler and easier to remember (eg, Low for the whole day)"
+Q210,"Q12 - If in the future you were offered a multi-rate tariff similar to Economy Alert, how would the following possible variations to the tariff affect your interest in signing up? If the High/Low rate periods were longer, simpler and easier to remember (eg, Low for the whole day)",Format
+Q211,Format,Smart Meter
+Q212,Smart Meter,Energy Decision Maker
+Q213,Energy Decision Maker,Household Size
+Q214,Household Size,Household Member 1 Gender
+Q215,Household Member 1 Gender,Household Member 2  Gender
+Q216,Household Member 2  Gender,Household Member 3 Gender
+Q217,Household Member 3 Gender,Household Member 4 Gender
+Q218,Household Member 4 Gender,Household Member 5 Gender
+Q219,Household Member 5 Gender,Household Member 6 Gender
+Q220,Household Member 6 Gender,Household Member 7 Gender
+Q221,Household Member 7 Gender,Household Member 8 Gender
+Q222,Household Member 8 Gender,Household Member 1 Age
+Q223,Household Member 1 Age,Household Member 2  Age
+Q224,Household Member 2  Age,Household Member 3 Age
+Q225,Household Member 3 Age,Household Member 4 Age
+Q226,Household Member 4 Age,Household Member 5 Age
+Q227,Household Member 5 Age,Household Member 6 Age
+Q228,Household Member 6 Age,Household Member 7 Age
+Q229,Household Member 7 Age,Household Member 8 Age
+Q230,Household Member 8 Age,Relationship to Others in household
+Q231,Relationship to Others in household,Newspapers - Printed
+Q232,Newspapers - Printed,Newspapers - Online
+Q233,Newspapers - Online,Newspapers - None read regularly
+Q234,Newspapers - None read regularly,Work from home
+Q235,Work from home,Accomodation: House
+Q236,Accomodation: House,Accomodation: Flat
+Q237,Accomodation: Flat,Accomodation: Mobile
+Q238,Accomodation: Mobile,Rooms in home
+Q239,Rooms in home,Bedrooms
+Q240,Bedrooms,Insulation: Double glazing
+Q241,Insulation: Double glazing,Insulation: Roof or loft insulation
+Q242,Insulation: Roof or loft insulation,Insulation: Wall insulation
+Q243,Insulation: Wall insulation,Insulation: Floor insulation
+Q244,Insulation: Floor insulation,Insulation: Hot water tank insulation/lagging
+Q245,Insulation: Hot water tank insulation/lagging,Insulation: Other
+Q246,Insulation: Other,Central heating
+Q247,Central heating,Central heating - control
+Q248,Central heating - control,Heating water
+Q249,Heating water,No. Light bulbs: Living room: Traditional
+Q250,No. Light bulbs: Living room: Traditional,No. Light bulbs: Kitchen: Traditional
+Q251,No. Light bulbs: Kitchen: Traditional,No. Light bulbs: Dining room: Traditional
+Q252,No. Light bulbs: Dining room: Traditional,No. Light bulbs: Bedroom 1: Traditional
+Q253,No. Light bulbs: Bedroom 1: Traditional,No. Light bulbs: Bedroom 2: Traditional
+Q254,No. Light bulbs: Bedroom 2: Traditional,No. Light bulbs: Bedroom 3: Traditional
+Q255,No. Light bulbs: Bedroom 3: Traditional,No. Light bulbs: Living room: Low energy
+Q256,No. Light bulbs: Living room: Low energy,No. Light bulbs: Kitchen: Low energy
+Q257,No. Light bulbs: Kitchen: Low energy,No. Light bulbs: Dining room: Low energy
+Q258,No. Light bulbs: Dining room: Low energy,No. Light bulbs: Bedroom 1: Low energy
+Q259,No. Light bulbs: Bedroom 1: Low energy,No. Light bulbs: Bedroom 2: Low energy
+Q260,No. Light bulbs: Bedroom 2: Low energy,No. Light bulbs: Bedroom 3: Low energy
+Q261,No. Light bulbs: Bedroom 3: Low energy,No. Light bulbs: Living room: Haolgen bulbs
+Q262,No. Light bulbs: Living room: Haolgen bulbs,No. Light bulbs: Kitchen: Haolgen bulbs
+Q263,No. Light bulbs: Kitchen: Haolgen bulbs,No. Light bulbs: Dining room: Haolgen bulbs
+Q264,No. Light bulbs: Dining room: Haolgen bulbs,No. Light bulbs: Bedroom 1: Haolgen bulbs
+Q265,No. Light bulbs: Bedroom 1: Haolgen bulbs,No. Light bulbs: Bedroom 2: Haolgen bulbs
+Q266,No. Light bulbs: Bedroom 2: Haolgen bulbs,No. Light bulbs: Bedroom 3: Haolgen bulbs
+Q267,No. Light bulbs: Bedroom 3: Haolgen bulbs,No. Light bulbs: Living room: LED bulbs
+Q268,No. Light bulbs: Living room: LED bulbs,No. Light bulbs: Kitchen: LED bulbs
+Q269,No. Light bulbs: Kitchen: LED bulbs,No. Light bulbs: Dining room: LED bulbs
+Q270,No. Light bulbs: Dining room: LED bulbs,No. Light bulbs: Bedroom 1: LED bulbs
+Q271,No. Light bulbs: Bedroom 1: LED bulbs,No. Light bulbs: Bedroom 2: LED bulbs
+Q272,No. Light bulbs: Bedroom 2: LED bulbs,No. Light bulbs: Bedroom 3: LED bulbs
+Q273,No. Light bulbs: Bedroom 3: LED bulbs,No. Light bulbs: Living room: Fluorescent tubes
+Q274,No. Light bulbs: Living room: Fluorescent tubes,No. Light bulbs: Kitchen: Fluorescent tubes
+Q275,No. Light bulbs: Kitchen: Fluorescent tubes,No. Light bulbs: Dining room: Fluorescent tubes
+Q276,No. Light bulbs: Dining room: Fluorescent tubes,No. Light bulbs: Bedroom 1: Fluorescent tubes
+Q277,No. Light bulbs: Bedroom 1: Fluorescent tubes,No. Light bulbs: Bedroom 2: Fluorescent tubes
+Q278,No. Light bulbs: Bedroom 2: Fluorescent tubes,No. Light bulbs: Bedroom 3: Fluorescent tubes
+Q279,No. Light bulbs: Bedroom 3: Fluorescent tubes,No. Fridges: type 1
+Q280,No. Fridges: type 1,No. Fridges: type 2
+Q281,No. Fridges: type 2,No. Fridges: type 3
+Q282,No. Fridges: type 3,No. Fridges: type 4
+Q283,No. Fridges: type 4,No. Freezers: type 1
+Q284,No. Freezers: type 1,No. Freezers: type 2
+Q285,No. Freezers: type 2,No. Freezers: type 3
+Q286,No. Freezers: type 3,No. Freezers: type 4
+Q287,No. Freezers: type 4,No. Freezers: type 5
+Q288,No. Freezers: type 5,No. Freezers: type 6
+Q289,No. Freezers: type 6,No. Fridge-Freezers: type 1
+Q290,No. Fridge-Freezers: type 1,No. Fridge-Freezers: type 2
+Q291,No. Fridge-Freezers: type 2,No. Fridge-Freezers: type 3
+Q292,No. Fridge-Freezers: type 3,No. Fridge-Freezers: type 4
+Q293,No. Fridge-Freezers: type 4,No. Electric hob
+Q294,No. Electric hob,No. Gas hob
+Q295,No. Gas hob,No. Electric oven
+Q296,No. Electric oven,No. Microwave
+Q297,No. Microwave,No. Washing machine (not with dryer)
+Q298,No. Washing machine (not with dryer),No. Tumble dryer
+Q299,No. Tumble dryer,No. Washer-dryer
+Q300,No. Washer-dryer,No. Dishwasher
+Q301,No. Dishwasher,No. Electric shower
+Q302,No. Electric shower,No. Over-sink electric water heater
+Q303,No. Over-sink electric water heater,No. Portable electric heater
+Q304,No. Portable electric heater,No. Television
+Q305,No. Television,No. Desktop PC/computer
+Q306,No. Desktop PC/computer,No. Laptop computer
+Q307,No. Laptop computer,No. Printer
+Q308,No. Printer,No. Router (for broadband internet)
+Q309,No. Router (for broadband internet),No. Dvd/blu-ray player
+Q310,No. Dvd/blu-ray player,"No. Cable TV box (e.g., Virgin)"
+Q311,"No. Cable TV box (e.g., Virgin)","No. Satellite TV box (E.g., Sky)"
+Q312,"No. Satellite TV box (E.g., Sky)",No. Freeview TV box
+Q313,No. Freeview TV box,No. Games console
+Q314,No. Games console,No. Standby savers
+Q315,No. Standby savers,TV Type 1
+Q316,TV Type 1,TV Type 2
+Q317,TV Type 2,TV Type 3
+Q318,TV Type 3,TV Type 4
+Q319,TV Type 4,TV Type 5
+Q320,TV Type 5,TV Type 6
+Q321,TV Type 6,TV Size 1
+Q322,TV Size 1,TV Size 2
+Q323,TV Size 2,TV Size 3
+Q324,TV Size 3,TV Size 4
+Q325,TV Size 4,TV Size 5
+Q326,TV Size 5,TV Size 6
+Q327,TV Size 6,Position of smart meter
+Q328,Position of smart meter,Frequency look at smart meter - You
+Q329,Frequency look at smart meter - You,Frequency look at smart meter - Others
+Q330,Frequency look at smart meter - Others,Frequency press buttons on smart meter - You
+Q331,Frequency press buttons on smart meter - You,Frequency press buttons on smart meter - Others
+Q332,Frequency press buttons on smart meter - Others,Interest in getting electricity from a renewable energy source
+Q333,Interest in getting electricity from a renewable energy source,Interest in micro-generation
+Q334,Interest in micro-generation,Concern about climate change
+Q335,Concern about climate change,Feel about current  lifestyle and the environment
+Q336,Feel about current  lifestyle and the environment,Bill since smrt meter was installed
+Q337,Bill since smrt meter was installed,Describe amount charged on most recent bill
+Q338,Describe amount charged on most recent bill,Confident bill is accurate
+Q339,Confident bill is accurate,How helpful is smart meter in understanding bill
+Q340,How helpful is smart meter in understanding bill,How helpful is smart meter in understanding consumption
+Q341,How helpful is smart meter in understanding consumption,How helpful is smart meter in managingconsumption
+Q342,How helpful is smart meter in managingconsumption,Change in perception of EDF Energy
+Q343,Change in perception of EDF Energy,Likelihood to recommend
+Q344,Likelihood to recommend,

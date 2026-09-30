@@ -1,0 +1,3 @@
+91 RHPP homes, 181 days; LCL gas-heated bases: clean (0 portable heaters) 53, heater-rich (>= 2 portable heaters) 627; clean-base heating slope 0.0068 kW/C per household (Kloten HP-free 0.0055)
+  clean (0 portable heaters), 20+20 per pool, 200 splits, ~176 days: capacity +8 [-1, +22] %; oracle +9 [+7, +11] %; slope ratio 0.99 [0.88, 1.12]; net/HP slope 1.09 [1.06, 1.11]; energy (below T_h) -24 [-26, -21] %
+  heater-rich (>= 2 portable heaters), 20+20 per pool, 200 splits, ~176 days: capacity +16 [+2, +34] %; oracle +15 [+11, +20] %; slope ratio 1.01 [0.87, 1.15]; net/HP slope 1.15 [1.10, 1.20]; energy (below T_h) -19 [-22, -16] %

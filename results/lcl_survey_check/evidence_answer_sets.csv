@@ -1,0 +1,29 @@
+question,label_id,mapping,column,n,pct_outside_documented_set,top_values
+Q6 accommodation (house),Q236,as labelled,Q236,922,0.0,"In a purpose built block or tenement:669; Part of a converted house/building:234; In a commercial building, (f"
+Q6 accommodation (house),Q236,corrected (col-1),Q235,1690,0.0,Terraced - middle:722; Semi-detached:569; Terraced - end:214; Detached:185
+Q6 accommodation (caravan),Q238,as labelled,Q238,2582,100.0,5.0:533; 4.0:487; 6.0:474; 3.0:317
+Q6 accommodation (caravan),Q238,corrected (col-1),Q237,4,0.0,A caravan or other mobile or temporary structure:4
+Q7 rooms,Q239,as labelled,Q239,2580,0.0,3.0:996; 2.0:676; 1.0:420; 4.0:335
+Q7 rooms,Q239,corrected (col-1),Q238,2582,0.0,5.0:533; 4.0:487; 6.0:474; 3.0:317
+Q9 insulation: double glazing,Q241,as labelled,Q241,2176,0.0,Yes:1597; No:348; Don't know:231
+Q9 insulation: double glazing,Q241,corrected (col-1),Q240,2419,0.0,Yes:1970; No:419; Don't know:30
+Q9 insulation: loft,Q242,as labelled,Q242,1688,0.0,No:859; Yes:503; Don't know:326
+Q9 insulation: loft,Q242,corrected (col-1),Q241,2176,0.0,Yes:1597; No:348; Don't know:231
+Q10 central heating fuel,Q247,as labelled,Q247,2429,100.0,The heating switches on and off automatically at set times of the day:553; I switch the heating on manually at
+Q10 central heating fuel,Q247,corrected (col-1),Q246,2588,0.0,Gas:2113; No central heating:128; Electric (including storage heaters):114; Other central heating:81
+Q11 heating control,Q248,as labelled,Q248,2592,100.0,Hot water storage tank with gas boiler - used for both central heating and hot water:1057; Gas boiler (without
+Q11 heating control,Q248,corrected (col-1),Q247,2429,0.1,The heating switches on and off automatically at set times of the day:553; I switch the heating on manually at
+Q12 water heating,Q249,as labelled,Q249,2613,100.0,0.0:1133; 1.0:346; 2.0:245; 3.0:234
+Q12 water heating,Q249,corrected (col-1),Q248,2592,6.5,Hot water storage tank with gas boiler - used for both central heating and hot water:1057; Gas boiler (without
+Q15 No. portable electric heater,Q304,as labelled,Q304,2613,0.0,1.0:1292; 2.0:665; 3.0:323; 0.0:133
+Q15 No. portable electric heater,Q304,corrected (col-1),Q303,2613,0.0,0.0:1777; 1.0:540; 2.0:199; 3.0:70
+Q15 No. television,Q305,as labelled,Q305,2613,0.0,0.0:1433; 1.0:993; 2.0:148; 3.0:25
+Q15 No. television,Q305,corrected (col-1),Q304,2613,0.0,1.0:1292; 2.0:665; 3.0:323; 0.0:133
+Q16 TV 1 screen type,Q316,as labelled,Q316,1354,0.0,LCD:567; LED:337; Traditional/older style (CRT):223; Plasma:128
+Q16 TV 1 screen type,Q316,corrected (col-1),Q315,2407,0.0,LCD:803; LED:562; Traditional/older style (CRT):422; Plasma:395
+Q16 TV 1 screen size,Q322,as labelled,Q322,1358,0.0,24 inches or less:751; 25 to 32 inches:403; 33 to 49 inches:179; 50 inches or more:14
+Q16 TV 1 screen size,Q322,corrected (col-1),Q321,2459,0.0,25 to 32 inches:1031; 33 to 49 inches:756; 24 inches or less:549; 50 inches or more:99
+Q17 display position,Q328,as labelled,Q328,2550,100.0,Several times every day:602; At least once every day:584; Less often than once a week:363; About once a week:3
+Q17 display position,Q328,corrected (col-1),Q327,2566,16.0,Kitchen:1271; Living Room:557; Hallway:307; I don't know where the display is; Other: DINING ROOM:46
+Q1 member 1 gender,Q215,as labelled,Q215,1533,0.0,Female:975; Male:558
+Q1 member 1 gender,Q215,corrected (col-1),Q214,2475,0.0,Male:1392; Female:1083
