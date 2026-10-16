@@ -15,25 +15,25 @@ Missing input: the Supervisor 2 marks. Alex does not have them yet (16 Oct). The
 
 | ID | p. | Anchor | Comment | Action taken | Commit | Status |
 |---|---|---|---|---|---|---|
-| R01 | 1 | "On 200 German LV feeders … over twenty per cent" | Too anecdotal | | | open (S1 ¶1) |
-| R02 | 1 | same | Use country/region figures | | | open (S1 ¶1) |
-| R03 | 1 | the word "were" in "networks that were not sized for it" | "maybe" | | | needs Alex (rec.: soften to "that may not have been sized for it") |
-| R04 | 1 | "rooftop solar" | Injection peaks go the other way | | | open (S1 ¶2) |
-| R05 | 1 | "network operators must know how much thermostatic load…" | Why is it interesting? | | | open (S1 ¶3) |
-| R06 | 1 | "It meters aggregated net load" | "Often only aggregated net load is measured (smart meter level? at the substation?)" | | | open (S1 ¶4) |
-| R07 | 1 | same | "It" = the DSO | | | open (S1 ¶4) |
-| R08 | 1 | "It" | Too many "it"s | | | open (S1, S2 "it" pass) |
-| R09 | 1 | "remain largely synthetic at the substation" | What does this mean? | | | open (S1 ¶5) |
-| R10 | 1 | title, "from Net Load and Temperature" | Explain setup and pilot | | | open (S1 ¶11, abstract) |
-| R11 | 2 | "service-transformer" | What is it? | | | open (S1 ¶8) |
-| R12 | 2 | "The simultaneity of an aggregated TCL population…" | Use this at the beginning | | | open (S1 ¶3) |
-| R13 | 2 | "submetering the target feeder" | Say "at household level" | | | open (S1 ¶10) |
-| R14 | 2 | contribution 1, SF slope sentence | Not understandable yet | | | open (S1 ¶12) |
-| R15 | 2 | same | Maybe not needed | | | open (S1 ¶12) |
-| R16 | 2 | contribution 2 | A full conclusion; keep short | | | open (S1 ¶12) |
-| R17 | 3 | "same two fits" | Which two fits? | | | open (S1 ¶12, S2) |
-| R18 | 3 | contribution 3, flexibility details | Too much here | | | open (S1 ¶12) |
-| R19 | 3 | Sec. II privacy sentences | Why not in the introduction? | | | open (S1 ¶4, S2) |
+| R01 | 1 | "On 200 German LV feeders … over twenty per cent" | Too anecdotal | ¶1 now opens with the European scale (EHPA: 2.9 M sold in 2025, +13%, 21 countries; stock 29.3 M); the 200-feeder figure is one supporting sentence | S1 | done |
+| R02 | 1 | same | Use country/region figures | as R01; new ref `Ehp26` (EHPA market-data page, checked 16 Oct 2026) | S1 | done |
+| R03 | 1 | the word "were" in "networks that were not sized for it" | "maybe" | "…loads LV networks that may not have been sized for this load" (Alex: as recommended) | S1 | done |
+| R04 | 1 | "rooftop solar" | Injection peaks go the other way | rooftop solar dropped from the peak sentence; PV now introduced in ¶8 | S1 | done |
+| R05 | 1 | "network operators must know how much thermostatic load…" | Why is it interesting? | new ¶3: three reasons the DSO needs installed capacity (scenarios, synchronised peak, design peak = capacity × SF), plus flexibility | S1 | done |
+| R06 | 1 | "It meters aggregated net load" | "Often only aggregated net load is measured (smart meter level? at the substation?)" | ¶4: net load metered at the substation or feeder head; household smart meters where rolled out, access often restricted | S1 | done |
+| R07 | 1 | same | "It" = the DSO | "the DSO" named as subject throughout ¶4 | S1 | done |
+| R08 | 1 | "It" | Too many "it"s | "it" pass over the abstract and Sec. I; Sec. II follows in S2 | S1 | partly |
+| R09 | 1 | "remain largely synthetic at the substation" | What does this mean? | "validated mostly on synthetic substation aggregates rather than on measured substation data" | S1 | done |
+| R10 | 1 | title, "from Net Load and Temperature" | Explain setup and pilot | new ¶11 states the setup (feeder net load + temperature, one number from a submetered pilot, ratio gives capacity); abstract sentences 3–5 do the same | S1 | done |
+| R11 | 2 | "service-transformer" | What is it? | "distribution transformer" | S1 | done |
+| R12 | 2 | "The simultaneity of an aggregated TCL population…" | Use this at the beginning | the planning role of the SF moved into ¶3 (motivation); ¶9 keeps only the prior-work limitation | S1 | done |
+| R13 | 2 | "submetering the target feeder" | Say "at household level" | "without submetering the households of the target feeder" | S1 | done |
+| R14 | 2 | contribution 1, SF slope sentence | Not understandable yet | contribution 1 rewritten without SF slope or balance point | S1 | done |
+| R15 | 2 | same | Maybe not needed | the highlighted sentence removed | S1 | done |
+| R16 | 2 | contribution 2 | A full conclusion; keep short | contribution 2 is one sentence listing what is evaluated, with no results | S1 | done |
+| R17 | 3 | "same two fits" | Which two fits? | contributions no longer say "same two fits"; roadmap names the two fits in words. The fits are named formally in Sec. II (S2) | S1 | partly |
+| R18 | 3 | contribution 3, flexibility details | Too much here | flexibility derivation removed from contribution 3 | S1 | done |
+| R19 | 3 | Sec. II privacy sentences | Why not in the introduction? | privacy and DER-register sentences moved from Sec. II to Sec. I ¶4 and deleted from Sec. II | S1 | done |
 | R20 | 3 | "it" | What is it? | | | open (S2) |
 | R21 | 3 | "problem" | Wording | | | open (S2) |
 | R22 | 3 | Sec. II opening paragraph | Hard to follow; data needs; Fig. 1 | | | open (S2) |
@@ -53,8 +53,8 @@ Missing input: the Supervisor 2 marks. Alex does not have them yet (16 Oct). The
 | R36 | 5 | "R1, R3, or" | What are these? | | | open (S4, D2) |
 | R37 | 5 | same | Refer to the figure | | | open (S4) |
 | R38 | 5 | "so the transfer of Section II-D" | Weird sentence | | | open (L) |
-| R39 | 5 | II-D first sentence, "submetered TCL data" (l.308) | "aha, why only here?" | | | open (S1 ¶11) |
-| R40 | 5 | II-D pilot/target definitions | Already for Table II? What is calibration? | | | open (S2) |
+| R39 | 5 | II-D first sentence, "submetered TCL data" (l.308) | "aha, why only here?" | ¶11 introduces submetering and the pilot before Sec. II | S1 | partly |
+| R40 | 5 | II-D pilot/target definitions | Already for Table II? What is calibration? | ¶11 defines pilot, target and aggregate; the II-D rewrite and the calibration wording follow in S2 | S1 | partly |
 | R41 | 5 | "Section IV-C tests this hypothesis…" | Paper builds on an untested hypothesis | | | open (S2, S7) |
 | R42 | 5 | "R²_h" | What is this? | | | open (S4) |
 | R43 | 6 | P_net(t) | "T?" | | | open (S4) |
@@ -70,11 +70,13 @@ Missing input: the Supervisor 2 marks. Alex does not have them yet (16 Oct). The
 | R53 | 9 | "Transferring the full SF curve…" | Not understood | | | open (S7) |
 | R54 | 9 | "About three points" | Three points? | | | open (L) |
 | R55 | 11 | VI-D "…but not the net-load numerator." | What was done to counter limits? | | | open (S8) |
-| R56 | 12 | "s" over "ted" of "This paper presented" (Conclusion, l.578) | "s" | | | needs Alex (rec.: "This paper presents") |
+| R56 | 12 | "s" over "ted" of "This paper presented" (Conclusion, l.578) | "s" | needs Alex → Alex: "This paper presents" (as recommended); applied in S8 | S1 | open (S8) |
 | R57 | 12 | strike-out of "Most of this error stems from the net-load slope, … rather than from the transfer of the SF slope." (l.578) | (strike-out, no text) | | | open (S8, delete) |
 | S2-xx | — | Supervisor 2 marks | — | | | needs Alex (file missing) |
 
 ## Decisions for Alex
+
+Answered 16 Oct 2026: **D1 yes · D2 words · D5 capacity first · D7 as recommended · R03 and R56 as recommended.** D3, D4 and D6 are still open.
 
 | ID | Question | Recommendation |
 |---|---|---|
@@ -108,7 +110,7 @@ Missing input: the Supervisor 2 marks. Alex does not have them yet (16 Oct). The
 
 | ¶ | Point | Content |
 |---|---|---|
-| 1 | Heating electrification is growing fast. | Electrifying heating and cooling is a decarbonisation lever; TCLs = HPs, resistive heaters, air conditioners; HPs lead (`Iea22`). European scale: EHPA 2026 market report (29.3 M HPs in 21 countries; 2.88 M sold in 2025, +13%), **to verify against the primary EHPA source in S1**. `Tre26` 200 German feeders: at most one clause (R01, R02). |
+| 1 | Heating electrification is growing fast. | Electrifying heating and cooling is a decarbonisation lever; TCLs = HPs, resistive heaters, air conditioners; HPs lead (`Iea22`). European scale: EHPA 2026 market report (29.3 M HPs in 21 countries; 2.88 M sold in 2025, +13%), **checked (S1):** the EHPA market-data page (https://ehpa.org/market-data/, 16 Oct 2026) gives 2.9 M sold in 2025, +13%, 21 countries, stock 29.3 M. The brief's "2.88 M" could not be confirmed at the primary source, so the text says "about 2.9 million". `Tre26` 200 German feeders: at most one clause (R01, R02). |
 | 2 | This load stresses LV networks in cold weather. | TCL load follows the outdoor temperature. In cold spells many devices run together, which raises coincident feeder and transformer peaks (`Vel11, Akm14, Som21, Bec24, Lia26`). These peaks add to EV peaks. Rooftop solar: drop it, or say it causes reverse-flow peaks at a different time (R04). R03 wording per Alex. |
 | 3 | The DSO needs the installed capacity. | (a) Planning scenarios, because capacity scales with adoption. (b) Worst case when devices synchronise, after a blocking period or a flexibility activation. (c) Design peak = capacity × SF at the design temperature, with SF defined in words as "the share of installed capacity drawn at once" (`Lov17, Che21b, Rou23, Few24`). Flexibility is bounded by unused capacity (`Mul19, Zir19, Dhu15`). Absorbs the current I-4 and the first half of I-8 (R05, R12). *Reference numbers checked against the reviewed PDF: [28] Lov17, [29] Che21b, [41] Rou23, [55] Few24; [32] Mul19, [33] Dhu15, [42] Zir19; [2] Tre26, [8] Gou26.* |
 | 4 | The DSO does not know it. | Privacy and data-exchange limits restrict access to household data; DER registers lag what is connected (moved from Sec. II l.111, R19; **the current sentence has no citation**, so add `Gou26` or leave it uncited). The DSO holds: net load at the substation or feeder head, plus smart meters where rolled out, often with restricted access (R06); outdoor temperature; consumer count per feeder (`Gou26, Tre26`). It lacks appliance registers and nameplate ratings. Subject "the DSO" named in every sentence (R07, R08). |
@@ -123,3 +125,11 @@ Missing input: the Supervisor 2 marks. Alex does not have them yet (16 Oct). The
 | 13 | Roadmap | Final section order after D5. |
 
 Changes from the brief's default spec: prior work becomes five paragraphs (¶5–9) in **Table I's category order**, because Table I has five categories and the current prose already has five lines. The idea paragraph also defines "aggregate" (D7). Contribution (2) says "real aggregates", not "real feeders".
+
+### S1 notes (as written)
+- Abstract: 248 words (IEEE limit 250). Every number of the old abstract is kept verbatim. Spec item 4's clause "each feeder keeps its own heating threshold temperature" is dropped for length, because the threshold is not yet a defined idea for the reader. Its content survives in "against up to 26% when the pilot's whole curve is transferred".
+- Sec. I: 13 paragraphs, as in the spec. Prior work follows Table I's five categories, in prose order NILM → change-point → control → PV → HP coincidence.
+- Sec. I sentence statistics: max 31 words, median 18. The median is below the voice skill's 22 because of Supervisor 2's one-idea-per-sentence rule; the supervisor wins (rule 4).
+- The privacy sentence in ¶4 has no citation, as before. `Gou26, Tre26` stay on the sentence they supported before (consumer count, registers, ratings).
+- EV is defined in ¶2 and added to the Nomenclature.
+- Reviewer-2 recheck pending: the S2-xx marks have not arrived.
