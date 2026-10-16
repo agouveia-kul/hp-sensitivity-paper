@@ -48,7 +48,7 @@ Missing input: the Supervisor 2 marks. Alex does not have them yet (16 Oct). The
 | R31 | 4 | "which takes the peak interval" | What is the peak interval? | | | open (S5) |
 | R32 | 4 | Kloten 1.28× / 1.75× | Data not yet introduced | | | open (S5, move) |
 | R33 | 4 | "Using the total TCL installed capacity … underestimation" | Too obvious | | | open (S5, delete) |
-| R34 | 4 | eqs (5)–(7) | Heating only, cooling analogous | Eqs. (5)-(7) kept generic for heating and cooling | S3 | declined (Alex: keep the problem and fits generic) |
+| R34 | 4 | eqs (5)–(7) | Heating only, cooling analogous | Eqs. (5)-(7) kept generic for heating and cooling | S3 | declined (Alex: generic everywhere except the results) |
 | R35 | 4 | "(7)" | "which data do you need to do this fit? This is not so straightforward to do, no? Explain this a bit better." (one sentence may be too little; see S2) | | | open (L) |
 | R36 | 5 | "R1, R3, or" | What are these? | | | open (S4, D2) |
 | R37 | 5 | same | Refer to the figure | | | open (S4) |
@@ -60,7 +60,7 @@ Missing input: the Supervisor 2 marks. Alex does not have them yet (16 Oct). The
 | R43 | 6 | P_net(t) | "T?" | | | open (S4) |
 | R44 | 6 | "R2 bounds the estimate" | Use "dead band" | | | open (S4) |
 | R45 | 6 | "The temperature cancels, so" | Write "Note that…" | | | open (L) |
-| R46 | 6 | "The two regimes are estimated separately." | Heating only | III-B derivation (9)-(10) written for heating; cooling by symmetry in one sentence; reversible-HP paragraph reduced to one sentence | S3 | done |
+| R46 | 6 | "The two regimes are estimated separately." | Heating only | III-B equations kept for both regimes; the reversible-HP paragraph shortened to two sentences | S3, S3b | declined (Alex: generic everywhere except the results) |
 | R47 | 6 | III-C cancellation passage | Unclear; how is Δt_Th set? | | | open (S6, D4) |
 | R48 | 6 | "Over a year, this paper counts…" | Rephrase or move; why useful? | | | open (S6) |
 | R49 | 7 | IV-A split procedure | Why? What is fitted and estimated? | | | open (S7) |
@@ -80,7 +80,7 @@ Answered 16 Oct 2026: **D1 yes · D2 words · D5 capacity first · D7 as recomme
 
 | ID | Question | Recommendation |
 |---|---|---|
-| D1 | Present the method heating-only, with cooling by symmetry? (Alex, 16 Oct: **no** for the problem and fits; heating-only only in the III-B derivation) | Yes. Every quantitative result is heating-only, and the cooling fits are descriptive (l.570). |
+| D1 | Present the method heating-only, with cooling by symmetry? (Alex, 16 Oct: **no**. Generic in Sec. II–III; only the results, Sec. IV–V, are heating-only) | Yes. Every quantitative result is heating-only, and the cooling fits are descriptive (l.570). |
 | D2 | Regime names: words or new symbols? | Words: heating regime, dead band, cooling regime. |
 | D3 | Run the capacity-definition robustness check (max, HEAPO nameplate)? | Run it. Numbers go in only after review. |
 | D4 | Δt_Th literature range | Only with verified references; otherwise state it as an illustrative parameter. |
@@ -191,3 +191,7 @@ Changes from the brief's default spec: prior work becomes five paragraphs (¶5�
 - Dividing the heating arm by it gives P_h^max,i = s_h^i / m_h; the temperature cancels.
 - Cooling follows by symmetry, with (T − T_c^i) in place of (T_h^i − T), giving P_c^max,i = s_c^i / m_c.
 - Reversible HPs, in one sentence: they count in both regimes, so the total lies between the larger of the two and their sum.
+
+### S3b — generic everywhere (Alex, 16 Oct)
+- Alex: keep the method generic everywhere except the results, which look only at heating. III-B is restored to the two-regime eqs. (9)–(10) and $m_k$.
+- Net effect of S3 + S3b on the text: the R23 sentence in II-A (the evaluation covers R1 only, because the data allow no R3 transfer test), and the reversible-HP paragraph cut from four sentences to two.

@@ -313,20 +313,25 @@ R2 bounds the estimate. Between $T_h$ and $T_c$ both arms are zero. The estimate
 
 The installed capacity is the sum of the individual peak demands \eqref{eq:pk}, defined per regime. The aggregated TCLs never draw it at once, so the net load never exposes it directly. The net-load fit does expose the temperature-driven TCL load $\hat{P}_{\mathrm{TCL}}^{\,i}(T)$ of aggregate $i$. Rearranging \eqref{eq:sf-piecewise}, the capacity of regime $k$ follows from this load and the SF at the same temperature.
 
-Both must describe the same load. The net-load arm is zero at the aggregate's own threshold by construction, and the weather-independent TCL use sits in $P_{\mathrm{base}}$. The matching SF is therefore the temperature-driven part of \eqref{eq:sffit}. In the heating regime, it starts from zero at the aggregate's own threshold and grows with the transferred sensitivity,
+Both must describe the same load. The net-load arm is zero at the aggregate's own threshold by construction, and the weather-independent TCL use sits in $P_{\mathrm{base}}$. The matching SF is therefore the temperature-driven part of \eqref{eq:sffit}. It starts from zero at the aggregate's own thresholds and grows with the transferred sensitivity,
 \begin{equation}
-    \hat{\mathrm{SF}}_h^{\,i}(T) = m_h\,(T_h^{\,i} - T), \quad \forall T < T_h^{\,i}.
+\begin{aligned}
+    \hat{\mathrm{SF}}_h^{\,i}(T) &= m_h\,(T_h^{\,i} - T), \quad \forall T < T_h^{\,i},\\
+    \hat{\mathrm{SF}}_c^{\,i}(T) &= m_c\,(T - T_c^{\,i}), \quad \forall T > T_c^{\,i}.
+\end{aligned}
 \label{eq:sf-target}
 \end{equation}
-Dividing the heating arm of \eqref{eq:tclfit} by \eqref{eq:sf-target} gives the installed heating capacity,
+Dividing the arms of \eqref{eq:tclfit} by \eqref{eq:sf-target} gives the installed capacity of each regime,
 \begin{equation}
-    \hat{P}_h^{\max,i} = \frac{s_h^{\,i}\,(T_h^{\,i} - T)}{m_h\,(T_h^{\,i} - T)} = \frac{s_h^{\,i}}{m_h}, \quad \forall T < T_h^{\,i}.
+\begin{aligned}
+    \hat{P}_h^{\max,i} &= \frac{s_h^{\,i}\,(T_h^{\,i} - T)}{m_h\,(T_h^{\,i} - T)} = \frac{s_h^{\,i}}{m_h}, \quad \forall T < T_h^{\,i},\\
+    \hat{P}_c^{\max,i} &= \frac{s_c^{\,i}\,(T - T_c^{\,i})}{m_c\,(T - T_c^{\,i})} = \frac{s_c^{\,i}}{m_c}, \quad \forall T > T_c^{\,i}.
+\end{aligned}
 \label{eq:capacity}
 \end{equation}
-The cooling regime follows by symmetry, with $(T - T_c^{\,i})$ in place of $(T_h^{\,i} - T)$, so that $\hat{P}_c^{\max,i} = s_c^{\,i}/m_c$.
-The temperature cancels, so the estimate needs no choice of evaluation day. The net-load fit supplies the numerator, which the DSO observes. The pilot supplies only the denominator $m_h$. The estimate is therefore only as good as the transferred sensitivity, which Section~\ref{sec:results} tests.
+The temperature cancels, so the estimate needs no choice of evaluation day. The net-load fit supplies the numerator, which the DSO observes. The pilot supplies only the denominator $m_k$. The estimate is therefore only as good as the transferred sensitivity, which Section~\ref{sec:results} tests.
 
-A reversible HP counts in both $\hat{P}_h^{\max}$ and $\hat{P}_c^{\max}$, so the total installed capacity of a population of reversible HPs lies between the larger of the two and their sum.
+The two regimes are estimated separately. A reversible HP counts in both $\hat{P}_h^{\max}$ and $\hat{P}_c^{\max}$, so the total installed capacity of a population of reversible HPs lies between the larger of the two and their sum.
 
 % \textcolor{red}{This section is substantially small. Can you add some visualization to demonstrate what we aim to say!
 % In the present state this section is completely useless as eq 10, 11 are kind of obvious.
