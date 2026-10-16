@@ -37,7 +37,7 @@ Missing input: the Supervisor 2 marks. Alex does not have them yet (16 Oct). The
 | R20 | 3 | "it" | What is it? | "From it follow…" paragraph deleted; opening reworded | S1b, S2 | done |
 | R21 | 3 | "problem" | Wording | "The problem is to recover…" paragraph deleted; its content is in the new opening | S2 | done |
 | R22 | 3 | Sec. II opening paragraph | Hard to follow; data needs; Fig. 1 | Opening reduced to the three quantities and the data each needs; Fig. 1 moved to the end of Sec. III (now Fig. 4), after its blocks are defined | S1b, S2 | done |
-| R23 | 3 | "treats R2 as out of scope" | Cooling analysis would be analogous | | | open (S3, D1) |
+| R23 | 3 | "treats R2 as out of scope" | Cooling analysis would be analogous | II-A: "characterises R1 and R3 alike and leaves R2 out of scope"; the evaluation covers R1 only, since the data allow no test of the R3 transfer (Sec. VI) | S3 | done |
 | R24 | 4 | "the hat marks a fitted function" | Rephrase | | | open (S5) |
 | R25 | 4 | "P_base … discarded" | Needed? | | | open (S5, delete) |
 | R26 | 4 | strike-out of ", i.e., a larger share of consumers with a TCL" (l.218) | (strike-out, no text) | | | open (L, delete) |
@@ -48,7 +48,7 @@ Missing input: the Supervisor 2 marks. Alex does not have them yet (16 Oct). The
 | R31 | 4 | "which takes the peak interval" | What is the peak interval? | | | open (S5) |
 | R32 | 4 | Kloten 1.28× / 1.75× | Data not yet introduced | | | open (S5, move) |
 | R33 | 4 | "Using the total TCL installed capacity … underestimation" | Too obvious | | | open (S5, delete) |
-| R34 | 4 | eqs (5)–(7) | Heating only, cooling analogous | | | open (S3, D1) |
+| R34 | 4 | eqs (5)–(7) | Heating only, cooling analogous | Eqs. (5)-(7) kept generic for heating and cooling | S3 | declined (Alex: keep the problem and fits generic) |
 | R35 | 4 | "(7)" | "which data do you need to do this fit? This is not so straightforward to do, no? Explain this a bit better." (one sentence may be too little; see S2) | | | open (L) |
 | R36 | 5 | "R1, R3, or" | What are these? | | | open (S4, D2) |
 | R37 | 5 | same | Refer to the figure | | | open (S4) |
@@ -60,7 +60,7 @@ Missing input: the Supervisor 2 marks. Alex does not have them yet (16 Oct). The
 | R43 | 6 | P_net(t) | "T?" | | | open (S4) |
 | R44 | 6 | "R2 bounds the estimate" | Use "dead band" | | | open (S4) |
 | R45 | 6 | "The temperature cancels, so" | Write "Note that…" | | | open (L) |
-| R46 | 6 | "The two regimes are estimated separately." | Heating only | | | open (S3, D1) |
+| R46 | 6 | "The two regimes are estimated separately." | Heating only | III-B derivation (9)-(10) written for heating; cooling by symmetry in one sentence; reversible-HP paragraph reduced to one sentence | S3 | done |
 | R47 | 6 | III-C cancellation passage | Unclear; how is Δt_Th set? | | | open (S6, D4) |
 | R48 | 6 | "Over a year, this paper counts…" | Rephrase or move; why useful? | | | open (S6) |
 | R49 | 7 | IV-A split procedure | Why? What is fitted and estimated? | | | open (S7) |
@@ -80,7 +80,7 @@ Answered 16 Oct 2026: **D1 yes · D2 words · D5 capacity first · D7 as recomme
 
 | ID | Question | Recommendation |
 |---|---|---|
-| D1 | Present the method heating-only, with cooling by symmetry? | Yes. Every quantitative result is heating-only, and the cooling fits are descriptive (l.570). |
+| D1 | Present the method heating-only, with cooling by symmetry? (Alex, 16 Oct: **no** for the problem and fits; heating-only only in the III-B derivation) | Yes. Every quantitative result is heating-only, and the cooling fits are descriptive (l.570). |
 | D2 | Regime names: words or new symbols? | Words: heating regime, dead band, cooling regime. |
 | D3 | Run the capacity-definition robustness check (max, HEAPO nameplate)? | Run it. Numbers go in only after review. |
 | D4 | Δt_Th literature range | Only with verified references; otherwise state it as an illustrative parameter. |
@@ -178,3 +178,16 @@ Changes from the brief's default spec: prior work becomes five paragraphs (¶5�
 - Alex's edits, kept as made: wording in II-A ("chosen as", "all else being equal", "rather than being a property of any building or device"); the repeated dead-band sentence deleted; the P_base paragraph commented out; the "Table II spans this range…" sentence deleted; "also called the coincidence factor" deleted from II-B.
 - Alex: drop the 99.9th percentile, which is an implementation detail. The only mention (II-B, after eq. (4)) now reads "taken as the peak of its submetered 15-min draw". The code still uses the 99.9th percentile; no number changes.
 - **For Alex:** (a) "peak" is a slight simplification of the 99.9th percentile, and running D3 (capacity WAPE with the plain max) would show the difference is immaterial. D3 is still open. (b) With "also called the coincidence factor" gone, the next paragraph's "lower than the coincidence factor used in network planning" uses an undefined term. S5 rewrites that paragraph (R31) and will say "the planning SF".
+
+### S3 content specs (revised by Alex, 16 Oct: keep the problem and fits generic)
+**Scope change.** Alex disagrees with heating-only for the problem definition and the fits. Eqs. (1)–(7) and II-A/II-B stay generic, so R34 is declined. Heating-only is applied only to the Sec. III-B capacity derivation (R46).
+
+**II-A, regimes sentence (R23).** Point: the method treats both regimes alike; only the evaluation is heating-only.
+- The paper characterises the heating and cooling regimes and leaves the dead band out of scope.
+- The same analysis applies to cooling. The evaluation of Sec. IV–V is heating-only because the available data allow no test of the cooling transfer (Sec. VI-D: the NEEA Washington pilot has no day above its cooling threshold in 2023).
+
+**III-B, capacity (R46).** Point: the ratio of the two sensitivities gives the capacity, shown for heating.
+- The matching SF of the target in the heating regime is m_h (T_h^i − T), starting at zero at the target's own threshold.
+- Dividing the heating arm by it gives P_h^max,i = s_h^i / m_h; the temperature cancels.
+- Cooling follows by symmetry, with (T − T_c^i) in place of (T_h^i − T), giving P_c^max,i = s_c^i / m_c.
+- Reversible HPs, in one sentence: they count in both regimes, so the total lies between the larger of the two and their sum.

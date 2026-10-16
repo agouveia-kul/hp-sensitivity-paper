@@ -139,7 +139,7 @@ where $P_{\mathrm{base}}$ is the temperature-independent load [kW], $s_h$ and $s
 
 %\textcolor{red}{should mention that $P_{\mathrm{base}}, s_h, s_c$ are the outcome of least square fit}
 
-Note that \eqref{eq:bathtub} needs only the net load and ambient temperature the DSO already holds, and no submetered or labelled ground truth. Fig.~\ref{fig:bathtub} shows the net-load fit to aggregated Austin smart-meter data \cite{pecanstreet}, with the parameters of \eqref{eq:bathtub} marked. The thresholds divide the temperature axis into three regimes. R1 (below $T_h$) and R3 (above $T_c$) are the heating and cooling regimes, and R2 is the dead band between them, where the population neither heats nor cools. This work characterises R1 and R3 and treats R2 as out of scope.
+Note that \eqref{eq:bathtub} needs only the net load and ambient temperature the DSO already holds, and no submetered or labelled ground truth. Fig.~\ref{fig:bathtub} shows the net-load fit to aggregated Austin smart-meter data \cite{pecanstreet}, with the parameters of \eqref{eq:bathtub} marked. The thresholds divide the temperature axis into three regimes. R1 (below $T_h$) and R3 (above $T_c$) are the heating and cooling regimes, and R2 is the dead band between them, where the population neither heats nor cools. This work characterises R1 and R3 alike and leaves R2 out of scope. The evaluation of Sections~\ref{sec:results} and~\ref{sec:validation} covers R1 only, since the available data allow no test of the transfer in R3 (Section~\ref{sec:discussion}).
 
 \begin{figure}[t]
 \centering
@@ -313,25 +313,20 @@ R2 bounds the estimate. Between $T_h$ and $T_c$ both arms are zero. The estimate
 
 The installed capacity is the sum of the individual peak demands \eqref{eq:pk}, defined per regime. The aggregated TCLs never draw it at once, so the net load never exposes it directly. The net-load fit does expose the temperature-driven TCL load $\hat{P}_{\mathrm{TCL}}^{\,i}(T)$ of aggregate $i$. Rearranging \eqref{eq:sf-piecewise}, the capacity of regime $k$ follows from this load and the SF at the same temperature.
 
-Both must describe the same load. The net-load arm is zero at the aggregate's own threshold by construction, and the weather-independent TCL use sits in $P_{\mathrm{base}}$. The matching SF is therefore the temperature-driven part of \eqref{eq:sffit}. It starts from zero at the aggregate's own thresholds and grows with the transferred sensitivity,
+Both must describe the same load. The net-load arm is zero at the aggregate's own threshold by construction, and the weather-independent TCL use sits in $P_{\mathrm{base}}$. The matching SF is therefore the temperature-driven part of \eqref{eq:sffit}. In the heating regime, it starts from zero at the aggregate's own threshold and grows with the transferred sensitivity,
 \begin{equation}
-\begin{aligned}
-    \hat{\mathrm{SF}}_h^{\,i}(T) &= m_h\,(T_h^{\,i} - T), \quad \forall T < T_h^{\,i},\\
-    \hat{\mathrm{SF}}_c^{\,i}(T) &= m_c\,(T - T_c^{\,i}), \quad \forall T > T_c^{\,i}.
-\end{aligned}
+    \hat{\mathrm{SF}}_h^{\,i}(T) = m_h\,(T_h^{\,i} - T), \quad \forall T < T_h^{\,i}.
 \label{eq:sf-target}
 \end{equation}
-Dividing the arms of \eqref{eq:tclfit} by \eqref{eq:sf-target} gives the installed capacity of each regime,
+Dividing the heating arm of \eqref{eq:tclfit} by \eqref{eq:sf-target} gives the installed heating capacity,
 \begin{equation}
-\begin{aligned}
-    \hat{P}_h^{\max,i} &= \frac{s_h^{\,i}\,(T_h^{\,i} - T)}{m_h\,(T_h^{\,i} - T)} = \frac{s_h^{\,i}}{m_h}, \quad \forall T < T_h^{\,i},\\
-    \hat{P}_c^{\max,i} &= \frac{s_c^{\,i}\,(T - T_c^{\,i})}{m_c\,(T - T_c^{\,i})} = \frac{s_c^{\,i}}{m_c}, \quad \forall T > T_c^{\,i}.
-\end{aligned}
+    \hat{P}_h^{\max,i} = \frac{s_h^{\,i}\,(T_h^{\,i} - T)}{m_h\,(T_h^{\,i} - T)} = \frac{s_h^{\,i}}{m_h}, \quad \forall T < T_h^{\,i}.
 \label{eq:capacity}
 \end{equation}
-The temperature cancels, so the estimate needs no choice of evaluation day. The net-load fit supplies the numerator, which the DSO observes. The pilot supplies only the denominator $m_k$. The estimate is therefore only as good as the transferred sensitivity, which Section~\ref{sec:results} tests.
+The cooling regime follows by symmetry, with $(T - T_c^{\,i})$ in place of $(T_h^{\,i} - T)$, so that $\hat{P}_c^{\max,i} = s_c^{\,i}/m_c$.
+The temperature cancels, so the estimate needs no choice of evaluation day. The net-load fit supplies the numerator, which the DSO observes. The pilot supplies only the denominator $m_h$. The estimate is therefore only as good as the transferred sensitivity, which Section~\ref{sec:results} tests.
 
-The two regimes are estimated separately. Their sum equals the total installed TCL capacity only when no device serves both regimes. A reversible HP counts in both $\hat{P}_h^{\max}$ and $\hat{P}_c^{\max}$. For a population of reversible HPs, the total therefore lies between the larger of the two and their sum.
+A reversible HP counts in both $\hat{P}_h^{\max}$ and $\hat{P}_c^{\max}$, so the total installed capacity of a population of reversible HPs lies between the larger of the two and their sum.
 
 % \textcolor{red}{This section is substantially small. Can you add some visualization to demonstrate what we aim to say!
 % In the present state this section is completely useless as eq 10, 11 are kind of obvious.
