@@ -5,7 +5,11 @@ The Phase 1 analysis is in `review/phase1_message_map.md`.
 
 Status values: `done` · `partly` · `needs Alex` · `declined (reason)`. While work is pending, a row reads `open (fix)`, where *fix* is the step planned to close it.
 
-Missing inputs: the annotated PDF `review/TCL_Quantification_rdh.pdf` and the Supervisor 2 marks are not in the repo. The page and anchor columns below are copied from the brief and have not been checked against the PDF.
+Annotated PDF: `paper/TCL_Quantification_rdh.pdf` (13 pages). Its 59 annotations, with verbatim comment text, are in `review/annotations_rdh.md`. All pages and anchors below were checked against it, and they match R01–R57 one to one. The extra rows are an untexted highlight on "per cent" (part of R01) and two reply threads (R15, R37).
+
+**The reviewed version differs slightly from `main`.** Its Table I is an older variant: rows [13]–[15] read PV/EV/HP Detection, Loads/DER Regional NILM, Loads Disaggregation, and the HP block has no Rou23 row. The current `tab_litreview.tex` is newer. The text of pp. 1, 3, 4 and 5 matches the current `.tex`. Equation numbers match.
+
+Missing input: the Supervisor 2 marks. Alex does not have them yet (16 Oct). The S2 rows stay open, and S1 is checked against them once they arrive.
 
 ## Comment tracker
 
@@ -13,10 +17,10 @@ Missing inputs: the annotated PDF `review/TCL_Quantification_rdh.pdf` and the Su
 |---|---|---|---|---|---|---|
 | R01 | 1 | "On 200 German LV feeders … over twenty per cent" | Too anecdotal | | | open (S1 ¶1) |
 | R02 | 1 | same | Use country/region figures | | | open (S1 ¶1) |
-| R03 | 1 | near "loads LV networks that were not sized for it" | "maybe" | | | needs Alex (soften to "may load"?) |
+| R03 | 1 | the word "were" in "networks that were not sized for it" | "maybe" | | | needs Alex (rec.: soften to "that may not have been sized for it") |
 | R04 | 1 | "rooftop solar" | Injection peaks go the other way | | | open (S1 ¶2) |
 | R05 | 1 | "network operators must know how much thermostatic load…" | Why is it interesting? | | | open (S1 ¶3) |
-| R06 | 1 | "It meters aggregated net load" | Where is it metered? | | | open (S1 ¶4) |
+| R06 | 1 | "It meters aggregated net load" | "Often only aggregated net load is measured (smart meter level? at the substation?)" | | | open (S1 ¶4) |
 | R07 | 1 | same | "It" = the DSO | | | open (S1 ¶4) |
 | R08 | 1 | "It" | Too many "it"s | | | open (S1, S2 "it" pass) |
 | R09 | 1 | "remain largely synthetic at the substation" | What does this mean? | | | open (S1 ¶5) |
@@ -36,7 +40,7 @@ Missing inputs: the annotated PDF `review/TCL_Quantification_rdh.pdf` and the Su
 | R23 | 3 | "treats R2 as out of scope" | Cooling analysis would be analogous | | | open (S3, D1) |
 | R24 | 4 | "the hat marks a fitted function" | Rephrase | | | open (S5) |
 | R25 | 4 | "P_base … discarded" | Needed? | | | open (S5, delete) |
-| R26 | 4 | struck "i.e., a larger share of consumers with a TCL" | — | | | open (L, delete) |
+| R26 | 4 | strike-out of ", i.e., a larger share of consumers with a TCL" (l.218) | (strike-out, no text) | | | open (L, delete) |
 | R27 | 4 | "Table II spans this range…" | Introduce Table II | | | open (L) |
 | R28 | 4 | "SF(T)" | How does this match planning? | | | open (S5) |
 | R29 | 4 | "In this work," (99.9th pct) | Why not max? Say values unavailable | | | open (S5) |
@@ -45,11 +49,11 @@ Missing inputs: the annotated PDF `review/TCL_Quantification_rdh.pdf` and the Su
 | R32 | 4 | Kloten 1.28× / 1.75× | Data not yet introduced | | | open (S5, move) |
 | R33 | 4 | "Using the total TCL installed capacity … underestimation" | Too obvious | | | open (S5, delete) |
 | R34 | 4 | eqs (5)–(7) | Heating only, cooling analogous | | | open (S3, D1) |
-| R35 | 4 | "(7)" | Which data does the fit need? | | | open (L) |
+| R35 | 4 | "(7)" | "which data do you need to do this fit? This is not so straightforward to do, no? Explain this a bit better." (one sentence may be too little; see S2) | | | open (L) |
 | R36 | 5 | "R1, R3, or" | What are these? | | | open (S4, D2) |
 | R37 | 5 | same | Refer to the figure | | | open (S4) |
 | R38 | 5 | "so the transfer of Section II-D" | Weird sentence | | | open (L) |
-| R39 | 5 | "submetered TCL data," | Why only here? | | | open (S1 ¶11) |
+| R39 | 5 | II-D first sentence, "submetered TCL data" (l.308) | "aha, why only here?" | | | open (S1 ¶11) |
 | R40 | 5 | II-D pilot/target definitions | Already for Table II? What is calibration? | | | open (S2) |
 | R41 | 5 | "Section IV-C tests this hypothesis…" | Paper builds on an untested hypothesis | | | open (S2, S7) |
 | R42 | 5 | "R²_h" | What is this? | | | open (S4) |
@@ -66,8 +70,8 @@ Missing inputs: the annotated PDF `review/TCL_Quantification_rdh.pdf` and the Su
 | R53 | 9 | "Transferring the full SF curve…" | Not understood | | | open (S7) |
 | R54 | 9 | "About three points" | Three points? | | | open (L) |
 | R55 | 11 | VI-D "…but not the net-load numerator." | What was done to counter limits? | | | open (S8) |
-| R56 | 12 | "s" on "presented" | — | | | needs Alex (ambiguous) |
-| R57 | 12 | struck conclusion sentence | — | | | open (S8, delete) |
+| R56 | 12 | "s" over "ted" of "This paper presented" (Conclusion, l.578) | "s" | | | needs Alex (rec.: "This paper presents") |
+| R57 | 12 | strike-out of "Most of this error stems from the net-load slope, … rather than from the transfer of the SF slope." (l.578) | (strike-out, no text) | | | open (S8, delete) |
 | S2-xx | — | Supervisor 2 marks | — | | | needs Alex (file missing) |
 
 ## Decisions for Alex
@@ -106,7 +110,7 @@ Missing inputs: the annotated PDF `review/TCL_Quantification_rdh.pdf` and the Su
 |---|---|---|
 | 1 | Heating electrification is growing fast. | Electrifying heating and cooling is a decarbonisation lever; TCLs = HPs, resistive heaters, air conditioners; HPs lead (`Iea22`). European scale: EHPA 2026 market report (29.3 M HPs in 21 countries; 2.88 M sold in 2025, +13%), **to verify against the primary EHPA source in S1**. `Tre26` 200 German feeders: at most one clause (R01, R02). |
 | 2 | This load stresses LV networks in cold weather. | TCL load follows the outdoor temperature. In cold spells many devices run together, which raises coincident feeder and transformer peaks (`Vel11, Akm14, Som21, Bec24, Lia26`). These peaks add to EV peaks. Rooftop solar: drop it, or say it causes reverse-flow peaks at a different time (R04). R03 wording per Alex. |
-| 3 | The DSO needs the installed capacity. | (a) Planning scenarios, because capacity scales with adoption. (b) Worst case when devices synchronise, after a blocking period or a flexibility activation. (c) Design peak = capacity × SF at the design temperature, with SF defined in words as "the share of installed capacity drawn at once" (`Lov17, Che21b, Rou23, Few24`). Flexibility is bounded by unused capacity (`Mul19, Zir19, Dhu15`). Absorbs the current I-4 and the first half of I-8 (R05, R12). *The brief's reference numbers [28], [29], [41], [55], [32], [33], [42] are mapped to bib keys tentatively; confirm against the reviewed PDF.* |
+| 3 | The DSO needs the installed capacity. | (a) Planning scenarios, because capacity scales with adoption. (b) Worst case when devices synchronise, after a blocking period or a flexibility activation. (c) Design peak = capacity × SF at the design temperature, with SF defined in words as "the share of installed capacity drawn at once" (`Lov17, Che21b, Rou23, Few24`). Flexibility is bounded by unused capacity (`Mul19, Zir19, Dhu15`). Absorbs the current I-4 and the first half of I-8 (R05, R12). *Reference numbers checked against the reviewed PDF: [28] Lov17, [29] Che21b, [41] Rou23, [55] Few24; [32] Mul19, [33] Dhu15, [42] Zir19; [2] Tre26, [8] Gou26.* |
 | 4 | The DSO does not know it. | Privacy and data-exchange limits restrict access to household data; DER registers lag what is connected (moved from Sec. II l.111, R19; **the current sentence has no citation**, so add `Gou26` or leave it uncited). The DSO holds: net load at the substation or feeder head, plus smart meters where rolled out, often with restricted access (R06); outdoor temperature; consumer count per feeder (`Gou26, Tre26`). It lacks appliance registers and nameplate ratings. Subject "the DSO" named in every sentence (R07, R08). |
 | 5 | Prior work 1: detection and disaggregation | NILM and HP detection on customer meters (`Fei13, Wei20b, Ray19`; `Bru23, Gis26`); substation extensions (`Wan20, Oma24`). Limitation: need labelled or submetered training data, stop short of capacity, and "have been validated mostly on synthetic substation aggregates rather than on measured substation data" (R09). |
 | 6 | Prior work 2: temperature-response models | Change-point and degree-day models (`Fel08, Ruc92, Kis04`, review `Faz16`; `Ali11, Per17b, Mac19`). Recover sensitivities and threshold without labels. Limitation: stop at the coincident response. |

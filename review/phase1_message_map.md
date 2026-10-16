@@ -109,7 +109,7 @@ Verdicts: **yes** means the paragraph serves the core message, **weakly** means 
 
 ## 3. Supervisor 2's marks
 
-**Not available.** `review/<SUPERVISOR2_FILE>` and `review/TCL_Quantification_rdh.pdf` are not in the repository; nothing named `*rdh*`, `*TCL_Quantification*` or `*supervisor*` was found. The S2-xx rows therefore wait for Alex.
+**Not available yet** (Alex, 16 Oct). The annotated PDF from Supervisor 1 is now at `paper/TCL_Quantification_rdh.pdf`, with its comments in `review/annotations_rdh.md`. The S2-xx rows wait for the marks.
 
 So that the mapping is quick once the marks arrive, the abstract and Sec. I sentences that fail rule 5 *in the agent's own reading* are listed below. These are **not** Supervisor 2's marks.
 
