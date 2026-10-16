@@ -25,7 +25,7 @@ Missing input: the Supervisor 2 marks. Alex does not have them yet (16 Oct). The
 | R08 | 1 | "It" | Too many "it"s | "it" pass over the abstract and Sec. I; Sec. II follows in S2 | S1 | partly |
 | R09 | 1 | "remain largely synthetic at the substation" | What does this mean? | "validated mostly on synthetic substation aggregates rather than on measured substation data" | S1 | done |
 | R10 | 1 | title, "from Net Load and Temperature" | Explain setup and pilot | new ¶11 states the setup (feeder net load + temperature, one number from a submetered pilot, ratio gives capacity); abstract sentences 3–5 do the same | S1 | done |
-| R11 | 2 | "service-transformer" | What is it? | "distribution transformer" | S1 | done |
+| R11 | 2 | "service-transformer" | What is it? | Alex removed the transformer clause and the Azz24 row of Table I | S1b | done |
 | R12 | 2 | "The simultaneity of an aggregated TCL population…" | Use this at the beginning | the planning role of the SF moved into ¶3 (motivation); ¶9 keeps only the prior-work limitation | S1 | done |
 | R13 | 2 | "submetering the target feeder" | Say "at household level" | "without submetering the households of the target feeder" | S1 | done |
 | R14 | 2 | contribution 1, SF slope sentence | Not understandable yet | contribution 1 rewritten without SF slope or balance point | S1 | done |
@@ -34,9 +34,9 @@ Missing input: the Supervisor 2 marks. Alex does not have them yet (16 Oct). The
 | R17 | 3 | "same two fits" | Which two fits? | contributions no longer say "same two fits"; roadmap names the two fits in words. The fits are named formally in Sec. II (S2) | S1 | partly |
 | R18 | 3 | contribution 3, flexibility details | Too much here | flexibility derivation removed from contribution 3 | S1 | done |
 | R19 | 3 | Sec. II privacy sentences | Why not in the introduction? | privacy and DER-register sentences moved from Sec. II to Sec. I ¶4 and deleted from Sec. II | S1 | done |
-| R20 | 3 | "it" | What is it? | | | open (S2) |
+| R20 | 3 | "it" | What is it? | "it" in the Sec. II opening → "this work"; the rest in S2 | S1b | partly |
 | R21 | 3 | "problem" | Wording | | | open (S2) |
-| R22 | 3 | Sec. II opening paragraph | Hard to follow; data needs; Fig. 1 | | | open (S2) |
+| R22 | 3 | Sec. II opening paragraph | Hard to follow; data needs; Fig. 1 | non-sequitur sentence on high-SF DERs deleted from the Sec. II opening (raised by Alex); rest in S2 | S1b | partly |
 | R23 | 3 | "treats R2 as out of scope" | Cooling analysis would be analogous | | | open (S3, D1) |
 | R24 | 4 | "the hat marks a fitted function" | Rephrase | | | open (S5) |
 | R25 | 4 | "P_base … discarded" | Needed? | | | open (S5, delete) |
@@ -133,3 +133,10 @@ Changes from the brief's default spec: prior work becomes five paragraphs (¶5�
 - The privacy sentence in ¶4 has no citation, as before. `Gou26, Tre26` stay on the sentence they supported before (consumer count, registers, ratings).
 - EV is defined in ¶2 and added to the Nomenclature.
 - Reviewer-2 recheck pending: the S2-xx marks have not arrived.
+
+### S1b — Alex's edits and follow-up (16 Oct)
+- Alex's edits, kept as made: dropped the 26% clause from the abstract, the synchronisation sentence (¶3), the Azz24 clause (¶8) with its Table I row and group name, and the "aggregate" definition (¶11); "per cent" → "percent".
+- Alex: "one number" is too vague. The abstract and ¶11 now define the SF (share of installed capacity in use) and its sensitivity (how fast that share grows as the temperature falls), then call it the **SF sensitivity**. For symmetry, the feeder's rate is named the **net-load sensitivity**. Both are the body's existing terms. Contributions 2 and 3 use the names.
+- Alex: the Sec. II opening sentence "DERs that consume or generate with a high simultaneity factor…" did not connect to what followed. It is deleted, its point (high-simultaneity loads drive peaks) is already in Sec. I ¶2–3, and the dangling "therefore" went with it.
+- Abstract: 250 words. "against its submetered reference" and "measured" were dropped for length; no number changed.
+- **Open for Alex:** (a) `scripts/gen_litreview.py` still emits the Azz24 row and the "PV and transformer capacity" group, so regenerating Table I would undo the edit. (b) With the "aggregate" definition gone, contribution 2 uses "aggregate size" and "real aggregates" before Sec. II defines the term. (c) "percent" is US spelling; the voice skill uses British "per cent".
