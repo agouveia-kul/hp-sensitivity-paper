@@ -22,7 +22,7 @@ Missing input: the Supervisor 2 marks. Alex does not have them yet (16 Oct). The
 | R05 | 1 | "network operators must know how much thermostatic load…" | Why is it interesting? | new ¶3: three reasons the DSO needs installed capacity (scenarios, synchronised peak, design peak = capacity × SF), plus flexibility | S1 | done |
 | R06 | 1 | "It meters aggregated net load" | "Often only aggregated net load is measured (smart meter level? at the substation?)" | ¶4: net load metered at the substation or feeder head; household smart meters where rolled out, access often restricted | S1 | done |
 | R07 | 1 | same | "It" = the DSO | "the DSO" named as subject throughout ¶4 | S1 | done |
-| R08 | 1 | "It" | Too many "it"s | "it" pass over the abstract and Sec. I; Sec. II follows in S2 | S1 | partly |
+| R08 | 1 | "It" | Too many "it"s | "it" pass over the abstract, Sec. I and the rewritten Sec. II passages; the remaining Sec. II "it"s refer to the sentence subject | S1, S2 | done |
 | R09 | 1 | "remain largely synthetic at the substation" | What does this mean? | "validated mostly on synthetic substation aggregates rather than on measured substation data" | S1 | done |
 | R10 | 1 | title, "from Net Load and Temperature" | Explain setup and pilot | new ¶11 states the setup (feeder net load + temperature, one number from a submetered pilot, ratio gives capacity); abstract sentences 3–5 do the same | S1 | done |
 | R11 | 2 | "service-transformer" | What is it? | Alex removed the transformer clause and the Azz24 row of Table I | S1b | done |
@@ -31,12 +31,12 @@ Missing input: the Supervisor 2 marks. Alex does not have them yet (16 Oct). The
 | R14 | 2 | contribution 1, SF slope sentence | Not understandable yet | contribution 1 rewritten without SF slope or balance point | S1 | done |
 | R15 | 2 | same | Maybe not needed | the highlighted sentence removed | S1 | done |
 | R16 | 2 | contribution 2 | A full conclusion; keep short | contribution 2 is one sentence listing what is evaluated, with no results | S1 | done |
-| R17 | 3 | "same two fits" | Which two fits? | contributions no longer say "same two fits"; roadmap names the two fits in words. The fits are named formally in Sec. II (S2) | S1 | partly |
+| R17 | 3 | "same two fits" | Which two fits? | Sec. II ¶3 names the fits by their data: the net-load fit (DSO data only), the SF fit (submetered TCL load, in practice a pilot) | S1, S2 | done |
 | R18 | 3 | contribution 3, flexibility details | Too much here | flexibility derivation removed from contribution 3 | S1 | done |
 | R19 | 3 | Sec. II privacy sentences | Why not in the introduction? | privacy and DER-register sentences moved from Sec. II to Sec. I ¶4 and deleted from Sec. II | S1 | done |
-| R20 | 3 | "it" | What is it? | "it" in the Sec. II opening → "this work"; the rest in S2 | S1b | partly |
-| R21 | 3 | "problem" | Wording | | | open (S2) |
-| R22 | 3 | Sec. II opening paragraph | Hard to follow; data needs; Fig. 1 | non-sequitur sentence on high-SF DERs deleted from the Sec. II opening (raised by Alex); rest in S2 | S1b | partly |
+| R20 | 3 | "it" | What is it? | "From it follow…" paragraph deleted; opening reworded | S1b, S2 | done |
+| R21 | 3 | "problem" | Wording | "The problem is to recover…" paragraph deleted; its content is in the new opening | S2 | done |
+| R22 | 3 | Sec. II opening paragraph | Hard to follow; data needs; Fig. 1 | Opening reduced to the three quantities and the data each needs; Fig. 1 moved to the end of Sec. III (now Fig. 4), after its blocks are defined | S1b, S2 | done |
 | R23 | 3 | "treats R2 as out of scope" | Cooling analysis would be analogous | | | open (S3, D1) |
 | R24 | 4 | "the hat marks a fitted function" | Rephrase | | | open (S5) |
 | R25 | 4 | "P_base … discarded" | Needed? | | | open (S5, delete) |
@@ -53,9 +53,9 @@ Missing input: the Supervisor 2 marks. Alex does not have them yet (16 Oct). The
 | R36 | 5 | "R1, R3, or" | What are these? | | | open (S4, D2) |
 | R37 | 5 | same | Refer to the figure | | | open (S4) |
 | R38 | 5 | "so the transfer of Section II-D" | Weird sentence | | | open (L) |
-| R39 | 5 | II-D first sentence, "submetered TCL data" (l.308) | "aha, why only here?" | ¶11 introduces submetering and the pilot before Sec. II | S1 | partly |
-| R40 | 5 | II-D pilot/target definitions | Already for Table II? What is calibration? | ¶11 defines pilot, target and aggregate; the II-D rewrite and the calibration wording follow in S2 | S1 | partly |
-| R41 | 5 | "Section IV-C tests this hypothesis…" | Paper builds on an untested hypothesis | | | open (S2, S7) |
+| R39 | 5 | II-D first sentence, "submetered TCL data" (l.308) | "aha, why only here?" | Sec. I ¶11 introduces submetering and the pilot; II-D explains why the SF fit needs it | S1, S2 | done |
+| R40 | 5 | II-D pilot/target definitions | Already for Table II? What is calibration? | II-D defines calibrate, pilot, target and split in plain words, and states that Table II involves no transfer | S2 | done |
+| R41 | 5 | "Section IV-C tests this hypothesis…" | Paper builds on an untested hypothesis | II-D presents the transfer as the single assumption, with early evidence (Table II; Kloten m_h vs number of HPs, Table III) and pointers to the tests; the section reorder follows in S7 | S2 | partly |
 | R42 | 5 | "R²_h" | What is this? | | | open (S4) |
 | R43 | 6 | P_net(t) | "T?" | | | open (S4) |
 | R44 | 6 | "R2 bounds the estimate" | Use "dead band" | | | open (S4) |
@@ -140,3 +140,36 @@ Changes from the brief's default spec: prior work becomes five paragraphs (¶5�
 - Alex: the Sec. II opening sentence "DERs that consume or generate with a high simultaneity factor…" did not connect to what followed. It is deleted, its point (high-simultaneity loads drive peaks) is already in Sec. I ¶2–3, and the dangling "therefore" went with it.
 - Abstract: 250 words. "against its submetered reference" and "measured" were dropped for length; no number changed.
 - **Open for Alex:** (a) `scripts/gen_litreview.py` still emits the Azz24 row and the "PV and transformer capacity" group, so regenerating Table I would undo the edit. (b) With the "aggregate" definition gone, contribution 2 uses "aggregate size" and "real aggregates" before Sec. II defines the term. (c) "percent" is US spelling; the voice skill uses British "per cent".
+
+### S2 content specs (Sec. II opening, fit naming, II-D)
+**II ¶1 — point: three quantities, and the data each needs (R22, R21).**
+- Quantities for the TCLs of an aggregate: installed capacity, temperature-driven energy, flexibility potential.
+- Definition: aggregate = a metered point (substation or feeder) plus the consumers behind it.
+- Data: energy needs only net load + outdoor temperature (held by the DSO). Capacity and flexibility also need the SF sensitivity, calibrated once on a submetered pilot (→ II-D).
+- Removed: "This work uses the load profiles…" (repeats Sec. I ¶4); "The problem is to recover P_TCL…" (R21); Fig. 1 reference (R22).
+
+**II ¶3 — point: two fits, named by the data they need (R17, R20).**
+- The net-load fit uses only DSO data (→ II-A). The SF fit needs submetered TCL load and capacity, which in practice only a pilot gives (→ II-B).
+- Same piecewise-linear form; daily means reduce thermal inertia (`Per17b`).
+
+**Fig. 1 (R22).** Moved to the end of Sec. III, after every block it shows is defined, and introduced by one sentence. Caption unchanged.
+
+**II-D ¶1 — point: the method rests on a single assumption (R41).**
+- Assumption: within a population, the SF sensitivity does not depend on the installed capacity or TCL penetration of an aggregate.
+- Population = the households of one dataset or study.
+- Early evidence, pointing back and forward: Table II, where the SF sensitivities remove the size dependence of the net-load sensitivities (II-C); and within Kloten, m_h varies little with the number of HPs (Table III, IV-C).
+
+**II-D ¶2 — point: what calibration means (R39, R40).**
+- The SF fit needs submetered TCL data, which the DSO rarely holds for the aggregate under study.
+- Calibrate = measure once on a pilot. Pilot = small set of households of the population with submetered TCL load, hence known capacity.
+- Target = an aggregate of the same population whose capacity is estimated, with no household submetered. Split = one random partition of a population into a pilot and targets.
+- Table II involves no transfer: both fits are made on each dataset's own data (R40).
+
+**II-D ¶3 — point: only the SF sensitivity transfers (kept content).**
+- The thresholds come from the target's own net-load fit; the intercepts sit in P_base. Ratio (10) gives capacity if the assumption holds.
+- Tested within Kloten (IV-C) and across populations (V). The sentence "This is the mechanism the rest of the paper builds on" is dropped (R41).
+
+### S2 notes (as written)
+- The rewritten passages (Sec. II opening, II-D) have no sentence over 32 words; median 17–19.
+- Still over 40 words elsewhere in Sec. II, left for the step that rewrites them: the eq. (2) "where" gloss (55 words, S3), the eq. (4) definition (51, S5) and the eq. (5) definition (40, S3).
+- II-A2 still opens "Note that (2) needs only the net load and ambient temperature…", which now repeats Sec. II ¶3. A candidate for batch L.

@@ -113,9 +113,7 @@ The rest of the paper is structured as follows. Section~\ref{sec:problem} states
 \label{sec:problem}
 \label{sec:fits}
 
-This work uses the load profiles a DSO does hold, aggregated in space at the feeder head or substation and in time over the day. From these, this work estimates the installed capacity and flexibility potential of the thermostatic loads behind the meter.
-
-A metered point of an LV network, such as a substation or feeder, aggregates the load of the consumers downstream. This paper calls such a metered point, together with the consumers behind it, an aggregate. Some of its consumers run TCLs. The task is to quantify those TCLs from the aggregate's net load.
+For the TCLs behind a metered point of an LV network, this paper estimates three quantities: their installed capacity, their temperature-driven energy and their flexibility potential. A metered point, such as a substation or feeder, together with the consumers behind it, is called an aggregate. The energy needs only the net load of the aggregate and the outdoor temperature, both held by the DSO. The installed capacity and the flexibility also need the SF sensitivity, calibrated once on a submetered pilot (Section~\ref{sec:transfer}).
 
 The net load is the sum of a TCL and a non-TCL component,
 \begin{equation}
@@ -124,40 +122,7 @@ P_{\mathrm{net}}(t) = P_{\mathrm{TCL}}(t) + P_{\text{non-TCL}}(t),
 \end{equation}
 where only the TCL component responds directly to temperature. The non-TCL component also carries a weaker, indirect temperature dependence, visible in the whole-home energy signature \cite{Wes20}. Still, TCLs dominate the total temperature response, so the model neglects the non-TCL contribution. Section~\ref{sec:discussion} revisits this assumption.
 
-The problem is to recover the aggregated TCL load $P_{\mathrm{TCL}}(t)$ from the aggregated net load. From it follow three quantities that aid DSO operation and planning: the TCLs' installed capacity, their energy consumption and their flexibility potential. Fig.~\ref{fig:pipeline} sketches the pipeline.
-
-\begin{figure}[t]
-\centering
-\resizebox{\columnwidth}{!}{%
-\begin{tikzpicture}[font=\scriptsize, >=latex,
-  io/.style={draw, fill=black!6, rounded corners=1pt, align=center, text width=13.5mm, minimum height=6.5mm, inner sep=1.5pt},
-  proc/.style={draw, rounded corners=3pt, align=center, text width=13.5mm, minimum height=6.5mm, inner sep=1.5pt},
-  node distance=6mm and 8mm]
-\node[io] (temp) {Ambient temperature};
-\node[io, above=of temp] (sub) {Submetered pilot TCL load};
-\node[io, below=of temp] (net) {Aggregated net load};
-\node[proc, right=of temp] (bath) {Net-load fit \eqref{eq:tclfit} $s_h$, $s_c$, $T_h$, $T_c$};
-\node[proc, right=of sub] (sf) {SF fit \eqref{eq:sffit} $m_h$, $m_c$};
-\node[proc, right=14mm of sf] (cap) {Installed cap. \eqref{eq:capacity} $\hat{P}_{k}^{\max}$};
-\node[proc, right=14mm of bath] (en) {Energy \eqref{eq:energy} $\hat{E}_{\mathrm{TCL}}$};
-\node[proc, right=of cap] (fl) {Flexibility \eqref{eq:flex-energy}};
-\draw[->] (sub) -- (sf);
-\draw[->] (net) -| (bath);
-\draw[->] (temp) -- (bath);
-\draw[->] (temp) -- (sf);
-\draw[->] (bath) -- (en);
-\draw[->] (sf) -- (cap) node[midway, above, font=\tiny] {only $m$};
-\draw[->] (bath) -- (cap.south west);
-\draw[->] (cap) -- (fl);
-\draw[->] (en) -| (fl);
-\draw[->] (sf.north) -- ([yshift=6mm]sf.north) -| (fl.north);
-\end{tikzpicture}%
-}
-\caption{Method pipeline. The net-load fit, which needs only data the DSO holds, supplies the sensitivities $s_h$, $s_c$ and the thresholds $T_h$, $T_c$; the SF fit of a submetered pilot supplies only the SF sensitivities $m_h$, $m_c$. Their ratio gives the installed capacity per regime. The net-load fit alone gives the temperature-driven energy, and the capacity with the transferred sensitivity gives the flexibility.}
-\label{fig:pipeline}
-\end{figure}
-
-Two fits describe the TCL population's response to ambient temperature. The first, the net-load fit, uses data the DSO already holds, with no submetering. The second, the SF fit, needs submetered TCL data. Both share the same piecewise-linear form and use daily means, which reduce the effect of building thermal inertia \cite{Per17b}.
+Two fits describe how the TCLs of an aggregate respond to the outdoor temperature. The first, the net-load fit, uses only the net load and temperature the DSO holds (Section~\ref{sec:fits-net}). The second, the SF fit, needs the submetered TCL load and installed capacity, which in practice only a pilot provides (Section~\ref{sec:fits-sf}). Both fits share the same piecewise-linear form and use daily means, which reduce the effect of building thermal inertia \cite{Per17b}.
 
 \subsection{Net-Load Fit}
 \label{sec:fits-net}
@@ -310,9 +275,11 @@ The SF sensitivities $m_h$ and $m_c$ group partly by K{\"o}ppen class. The two t
 \subsection{Transferability of SF}
 \label{sec:transfer}
 
-The SF is computed from submetered TCL data, which a DSO rarely holds for the aggregate under study. The SF fit \eqref{eq:sffit} is therefore calibrated on a submetered pilot and reused on aggregates of the same population that have no submetering. Throughout, a population is the set of households of one dataset or study; its pilot is the submetered part used for calibration, a target is an aggregate the estimate is applied to, and a split is one random partition of a population into a pilot and targets. Only the SF sensitivities $m_h$ and $m_c$ transfer. The pilot's thresholds come from the pilot's own net-load fit and follow its building stock and climate, so the target's thresholds $T_h$ and $T_c$ are read from the target's net-load fit instead. The pilot's intercepts $b_h$ and $b_c$ describe weather-independent TCL use, which the target's net-load fit places in $P_{\mathrm{base}}$ and never attributes to its TCL arms.
+The method rests on a single assumption: within a population, the SF sensitivity does not depend on the installed capacity or the TCL penetration of an aggregate. A population is the set of households of one dataset or study. Under this assumption, the SF sensitivity measured on some households of a population also holds for the other aggregates of that population. Table~\ref{tab:cross} gives first support, since the SF sensitivities remove the size dependence of the net-load sensitivities (Section~\ref{sec:cross}). Within the Kloten population, $m_h$ also varies little with the number of HPs (Table~\ref{tab:sf}, Section~\ref{sec:res-sf}).
 
-The transfer rests on one hypothesis: within a population, $m_h$ and $m_c$ do not track the installed capacity or the TCL penetration of the aggregate. Section~\ref{sec:res-sf} tests this hypothesis within the Kloten population, and Section~\ref{sec:validation} tests it across populations. If it holds, the transferred sensitivity turns the net-load fit into an estimate of the unobserved installed capacity, through \eqref{eq:capacity}. This is the mechanism the rest of the paper builds on.
+The SF fit needs submetered TCL data, which a DSO rarely holds for the aggregate under study. The SF sensitivity is therefore calibrated, i.e.\ measured once, on a pilot. The pilot is a small set of households of the population whose TCL load is submetered, so that its installed capacity is known. The calibrated sensitivity is then reused on targets. A target is an aggregate of the same population whose installed capacity is to be estimated, and whose households are not submetered. In the experiments, a split is one random partition of a population into a pilot and targets. Table~\ref{tab:cross} involves no such transfer, since there both fits are made on each dataset's own data.
+
+Only the SF sensitivities $m_h$ and $m_c$ transfer. The pilot's thresholds come from the pilot's own net-load fit and follow its building stock and climate, so the target's thresholds $T_h$ and $T_c$ are read from the target's net-load fit instead. The pilot's intercepts $b_h$ and $b_c$ describe weather-independent TCL use, which the target's net-load fit places in $P_{\mathrm{base}}$ and never attributes to its TCL arms. If the assumption holds, the net-load sensitivity of a target divided by the SF sensitivity of the pilot gives the installed capacity of the target, through \eqref{eq:capacity}. Section~\ref{sec:res-sf} tests the assumption within the Kloten population, and Section~\ref{sec:validation} tests it across populations.
 
 %\textcolor{blue}{A single linear arm can underfit at the most extreme climates, where a convex load (backup heat and COP fall-off in deep cold, or air-conditioning saturation in extreme heat) would justify a second threshold, e.g.\ a kneepoint near $-13^\circ$C raises Hennepin's net-load $R^2$ from 0.81 to 0.98 and its SF $R^2$ from 0.77 to 0.97. However, this is out of scope and not considered for the datasets used in the rest of this paper.}
 
@@ -405,6 +372,39 @@ Over a year, this paper counts one such window per day of R1 or R3, the regimes 
 \end{figure}
 
 The bound is an idealisation, not a dispatchable schedule. It takes the square wave as feasible and ignores each building's thermal state and the comfort limits within which its TCLs can shift. It therefore stands as a potential against temperature and window length, not as a firm reserve.
+
+Fig.~\ref{fig:pipeline} summarises how the two fits combine into the three estimates.
+
+\begin{figure}[t]
+\centering
+\resizebox{\columnwidth}{!}{%
+\begin{tikzpicture}[font=\scriptsize, >=latex,
+  io/.style={draw, fill=black!6, rounded corners=1pt, align=center, text width=13.5mm, minimum height=6.5mm, inner sep=1.5pt},
+  proc/.style={draw, rounded corners=3pt, align=center, text width=13.5mm, minimum height=6.5mm, inner sep=1.5pt},
+  node distance=6mm and 8mm]
+\node[io] (temp) {Ambient temperature};
+\node[io, above=of temp] (sub) {Submetered pilot TCL load};
+\node[io, below=of temp] (net) {Aggregated net load};
+\node[proc, right=of temp] (bath) {Net-load fit \eqref{eq:tclfit} $s_h$, $s_c$, $T_h$, $T_c$};
+\node[proc, right=of sub] (sf) {SF fit \eqref{eq:sffit} $m_h$, $m_c$};
+\node[proc, right=14mm of sf] (cap) {Installed cap. \eqref{eq:capacity} $\hat{P}_{k}^{\max}$};
+\node[proc, right=14mm of bath] (en) {Energy \eqref{eq:energy} $\hat{E}_{\mathrm{TCL}}$};
+\node[proc, right=of cap] (fl) {Flexibility \eqref{eq:flex-energy}};
+\draw[->] (sub) -- (sf);
+\draw[->] (net) -| (bath);
+\draw[->] (temp) -- (bath);
+\draw[->] (temp) -- (sf);
+\draw[->] (bath) -- (en);
+\draw[->] (sf) -- (cap) node[midway, above, font=\tiny] {only $m$};
+\draw[->] (bath) -- (cap.south west);
+\draw[->] (cap) -- (fl);
+\draw[->] (en) -| (fl);
+\draw[->] (sf.north) -- ([yshift=6mm]sf.north) -| (fl.north);
+\end{tikzpicture}%
+}
+\caption{Method pipeline. The net-load fit, which needs only data the DSO holds, supplies the sensitivities $s_h$, $s_c$ and the thresholds $T_h$, $T_c$; the SF fit of a submetered pilot supplies only the SF sensitivities $m_h$, $m_c$. Their ratio gives the installed capacity per regime. The net-load fit alone gives the temperature-driven energy, and the capacity with the transferred sensitivity gives the flexibility.}
+\label{fig:pipeline}
+\end{figure}
 
 % =====================================================================
 \section{Numerical Results}
