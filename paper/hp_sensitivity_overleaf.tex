@@ -135,7 +135,7 @@ When an aggregate's net load is averaged over each day and plotted against the d
 \hat{P}_{\mathrm{net}}(T) = P_{\mathrm{base}} + s_h \max(0, T_h - T) + s_c \max(0, T - T_c),
 \label{eq:bathtub}
 \end{equation}
-where $P_{\mathrm{base}}$ is the temperature-independent load [kW], $s_h$ and $s_c$ are the heating and cooling sensitivities [kW/$^\circ$C], and $T_h \le T_c$ are the heating and cooling threshold temperatures [$^\circ$C], also known as balance-point temperatures, bounding a dead band over which no thermal response is present. The parameters of the fitted curve are computed through Ordinary Least Squares (OLS), with $T_h$ and $T_c$ being the values that minimise the squared residuals of the entire fit. The two temperature-dependent segments, called the heating and cooling arms of the fit, form the fitted aggregated TCL load.
+where $P_{\mathrm{base}}$ is the temperature-independent load [kW], $s_h$ and $s_c$ are the heating and cooling sensitivities [kW/$^\circ$C], and $T_h \le T_c$ are the heating and cooling threshold temperatures [$^\circ$C], also known as balance-point temperatures, bounding a dead band over which no thermal response is present. The parameters of the fitted curve are computed through Ordinary Least Squares (OLS), with $T_h$ and $T_c$ chosen as the values that minimise the squared residuals of the entire fit. The two temperature-dependent segments, called the heating and cooling arms of the fit, form the fitted aggregated TCL load.
 
 %\textcolor{red}{should mention that $P_{\mathrm{base}}, s_h, s_c$ are the outcome of least square fit}
 
@@ -180,14 +180,13 @@ where the hat marks a fitted function rather than a measurement. This estimated 
 
 
 
-The fitted parameters carry a physical interpretation. The threshold temperatures $T_h$ and $T_c$ are behavioural. They mark where the population, on average, begins to heat or cool, rather than a fixed property of any building. Below $T_h$ a heating load appears and above $T_c$ a cooling load appears, each growing close to linearly with the distance from its threshold. Between the two lies a dead band where the population neither heats nor cools.
-Individual households start heating or cooling at different temperatures. Once many are aggregated, these differences average out, and $T_h$ and $T_c$ settle at values that reflect regional preferences for starting space heating or cooling (Section~\ref{sec:cross}).
+The fitted parameters carry a physical interpretation. The threshold temperatures $T_h$ and $T_c$ are behavioural. They mark where the population, on average, begins to heat or cool, rather than being a property of any building or device. Individual households start heating or cooling at different temperatures. Once many are aggregated, these differences average out, and $T_h$ and $T_c$ settle at values that reflect regional preferences for starting space heating or cooling (Section~\ref{sec:cross}).
 
 The sensitivities $s_h$ and $s_c$ of the net-load fit measure how much heating or cooling load the population adds per degree.
 % A steeper arm signals more installed TCLs.
-They scale with the TCL capacity installed behind the meter, so an aggregate with more TCLs shows a steeper arm, all else equal. Between aggregates of the same size, a steeper arm therefore also indicates a higher TCL penetration, i.e., a larger share of consumers with a TCL. Section~\ref{sec:res-ff} confirms this, with $s_h$ tracking installed capacity across the aggregates.
+They scale with the TCL capacity installed behind the meter, so an aggregate with more TCLs shows a steeper arm, all else being equal. Between aggregates of the same size, a steeper arm therefore also indicates a higher TCL penetration, i.e., a larger share of consumers with a TCL. Section~\ref{sec:res-ff} confirms this, with $s_h$ tracking installed capacity across the aggregates.
 
-The flat centre $P_{\mathrm{base}}$ is the load that remains on days between $T_h$ and $T_c$. The net load on these days is not constant, but it shows no trend with temperature. This temperature-independent load is outside the scope of this paper.
+%The flat centre $P_{\mathrm{base}}$ is the load that remains on days between $T_h$ and $T_c$. The net load on these days is not constant, but it shows no trend with temperature. This temperature-independent load is outside the scope of this paper.
 % However, this work will not focus on this region of electricity consumption, as the TCLs are most likely not active for this region of average temperature.
 
 
@@ -196,7 +195,7 @@ The flat centre $P_{\mathrm{base}}$ is the load that remains on days between $T_
 %The two slopes together characterise a feeder. Where heating dominates, $s_c$ is near zero and the bathtub reduces to a heating hockey stick. Where cooling dominates, $s_h$ is near zero. The Swiss and German feeders studied here are heating-dominated, whereas the mixed-climate aggregate of Fig.~\ref{fig:bathtub} from Austin indicates both heating and cooling needs.
 % The balance of the two slopes varies from region to region with climate, building type and the dominant TCL type. The fitted response is therefore a compact signature of a network's thermal make-up.
 
-The balance between $s_h$ and $s_c$ reflects the local climate. Hot regions are expected to be cooling-dominated, with $s_h \approx 0$, whereas regions with long winters, such as the Nordic countries, are heating-dominated, with $s_c \approx 0$. Table~\ref{tab:cross} spans this range, from the heating-only Hamelin and Kloten aggregates to Maricopa, where cooling dominates.
+The balance between $s_h$ and $s_c$ reflects the local climate. Hot regions are expected to be cooling-dominated, with $s_h \approx 0$, whereas regions with long winters, such as the Nordic countries, are heating-dominated, with $s_c \approx 0$.
 
 
 
@@ -209,7 +208,7 @@ The balance between $s_h$ and $s_c$ reflects the local climate. Hot regions are 
 % }
 
 
-The SF, also called the coincidence factor, is the ratio of the demand of a group of loads, here TCLs, at a given instant to the sum of their individual maximum demands. It reflects that connected devices do not all draw their full power at the same instant \cite{fani2024impact}. In distribution networks, the SF is central to planning. It lets utilities size transformers, cables and protection for the peak the group actually draws, rather than for the sum of individual peaks.
+The SF is the ratio of the demand of a group of loads, here TCLs, at a given instant to the sum of their individual maximum demands. It reflects that connected devices do not all draw their full power at the same instant \cite{fani2024impact}. In distribution networks, the SF is central to planning. It lets utilities size transformers, cables and protection for the peak the group actually draws, rather than for the sum of individual peaks.
 
 
 % The second function characterises the synchronous behaviour, or simultaneity, of the TCL population.
@@ -218,7 +217,7 @@ Mathematically, the SF is the fraction of the aggregate's installed capacity con
 \mathrm{SF}(T) = \frac{P_{\mathrm{TCL}}(T)}{P_{\mathrm{TCL}}^{\max}},
 \label{eq:sf}
 \end{equation}
-where $P_{\mathrm{TCL}}(T)$ is the daily mean TCL load on a day of mean temperature $T$, and $P_{\mathrm{TCL}}^{\max}$ is the cumulative installed capacity of all the TCLs in the aggregate. In this work, the installed capacity of each TCL is taken as the 99.9th percentile of its submetered 15-min draw. The installed capacity of an aggregate is thus the summed peak electrical draw of its TCLs, which tracks their rated power while ignoring isolated metering spikes.
+where $P_{\mathrm{TCL}}(T)$ is the daily mean TCL load on a day of mean temperature $T$, and $P_{\mathrm{TCL}}^{\max}$ is the cumulative installed capacity of all the TCLs in the aggregate. Nameplate ratings are not available for most households, so the installed capacity of each TCL is taken as the peak of its submetered 15-min draw. The installed capacity of an aggregate is thus the summed peak draw of its TCLs, which tracks their rated power.
 
 \chg{Since $P_{\mathrm{TCL}}(T)$ is a daily mean, the SF of this paper is a daily-mean SF. It is lower than the coincidence factor used in network planning, which takes the peak interval. On the coldest day of the Kloten data, the 15-min peak SF of the 50 submetered HPs is 1.28 times the daily mean, and on a median heating day 1.75 times. The daily mean suits the aim of this paper, since the installed capacity follows from the slope of the SF, and daily means reduce the effect of building thermal inertia \cite{Per17b}.}
 % \textcolor{blue}{Since $P_{\mathrm{TCL}}^{\max}$ is assumed to be known for  }

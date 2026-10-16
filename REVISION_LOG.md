@@ -41,10 +41,10 @@ Missing input: the Supervisor 2 marks. Alex does not have them yet (16 Oct). The
 | R24 | 4 | "the hat marks a fitted function" | Rephrase | | | open (S5) |
 | R25 | 4 | "P_base … discarded" | Needed? | | | open (S5, delete) |
 | R26 | 4 | strike-out of ", i.e., a larger share of consumers with a TCL" (l.218) | (strike-out, no text) | | | open (L, delete) |
-| R27 | 4 | "Table II spans this range…" | Introduce Table II | | | open (L) |
+| R27 | 4 | "Table II spans this range…" | Introduce Table II | Alex removed the "Table II spans this range…" sentence; II-C still opens by introducing Table II | S2b | done |
 | R28 | 4 | "SF(T)" | How does this match planning? | | | open (S5) |
-| R29 | 4 | "In this work," (99.9th pct) | Why not max? Say values unavailable | | | open (S5) |
-| R30 | 4 | "isolated metering spikes" | Data cleaning; just say max | | | open (S5) |
+| R29 | 4 | "In this work," (99.9th pct) | Why not max? Say values unavailable | "Nameplate ratings are not available for most households, so the installed capacity of each TCL is taken as the peak of its submetered 15-min draw." The 99.9th percentile is removed from the paper (Alex) | S2b | done |
+| R30 | 4 | "isolated metering spikes" | Data cleaning; just say max | "isolated metering spikes" removed with the percentile | S2b | done |
 | R31 | 4 | "which takes the peak interval" | What is the peak interval? | | | open (S5) |
 | R32 | 4 | Kloten 1.28× / 1.75× | Data not yet introduced | | | open (S5, move) |
 | R33 | 4 | "Using the total TCL installed capacity … underestimation" | Too obvious | | | open (S5, delete) |
@@ -173,3 +173,8 @@ Changes from the brief's default spec: prior work becomes five paragraphs (¶5�
 - The rewritten passages (Sec. II opening, II-D) have no sentence over 32 words; median 17–19.
 - Still over 40 words elsewhere in Sec. II, left for the step that rewrites them: the eq. (2) "where" gloss (55 words, S3), the eq. (4) definition (51, S5) and the eq. (5) definition (40, S3).
 - II-A2 still opens "Note that (2) needs only the net load and ambient temperature…", which now repeats Sec. II ¶3. A candidate for batch L.
+
+### S2b — Alex's edits and the percentile (16 Oct)
+- Alex's edits, kept as made: wording in II-A ("chosen as", "all else being equal", "rather than being a property of any building or device"); the repeated dead-band sentence deleted; the P_base paragraph commented out; the "Table II spans this range…" sentence deleted; "also called the coincidence factor" deleted from II-B.
+- Alex: drop the 99.9th percentile, which is an implementation detail. The only mention (II-B, after eq. (4)) now reads "taken as the peak of its submetered 15-min draw". The code still uses the 99.9th percentile; no number changes.
+- **For Alex:** (a) "peak" is a slight simplification of the 99.9th percentile, and running D3 (capacity WAPE with the plain max) would show the difference is immaterial. D3 is still open. (b) With "also called the coincidence factor" gone, the next paragraph's "lower than the coincidence factor used in network planning" uses an undefined term. S5 rewrites that paragraph (R31) and will say "the planning SF".
