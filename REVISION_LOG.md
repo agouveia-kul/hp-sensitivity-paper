@@ -50,15 +50,15 @@ Missing input: the Supervisor 2 marks. Alex does not have them yet (16 Oct). The
 | R33 | 4 | "Using the total TCL installed capacity … underestimation" | Too obvious | | | open (S5, delete) |
 | R34 | 4 | eqs (5)–(7) | Heating only, cooling analogous | Eqs. (5)-(7) kept generic for heating and cooling | S3 | declined (Alex: generic everywhere except the results) |
 | R35 | 4 | "(7)" | "which data do you need to do this fit? This is not so straightforward to do, no? Explain this a bit better." (one sentence may be too little; see S2) | | | open (L) |
-| R36 | 5 | "R1, R3, or" | What are these? | | | open (S4, D2) |
-| R37 | 5 | same | Refer to the figure | | | open (S4) |
+| R36 | 5 | "R1, R3, or" | What are these? | R1/R2/R3 replaced by heating regime / dead band / cooling regime throughout the text, captions, Table II footnote and figure labels | S4 | done |
+| R37 | 5 | same | Refer to the figure | II-A and II-C point to the Austin net-load figure (Fig. 1), which now labels the regimes in words | S4 | done |
 | R38 | 5 | "so the transfer of Section II-D" | Weird sentence | | | open (L) |
 | R39 | 5 | II-D first sentence, "submetered TCL data" (l.308) | "aha, why only here?" | Sec. I ¶11 introduces submetering and the pilot; II-D explains why the SF fit needs it | S1, S2 | done |
 | R40 | 5 | II-D pilot/target definitions | Already for Table II? What is calibration? | II-D defines calibrate, pilot, target and split in plain words, and states that Table II involves no transfer | S2 | done |
 | R41 | 5 | "Section IV-C tests this hypothesis…" | Paper builds on an untested hypothesis | II-D presents the transfer as the single assumption, with early evidence (Table II; Kloten m_h vs number of HPs, Table III) and pointers to the tests; the section reorder follows in S7 | S2 | partly |
-| R42 | 5 | "R²_h" | What is this? | | | open (S4) |
-| R43 | 6 | P_net(t) | "T?" | | | open (S4) |
-| R44 | 6 | "R2 bounds the estimate" | Use "dead band" | | | open (S4) |
+| R42 | 5 | "R²_h" | What is this? | R²_h and R²_c defined at first appearance (Fig. 1 caption) and in II-C | S4 | done |
+| R43 | 6 | P_net(t) | "T?" | t defined as time after eq. (1); T defined as the daily mean temperature in the eq. (2) gloss; III-A no longer mixes P_net(t) with the fitted P_TCL(T) | S4 | done |
+| R44 | 6 | "R2 bounds the estimate" | Use "dead band" | "The dead band bounds the estimate." | S4 | done |
 | R45 | 6 | "The temperature cancels, so" | Write "Note that…" | | | open (L) |
 | R46 | 6 | "The two regimes are estimated separately." | Heating only | III-B equations kept for both regimes; the reversible-HP paragraph shortened to two sentences | S3, S3b | declined (Alex: generic everywhere except the results) |
 | R47 | 6 | III-C cancellation passage | Unclear; how is Δt_Th set? | | | open (S6, D4) |
@@ -81,7 +81,7 @@ Answered 16 Oct 2026: **D1 yes · D2 words · D5 capacity first · D7 as recomme
 | ID | Question | Recommendation |
 |---|---|---|
 | D1 | Present the method heating-only, with cooling by symmetry? (Alex, 16 Oct: **no**. Generic in Sec. II–III; only the results, Sec. IV–V, are heating-only) | Yes. Every quantitative result is heating-only, and the cooling fits are descriptive (l.570). |
-| D2 | Regime names: words or new symbols? | Words: heating regime, dead band, cooling regime. |
+| D2 | Regime names: words or new symbols? (Alex, 16 Oct: **words**; applied in S4) | Words: heating regime, dead band, cooling regime. |
 | D3 | Run the capacity-definition robustness check (max, HEAPO nameplate)? | Run it. Numbers go in only after review. |
 | D4 | Δt_Th literature range | Only with verified references; otherwise state it as an illustrative parameter. |
 | D5 | Sec. IV with capacity first? | Yes. |
@@ -195,3 +195,19 @@ Changes from the brief's default spec: prior work becomes five paragraphs (¶5�
 ### S3b — generic everywhere (Alex, 16 Oct)
 - Alex: keep the method generic everywhere except the results, which look only at heating. III-B is restored to the two-regime eqs. (9)–(10) and $m_k$.
 - Net effect of S3 + S3b on the text: the R23 sentence in II-A (the evaluation covers R1 only, because the data allow no R3 transfer test), and the reversible-HP paragraph cut from four sentences to two.
+
+### S4 content specs (notation and terms)
+**Regime names (D2: words; R36, R37, R44).**
+- R1/R2/R3 → "heating regime", "dead band", "cooling regime" in all text, captions, the Table II footnote and the two figures that print them (Austin net-load fit; x-label of the flexibility-ratio histogram). The figures are regenerated with word labels only; no plotted value changes.
+- II-C points back to Fig. 1 (Austin) at the first use of the regimes (R37).
+
+**R²_h at first use (R42).** II-C: each fit is scored by its coefficient of determination on the days of its own regime, R²_h for heating and R²_c for cooling. The Austin caption says the same.
+
+**Time vs temperature (R43).**
+- After eq. (1): t is time. The fits use daily means and are written against the daily mean temperature T.
+- III-A: the fitted TCL load P̂_TCL(T) separates the daily TCL load from the daily net load; no P_net(t) there.
+
+### S4 notes (as written)
+- Figures regenerated with word labels only: `fig_bathtub_example` (the script prints R²_h 0.679, R²_c 0.915, as published) and `fig_flex_ratio` (x-label; histogram and median 1.04 identical). `fig_flex_season` is not regenerated; its legend was already in words.
+- `scripts/outputs.py` updated to match: the figure labels and the Table II footnote string, so regenerating does not undo S4.
+- The 55-word eq. (2) gloss is split in two (35 words with the equation, then 23).

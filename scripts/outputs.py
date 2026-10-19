@@ -99,8 +99,8 @@ def fig_bathtub_example():
     xc = tc + (Tv.max() - tc) * 0.45; yc = base + cs * (xc - tc)
     ax.annotate(r'$s_c$', xy=(xc, yc), xytext=(-20, 6), textcoords='offset points',
                 fontsize=8, color=hf.C_CH, arrowprops=dict(arrowstyle='-', lw=0.6, color='0.5'))
-    # regimes: R1 heating (below T_h), R2 dead band, R3 cooling (above T_c)
-    for (lo, hi), lab in zip([(Tv.min(), th), (th, tc), (tc, Tv.max())], ['R1', 'R2', 'R3']):
+    # regimes: heating (below T_h), dead band, cooling (above T_c)
+    for (lo, hi), lab in zip([(Tv.min(), th), (th, tc), (tc, Tv.max())], ['heating', 'dead band', 'cooling']):
         ax.text((lo + hi) / 2, 0.05, lab, transform=ax.get_xaxis_transform(), ha='center', va='bottom',
                 fontsize=8.5, color='0.35', fontweight='bold', zorder=6)
     ax.set_xlabel('daily mean temperature (°C)')
@@ -999,7 +999,7 @@ def flex_figures():
     ax.hist(ratio.clip(0, 2.5), bins=40, color=hf.C_CH, alpha=.8, edgecolor='none')
     ax.axvline(1, color='0.4', lw=0.8, ls=(0, (3, 3)))
     ax.axvline(ratio.median(), color=hf.C_HP, lw=1.6, label=f'median {ratio.median():.2f}')
-    ax.set(xlabel='estimated / actual annual flex (R1 days)', ylabel='aggregates')
+    ax.set(xlabel='estimated / actual annual flex (heating days)', ylabel='aggregates')
     ax.legend(fontsize=7.5, loc='upper right')
     fig.tight_layout(); hf.save(fig, 'fig_flex_ratio')
 
@@ -2971,7 +2971,7 @@ def tab_cross():
         + head + "\n" r"\midrule" "\n" + body + "\n" r"\bottomrule" "\n"
         r"\end{tabular}" "\n"
         r"\begin{tablenotes}[flushleft]\footnotesize" "\n"
-        r"\item[] $n$: aggregated consumers. Climate: K{\"o}ppen--Geiger class~\cite{beck2018koppen}: Cfb, temperate oceanic; Dfa, Dfb, humid continental; Csb, warm-summer Mediterranean; Cfa, humid subtropical; BWh, hot desert. $R^2_h$, $R^2_c$: fit scores in R1 and R3. ASHP, GSHP, WSHP: air-, ground-, water-source HP; DHP: ductless (mini-split) HP; AC: air conditioning; ER: electric resistance heating." "\n"
+        r"\item[] $n$: aggregated consumers. Climate: K{\"o}ppen--Geiger class~\cite{beck2018koppen}: Cfb, temperate oceanic; Dfa, Dfb, humid continental; Csb, warm-summer Mediterranean; Cfa, humid subtropical; BWh, hot desert. $R^2_h$, $R^2_c$: fit scores on the days of the heating and cooling regimes. ASHP, GSHP, WSHP: air-, ground-, water-source HP; DHP: ductless (mini-split) HP; AC: air conditioning; ER: electric resistance heating." "\n"
         r"%\item[a] The LCL London aggregate is submetered heat-pump load only (nine homes, no other household load), restricted to 2014, the single year all nine are metered together. Its net-load fit therefore coincides with the HP load, $P_{\mathrm{base}}$ is the winter standby/hot-water floor, and the installed capacity is the sum of the nine per-home 2014 peaks. The 2014 record ends in March, so the window is winter-only and never reaches $T_h$, which weakens the fit." "\n"
         r"\item[a] Hennepin's SF uses the ASHP compressor's own draw only, excluding its electric-resistance HP-backup element" "\n"
         r"\item[b] The SF uses the submetered ductless HPs only. Most of these homes also have electric baseboard, furnace or other zonal heating circuits (17 of 22 in WA, 16 of 21 in OR), which the net load includes." "\n"
