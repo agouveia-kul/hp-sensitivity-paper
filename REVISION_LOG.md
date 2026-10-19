@@ -38,16 +38,16 @@ Missing input: the Supervisor 2 marks. Alex does not have them yet (16 Oct). The
 | R21 | 3 | "problem" | Wording | "The problem is to recover…" paragraph deleted; its content is in the new opening | S2 | done |
 | R22 | 3 | Sec. II opening paragraph | Hard to follow; data needs; Fig. 1 | Opening reduced to the three quantities and the data each needs; Fig. 1 moved to the end of Sec. III (now Fig. 4), after its blocks are defined | S1b, S2 | done |
 | R23 | 3 | "treats R2 as out of scope" | Cooling analysis would be analogous | II-A: "characterises R1 and R3 alike and leaves R2 out of scope"; the evaluation covers R1 only, since the data allow no test of the R3 transfer (Sec. VI) | S3 | done |
-| R24 | 4 | "the hat marks a fitted function" | Rephrase | | | open (S5) |
-| R25 | 4 | "P_base … discarded" | Needed? | | | open (S5, delete) |
+| R24 | 4 | "the hat marks a fitted function" | Rephrase | "From (2), the temperature-driven component of the aggregated load of an aggregate i, with its own fitted parameters, is" (3); hat sentence deleted | S5 | done |
+| R25 | 4 | "P_base … discarded" | Needed? | "P_base … discarded" sentence deleted | S5 | done |
 | R26 | 4 | strike-out of ", i.e., a larger share of consumers with a TCL" (l.218) | (strike-out, no text) | | | open (L, delete) |
 | R27 | 4 | "Table II spans this range…" | Introduce Table II | Alex removed the "Table II spans this range…" sentence; II-C still opens by introducing Table II | S2b | done |
-| R28 | 4 | "SF(T)" | How does this match planning? | | | open (S5) |
+| R28 | 4 | "SF(T)" | How does this match planning? | New II-B paragraph: design SF = b_h + m_h(T_h − T_d); design peak = installed capacity × design SF (back to Sec. I); daily-mean caveat with the IV-C ratio. T_d added to the Nomenclature | S5 | done |
 | R29 | 4 | "In this work," (99.9th pct) | Why not max? Say values unavailable | "Nameplate ratings are not available for most households, so the installed capacity of each TCL is taken as the peak of its submetered 15-min draw." The 99.9th percentile is removed from the paper (Alex) | S2b | done |
 | R30 | 4 | "isolated metering spikes" | Data cleaning; just say max | "isolated metering spikes" removed with the percentile | S2b | done |
-| R31 | 4 | "which takes the peak interval" | What is the peak interval? | | | open (S5) |
-| R32 | 4 | Kloten 1.28× / 1.75× | Data not yet introduced | | | open (S5, move) |
-| R33 | 4 | "Using the total TCL installed capacity … underestimation" | Too obvious | | | open (S5, delete) |
+| R31 | 4 | "which takes the peak interval" | What is the peak interval? | "the 15-min interval of highest aggregate demand"; "coincidence factor" → "the SF used in network planning" | S5 | done |
+| R32 | 4 | Kloten 1.28× / 1.75× | Data not yet introduced | Kloten 1.28× / 1.75× moved verbatim to IV-C, after the 15-min peak SF; II-B points there | S5 | done |
+| R33 | 4 | "Using the total TCL installed capacity … underestimation" | Too obvious | Sentence deleted; "Each regime therefore has its own capacity, defined as" | S5 | done |
 | R34 | 4 | eqs (5)–(7) | Heating only, cooling analogous | Eqs. (5)-(7) kept generic for heating and cooling | S3 | declined (Alex: generic everywhere except the results) |
 | R35 | 4 | "(7)" | "which data do you need to do this fit? This is not so straightforward to do, no? Explain this a bit better." (one sentence may be too little; see S2) | | | open (L) |
 | R36 | 5 | "R1, R3, or" | What are these? | R1/R2/R3 replaced by heating regime / dead band / cooling regime throughout the text, captions, Table II footnote and figure labels | S4 | done |
@@ -82,7 +82,7 @@ Answered 16 Oct 2026: **D1 yes · D2 words · D5 capacity first · D7 as recomme
 |---|---|---|
 | D1 | Present the method heating-only, with cooling by symmetry? (Alex, 16 Oct: **no**. Generic in Sec. II–III; only the results, Sec. IV–V, are heating-only) | Yes. Every quantitative result is heating-only, and the cooling fits are descriptive (l.570). |
 | D2 | Regime names: words or new symbols? (Alex, 16 Oct: **words**; applied in S4) | Words: heating regime, dead band, cooling regime. |
-| D3 | Run the capacity-definition robustness check (max, HEAPO nameplate)? | Run it. Numbers go in only after review. |
+| D3 | Run the capacity-definition robustness check (max, HEAPO nameplate)? (Alex, 19 Oct: **run**; results below, needs Alex) | Run it. Numbers go in only after review. |
 | D4 | Δt_Th literature range | Only with verified references; otherwise state it as an illustrative parameter. |
 | D5 | Sec. IV with capacity first? | Yes. |
 | D6 | Non-TCL correction implemented or kept as future work? | Future work. |
@@ -211,3 +211,25 @@ Changes from the brief's default spec: prior work becomes five paragraphs (¶5�
 - Figures regenerated with word labels only: `fig_bathtub_example` (the script prints R²_h 0.679, R²_c 0.915, as published) and `fig_flex_ratio` (x-label; histogram and median 1.04 identical). `fig_flex_season` is not regenerated; its legend was already in words.
 - `scripts/outputs.py` updated to match: the figure labels and the Table II footnote string, so regenerating does not undo S4.
 - The 55-word eq. (2) gloss is split in two (35 words with the equation, then 23).
+
+### S5 content specs (capacity definition and SF for planning; D3 = run)
+- **R24, R25 (eq. 3):** introduce it as "From (2), the temperature-driven component of the aggregated load of an aggregate i … is". Delete the hat sentence and the "P_base … discarded" sentence.
+- **R31, R32 (II-B, daily-mean SF):** keep the point that this paper's SF is a daily mean, lower than the planning SF, which takes the 15-min interval of highest aggregate demand. Keep why the daily mean suits the paper (capacity from the slope; inertia, `Per17b`). Move the Kloten ratios (1.28× coldest day, 1.75× median heating day), verbatim, to IV-C next to the 15-min peak SF (0.56 / 0.59), and point to them from II-B. "Coincidence factor" becomes "the SF used in network planning".
+- **R28 (planning link):** the SF fit gives the SF at any temperature of its regime. Design SF = b_h + m_h (T_h − T_d) at a design temperature T_d < T_h, and design peak = installed capacity × design SF (back to Sec. I ¶3). With the daily-mean SF this is a daily-mean design load; the 15-min peak lies above it by the IV-C ratio. New symbol T_d goes in the Nomenclature.
+- **R33:** delete "Using the total TCL installed capacity in (4) would lead to an underestimation…"; then "Each regime therefore has its own capacity".
+- **D3:** `scripts/d3_capacity_definition.py` rebuilds the 1260 Kloten aggregates (same seed, splits and draws) with the capacity defined as (a) the paper's robust peak, (b) the plain 15-min max, and (c) the HEAPO certificate electric power at the norm point, on the subset that has it. The definition changes on both the pilot and the target side. The numbers go to the log only, as needs Alex.
+
+### S5 notes and D3 results (needs Alex — not in the paper)
+- Script: `scripts/d3_capacity_definition.py` (output `results/d3_capacity_definition.csv`, gitignored). It rebuilds the 1260 Kloten aggregates with the same seed, splits and draws, and changes the capacity definition on both the pilot (its m_h) and the target (its ground truth).
+- **Sanity check:** the paper definition reproduces the published numbers exactly, WAPE 19.3% and 14.5% with the target's own m_h.
+
+| Capacity definition | Aggregates | WAPE | ≤15% HP | 15–35% | 35–65% | >65% | Median ratio | WAPE, own m_h | Pilot m_h (median) |
+|---|---|---|---|---|---|---|---|---|---|
+| robust peak (paper) | 1260 | 19.3 | 57.5 | 26.3 | 17.0 | 14.2 | 1.159 | 14.5 | 0.0178 |
+| plain 15-min max | 1260 | 19.5 | 56.9 | 26.1 | 17.2 | 14.8 | 1.155 | 14.5 | 0.0160 |
+
+- Per HP, max / robust peak: median 1.041, IQR [1.019, 1.128], range [1.006, 1.568] (50 Kloten HPs).
+- **The capacity error barely moves (+0.2 points)**, because the definition enters both the pilot's m_h and the target's truth and largely cancels. The pilot m_h itself drops by about 10% (0.0178 → 0.0160), because each SF is normalised by a larger capacity. So the published m_h values are tied to the robust-peak definition, which matters if anyone compares them with a nameplate-based SF.
+- **Nameplate check: not feasible.** HEAPO protocols (`HeatPump_Installation_Normpoint_ElectricPower`, kW at the certified operating point) cover 214 households, 67 of them with that power. None of the 50 Kloten HPs has a protocol, and only 2 of the 81 submetered HPs in the pool do (one at Hg, one at HbsbG). For those two, certificate power / robust peak = 0.74 and 0.87, which shows the rating point sits below the measured peak but is too few to test anything.
+- Suggested wording if Alex wants it in the paper (not inserted): "Taking the plain 15-min maximum instead changes the capacity WAPE on the Kloten aggregates from 19.3% to 19.5%, since the definition enters both the pilot's sensitivity and the ground truth."
+- Text: equation glosses for (4) and (5) still read long because each sentence includes the display equation; the prose parts are under 40 words.

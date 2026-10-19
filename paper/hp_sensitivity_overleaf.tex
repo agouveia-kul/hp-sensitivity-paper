@@ -55,6 +55,7 @@ Thermostatically controlled loads, heat pumps, low-voltage networks, simultaneit
 \item[$\hat{P}_{\mathrm{TCL}}^{\,i}$] Fitted TCL load of aggregate $i$.
 \item[$s_h,\ s_c$] Heating, cooling sensitivities of the net-load fit.
 \item[$T_h,\ T_c$] Heating, cooling threshold temperatures.
+\item[$T_{\mathrm{d}}$] Design temperature.
 \item[$P_{\mathrm{TCL}}^{\max}$] TCL installed capacity.
 \item[$P_k^{\max}$] TCL installed capacity active in regime $k$.
 \item[$\mathrm{SF}_h,\ \mathrm{SF}_c$] Heating, cooling simultaneity factor.
@@ -148,12 +149,11 @@ Note that \eqref{eq:bathtub} needs only the net load and ambient temperature the
 \label{fig:bathtub}
 \end{figure}
 
-For an aggregate $i$ with its own fitted parameters,
+From \eqref{eq:bathtub}, the temperature-driven component of the aggregated load of an aggregate $i$, with its own fitted parameters, is
 \begin{equation}
 \hat{P}_{\mathrm{TCL}}^{\,i}(T) = s_h^{\,i}\,\max(0, T_h^{\,i} - T) + s_c^{\,i}\,\max(0, T - T_c^{\,i}),
 \label{eq:tclfit}
 \end{equation}
-where the hat marks a fitted function rather than a measurement. This estimated load only considers the temperature-driven component of TCL. The flat term $P_{\mathrm{base}}$ is the temperature-independent load, dominated by the non-TCL component of \eqref{eq:decomp}, and is discarded.
 
 
 % Equation~\eqref{eq:bathtub} is the bathtub function, named for the shape of its two arms and flat centre.
@@ -219,11 +219,11 @@ Mathematically, the SF is the fraction of the aggregate's installed capacity con
 \end{equation}
 where $P_{\mathrm{TCL}}(T)$ is the daily mean TCL load on a day of mean temperature $T$, and $P_{\mathrm{TCL}}^{\max}$ is the cumulative installed capacity of all the TCLs in the aggregate. Nameplate ratings are not available for most households, so the installed capacity of each TCL is taken as the peak of its submetered 15-min draw. The installed capacity of an aggregate is thus the summed peak draw of its TCLs, which tracks their rated power.
 
-\chg{Since $P_{\mathrm{TCL}}(T)$ is a daily mean, the SF of this paper is a daily-mean SF. It is lower than the coincidence factor used in network planning, which takes the peak interval. On the coldest day of the Kloten data, the 15-min peak SF of the 50 submetered HPs is 1.28 times the daily mean, and on a median heating day 1.75 times. The daily mean suits the aim of this paper, since the installed capacity follows from the slope of the SF, and daily means reduce the effect of building thermal inertia \cite{Per17b}.}
+\chg{Since $P_{\mathrm{TCL}}(T)$ is a daily mean, the SF of this paper is a daily-mean SF. It is lower than the SF used in network planning, which takes the 15-min interval of highest aggregate demand; Section~\ref{sec:res-sf} gives the ratio between the two. The daily mean suits the aim of this paper, since the installed capacity follows from the slope of the SF, and daily means reduce the effect of building thermal inertia \cite{Per17b}.}
 % \textcolor{blue}{Since $P_{\mathrm{TCL}}^{\max}$ is assumed to be known for  }
 % , or a proxy such as the summed peak of the individual TCLs.
 
-An aggregate may have a mix of TCLs with different behaviours with respect to temperature. While some TCLs can be active in different regimes of the net-load fit, such as reversible HPs that can heat and cool, others are exclusive to either heating (e.g. resistive heating) or cooling (e.g. air-conditioning). Using the total TCL installed capacity in \eqref{eq:sf} would lead to an underestimation of the SF, since the installed capacity of cooling-exclusive devices would still count towards the SF in the heating regime, and \emph{vice-versa}. Therefore, each regime will have its own capacity, which is defined as
+An aggregate may have a mix of TCLs with different behaviours with respect to temperature. While some TCLs can be active in different regimes of the net-load fit, such as reversible HPs that can heat and cool, others are exclusive to either heating (e.g. resistive heating) or cooling (e.g. air-conditioning). Each regime therefore has its own capacity, defined as
 \begin{equation}
     P_k^{\max} = \sum_{n\in \mathcal{N}_k}P_n^{\max},
 \label{eq:pk}
@@ -254,6 +254,8 @@ where $T_h$ and $T_c$ are the thresholds of the net-load fit \eqref{eq:bathtub} 
 \caption{SF fit \eqref{eq:sffit} to the aggregated Austin TCLs \cite{pecanstreet}, with each daily point normalised by the installed capacity of the TCLs active in its regime \eqref{eq:sf-piecewise}.}
 \label{fig:sf}
 \end{figure}
+
+The SF fit gives the SF at any temperature of its regime, which links it to the design peak of Section~\ref{sec:intro}. At a design temperature $T_{\mathrm{d}} < T_h$, the design SF is $\hat{\mathrm{SF}}_h(T_{\mathrm{d}}) = b_h + m_h (T_h - T_{\mathrm{d}})$, and the design peak is the installed capacity multiplied by this SF. Since the SF of this paper is a daily mean, this product is a daily-mean design load. The 15-min design peak lies above it by the peak-to-mean ratio of Section~\ref{sec:res-sf}.
 
 
 %\textcolor{red}{where do you define how to calculate $m_h, m_c$}
@@ -455,7 +457,7 @@ The heating sensitivity itself scales with the population behind the meter. Fig.
 
 Beyond fitting well, the SF fit is stable. Because the SF comes from the submetered HPs alone, the households without an HP do not affect it. Table~\ref{tab:sf} therefore reports the aggregates of a constant size, 50 consumers, where $N_{hp}$ is the only variable. Neither the maximum heating SF nor the sensitivity $m_h$ changes meaningfully with the number of HPs or their installed capacity: $m_h$ holds near $0.018\,^\circ$C$^{-1}$ and the maximum SF near 0.48.
 %They differ slightly because they are fitted differently: $m$ as the median of the per-substation SF fits, and the slope as a single regression of $s_h$ on installed capacity pooled across the substations.
-More HPs behind the meter do not shift these values but tighten them, as the interquartile range of $m_h$ narrows from 0.0047 at five HPs to 0.0013 at twenty-five. \chg{This maximum is a daily mean. Taken at the 15-min peak, as network planning takes it, the SF of the 50 Kloten HPs reaches 0.56 on the coldest day and 0.59 over the year, above the HP SF of 0.425 that national LV network studies draw from field trials \cite{Few24}.}
+More HPs behind the meter do not shift these values but tighten them, as the interquartile range of $m_h$ narrows from 0.0047 at five HPs to 0.0013 at twenty-five. \chg{This maximum is a daily mean. Taken at the 15-min peak, as network planning takes it, the SF of the 50 Kloten HPs reaches 0.56 on the coldest day and 0.59 over the year, above the HP SF of 0.425 that national LV network studies draw from field trials \cite{Few24}. On the coldest day of the Kloten data, the 15-min peak SF of the 50 submetered HPs is 1.28 times the daily mean, and on a median heating day 1.75 times.}
 
 \input{tables/tab_sf}
 
