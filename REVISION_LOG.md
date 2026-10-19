@@ -47,7 +47,7 @@ Missing input: the Supervisor 2 marks. Alex does not have them yet (16 Oct). The
 | R30 | 4 | "isolated metering spikes" | Data cleaning; just say max | "isolated metering spikes" removed with the percentile | S2b | done |
 | R31 | 4 | "which takes the peak interval" | What is the peak interval? | "the 15-min interval of highest aggregate demand"; "coincidence factor" → "the SF used in network planning" | S5 | done |
 | R32 | 4 | Kloten 1.28× / 1.75× | Data not yet introduced | Kloten 1.28× / 1.75× moved verbatim to IV-C, after the 15-min peak SF; II-B points there | S5 | done |
-| R33 | 4 | "Using the total TCL installed capacity … underestimation" | Too obvious | Sentence deleted; "Each regime therefore has its own capacity, defined as" | S5 | done |
+| R33 | 4 | "Using the total TCL installed capacity … underestimation" | Too obvious | Sentence kept as in the original (removed in S5, restored in S5b) | S5b | declined (Alex disagrees with the comment) |
 | R34 | 4 | eqs (5)–(7) | Heating only, cooling analogous | Eqs. (5)-(7) kept generic for heating and cooling | S3 | declined (Alex: generic everywhere except the results) |
 | R35 | 4 | "(7)" | "which data do you need to do this fit? This is not so straightforward to do, no? Explain this a bit better." (one sentence may be too little; see S2) | | | open (L) |
 | R36 | 5 | "R1, R3, or" | What are these? | R1/R2/R3 replaced by heating regime / dead band / cooling regime throughout the text, captions, Table II footnote and figure labels | S4 | done |
@@ -233,3 +233,9 @@ Changes from the brief's default spec: prior work becomes five paragraphs (¶5�
 - **Nameplate check: not feasible.** HEAPO protocols (`HeatPump_Installation_Normpoint_ElectricPower`, kW at the certified operating point) cover 214 households, 67 of them with that power. None of the 50 Kloten HPs has a protocol, and only 2 of the 81 submetered HPs in the pool do (one at Hg, one at HbsbG). For those two, certificate power / robust peak = 0.74 and 0.87, which shows the rating point sits below the measured peak but is too few to test anything.
 - Suggested wording if Alex wants it in the paper (not inserted): "Taking the plain 15-min maximum instead changes the capacity WAPE on the Kloten aggregates from 19.3% to 19.5%, since the definition enters both the pilot's sensitivity and the ground truth."
 - Text: equation glosses for (4) and (5) still read long because each sentence includes the display equation; the prose parts are under 40 words.
+
+### S5b — R33 restored; change-tracked PDF (19 Oct)
+- Alex disagrees with R33: the "Using the total TCL installed capacity … underestimation" sentence and "Therefore, each regime will have its own capacity, which is defined as" are restored verbatim.
+- `review/hp_sensitivity_diff_vs_reviewed.pdf`: latexdiff of the reviewed version (commit 5672089, same text as `main`) against the current text. Blue wavy underline = added, red strike-through = deleted. Built with Strawberry Perl (the MiKTeX latexdiff lacks Algorithm::Diff). `\chg{}` wrappers were stripped in the scratch copies only, since latexdiff cannot split them.
+- **Not marked in that PDF:** changes inside tables (Table I Azz24 row and group name; Table II footnote) and inside figures (Austin and flex-ratio labels). Moved text (Fig. 1, the privacy sentences, the Kloten ratios) shows as a deletion plus an insertion.
+- The reviewed PDF's Table I was an older variant than `main` (see Phase 1 notes), so the diff baseline is `main`, not that PDF.

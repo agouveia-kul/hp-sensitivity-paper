@@ -223,7 +223,7 @@ where $P_{\mathrm{TCL}}(T)$ is the daily mean TCL load on a day of mean temperat
 % \textcolor{blue}{Since $P_{\mathrm{TCL}}^{\max}$ is assumed to be known for  }
 % , or a proxy such as the summed peak of the individual TCLs.
 
-An aggregate may have a mix of TCLs with different behaviours with respect to temperature. While some TCLs can be active in different regimes of the net-load fit, such as reversible HPs that can heat and cool, others are exclusive to either heating (e.g. resistive heating) or cooling (e.g. air-conditioning). Each regime therefore has its own capacity, defined as
+An aggregate may have a mix of TCLs with different behaviours with respect to temperature. While some TCLs can be active in different regimes of the net-load fit, such as reversible HPs that can heat and cool, others are exclusive to either heating (e.g. resistive heating) or cooling (e.g. air-conditioning). Using the total TCL installed capacity in \eqref{eq:sf} would lead to an underestimation of the SF, since the installed capacity of cooling-exclusive devices would still count towards the SF in the heating regime, and \emph{vice-versa}. Therefore, each regime will have its own capacity, which is defined as
 \begin{equation}
     P_k^{\max} = \sum_{n\in \mathcal{N}_k}P_n^{\max},
 \label{eq:pk}
