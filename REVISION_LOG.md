@@ -239,3 +239,20 @@ Changes from the brief's default spec: prior work becomes five paragraphs (¶5�
 - `review/hp_sensitivity_diff_vs_reviewed.pdf`: latexdiff of the reviewed version (commit 5672089, same text as `main`) against the current text. Blue wavy underline = added, red strike-through = deleted. Built with Strawberry Perl (the MiKTeX latexdiff lacks Algorithm::Diff). `\chg{}` wrappers were stripped in the scratch copies only, since latexdiff cannot split them.
 - **Not marked in that PDF:** changes inside tables (Table I Azz24 row and group name; Table II footnote) and inside figures (Austin and flex-ratio labels). Moved text (Fig. 1, the privacy sentences, the Kloten ratios) shows as a deletion plus an insertion.
 - The reviewed PDF's Table I was an older variant than `main` (see Phase 1 notes), so the diff baseline is `main`, not that PDF.
+
+### II-D rework (Alex, 19 Oct: repetition, unclear message, results front-loaded; frame it as a tested hypothesis)
+**¶1, point: why a transfer is needed and what calibration means.**
+- The SF fit needs submetered TCL data, which the DSO rarely holds for the aggregate under study.
+- The method calibrates the SF sensitivity once on a pilot and reuses it on targets. Pilot = small submetered set, so its capacity is known. Target = un-submetered aggregate whose capacity is sought. Both belong to one population (the households of one dataset or study). Split = one random pilot/target partition.
+- Table II involves no transfer (R40, kept).
+
+**¶2, point: only the SF sensitivity transfers.** Thresholds come from the target's own net-load fit; intercepts sit in P_base. Kept, slightly shortened.
+
+**¶3, point: the transfer is a hypothesis, tested in three steps.**
+- Hypothesis: within a population, the SF sensitivity does not depend on the installed capacity or the TCL penetration of an aggregate. The paper tests it rather than assuming it.
+- Why it matters: the capacity estimate divides by the transferred sensitivity (III-B), so a mismatch passes directly into the capacity.
+- Tests: within one population (IV-C), on real aggregates outside the pilot (V-A), across populations of five countries (V-B).
+
+**Removed:** the Table II "first support" sentence and the Kloten m_h evidence (results, front-loaded in S2); "Under this assumption … also holds for the other aggregates" (repeats ¶1); "If the assumption holds, the net-load sensitivity … gives the installed capacity" (repeats Sec. I ¶11 and III-B).
+- Alex's edits in this round, kept: the Köppen–Geiger citation added in II-C ¶3; "has no cooling whatsoever" (Hamelin); Table I footnote trimmed to the abbreviation list (the explanatory part commented out).
+- The refreshed change-tracked PDF is `review/hp_sensitivity_diff_vs_reviewed_new.pdf`, because the old file was locked by a viewer. Close the viewer and it will replace the old one at the next refresh.
