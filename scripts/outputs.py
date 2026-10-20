@@ -862,10 +862,10 @@ def tab_baselines():
                       for r in G.itertuples()]
     G['cap_plan'] = G.s_h * (G.T_h - Tmin) / SF_PLAN
     bins = pd.cut(G.N_hp / G.N, [0, .15, .35, .65, 1.0])
-    rows = [(r'$s_h/m_h$, pilot $m_h$ \eqref{eq:capacity}', 'cap_est'),
-            (r'$s_h/m_h$, target $m_h$', 'cap_or'),
-            (r'full pilot SF curve', 'cap_whole'),
-            (r'planning SF, $\hat{P}_{\mathrm{TCL}}(T_{\min})/0.425$', 'cap_plan')]
+    rows = [(r'(i) $s_h/m_h$, pilot $m_h$ \eqref{eq:capacity}', 'cap_est'),
+            (r'(ii) $s_h/m_h$, target $m_h$', 'cap_or'),
+            (r'(iii) full pilot SF curve', 'cap_whole'),
+            (r'(iv) planning SF, $\hat{P}_{\mathrm{TCL}}(T_{\min})/0.425$', 'cap_plan')]
     lines = []
     for name, c in rows:
         w = [_wape(G[c], G.cap)] + [_wape(g[c], g.cap) for _, g in G.groupby(bins, observed=True)]

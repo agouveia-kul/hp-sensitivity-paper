@@ -429,6 +429,8 @@ Flexibility \eqref{eq:flex-energy} & $s_h, s_c, T_h, T_c$ & $m_h, m_c$ & $\Delta
 \subsection{Kloten Data and Evaluation Design}
 \label{sec:data}
 
+The experiment of this section emulates a DSO that submeters one pilot and estimates the installed capacity of many feeders without submetering them. Each semi-synthetic aggregate plays the role of one such feeder. Its net load is known, and so is its true installed capacity, the sum of the capacities of its own HPs. The aggregates differ in size and HP penetration, so each has its own true capacity. For every aggregate, the estimate is its own net-load sensitivity divided by the pilot's SF sensitivity \eqref{eq:capacity}, scored against its true capacity.
+
 This section uses a single Swiss population, the households metered at the Kloten weather station in calendar 2023. The data combines two sources, the HEAPO dataset \cite{Bru25} and an additional smart-meter dataset \cite{Kai26b}. The load profiles have 15-minute resolution, while the ambient temperature is hourly. The only TCL used throughout is the HP and only heating is observed. The station holds 50 households with a submetered HP and 1307 households with neither an HP nor any other electric heating.
 
 The 50 HPs are split at random into two halves of 25, twenty times over. In each split, the first half is the submetered pilot: its aggregated SF is fitted with \eqref{eq:sffit} and supplies the sensitivity $m_h$. Semi-synthetic aggregates, i.e. sums of measured households, are then drawn from the second half only, so no HP informs both the pilot and a target. Each aggregate combines $N_{hp}$ distinct HPs of that half, with the same households' other load, and $N - N_{hp}$ distinct households without an HP. The consumer count $N$ takes the values 10, 20, 30, 40 and 50, and $N_{hp}$ the values 5, 10, 15, 20 and 25, with $N_{hp} \le N$. Every feasible cell holds three aggregates per split, giving 1260 aggregates. All draws are without replacement, so no household recurs within an aggregate.
@@ -440,39 +442,44 @@ Two error metrics recur below. The weighted absolute percentage error (WAPE) sco
 \end{equation}
 so WAPE weights each aggregate by its true magnitude, not equally. A small aggregate, with a large percentage error but a small absolute error, therefore cannot dominate. The metric reports the total error across a set of aggregates, as a DSO would read it. The median ratio, the median of $\hat{y}_i / y_i$, gives the direction of the error, $< 1$ for an underestimate and $> 1$ for an overestimate.
 
-\subsection{Fit Quality across Spatial and Temporal Aggregation}
-\label{sec:res-ff}
+\subsection{Installed Capacity Estimation}
+\label{sec:res-capacity}
 
-Both fits, \eqref{eq:bathtub} and \eqref{eq:sffit}, are made to each aggregate's measurements, varying the number of consumers and the resolution. The HP penetration is kept fixed at 50\%, on a separate set of Kloten aggregates, also drawn without replacement. Spatial aggregation averages out the intermittent, non-thermal behaviour, as more meters are summed behind one aggregate. Temporal aggregation does the same over time, averaging the load over longer windows removes the occupancy swings and building thermal inertia that do not track temperature one-to-one at finer resolutions. Fig.~\ref{fig:quality-heatmap} reports both, as the median $R^2_h$ of the net-load and SF fits over every consumer-count/averaging-window cell at this fixed HP penetration. Both fits are scored on the points below the net-load threshold $T_h$, at which the SF fit is anchored.
+Equation~\eqref{eq:capacity} estimates the installed HP capacity of each aggregate as the ratio of two sensitivities. The numerator $s_h$ is read from the aggregate's own net-load fit. The denominator $m_h$ is the sensitivity of the pilot of the same split, whose stability Section~\ref{sec:res-sf} examines. The target aggregate is therefore never submetered.
+
+With the transferred sensitivity, \eqref{eq:capacity} recovers the installed capacity of the 1260 aggregates at a WAPE of 19\%, with a median overestimate of 16\%. In absolute terms, the mean error is 17~kW, the capacity of about three HPs of the mean 6.3~kW. The overestimate is consistent with the non-TCL temperature response that the net-load sensitivity absorbs, the neglected term of \eqref{eq:decomp} discussed in Section~\ref{sec:discussion}. The error shrinks as HPs are added: the WAPE falls from 41\% at five HPs to 15\% at twenty-five, and the median overestimate from 35\% to 12\%. This is possibly because the households without an HP, whose temperature response inflates the heating arm, weigh less against more HPs.
 
 \begin{figure*}[t]
 \centering
-\includegraphics[width=0.7\linewidth]{figures/fig_quality_heatmap.pdf}
-\caption{Median $R^2_h$ of the net-load fit (left) and the SF fit (right) of the Kloten aggregates against spatial aggregation (consumers per aggregate, $N$) and temporal aggregation (averaging window), at a fixed 50\% HP penetration.}
-\label{fig:quality-heatmap}
+\includegraphics[width=0.7\linewidth]{figures/fig_capacity_heatmap.pdf}
+\caption{Capacity error of \eqref{eq:capacity} on the Kloten aggregates against spatial aggregation (consumers per aggregate, $N$) and temporal aggregation (averaging window), at a fixed 50\% HP penetration. Left: WAPE; right: median signed error.}
+\label{fig:capacity-heatmap}
 \end{figure*}
 
-Each column shows the spatial effect, read from ten consumers at the bottom of the grid to fifty at the top. In the hourly column the net-load fit rises from a median $R^2_h$ of 0.42 at ten consumers to 0.64 at fifty, and the SF fit rises the same way, from 0.60 to 0.78. The same rise holds in the daily column, where the net-load fit climbs from 0.83 to 0.91 and the SF fit from 0.92 to 0.95.
+Fig.~\ref{fig:capacity-heatmap} repeats the estimate over a grid of consumer counts and averaging windows, the same grid on which Section~\ref{sec:res-ff} scores the fit quality, at a fixed 50\% HP penetration. In each cell, both the target's net-load fit and the pilot's SF fit are made at the cell's resolution. The averaging window barely matters: along each row, the WAPE varies by at most 1.5 points, as both sensitivities of \eqref{eq:capacity} come from fits at the same resolution. The consumer count matters more. The WAPE falls from 19\% at ten consumers to between 12\% and 14\% at fifty, while the median overestimate stays between 9\% and 14\%. Five HPs among ten consumers thus give a WAPE of 19\%, against 41\% for five HPs across all consumer counts, which points to the HP penetration rather than the HP count. Unlike the fit quality (Section~\ref{sec:res-ff}), the capacity estimate needs no resolution finer than the daily mean.
 
-Each row shows the temporal effect, read from hourly resolution on the left to daily on the right. At ten consumers the net-load fit climbs monotonically from a median $R^2_h$ of 0.42 at hourly resolution through 0.58 and 0.66 at four and eight hours, to 0.76 at sixteen and 0.83 at daily; the SF fit climbs the same way, from 0.60 through 0.78 and 0.86 to 0.91 and 0.92. The same climb holds in every other row: at fifty consumers, for instance, the net-load fit reaches 0.87 and 0.91 in the two rightmost cells and the SF fit reaches 0.94 and 0.95. The daily mean, used throughout the rest of the paper, therefore sits at the right edge of this curve, with sixteen hours already close behind it.
+Table~\ref{tab:baselines} compares four estimators on the same aggregates:
+\begin{itemize}
+\item[(i)] the proposed estimate, the aggregate's $s_h$ divided by the pilot's $m_h$ \eqref{eq:capacity};
+\item[(ii)] the own-sensitivity estimate, $s_h$ divided by the aggregate's own $m_h$, which removes the transfer and isolates the error of the net-load sensitivity;
+\item[(iii)] the full pilot curve, the pilot's whole SF fit, intercept and threshold included, evaluated on the coldest day;
+\item[(iv)] the planning estimate, the coldest-day TCL load of the net-load fit divided by the HP SF of 0.425 used in national LV studies \cite{Few24}.
+\end{itemize}
 
-The two effects compound along the grid's diagonal. The weakest cell, ten consumers at hourly resolution, gives a median $R^2_h$ of 0.42 for the net-load fit and 0.60 for the SF fit; the strongest, fifty consumers at daily resolution, reaches 0.91 and 0.95. This suggests the two forms of aggregation are, to some extent, substitutable: a coarser averaging window recovers much of what a larger aggregate would, and a larger aggregate recovers much of what a coarser window would.
+\input{tables/tab_baselines}
 
-The heating sensitivity itself scales with the population behind the meter. Fig.~\ref{fig:slope-capacity} plots the fitted $s_h$ against the installed HP capacity across the aggregates, coloured by the number of HPs. The two track closely, at a Pearson correlation of 0.97, along a line through the origin of slope $0.020\,^\circ$C$^{-1}$. A steeper heating arm therefore signals more installed capacity, as Section~\ref{sec:fits-net} anticipated. This slope exceeds the SF sensitivity of Section~\ref{sec:res-sf} by about 12\%, a first sign of the non-TCL temperature response that the net-load sensitivity absorbs.
+\chg{The own-sensitivity estimate (ii) reaches a WAPE of 14.5\%, against 19.3\% for the proposed estimate (i): the transfer adds about five points, and the non-TCL temperature response in the net-load sensitivity accounts for the rest. Every estimate degrades in the same way as the HP penetration falls, from 8--15\% above 65\% penetration to 50--65\% below 15\%. This points to the net-load sensitivity as the dominant error at low penetration.}
 
-\begin{figure}[t]
-\centering
-\includegraphics[width=\columnwidth]{figures/fig_slope_capacity.pdf}
-\caption{Fitted heating sensitivity $s_h$ against installed HP capacity across the 1260 Kloten aggregates, coloured by the number of HPs.}
-\label{fig:slope-capacity}
-\end{figure}
+\chg{The full pilot curve (iii) performs better than the sensitivity alone, at a WAPE of 15.4\%. This is possibly because the pilot's intercept, $b_h \approx 0.03$, raises the denominator and so partly offsets the upward bias of the net-load sensitivity. The offset relies on the pilot and the target sharing a threshold temperature, as all Kloten aggregates do, whereas the sensitivity alone needs no such match. The planning estimate (iv) reaches a WAPE of 21.1\%, since the Kloten span of $25\,^\circ$C between threshold and coldest day happens to bring the coldest-day SF close to 0.425. Its error therefore depends on how cold the observed year is, whereas the proposed estimate carries no such dependence, since the temperature cancels in \eqref{eq:capacity}.}
 
-\subsection{Simultaneity Factor: Invariance and Transfer}
+\subsection{Why the Estimate Works: Invariance and Transfer}
 \label{sec:res-sf}
 
-Beyond fitting well, the SF fit is stable. Because the SF comes from the submetered HPs alone, the households without an HP do not affect it. Table~\ref{tab:sf} therefore reports the aggregates of a constant size, 50 consumers, where $N_{hp}$ is the only variable. Neither the maximum heating SF nor the sensitivity $m_h$ changes meaningfully with the number of HPs or their installed capacity: $m_h$ holds near $0.018\,^\circ$C$^{-1}$ and the maximum SF near 0.48.
+The capacity estimate divides a sensitivity that grows with the installed capacity by one that does not. This subsection shows both properties on the Kloten aggregates, which is the within-population test of the hypothesis of Section~\ref{sec:transfer}.
+
+The SF fit is stable within the population. Because the SF comes from the submetered HPs alone, the households without an HP do not affect it. Table~\ref{tab:sf} therefore reports the aggregates of a constant size, 50 consumers, where $N_{hp}$ is the only variable. Neither the maximum heating SF nor the sensitivity $m_h$ changes meaningfully with the number of HPs or their installed capacity: $m_h$ holds near $0.018\,^\circ$C$^{-1}$ and the maximum SF near 0.48.
 %They differ slightly because they are fitted differently: $m$ as the median of the per-substation SF fits, and the slope as a single regression of $s_h$ on installed capacity pooled across the substations.
-More HPs behind the meter do not shift these values but tighten them, as the interquartile range of $m_h$ narrows from 0.0047 at five HPs to 0.0013 at twenty-five. \chg{This maximum is a daily mean. Taken at the 15-min peak, as network planning takes it, the SF of the 50 Kloten HPs reaches 0.56 on the coldest day and 0.59 over the year, above the HP SF of 0.425 that national LV network studies draw from field trials \cite{Few24}. On the coldest day of the Kloten data, the 15-min peak SF of the 50 submetered HPs is 1.28 times the daily mean, and on a median heating day 1.75 times.}
+More HPs behind the meter do not shift these values but tighten them, as the interquartile range of $m_h$ narrows from 0.0047 at five HPs to 0.0013 at twenty-five. \chg{This maximum is a daily mean. Taken at the 15-min peak, as network planning takes it, the SF of the 50 Kloten HPs reaches 0.56 on the coldest day and 0.59 over the year. Both lie above the HP SF of 0.425 that national LV network studies draw from field trials \cite{Few24}. On the coldest day of the Kloten data, the 15-min peak SF of the 50 submetered HPs is 1.28 times the daily mean, and on a median heating day 1.75 times.}
 
 \input{tables/tab_sf}
 
@@ -485,34 +492,35 @@ The pilot transfers the SF to the aggregates without submetering. Fig.~\ref{fig:
 \label{fig:sf-pilot}
 \end{figure}
 
-A direct test sets the pilot against the whole other half, over 120 random splits. Placed at the other half's net-load threshold, the pilot's SF curve reproduces the SF of that half at a median $R^2_h$ of 0.91, with an interquartile range of 0.85--0.94. The pilot's sensitivity also recovers the capacity of the other half through \eqref{eq:capacity}. The median error is $+8\%$, with an interquartile range from $0$ to $+18\%$. Section~\ref{sec:res-capacity} uses the pilot sensitivity to estimate installed capacity across the aggregates.
+A direct test sets the pilot against the whole other half, over 120 random splits. Placed at the other half's net-load threshold, the pilot's SF curve reproduces the SF of that half at a median $R^2_h$ of 0.91, with an interquartile range of 0.85--0.94. The pilot's sensitivity also recovers the capacity of the other half through \eqref{eq:capacity}. The median error is $+8\%$, with an interquartile range from $0$ to $+18\%$.
+
+The heating sensitivity itself scales with the population behind the meter. Fig.~\ref{fig:slope-capacity} plots the fitted $s_h$ against the installed HP capacity across the aggregates, coloured by the number of HPs. The two track closely, at a Pearson correlation of 0.97, along a line through the origin of slope $0.020\,^\circ$C$^{-1}$. A steeper heating arm therefore signals more installed capacity, as Section~\ref{sec:fits-net} anticipated. This slope exceeds the pilot SF sensitivity by about 12\%, a first sign of the non-TCL temperature response that the net-load sensitivity absorbs.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig_slope_capacity.pdf}
+\caption{Fitted heating sensitivity $s_h$ against installed HP capacity across the 1260 Kloten aggregates, coloured by the number of HPs.}
+\label{fig:slope-capacity}
+\end{figure}
+
+\subsection{Fit Quality across Spatial and Temporal Aggregation}
+\label{sec:res-ff}
+
+Both fits, \eqref{eq:bathtub} and \eqref{eq:sffit}, are made to each aggregate's measurements, varying the number of consumers and the resolution. The HP penetration is kept fixed at 50\%, on a separate set of Kloten aggregates, also drawn without replacement. Spatial aggregation averages out the intermittent, non-thermal behaviour, as more meters are summed behind one aggregate. Temporal aggregation does the same over time: averaging the load over longer windows removes the occupancy swings and building thermal inertia that do not track temperature one-to-one at finer resolutions. Fig.~\ref{fig:quality-heatmap} reports both, as the median $R^2_h$ of the net-load and SF fits over every consumer-count/averaging-window cell at this fixed HP penetration. Both fits are scored on the points below the net-load threshold $T_h$, at which the SF fit is anchored.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.7\linewidth]{figures/fig_quality_heatmap.pdf}
+\caption{Median $R^2_h$ of the net-load fit (left) and the SF fit (right) of the Kloten aggregates against spatial aggregation (consumers per aggregate, $N$) and temporal aggregation (averaging window), at a fixed 50\% HP penetration.}
+\label{fig:quality-heatmap}
+\end{figure*}
+
+More consumers and longer averaging windows both raise the median $R^2_h$ of both fits, and the two effects compound. The weakest cell, ten consumers at hourly resolution, gives a median $R^2_h$ of 0.42 for the net-load fit and 0.60 for the SF fit; the strongest, fifty consumers at daily resolution, reaches 0.91 and 0.95. This suggests the two forms of aggregation are, to some extent, substitutable: a coarser averaging window recovers much of what a larger aggregate would. The daily mean, used throughout this paper, sits at the right edge of this range, with sixteen hours already close behind it.
 
 \subsection{Energy Consumption Estimation}
 \label{sec:res-energy}
 
 Equation~\eqref{eq:energy} needs only the net-load fit, so the energy is the one estimate that requires no pilot. On the days below the threshold, the estimate is compared against the submetered HP energy of each aggregate. Across the 1260 aggregates, the estimate reaches a WAPE of 9\% at a median ratio of 0.97. About 7\% of the annual HP energy falls in the dead band, most plausibly domestic hot water \cite{Bru23}, which \eqref{eq:energy} omits by construction, so the annual ratio falls to 0.90. Integrating the daily-fitted arm over the hourly temperature, rather than the daily mean, recovers part of this, lifting the annual ratio to 0.94, since a day that crosses the threshold holds more heating-degree-hours than its mean implies. The same heating-regime energy is the baseline of the flexibility in Section~\ref{sec:res-flex}.
-
-\subsection{Installed Capacity Estimation}
-\label{sec:res-capacity}
-
-Equation~\eqref{eq:capacity} estimates the installed HP capacity of each aggregate as the ratio of two sensitivities. The numerator $s_h$ is read from the aggregate's own net-load fit. The denominator $m_h$ is the sensitivity of the pilot of the same split (Section~\ref{sec:res-sf}). The target aggregate is therefore never submetered.
-
-With the transferred sensitivity, \eqref{eq:capacity} recovers the installed capacity of the 1260 aggregates at a WAPE of 19\%, with a median overestimate of 16\%. In absolute terms, the mean error is 17~kW, the capacity of about three HPs of the mean 6.3~kW. The overestimate is consistent with the non-TCL temperature response that the net-load sensitivity absorbs, the neglected term of \eqref{eq:decomp} discussed in Section~\ref{sec:discussion}. The error shrinks as HPs are added: the WAPE falls from 41\% at five HPs to 15\% at twenty-five, and the median overestimate from 35\% to 12\%. This is possibly because the households without an HP, whose temperature response inflates the heating arm, weigh less against more HPs.
-
-\begin{figure*}[t]
-\centering
-\includegraphics[width=0.7\linewidth]{figures/fig_capacity_heatmap.pdf}
-\caption{Capacity error of \eqref{eq:capacity} on the Kloten aggregates against spatial aggregation (consumers per aggregate, $N$) and temporal aggregation (averaging window), at a fixed 50\% HP penetration. Left: WAPE; right: median signed error.}
-\label{fig:capacity-heatmap}
-\end{figure*}
-
-Fig.~\ref{fig:capacity-heatmap} repeats the estimate over the aggregation grid of Section~\ref{sec:res-ff}, at a fixed 50\% HP penetration. In each cell, both the target's net-load fit and the pilot's SF fit are made at the cell's resolution. The averaging window barely matters: along each row, the WAPE varies by at most 1.5 points, as both sensitivities of \eqref{eq:capacity} come from fits at the same resolution. The consumer count matters more. The WAPE falls from 19\% at ten consumers to between 12\% and 14\% at fifty, while the median overestimate stays between 9\% and 14\%. Five HPs among ten consumers thus give a WAPE of 19\%, against 41\% for five HPs across all consumer counts, which points to the HP penetration rather than the HP count. Unlike the fit quality of Fig.~\ref{fig:quality-heatmap}, the capacity estimate needs no resolution finer than the daily mean.
-
-\input{tables/tab_baselines}
-
-\chg{Table~\ref{tab:baselines} sets the estimate against three alternatives on the same aggregates. Dividing each aggregate's net-load sensitivity by its own SF sensitivity, rather than by the pilot's, removes the transfer, so the remaining error comes from the net-load sensitivity alone. This estimate reaches a WAPE of 14.5\%, against 19.3\% with the pilot's sensitivity: the transfer adds about five points, and the non-TCL temperature response in the net-load sensitivity accounts for the rest. Every estimate degrades in the same way as the HP penetration falls, from 8--15\% above 65\% penetration to 50--65\% below 15\%. This points to the net-load sensitivity as the dominant error at low penetration.}
-
-\chg{Transferring the full SF curve of the pilot, intercept and threshold included, and evaluating it on the coldest day performs better than the sensitivity alone, at a WAPE of 15.4\%. This is possibly because the pilot's intercept, $b_h \approx 0.03$, raises the denominator and so partly offsets the upward bias of the net-load sensitivity. The offset relies on the pilot and the target sharing a threshold temperature, as all Kloten aggregates do, whereas the sensitivity alone needs no such match. A planning estimate divides the coldest-day TCL load of the net-load fit by the HP SF of 0.425 used in national LV studies \cite{Few24}. It reaches a WAPE of 21.1\%, since the Kloten span of $25\,^\circ$C between threshold and coldest day happens to bring the coldest-day SF close to 0.425. Its error therefore depends on how cold the observed year is, whereas the proposed estimate carries no such dependence, since the temperature cancels in \eqref{eq:capacity}.}
 
 \subsection{Flexibility Potential}
 \label{sec:res-flex}

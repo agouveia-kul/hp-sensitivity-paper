@@ -55,7 +55,7 @@ Missing input: the Supervisor 2 marks. Alex does not have them yet (16 Oct). The
 | R38 | 5 | "so the transfer of Section II-D" | Weird sentence | | | open (L) |
 | R39 | 5 | II-D first sentence, "submetered TCL data" (l.308) | "aha, why only here?" | Sec. I ¶11 introduces submetering and the pilot; II-D explains why the SF fit needs it | S1, S2 | done |
 | R40 | 5 | II-D pilot/target definitions | Already for Table II? What is calibration? | II-D defines calibrate, pilot, target and split in plain words, and states that Table II involves no transfer | S2 | done |
-| R41 | 5 | "Section IV-C tests this hypothesis…" | Paper builds on an untested hypothesis | II-D presents the transfer as the single assumption, with early evidence (Table II; Kloten m_h vs number of HPs, Table III) and pointers to the tests; the section reorder follows in S7 | S2 | partly |
+| R41 | 5 | "Section IV-C tests this hypothesis…" | Paper builds on an untested hypothesis | II-D states the transfer as a tested hypothesis with pointers; Sec. IV now shows the capacity result first and IV-C is explicitly the within-population test | S2, II-D, S7 | done |
 | R42 | 5 | "R²_h" | What is this? | R²_h and R²_c defined at first appearance (Fig. 1 caption) and in II-C | S4 | done |
 | R43 | 6 | P_net(t) | "T?" | t defined as time after eq. (1); T defined as the daily mean temperature in the eq. (2) gloss; III-A no longer mixes P_net(t) with the fitted P_TCL(T) | S4 | done |
 | R44 | 6 | "R2 bounds the estimate" | Use "dead band" | "The dead band bounds the estimate." | S4 | done |
@@ -63,11 +63,11 @@ Missing input: the Supervisor 2 marks. Alex does not have them yet (16 Oct). The
 | R46 | 6 | "The two regimes are estimated separately." | Heating only | III-B equations kept for both regimes; the reversible-HP paragraph shortened to two sentences | S3, S3b | declined (Alex: generic everywhere except the results) |
 | R47 | 6 | III-C cancellation passage | Unclear; how is Δt_Th set? | III-C opens with the use (congestion management, flexibility products); the window is an exogenous building-stock parameter; the cancellation is two plain sentences; E_flex is linear in the window, so results are per hour or ratios. Literature range for the window: D4, needs Alex | S6 | partly |
 | R48 | 6 | "Over a year, this paper counts…" | Rephrase or move; why useful? | Annual counting moved to the IV-F opening, with why the annual sum is useful; IV-F's repeated cancellation sentence dropped | S6 | done |
-| R49 | 7 | IV-A split procedure | Why? What is fitted and estimated? | | | open (S7) |
-| R50 | 7 | Fig. 5 number recital | Just the conclusion | | | open (S7) |
-| R51 | 8 | "Installed Capacity Estimation" | Why not first? | | | open (S7, D5) |
-| R52 | 8 | "1260 aggregates at a WAPE of 19%" | Different capacity per aggregate? | | | open (S7) |
-| R53 | 9 | "Transferring the full SF curve…" | Not understood | | | open (S7) |
+| R49 | 7 | IV-A split procedure | Why? What is fitted and estimated? | IV-A opens with a purpose paragraph: emulates a DSO with one submetered pilot and many un-submetered feeders; each aggregate has its own true capacity; the estimate is its s_h / pilot m_h | S7 | done |
+| R50 | 7 | Fig. 5 number recital | Just the conclusion | IV-D recital (three paragraphs) cut to one: trend plus the two end cells (0.42/0.60 → 0.91/0.95) | S7 | done |
+| R51 | 8 | "Installed Capacity Estimation" | Why not first? | Sec. IV reordered: capacity first (IV-B), then why it works (IV-C), fit quality (IV-D), energy, flexibility | S7 | done |
+| R52 | 8 | "1260 aggregates at a WAPE of 19%" | Different capacity per aggregate? | Purpose paragraph: "Its net load is known, and so is its true installed capacity, the sum of the capacities of its own HPs … each has its own true capacity" | S7 | done |
+| R53 | 9 | "Transferring the full SF curve…" | Not understood | Estimators (i)–(iv) listed before Table IV, rows labelled to match; "Transferring the full SF curve…" now reads "The full pilot curve (iii)…" | S7 | done |
 | R54 | 9 | "About three points" | Three points? | | | open (L) |
 | R55 | 11 | VI-D "…but not the net-load numerator." | What was done to counter limits? | | | open (S8) |
 | R56 | 12 | "s" over "ted" of "This paper presented" (Conclusion, l.578) | "s" | needs Alex → Alex: "This paper presents" (as recommended); applied in S8 | S1 | open (S8) |
@@ -282,3 +282,26 @@ Changes from the brief's default spec: prior work becomes five paragraphs (¶5�
 - R22 (Fig. 1 unclear at the start of Sec. II) stays closed: the figure now uses words only and sits before Sec. II, with every box pointing to where it is defined.
 - Fig. 1, second pass (Alex, 20 Oct): boxes enlarged (19 × 10 mm, up from 15 × 7), gaps tightened, the pilot box no longer carries a section label, and the arrow label is on two lines ("SF / sensitivity"). Summary table for the end of Sec. III proposed to Alex, not yet added.
 - Option A added (Alex, 20 Oct) as Table III at the end of Sec. III, with the lead-in "Table III summarises which fitted parameters each estimate uses, and which data they come from." The later tables renumber by one.
+
+### S7 content specs (Sec. IV order and purpose; D5 = capacity first; R49–R53)
+**Order:** IV-A data and design → IV-B installed capacity (old IV-E + baselines) → IV-C why the estimate works (old IV-C + the s_h-vs-capacity paragraph and figure from old IV-B) → IV-D fit quality vs aggregation (old IV-B, shortened) → IV-E energy → IV-F flexibility.
+
+**IV-A, new opening ¶, point: what the experiment emulates (R49, R52).**
+- It emulates a DSO that submeters one pilot and estimates the installed capacity of many feeders without submetering them.
+- Each semi-synthetic aggregate plays one such feeder: its net load is known, and so is its true capacity, the sum of the capacities of its own HPs. The aggregates differ in size and HP penetration, so each has its own true capacity.
+- Per aggregate: estimate = its own net-load sensitivity / the pilot's SF sensitivity (10), scored against its true capacity.
+- Then the existing data, split and metric paragraphs.
+
+**IV-B (capacity):** the opening points to IV-C for the pilot sensitivity's stability. The heatmap paragraph no longer leans on IV-D ("the same grid on which Section IV-D scores the fit quality"). **Before Table V, a list of the estimators (R53):** (i) proposed, s_h / pilot m_h; (ii) own sensitivity, s_h / own m_h, removing the transfer to isolate the numerator error; (iii) full pilot curve, intercept and threshold included, evaluated on the coldest day; (iv) planning SF, coldest-day TCL load / 0.425 (`Few24`). The two discussion paragraphs refer to (i)–(iv), and the table rows carry the same labels (`tab_baselines.tex` and `outputs.py`).
+
+**IV-C, new opening, point:** the estimate divides a sensitivity that grows with installed capacity by one that does not; this is the within-population test of the II-D hypothesis. Then the SF invariance (Table IV, pilot figure, direct test), then the s_h-vs-capacity paragraph and figure moved from old IV-B. "Beyond fitting well" and the forward pointer to the capacity section are dropped.
+
+**IV-D (R50):** the three recital paragraphs become one. More consumers and longer windows both raise the median R²_h, and the effects compound from 0.42 / 0.60 (10 consumers, hourly) to 0.91 / 0.95 (50 consumers, daily). The two aggregations partly substitute for each other, and the daily mean sits at the right edge with 16 h close behind. The intermediate values remain in the figure.
+
+**Not done (option for Alex):** a small schematic of one split (pilot half → m_h; target half → aggregates).
+
+### S7 notes (as written)
+- Number check: the only numbers removed from Sec. IV are the intermediate R² values of the old fit-quality recital (0.64, 0.78, 0.83, 0.58, 0.66, 0.76, 0.86, 0.87, 0.94 and repeats); they remain in the figure. No number was added or changed.
+- Floats renumber: Table IV = baselines, Table V = SF invariance, Fig. 5 = capacity heatmap, Fig. 8 = fit-quality heatmap.
+- The pre-existing 44-word sentence in IV-C on the 15-min peak SF is split in two.
+- `scripts/outputs.py` updated so that regenerating Table IV keeps the (i)–(iv) row labels.
