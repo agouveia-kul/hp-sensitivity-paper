@@ -318,3 +318,5 @@ Changes from the brief's default spec: prior work becomes five paragraphs (¶5�
 - `review/drafts/split_schematic.tex` (standalone TikZ, same box style as Fig. 1) and `.png` (rendered at IEEE column width).
 - Content, all from IV-A: 50 submetered Kloten HPs, split at random 20 times → a 25-HP pilot → SF fit → m_h; the 25-HP target half plus the 1307 households without an HP → aggregates (N = 10–50, N_hp = 5–25) → net-load fit → s_h, and their true capacity (the sum over their HPs) → estimate s_h / m_h → WAPE over all 20 splits (1260).
 - If adopted: it goes in IV-A after the purpose paragraph, and the caption drops the "Fig. X." prefix.
+- Added (Alex, 20 Oct): the split schematic is Fig. 5 in IV-A, after the purpose paragraph, which now ends "Fig. 5 sketches one split." The caption is the draft's, without the "Fig. X" prefix. The paper is now 14 pages (was 13).
+- Alex's edit kept: the Table I footnote wrapped in `flushleft`.
