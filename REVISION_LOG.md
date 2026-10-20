@@ -40,7 +40,7 @@ Missing input: the Supervisor 2 marks. Alex does not have them yet (16 Oct). The
 | R23 | 3 | "treats R2 as out of scope" | Cooling analysis would be analogous | II-A: "characterises R1 and R3 alike and leaves R2 out of scope"; the evaluation covers R1 only, since the data allow no test of the R3 transfer (Sec. VI) | S3 | done |
 | R24 | 4 | "the hat marks a fitted function" | Rephrase | "From (2), the temperature-driven component of the aggregated load of an aggregate i, with its own fitted parameters, is" (3); hat sentence deleted | S5 | done |
 | R25 | 4 | "P_base … discarded" | Needed? | "P_base … discarded" sentence deleted | S5 | done |
-| R26 | 4 | strike-out of ", i.e., a larger share of consumers with a TCL" (l.218) | (strike-out, no text) | | | open (L, delete) |
+| R26 | 4 | strike-out of ", i.e., a larger share of consumers with a TCL" (l.218) | (strike-out, no text) | ", i.e., a larger share of consumers with a TCL" deleted | L | done |
 | R27 | 4 | "Table II spans this range…" | Introduce Table II | Alex removed the "Table II spans this range…" sentence; II-C still opens by introducing Table II | S2b | done |
 | R28 | 4 | "SF(T)" | How does this match planning? | New II-B paragraph: design SF = b_h + m_h(T_h − T_d); design peak = installed capacity × design SF (back to Sec. I); daily-mean caveat with the IV-C ratio. T_d added to the Nomenclature | S5 | done |
 | R29 | 4 | "In this work," (99.9th pct) | Why not max? Say values unavailable | "Nameplate ratings are not available for most households, so the installed capacity of each TCL is taken as the peak of its submetered 15-min draw." The 99.9th percentile is removed from the paper (Alex) | S2b | done |
@@ -49,17 +49,17 @@ Missing input: the Supervisor 2 marks. Alex does not have them yet (16 Oct). The
 | R32 | 4 | Kloten 1.28× / 1.75× | Data not yet introduced | Kloten 1.28× / 1.75× moved verbatim to IV-C, after the 15-min peak SF; II-B points there | S5 | done |
 | R33 | 4 | "Using the total TCL installed capacity … underestimation" | Too obvious | Sentence kept as in the original (removed in S5, restored in S5b) | S5b | declined (Alex disagrees with the comment) |
 | R34 | 4 | eqs (5)–(7) | Heating only, cooling analogous | Eqs. (5)-(7) kept generic for heating and cooling | S3 | declined (Alex: generic everywhere except the results) |
-| R35 | 4 | "(7)" | "which data do you need to do this fit? This is not so straightforward to do, no? Explain this a bit better." (one sentence may be too little; see S2) | | | open (L) |
+| R35 | 4 | "(7)" | "which data do you need to do this fit? This is not so straightforward to do, no? Explain this a bit better." (one sentence may be too little; see S2) | New II-B sentences after eq. (7): the SF fit needs, for the same aggregate, its daily submetered TCL load, its installed TCL capacity per regime and the daily mean temperature, with the thresholds from its own net-load fit; in practice only a submetered pilot provides the first two (II-D) | L | done |
 | R36 | 5 | "R1, R3, or" | What are these? | R1/R2/R3 replaced by heating regime / dead band / cooling regime throughout the text, captions, Table II footnote and figure labels | S4 | done |
 | R37 | 5 | same | Refer to the figure | II-A and II-C point to the Austin net-load figure (Fig. 1), which now labels the regimes in words | S4 | done |
-| R38 | 5 | "so the transfer of Section II-D" | Weird sentence | | | open (L) |
+| R38 | 5 | "so the transfer of Section II-D" | Weird sentence | "so the SF sensitivity is expected to transfer only within a climate class and TCL technology (Section II-D)" | L | done |
 | R39 | 5 | II-D first sentence, "submetered TCL data" (l.308) | "aha, why only here?" | Sec. I ¶11 introduces submetering and the pilot; II-D explains why the SF fit needs it | S1, S2 | done |
 | R40 | 5 | II-D pilot/target definitions | Already for Table II? What is calibration? | II-D defines calibrate, pilot, target and split in plain words, and states that Table II involves no transfer | S2 | done |
 | R41 | 5 | "Section IV-C tests this hypothesis…" | Paper builds on an untested hypothesis | II-D states the transfer as a tested hypothesis with pointers; Sec. IV now shows the capacity result first and IV-C is explicitly the within-population test | S2, II-D, S7 | done |
 | R42 | 5 | "R²_h" | What is this? | R²_h and R²_c defined at first appearance (Fig. 1 caption) and in II-C | S4 | done |
 | R43 | 6 | P_net(t) | "T?" | t defined as time after eq. (1); T defined as the daily mean temperature in the eq. (2) gloss; III-A no longer mixes P_net(t) with the fitted P_TCL(T) | S4 | done |
 | R44 | 6 | "R2 bounds the estimate" | Use "dead band" | "The dead band bounds the estimate." | S4 | done |
-| R45 | 6 | "The temperature cancels, so" | Write "Note that…" | | | open (L) |
+| R45 | 6 | "The temperature cancels, so" | Write "Note that…" | "Note that the temperature cancels, so the estimate needs no choice of evaluation day." | L | done |
 | R46 | 6 | "The two regimes are estimated separately." | Heating only | III-B equations kept for both regimes; the reversible-HP paragraph shortened to two sentences | S3, S3b | declined (Alex: generic everywhere except the results) |
 | R47 | 6 | III-C cancellation passage | Unclear; how is Δt_Th set? | III-C opens with the use (congestion management, flexibility products); the window is an exogenous building-stock parameter; the cancellation is two plain sentences; E_flex is linear in the window, so results are per hour or ratios. Literature range for the window: D4, needs Alex | S6 | partly |
 | R48 | 6 | "Over a year, this paper counts…" | Rephrase or move; why useful? | Annual counting moved to the IV-F opening, with why the annual sum is useful; IV-F's repeated cancellation sentence dropped | S6 | done |
@@ -68,7 +68,7 @@ Missing input: the Supervisor 2 marks. Alex does not have them yet (16 Oct). The
 | R51 | 8 | "Installed Capacity Estimation" | Why not first? | Sec. IV reordered: capacity first (IV-B), then why it works (IV-C), fit quality (IV-D), energy, flexibility | S7 | done |
 | R52 | 8 | "1260 aggregates at a WAPE of 19%" | Different capacity per aggregate? | Purpose paragraph: "Its net load is known, and so is its true installed capacity, the sum of the capacities of its own HPs … each has its own true capacity" | S7 | done |
 | R53 | 9 | "Transferring the full SF curve…" | Not understood | Estimators (i)–(iv) listed before Table IV, rows labelled to match; "Transferring the full SF curve…" now reads "The full pilot curve (iii)…" | S7 | done |
-| R54 | 9 | "About three points" | Three points? | | | open (L) |
+| R54 | 9 | "About three points" | Three points? | "About three percentage points of this unused-capacity factor" | L | done |
 | R55 | 11 | VI-D "…but not the net-load numerator." | What was done to counter limits? | VI-D rewritten: each limitation paired with what bounds it (20 splits and disjoint draws; real aggregates out of sample plus the five-population transfer test; the zero-HP control makes the non-TCL bias predictable; tariff control still within 10%). Cooling and data scarcity are stated as open | S8 | done |
 | R56 | 12 | "s" over "ted" of "This paper presented" (Conclusion, l.578) | "s" | "This paper presents" | S8 | done |
 | R57 | 12 | strike-out of "Most of this error stems from the net-load slope, … rather than from the transfer of the SF slope." (l.578) | (strike-out, no text) | Struck sentence deleted | S8 | done |
@@ -347,3 +347,7 @@ Changes from the brief's default spec: prior work becomes five paragraphs (¶5�
 - Cooling moved from VI-D into the first future-work direction of Sec. VII, with the NEEA/Washington reason for why no cooling transfer was possible.
 - **Removed by Alex's decision:** the Oregon numerator result (capacity overestimated by 45% in heating and 72% in cooling, about a third of the heating sensitivity unmetered) and "The cooling fits of Table II are therefore descriptive only". The II-A sentence still says the evaluation covers the heating regime only.
 - VI-D rewritten again (Alex: the previous version still led and ended each paragraph on the weakness). Each paragraph now opens with the safeguard: pilot kept apart from its targets; the full estimator tested fully out of sample and within 10% on the real aggregates; the non-TCL response measured rather than assumed away; the real aggregates bounding the effect of deliberate HP control. The residual limit follows, and each paragraph ends on coverage or a bound. The span of HP penetration in the Kloten design (10%–100%, from N_hp = 5–25, N = 10–50, N_hp ≤ N) is stated. The "regime-specific structure" clause is dropped (Alex). No result changed.
+
+### Batch L (21 Oct)
+- R26, R35, R38, R45, R54 applied as above.
+- Also fixed: II-A "Section IV-D confirms this, with s_h tracking installed capacity" now points to IV-C, where that evidence moved in S7. Every other cross-reference into Sec. IV was checked and still points to the right subsection.
