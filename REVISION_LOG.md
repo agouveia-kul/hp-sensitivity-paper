@@ -69,9 +69,9 @@ Missing input: the Supervisor 2 marks. Alex does not have them yet (16 Oct). The
 | R52 | 8 | "1260 aggregates at a WAPE of 19%" | Different capacity per aggregate? | Purpose paragraph: "Its net load is known, and so is its true installed capacity, the sum of the capacities of its own HPs … each has its own true capacity" | S7 | done |
 | R53 | 9 | "Transferring the full SF curve…" | Not understood | Estimators (i)–(iv) listed before Table IV, rows labelled to match; "Transferring the full SF curve…" now reads "The full pilot curve (iii)…" | S7 | done |
 | R54 | 9 | "About three points" | Three points? | | | open (L) |
-| R55 | 11 | VI-D "…but not the net-load numerator." | What was done to counter limits? | | | open (S8) |
-| R56 | 12 | "s" over "ted" of "This paper presented" (Conclusion, l.578) | "s" | needs Alex → Alex: "This paper presents" (as recommended); applied in S8 | S1 | open (S8) |
-| R57 | 12 | strike-out of "Most of this error stems from the net-load slope, … rather than from the transfer of the SF slope." (l.578) | (strike-out, no text) | | | open (S8, delete) |
+| R55 | 11 | VI-D "…but not the net-load numerator." | What was done to counter limits? | VI-D rewritten: each limitation paired with what bounds it (20 splits and disjoint draws; real aggregates out of sample plus the five-population transfer test; the zero-HP control makes the non-TCL bias predictable; tariff control still within 10%). Cooling and data scarcity are stated as open | S8 | done |
+| R56 | 12 | "s" over "ted" of "This paper presented" (Conclusion, l.578) | "s" | "This paper presents" | S8 | done |
+| R57 | 12 | strike-out of "Most of this error stems from the net-load slope, … rather than from the transfer of the SF slope." (l.578) | (strike-out, no text) | Struck sentence deleted | S8 | done |
 | S2-xx | — | Supervisor 2 marks | — | | | needs Alex (file missing) |
 
 ## Decisions for Alex
@@ -85,7 +85,7 @@ Answered 16 Oct 2026: **D1 yes · D2 words · D5 capacity first · D7 as recomme
 | D3 | Run the capacity-definition robustness check (max, HEAPO nameplate)? (Alex, 19 Oct: **run**; results below, needs Alex) | Run it. Numbers go in only after review. |
 | D4 | Δt_Th literature range (verified source found: Hong et al. 2013, 1–2 h existing, up to 6 h improved; proposed sentence in S6 specs, **needs Alex**) | Only with verified references; otherwise state it as an illustrative parameter. |
 | D5 | Sec. IV with capacity first? (Alex: **yes**; applied in S7) | Yes. |
-| D6 | Non-TCL correction implemented or kept as future work? | Future work. |
+| D6 | Non-TCL correction implemented or kept as future work? (Alex: **future work**; kept in Sec. VII) | Future work. |
 | D7 (new) | "feeder" vs "aggregate": the evaluated aggregates are summed household meters, not feeder-head measurements (l.529). | Use "feeder" for the DSO use case in Sec. I. Use "aggregate" (defined in Sec. I ¶11) for every result claim. Abstract: "aggregates of measured households". |
 
 ## Content specs
@@ -320,3 +320,23 @@ Changes from the brief's default spec: prior work becomes five paragraphs (¶5�
 - If adopted: it goes in IV-A after the purpose paragraph, and the caption drops the "Fig. X." prefix.
 - Added (Alex, 20 Oct): the split schematic is Fig. 5 in IV-A, after the purpose paragraph, which now ends "Fig. 5 sketches one split." The caption is the draft's, without the "Fig. X" prefix. The paper is now 14 pages (was 13).
 - Alex's edit kept: the Table I footnote wrapped in `flushleft`.
+
+### S8 content specs (VI-D limitations, R55; conclusion, R56, R57; D6 = future work)
+**VI-D, point: each limitation, then what bounds it (facts from the paper only).**
+1. Overlapping aggregates within a split (same 25 HPs) → 20 random splits, draws without replacement, pilot disjoint from every target, no household repeated within an aggregate.
+2. Few real aggregates (three, one with six HPs, all at 100% HP penetration) → fully out of sample (no pilot HP among them). Table VII widens the SF-transfer test to five populations, but cannot test the net-load numerator, because none of those datasets yields a faithful net load.
+3. Non-TCL temperature response neglected → quantified by the zero-HP control (VI-A: median 0.28 kW of spurious capacity per household), so the bias is predictable from the consumer count the DSO holds. The correction stays future work (D6, Sec. VII).
+4. Cooling untested → no mitigation available: NEEA allows no cooling transfer, Oregon shows the numerator failing (+45% heating, +72% cooling), and the cooling fits are descriptive only. Needs a fully submetered cooling population (Sec. VII).
+5. Tariff control and §14a throttling → may bias the numerator downwards, but the real aggregates stay within 10%.
+6. Scarce submetered data → a wider pilot would relieve it.
+
+**Conclusion.**
+- R56: "This paper presents". R57: "Most of this error stems from the net-load slope…" deleted.
+- Terms aligned with Sec. I: "two slopes" → "two sensitivities", "SF slope" → "SF sensitivity", "calibration households" → "pilot".
+- Flexibility added after energy (abstract number, WAPE 10%), to keep the order capacity → energy → flexibility.
+- Future-work paragraph unchanged; the non-TCL correction stays there (D6).
+
+### S8 notes (as written)
+- New label `sec:accuracy` on VI-A, so the limitations can point to the zero-HP control.
+- Numbers added: 0.28 kW (verbatim from VI-A) in VI-D, and the flexibility WAPE of 10% in the conclusion (as in the abstract and IV-F). None removed.
+- The conclusion now reports capacity, energy and flexibility, in that order.
