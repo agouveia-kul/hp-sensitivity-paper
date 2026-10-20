@@ -107,7 +107,38 @@ The contributions of this paper are threefold.
 \item Estimates of the temperature-driven TCL energy, which needs only the net-load sensitivity and no pilot, and of a flexibility potential, which also uses the SF sensitivity.
 \end{enumerate}
 
-The rest of the paper is structured as follows. Section~\ref{sec:problem} states the problem, defines two fits of the temperature response, one to the net load and one to the pilot's SF, and characterises them across datasets. Section~\ref{sec:estimation} derives the energy, installed capacity and flexibility from these fits. Section~\ref{sec:results} evaluates them on semi-synthetic aggregates of one Swiss population, and Section~\ref{sec:validation} applies the method to real Swiss and German aggregates outside the pilot. Section~\ref{sec:discussion} discusses accuracy, generalisation and data requirements. Lastly, Section~\ref{sec:conclusion} concludes the paper.
+The rest of the paper is structured as follows. Section~\ref{sec:problem} states the problem, defines two fits of the temperature response, one to the net load and one to the pilot's SF, and characterises them across datasets. Section~\ref{sec:estimation} derives the energy, installed capacity and flexibility from these fits. Section~\ref{sec:results} evaluates them on semi-synthetic aggregates of one Swiss population, and Section~\ref{sec:validation} applies the method to real Swiss and German aggregates outside the pilot. Section~\ref{sec:discussion} discusses accuracy, generalisation and data requirements. Fig.~\ref{fig:pipeline} maps each step of the method to the section that defines it. Lastly, Section~\ref{sec:conclusion} concludes the paper.
+
+\begin{figure}[t]
+\centering
+\resizebox{\columnwidth}{!}{%
+\begin{tikzpicture}[font=\scriptsize, >=latex,
+  io/.style={draw, fill=black!6, rounded corners=1pt, align=center, text width=15mm, minimum height=7mm, inner sep=1.5pt},
+  proc/.style={draw, rounded corners=3pt, align=center, text width=15mm, minimum height=7mm, inner sep=1.5pt},
+  node distance=6mm and 8mm]
+\node[io] (temp) {Ambient temperature};
+\node[io, above=of temp] (sub) {Submetered pilot TCL load\\[-1pt]{\scriptsize\color{black!60}Sec.~\ref*{sec:transfer}}};
+\node[io, below=of temp] (net) {Aggregated net load};
+\node[proc, right=of temp] (bath) {Net-load fit\\[-1pt]{\scriptsize\color{black!60}Sec.~\ref*{sec:fits-net}}};
+\node[proc, right=of sub] (sf) {SF fit\\[-1pt]{\scriptsize\color{black!60}Sec.~\ref*{sec:fits-sf}}};
+\node[proc, right=20mm of sf] (cap) {Installed capacity\\[-1pt]{\scriptsize\color{black!60}Sec.~\ref*{sec:uc-capacity}}};
+\node[proc, right=20mm of bath] (en) {Energy\\[-1pt]{\scriptsize\color{black!60}Sec.~\ref*{sec:uc-energy}}};
+\node[proc, right=of cap] (fl) {Flexibility\\[-1pt]{\scriptsize\color{black!60}Sec.~\ref*{sec:uc-flex}}};
+\draw[->] (sub) -- (sf);
+\draw[->] (net) -| (bath);
+\draw[->] (temp) -- (bath);
+\draw[->] (temp) -- (sf);
+\draw[->] (bath) -- (en);
+\draw[->] (sf) -- (cap) node[midway, above, font=\scriptsize] {SF sensitivity};
+\draw[->] (bath) -- (cap.south west);
+\draw[->] (cap) -- (fl);
+\draw[->] (en) -| (fl);
+\draw[->] (sf.north) -- ([yshift=6mm]sf.north) -| (fl.north);
+\end{tikzpicture}%
+}
+\caption{Overview of the method, with the section that defines each step. Sections~\ref{sec:results} and~\ref{sec:validation} evaluate the three outputs.}
+\label{fig:pipeline}
+\end{figure}
 
 % =====================================================================
 \section{Problem and Approach}
@@ -371,39 +402,6 @@ Since $\hat{\mathrm{SF}}(T)\,\hat{P}^{\max}$ equals the fitted TCL load, \eqref{
 \end{figure}
 
 The bound is an idealisation, not a dispatchable schedule. It takes the square wave as feasible and ignores each building's thermal state and the comfort limits within which its TCLs can shift. It therefore stands as a potential against temperature and window length, not as a firm reserve.
-
-Fig.~\ref{fig:pipeline} summarises how the two fits combine into the three estimates.
-
-\begin{figure}[t]
-\centering
-\resizebox{\columnwidth}{!}{%
-\begin{tikzpicture}[font=\scriptsize, >=latex,
-  io/.style={draw, fill=black!6, rounded corners=1pt, align=center, text width=13.5mm, minimum height=6.5mm, inner sep=1.5pt},
-  proc/.style={draw, rounded corners=3pt, align=center, text width=13.5mm, minimum height=6.5mm, inner sep=1.5pt},
-  node distance=6mm and 8mm]
-\node[io] (temp) {Ambient temperature};
-\node[io, above=of temp] (sub) {Submetered pilot TCL load};
-\node[io, below=of temp] (net) {Aggregated net load};
-\node[proc, right=of temp] (bath) {Net-load fit \eqref{eq:tclfit} $s_h$, $s_c$, $T_h$, $T_c$};
-\node[proc, right=of sub] (sf) {SF fit \eqref{eq:sffit} $m_h$, $m_c$};
-\node[proc, right=14mm of sf] (cap) {Installed cap. \eqref{eq:capacity} $\hat{P}_{k}^{\max}$};
-\node[proc, right=14mm of bath] (en) {Energy \eqref{eq:energy} $\hat{E}_{\mathrm{TCL}}$};
-\node[proc, right=of cap] (fl) {Flexibility \eqref{eq:flex-energy}};
-\draw[->] (sub) -- (sf);
-\draw[->] (net) -| (bath);
-\draw[->] (temp) -- (bath);
-\draw[->] (temp) -- (sf);
-\draw[->] (bath) -- (en);
-\draw[->] (sf) -- (cap) node[midway, above, font=\tiny] {only $m$};
-\draw[->] (bath) -- (cap.south west);
-\draw[->] (cap) -- (fl);
-\draw[->] (en) -| (fl);
-\draw[->] (sf.north) -- ([yshift=6mm]sf.north) -| (fl.north);
-\end{tikzpicture}%
-}
-\caption{Method pipeline. The net-load fit, which needs only data the DSO holds, supplies the sensitivities $s_h$, $s_c$ and the thresholds $T_h$, $T_c$; the SF fit of a submetered pilot supplies only the SF sensitivities $m_h$, $m_c$. Their ratio gives the installed capacity per regime. The net-load fit alone gives the temperature-driven energy, and the capacity with the transferred sensitivity gives the flexibility.}
-\label{fig:pipeline}
-\end{figure}
 
 % =====================================================================
 \section{Numerical Results}
