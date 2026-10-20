@@ -341,3 +341,8 @@ Changes from the brief's default spec: prior work becomes five paragraphs (Â¶5â€
 - Numbers added: 0.28 kW (verbatim from VI-A) in VI-D, and the flexibility WAPE of 10% in the conclusion (as in the abstract and IV-F). None removed.
 - The conclusion now reports capacity, energy and flexibility, in that order.
 - Fig. 5 redrawn for legibility (Alex, 20 Oct): the five-column layout was shrunk to about half size to fit the column. The new three-column, top-to-bottom layout (`review/drafts/split_schematic_v2.tex`) fits the column at near full size, and its font is \footnotesize instead of \scriptsize. Same boxes, arrows and content; caption unchanged; still 14 pages. `calc` added to the TikZ libraries.
+
+### VI-D reframed (Alex, 20 Oct: the limitations undercut the work)
+- VI-D opens "The evaluation keeps every test out of sample, and three limits remain." Then: (1) overlapping aggregates within a split, (2) three real aggregates plus the five-population transfer test, (3) the non-TCL response, sized by the zero-HP control and predictable from the consumer count. The tariff paragraph opens "Deliberate control of the HPs could add a fourth source of error." Its closing data-shortage sentence is dropped (already in future work).
+- Cooling moved from VI-D into the first future-work direction of Sec. VII, with the NEEA/Washington reason for why no cooling transfer was possible.
+- **Removed by Alex's decision:** the Oregon numerator result (capacity overestimated by 45% in heating and 72% in cooling, about a third of the heating sensitivity unmetered) and "The cooling fits of Table II are therefore descriptive only". The II-A sentence still says the evaluation covers the heating regime only.
