@@ -313,3 +313,8 @@ Changes from the brief's default spec: prior work becomes five paragraphs (¶5�
 - Table III rows: capacity, energy, flexibility.
 - Already in this order: the abstract, Sec. I ¶11 and contributions, the Sec. II opening, Fig. 1 (capacity box above energy) and Sec. IV (IV-B capacity, IV-E energy, IV-F flexibility). Sec. V reports capacity, then the flexibility ratio.
 - Alex's edit kept: the Table III footnote ("Not used by any estimate…") commented out.
+
+### Split schematic (R49 option) — draft only, not in the manuscript (20 Oct)
+- `review/drafts/split_schematic.tex` (standalone TikZ, same box style as Fig. 1) and `.png` (rendered at IEEE column width).
+- Content, all from IV-A: 50 submetered Kloten HPs, split at random 20 times → a 25-HP pilot → SF fit → m_h; the 25-HP target half plus the 1307 households without an HP → aggregates (N = 10–50, N_hp = 5–25) → net-load fit → s_h, and their true capacity (the sum over their HPs) → estimate s_h / m_h → WAPE over all 20 splits (1260).
+- If adopted: it goes in IV-A after the purpose paragraph, and the caption drops the "Fig. X." prefix.
