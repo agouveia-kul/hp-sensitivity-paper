@@ -269,7 +269,7 @@ where $k$ denotes the regime (heating or cooling), $\mathcal{N}_k$ is the set of
 \label{eq:sf-piecewise}
 \end{equation}
 
-with $h$ denoting heating and $c$ cooling. It is by definition bounded in $[0,1]$. The SF fit takes the same form as \eqref{eq:bathtub},
+with $h$ denoting heating and $c$ cooling. The SF is by definition bounded in $[0,1]$. The SF fit takes the same form as \eqref{eq:bathtub},
 \begin{equation}
 \begin{aligned}
     \hat{\mathrm{SF}}_h(T) &= b_h + m_h (T_h - T), \quad \forall T < T_h,\\
@@ -298,7 +298,7 @@ The observed SF stays well below 1. Each arm would reach the installed capacity 
 
 \input{tables/tab_cross}
 
-Table~\ref{tab:cross} reports both fits, $\hat{P}_{\mathrm{net}}(T)$ and $\hat{\mathrm{SF}}(T)$, on aggregates from four countries and a range of climates, with each climate given as its K{\"o}ppen--Geiger class \cite{beck2018koppen}. The heating regime, the cooling regime or both are resolved as the local climate dictates (Fig.~\ref{fig:bathtub}). Each fit is scored by its coefficient of determination on the days of its own regime, $R^2_h$ for heating and $R^2_c$ for cooling. In the heating regime, the net-load fit reaches an $R^2_h$ between 0.68 and 0.92 across the year-round aggregates. It is lowest in Austin where electric heating is marginal. In the cooling regime, $R^2_c$ ranges from 0.95 in hot Maricopa to 0.75 in mild Oregon, where cooling is rare.
+Table~\ref{tab:cross} reports both fits, $\hat{P}_{\mathrm{net}}(T)$ and $\hat{\mathrm{SF}}(T)$, on aggregates from four countries and a range of climates, with each climate given as its K{\"o}ppen--Geiger class \cite{beck2018koppen}. The heating regime, the cooling regime or both are resolved as the local climate dictates (Fig.~\ref{fig:bathtub}). Each fit is scored by its coefficient of determination on the days of its own regime, $R^2_h$ for heating and $R^2_c$ for cooling. In the heating regime, the net-load fit reaches an $R^2_h$ between 0.68 and 0.92 across the year-round aggregates. $R^2_h$ is lowest in Austin, where electric heating is marginal. In the cooling regime, $R^2_c$ ranges from 0.95 in hot Maricopa to 0.75 in mild Oregon, where cooling is rare.
 
 The threshold temperatures follow the local climate. $T_h$ falls between 8 and 17\,$^\circ$C, and $T_c$ between 18 and 26\,$^\circ$C. A hot county such as Maricopa has a steep cooling arm, whereas a cold one such as Hamelin has no cooling whatsoever. The sensitivities $s_h$ and $s_c$ of the net-load fit scale with the aggregate's total installed TCL, and therefore with its size. The 849-household Norwegian aggregate and the electrified ResStock counties show the steepest arms for this reason. The SF sensitivities $m_h$ and $m_c$ remove this size dependence.
 
@@ -332,7 +332,7 @@ The two fits, \eqref{eq:tclfit} and \eqref{eq:sffit}, are complementary. The net
 
 The installed capacity is the sum of the individual peak demands \eqref{eq:pk}, defined per regime. The aggregated TCLs never draw it at once, so the net load never exposes it directly. The net-load fit does expose the temperature-driven TCL load $\hat{P}_{\mathrm{TCL}}^{\,i}(T)$ of aggregate $i$. Rearranging \eqref{eq:sf-piecewise}, the capacity of regime $k$ follows from this load and the SF at the same temperature.
 
-Both must describe the same load. The net-load arm is zero at the aggregate's own threshold by construction, and the weather-independent TCL use sits in $P_{\mathrm{base}}$. The matching SF is therefore the temperature-driven part of \eqref{eq:sffit}. It starts from zero at the aggregate's own thresholds and grows with the transferred sensitivity,
+The net-load arm and the SF must describe the same load. The net-load arm is zero at the aggregate's own threshold by construction, and the weather-independent TCL use sits in $P_{\mathrm{base}}$. The matching SF is therefore the temperature-driven part of \eqref{eq:sffit}. It starts from zero at the aggregate's own thresholds and grows with the transferred sensitivity,
 \begin{equation}
 \begin{aligned}
     \hat{\mathrm{SF}}_h^{\,i}(T) &= m_h\,(T_h^{\,i} - T), \quad \forall T < T_h^{\,i},\\
@@ -445,7 +445,7 @@ The experiment of this section emulates a DSO that submeters one pilot and estim
 \node[proc] (half)  at (30mm, -16mm)  {Target half\\25 HPs};
 \node[io]   (free)  at (60mm, -16mm)  {1307 households without an HP};
 \node[proc] (sffit) at (0, -31mm)     {SF fit\\[1pt]$m_h$};
-\node[proc] (agg)   at (30mm, -31mm)  {Aggregates\\$N$ = 10--50, $N_{hp}$ = 5--25};
+\node[proc] (agg)   at (30mm, -31mm)  {Aggregates\\10--50 households,\\5--25 HPs};
 \node[res]  (est)   at (0, -46mm)     {Estimate\\[1pt]$s_h / m_h$};
 \node[proc] (net)   at (30mm, -46mm)  {Net-load fit\\[1pt]$s_h$};
 \node[proc] (truth) at (60mm, -46mm)  {True capacity\\sum over its HPs};
@@ -607,7 +607,7 @@ The thresholds show why only the sensitivity transfers. The net-load thresholds 
 \subsection{\chg{Transfer across Populations}}
 \label{sec:transfer-pop}
 
-\chg{The three real aggregates test the full estimate, but from one Swiss pilot only. Table~\ref{tab:transfer} widens the test of the SF transfer to every population with submetered heating available to this study: 849 Oslo apartments grouped in ten blocks \cite{cofactor}, 182 households of the GB RHPP trial \cite{rhpp8151, Lov17}, and US households of the BPA \cite{bpa_hphc} and NREL \cite{nrel_ccashp} field studies, whose submetering covers the HP and its backup heat. The BPA households lie in two heating zones, the milder western Washington (HZ1) and the colder inland (HZ2), where the NREL households also lie. On these datasets, only the SF transfer is tested. The RHPP, BPA and NREL data hold the heating load of each household but no other load, so no faithful net load can be built from them. In Oslo, the apartments' own load includes electric heating that the submetered heating channel omits. Each row of Table~\ref{tab:transfer} therefore compares the target's own SF sensitivity with the pilot's, and the ratio minus one is the capacity error caused by the transfer alone.}
+\chg{The three real aggregates test the full estimate, but from one Swiss pilot only. Table~\ref{tab:transfer} widens the test of the SF transfer to every population with submetered heating available to this study. These are 849 Oslo apartments grouped in ten blocks \cite{cofactor}, 182 households of the GB RHPP trial \cite{rhpp8151, Lov17} and US households of the BPA \cite{bpa_hphc} and NREL \cite{nrel_ccashp} field studies, whose submetering covers the HP and its backup heat. The BPA households lie in two heating zones, the milder western Washington (HZ1) and the colder inland (HZ2), where the NREL households also lie. On these datasets, only the SF transfer is tested. The RHPP, BPA and NREL data hold the heating load of each household but no other load, so no faithful net load can be built from them. In Oslo, the apartments' own load includes electric heating that the submetered heating channel omits. Each row of Table~\ref{tab:transfer} therefore compares the target's own SF sensitivity with the pilot's, and the ratio minus one is the capacity error caused by the transfer alone.}
 
 \input{tables/tab_transfer}
 
@@ -634,7 +634,7 @@ The SF generalises in a specific and testable way. Within a population, its sens
 
 \subsection{Data Requirements}
 
-The two fits ask for different data. The net-load fit needs only the aggregated net load and ambient temperature, both already held by the DSO, and runs on any aggregate. The SF fit needs submetered TCL load and installed capacity, which the DSO rarely holds. A single submetered pilot of the same population calibrates it, and its sensitivity then transfers, so no aggregate under study is submetered. A pilot of a few tens of HPs appears to suffice: a pilot of 25 Kloten HPs reproduces the SF shape of the other 25 at a median $R^2_h$ of 0.91, and recovers their capacity at a median error of $+8\%$ (Section~\ref{sec:res-sf}). The pilot should, however, submeter every electric heating source of its households, including backup resistance heat.
+The two fits ask for different data. The net-load fit needs only the aggregated net load and ambient temperature, both already held by the DSO, and runs on any aggregate. The SF fit needs submetered TCL load and installed capacity, which the DSO rarely holds. A single submetered pilot of the same population calibrates it, and its sensitivity then transfers, so no aggregate under study is submetered. A pilot of a few tens of HPs appears to suffice. A pilot of 25 Kloten HPs reproduces the SF shape of the other 25 at a median $R^2_h$ of 0.91, and recovers their capacity at a median error of $+8\%$ (Section~\ref{sec:res-sf}). The pilot should, however, submeter every electric heating source of its households, including backup resistance heat.
 
 \subsection{Limitations}
 
@@ -654,7 +654,7 @@ This paper presents a method to estimate the installed capacity of the TCLs behi
 
 The method thus trades a modest, characterised error for a large gain in deployability. Its estimates are least reliable on aggregates with a handful of HPs and most reliable once tens of HPs are aggregated, which is the regime a substation presents. Where no submetered households are available, the net-load fit alone still gives the temperature-driven energy.
 
-Regarding future work, four directions follow. The submetered populations were small, so a wider and more diverse set of metered HPs, with every electric heating source submetered, would test the transfer on more populations. It would also test the cooling regime, which the method covers but this paper could not evaluate: the only aggregates with complete cooling ground truth, the NEEA households of Washington and Oregon \cite{neea_eulr}, allow no cooling transfer, since the Washington pilot has no day above its cooling threshold in 2023. The net-load sensitivity also absorbs the temperature response of the non-TCL load, which inflates the capacity estimate most where consumers without TCLs dominate. Future work will compensate the estimates for this response, for instance by subtracting a per-consumer non-TCL sensitivity scaled by the consumer count the DSO already holds. It will also evaluate data-driven methods for HP and TCL quantification against the proposed estimator, to see where a learned model earns its data cost and where the proposed estimator suffices. Finally, it will model the TCL consumption that does not depend on temperature, chiefly domestic hot water and baseline operation. The temperature-driven estimate omits this consumption, which sets the gap between the temperature-driven and the annual energy.
+Regarding future work, four directions follow. The submetered populations were small, so a wider and more diverse set of metered HPs, with every electric heating source submetered, would test the transfer on more populations. Such a set would also test the cooling regime, which the method covers but this paper could not evaluate. The only aggregates with complete cooling ground truth, the NEEA households of Washington and Oregon \cite{neea_eulr}, allow no cooling transfer, since the Washington pilot has no day above its cooling threshold in 2023. The net-load sensitivity also absorbs the temperature response of the non-TCL load, which inflates the capacity estimate most where consumers without TCLs dominate. Future work will compensate the estimates for this response, for instance by subtracting a per-consumer non-TCL sensitivity scaled by the consumer count the DSO already holds. It will also evaluate data-driven methods for HP and TCL quantification against the proposed estimator, to see where a learned model earns its data cost and where the proposed estimator suffices. Finally, it will model the TCL consumption that does not depend on temperature, chiefly domestic hot water and baseline operation. The temperature-driven estimate omits this consumption, which sets the gap between the temperature-driven and the annual energy.
 
 \balance
 \bibliographystyle{IEEEtran}
