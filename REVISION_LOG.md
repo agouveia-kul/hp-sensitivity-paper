@@ -61,8 +61,8 @@ Missing input: the Supervisor 2 marks. Alex does not have them yet (16 Oct). The
 | R44 | 6 | "R2 bounds the estimate" | Use "dead band" | "The dead band bounds the estimate." | S4 | done |
 | R45 | 6 | "The temperature cancels, so" | Write "Note that…" | | | open (L) |
 | R46 | 6 | "The two regimes are estimated separately." | Heating only | III-B equations kept for both regimes; the reversible-HP paragraph shortened to two sentences | S3, S3b | declined (Alex: generic everywhere except the results) |
-| R47 | 6 | III-C cancellation passage | Unclear; how is Δt_Th set? | | | open (S6, D4) |
-| R48 | 6 | "Over a year, this paper counts…" | Rephrase or move; why useful? | | | open (S6) |
+| R47 | 6 | III-C cancellation passage | Unclear; how is Δt_Th set? | III-C opens with the use (congestion management, flexibility products); the window is an exogenous building-stock parameter; the cancellation is two plain sentences; E_flex is linear in the window, so results are per hour or ratios. Literature range for the window: D4, needs Alex | S6 | partly |
+| R48 | 6 | "Over a year, this paper counts…" | Rephrase or move; why useful? | Annual counting moved to the IV-F opening, with why the annual sum is useful; IV-F's repeated cancellation sentence dropped | S6 | done |
 | R49 | 7 | IV-A split procedure | Why? What is fitted and estimated? | | | open (S7) |
 | R50 | 7 | Fig. 5 number recital | Just the conclusion | | | open (S7) |
 | R51 | 8 | "Installed Capacity Estimation" | Why not first? | | | open (S7, D5) |
@@ -83,7 +83,7 @@ Answered 16 Oct 2026: **D1 yes · D2 words · D5 capacity first · D7 as recomme
 | D1 | Present the method heating-only, with cooling by symmetry? (Alex, 16 Oct: **no**. Generic in Sec. II–III; only the results, Sec. IV–V, are heating-only) | Yes. Every quantitative result is heating-only, and the cooling fits are descriptive (l.570). |
 | D2 | Regime names: words or new symbols? (Alex, 16 Oct: **words**; applied in S4) | Words: heating regime, dead band, cooling regime. |
 | D3 | Run the capacity-definition robustness check (max, HEAPO nameplate)? (Alex, 19 Oct: **run**; results below, needs Alex) | Run it. Numbers go in only after review. |
-| D4 | Δt_Th literature range | Only with verified references; otherwise state it as an illustrative parameter. |
+| D4 | Δt_Th literature range (verified source found: Hong et al. 2013, 1–2 h existing, up to 6 h improved; proposed sentence in S6 specs, **needs Alex**) | Only with verified references; otherwise state it as an illustrative parameter. |
 | D5 | Sec. IV with capacity first? | Yes. |
 | D6 | Non-TCL correction implemented or kept as future work? | Future work. |
 | D7 (new) | "feeder" vs "aggregate": the evaluated aggregates are summed household meters, not feeder-head measurements (l.529). | Use "feeder" for the DSO use case in Sec. I. Use "aggregate" (defined in Sec. I ¶11) for every result claim. Abstract: "aggregates of measured households". |
@@ -256,3 +256,21 @@ Changes from the brief's default spec: prior work becomes five paragraphs (¶5�
 **Removed:** the Table II "first support" sentence and the Kloten m_h evidence (results, front-loaded in S2); "Under this assumption … also holds for the other aggregates" (repeats ¶1); "If the assumption holds, the net-load sensitivity … gives the installed capacity" (repeats Sec. I ¶11 and III-B).
 - Alex's edits in this round, kept: the Köppen–Geiger citation added in II-C ¶3; "has no cooling whatsoever" (Hamelin); Table I footnote trimmed to the abbreviation list (the explanatory part commented out).
 - The refreshed change-tracked PDF is `review/hp_sensitivity_diff_vs_reviewed_new.pdf`, because the old file was locked by a viewer. Close the viewer and it will replace the old one at the next refresh.
+
+### S6 content specs (III-C flexibility; R47, R48; D4)
+**III-C ¶1, point: why the flexibility matters, and what the window is.**
+- Use: a DSO or aggregator needs to know how much heating energy the TCLs behind a feeder could shift, for congestion management or a flexibility product.
+- Definition: the energy shifted from the baseline without breaching comfort (`Zir19`).
+- Δt_Th is exogenous, a property of the building stock rather than an output of the fits. A larger window means better insulation or wider comfort bands (`Cha16`). Insulation and comfort data are lacking.
+
+**III-C ¶2 (eqs. 12–14):** unchanged.
+
+**III-C ¶3, point: the capacity estimate drops out (R47).** Two plain sentences. The shiftable load comes from the net-load fit. The transferred SF only sets the headroom above it, so the capacity estimate drops out. E_flex is linear in Δt_Th, so the results are given per hour of window or as ratios.
+
+**R48:** "Over a year, this paper counts…" moves to IV-F, which opens with it. It adds why the annual sum is useful (the yearly shiftable heating volume, which is what a flexibility product is valued on). IV-F's opening restatement of the cancellation is dropped, since it now lives in III-C.
+
+**D4 (needs Alex):** verified source, Hong, Kelly, Thomson & Richardson, "Assessing heat pumps as flexible load", *Proc. IMechE Part A: J. Power and Energy* 227(1):30–42, 2013, doi:10.1177/0957650912454830 (abstract checked on Strathprints, 20 Oct 2026). Existing dwellings shift HP operation by only 1–2 h before comfort suffers; up to 6 h with much better insulation and thermal buffering. Proposed sentence, **not inserted**: "A study of UK dwellings places this window at 1–2 h for the existing stock and up to 6 h with improved insulation and thermal buffering \cite{Hon13}, which brackets the 4 h used for illustration in Section IV-F."
+
+### S6 notes (as written)
+- The manuscript PDF in `paper/` was locked by a viewer, so the build was verified from a scratch copy: 13 pages, 0 undefined references.
+- `review/hp_sensitivity_diff_vs_reviewed.pdf` is refreshed (15 pages).
