@@ -1,4 +1,4 @@
-# Response to supervisors — draft for Alex to edit
+# Response to supervisors – draft for Alex to edit
 
 Manuscript: "Estimating the Installed Capacity of Aggregated Thermostatically Controlled Loads from Net Load and Temperature". Section, figure and table numbers refer to the revised version. The marked-up changes are in `review/hp_sensitivity_diff_vs_reviewed.pdf`.
 
