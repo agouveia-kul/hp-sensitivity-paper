@@ -107,7 +107,7 @@ The contributions of this paper are threefold.
 \item Estimates of the temperature-driven TCL energy, which needs only the net-load sensitivity and no pilot, and of a flexibility potential, which also uses the SF sensitivity.
 \end{enumerate}
 
-The rest of the paper is structured as follows. Section~\ref{sec:problem} states the problem, defines two fits of the temperature response, one to the net load and one to the pilot's SF, and characterises them across datasets. Section~\ref{sec:estimation} derives the energy, installed capacity and flexibility from these fits. Section~\ref{sec:results} evaluates them on semi-synthetic aggregates of one Swiss population, and Section~\ref{sec:validation} applies the method to real Swiss and German aggregates outside the pilot. Section~\ref{sec:discussion} discusses accuracy, generalisation and data requirements. Fig.~\ref{fig:pipeline} maps each step of the method to the section that defines it. Lastly, Section~\ref{sec:conclusion} concludes the paper.
+The rest of the paper is structured as follows. Section~\ref{sec:problem} states the problem, defines two fits of the temperature response, one to the net load and one to the pilot's SF, and characterises them across datasets. Section~\ref{sec:estimation} derives the installed capacity, energy and flexibility from these fits. Section~\ref{sec:results} evaluates them on semi-synthetic aggregates of one Swiss population, and Section~\ref{sec:validation} applies the method to real Swiss and German aggregates outside the pilot. Section~\ref{sec:discussion} discusses accuracy, generalisation and data requirements. Fig.~\ref{fig:pipeline} maps each step of the method to the section that defines it. Lastly, Section~\ref{sec:conclusion} concludes the paper.
 
 \begin{figure}[t]
 \centering
@@ -325,21 +325,7 @@ The transfer rests on a hypothesis, which this paper tests rather than assumes: 
 \section{Aggregated TCL Quantification}
 \label{sec:estimation}
 
-The two fits, \eqref{eq:tclfit} and \eqref{eq:sffit}, are complementary. The net-load fit \eqref{eq:tclfit} needs no submetering, but its sensitivities also absorb any temperature response of the non-TCL load. The SF fit \eqref{eq:sffit} needs submetering but isolates the TCL simultaneity. Together they estimate three quantities a DSO needs about the TCLs of an aggregate: their energy consumption, installed capacity and flexibility potential. Energy consumption follows from \eqref{eq:tclfit} alone. Installed capacity and flexibility also need the transferred SF sensitivity, since the net load exposes the aggregated TCL demand, not the non-coincident sum of the individual peaks. Section~\ref{sec:results} evaluates each quantity.
-
-\subsection{TCL Energy Consumption Estimation}
-\label{sec:uc-energy}
-
-The energy the TCL population draws follows from integrating its temperature response over a certain period.
-%In the heating regime, $T < T_h$, the fitted TCL load of Equation~\eqref{eq:tclfit} reduces to its heating arm $\hat{P}_{\mathrm{TCL}}(T) = s_h (T_h - T)$.
-Over a day of mean temperature $T$, the temperature-driven TCL energy is given by
-\begin{equation}
-\hat{E}_{\mathrm{TCL}} = \left ( s_h \max(0, T_h - T) + s_c \max(0, T-T_c) \right ) \,\Delta t,
-\label{eq:energy}
-\end{equation}
-with $\Delta t$ being the length of the period, here one day. The annual energy is the sum of \eqref{eq:energy} over the days of the year. The fitted TCL load alone suffices. Given the measured daily mean temperature, the fitted TCL load $\hat{P}_{\mathrm{TCL}}(T)$ separates the daily TCL load from the daily net load; given a forecast temperature, it forecasts that load for a future period.
-
-The dead band bounds the estimate. Between $T_h$ and $T_c$ both arms are zero. The estimate therefore misses any TCL energy that persists into mild weather, such as domestic hot water. The estimate captures the temperature-driven share, not the annual total.
+The two fits, \eqref{eq:tclfit} and \eqref{eq:sffit}, are complementary. The net-load fit \eqref{eq:tclfit} needs no submetering, but its sensitivities also absorb any temperature response of the non-TCL load. The SF fit \eqref{eq:sffit} needs submetering but isolates the TCL simultaneity. Together they estimate three quantities a DSO needs about the TCLs of an aggregate: their installed capacity, energy consumption and flexibility potential. Installed capacity needs the transferred SF sensitivity, since the net load exposes the aggregated TCL demand, not the non-coincident sum of the individual peaks. Energy consumption follows from \eqref{eq:tclfit} alone. Flexibility needs both. Section~\ref{sec:results} evaluates each quantity.
 
 \subsection{TCL Installed Capacity Estimation}
 \label{sec:uc-capacity}
@@ -369,6 +355,20 @@ The two regimes are estimated separately. A reversible HP counts in both $\hat{P
 % \textcolor{red}{This section is substantially small. Can you add some visualization to demonstrate what we aim to say!
 % In the present state this section is completely useless as eq 10, 11 are kind of obvious.
 % }
+
+\subsection{TCL Energy Consumption Estimation}
+\label{sec:uc-energy}
+
+The energy the TCL population draws follows from integrating its temperature response over a certain period.
+%In the heating regime, $T < T_h$, the fitted TCL load of Equation~\eqref{eq:tclfit} reduces to its heating arm $\hat{P}_{\mathrm{TCL}}(T) = s_h (T_h - T)$.
+Over a day of mean temperature $T$, the temperature-driven TCL energy is given by
+\begin{equation}
+\hat{E}_{\mathrm{TCL}} = \left ( s_h \max(0, T_h - T) + s_c \max(0, T-T_c) \right ) \,\Delta t,
+\label{eq:energy}
+\end{equation}
+with $\Delta t$ being the length of the period, here one day. The annual energy is the sum of \eqref{eq:energy} over the days of the year. The fitted TCL load alone suffices. Given the measured daily mean temperature, the fitted TCL load $\hat{P}_{\mathrm{TCL}}(T)$ separates the daily TCL load from the daily net load; given a forecast temperature, it forecasts that load for a future period.
+
+The dead band bounds the estimate. Between $T_h$ and $T_c$ both arms are zero. The estimate therefore misses any TCL energy that persists into mild weather, such as domestic hot water. The estimate captures the temperature-driven share, not the annual total.
 
 % =====================================================================
 \subsection{Flexibility Quantification}
@@ -414,12 +414,12 @@ Table~\ref{tab:params} summarises which fitted parameters each estimate uses, an
 \toprule
 Estimate & Net-load fit (target) & SF fit (pilot) & External & Pilot \\
 \midrule
-Energy \eqref{eq:energy} & $s_h, s_c, T_h, T_c$ & -- & -- & no \\
 Capacity \eqref{eq:capacity} & $s_h, s_c$ & $m_h, m_c$ & -- & yes \\
+Energy \eqref{eq:energy} & $s_h, s_c, T_h, T_c$ & -- & -- & no \\
 Flexibility \eqref{eq:flex-energy} & $s_h, s_c, T_h, T_c$ & $m_h, m_c$ & $\Delta t_{Th}$ & yes \\
 \bottomrule
 \end{tabular}
-\par\smallskip{\footnotesize Not used by any estimate: $P_{\mathrm{base}}$ and $b_h$, $b_c$.}
+%\par\smallskip{\footnotesize Not used by any estimate: $P_{\mathrm{base}}$ and $b_h$, $b_c$.}
 \end{table}
 
 % =====================================================================

@@ -305,3 +305,11 @@ Changes from the brief's default spec: prior work becomes five paragraphs (¶5�
 - Floats renumber: Table IV = baselines, Table V = SF invariance, Fig. 5 = capacity heatmap, Fig. 8 = fit-quality heatmap.
 - The pre-existing 44-word sentence in IV-C on the 15-min peak SF is split in two.
 - `scripts/outputs.py` updated so that regenerating Table IV keeps the (i)–(iv) row labels.
+
+### Output order: capacity → energy → flexibility everywhere (Alex, 20 Oct)
+- Sec. III: subsections swapped, so III-A is now installed capacity and III-B is energy (III-C flexibility unchanged). Equations renumber: capacity (9), energy (10).
+- Sec. III intro: "their installed capacity, energy consumption and flexibility potential". Capacity needs the transferred SF sensitivity; energy follows from the net-load fit alone; "Flexibility needs both."
+- Roadmap: "derives the installed capacity, energy and flexibility".
+- Table III rows: capacity, energy, flexibility.
+- Already in this order: the abstract, Sec. I ¶11 and contributions, the Sec. II opening, Fig. 1 (capacity box above energy) and Sec. IV (IV-B capacity, IV-E energy, IV-F flexibility). Sec. V reports capacity, then the flexibility ratio.
+- Alex's edit kept: the Table III footnote ("Not used by any estimate…") commented out.
