@@ -113,23 +113,23 @@ The rest of the paper is structured as follows. Section~\ref{sec:problem} states
 \centering
 \resizebox{\columnwidth}{!}{%
 \begin{tikzpicture}[font=\scriptsize, >=latex,
-  io/.style={draw, fill=black!6, rounded corners=1pt, align=center, text width=15mm, minimum height=7mm, inner sep=1.5pt},
-  proc/.style={draw, rounded corners=3pt, align=center, text width=15mm, minimum height=7mm, inner sep=1.5pt},
-  node distance=6mm and 8mm]
+  io/.style={draw, fill=black!6, rounded corners=1pt, align=center, text width=19mm, minimum height=10mm, inner sep=2pt},
+  proc/.style={draw, rounded corners=3pt, align=center, text width=19mm, minimum height=10mm, inner sep=2pt},
+  node distance=5mm and 6mm]
 \node[io] (temp) {Ambient temperature};
-\node[io, above=of temp] (sub) {Submetered pilot TCL load\\[-1pt]{\scriptsize\color{black!60}Sec.~\ref*{sec:transfer}}};
+\node[io, above=of temp] (sub) {Submetered pilot TCL load};
 \node[io, below=of temp] (net) {Aggregated net load};
 \node[proc, right=of temp] (bath) {Net-load fit\\[-1pt]{\scriptsize\color{black!60}Sec.~\ref*{sec:fits-net}}};
 \node[proc, right=of sub] (sf) {SF fit\\[-1pt]{\scriptsize\color{black!60}Sec.~\ref*{sec:fits-sf}}};
-\node[proc, right=20mm of sf] (cap) {Installed capacity\\[-1pt]{\scriptsize\color{black!60}Sec.~\ref*{sec:uc-capacity}}};
-\node[proc, right=20mm of bath] (en) {Energy\\[-1pt]{\scriptsize\color{black!60}Sec.~\ref*{sec:uc-energy}}};
+\node[proc, right=13mm of sf] (cap) {Installed capacity\\[-1pt]{\scriptsize\color{black!60}Sec.~\ref*{sec:uc-capacity}}};
+\node[proc, right=13mm of bath] (en) {Energy\\[-1pt]{\scriptsize\color{black!60}Sec.~\ref*{sec:uc-energy}}};
 \node[proc, right=of cap] (fl) {Flexibility\\[-1pt]{\scriptsize\color{black!60}Sec.~\ref*{sec:uc-flex}}};
 \draw[->] (sub) -- (sf);
 \draw[->] (net) -| (bath);
 \draw[->] (temp) -- (bath);
 \draw[->] (temp) -- (sf);
 \draw[->] (bath) -- (en);
-\draw[->] (sf) -- (cap) node[midway, above, font=\scriptsize] {SF sensitivity};
+\draw[->] (sf) -- (cap) node[midway, above, font=\scriptsize, align=center] {SF\\sensitivity};
 \draw[->] (bath) -- (cap.south west);
 \draw[->] (cap) -- (fl);
 \draw[->] (en) -| (fl);
