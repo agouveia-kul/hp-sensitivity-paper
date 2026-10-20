@@ -403,6 +403,25 @@ Since $\hat{\mathrm{SF}}(T)\,\hat{P}^{\max}$ equals the fitted TCL load, \eqref{
 
 The bound is an idealisation, not a dispatchable schedule. It takes the square wave as feasible and ignores each building's thermal state and the comfort limits within which its TCLs can shift. It therefore stands as a potential against temperature and window length, not as a firm reserve.
 
+Table~\ref{tab:params} summarises which fitted parameters each estimate uses, and which data they come from.
+
+\begin{table}[t]
+\centering
+\caption{Fitted parameters used by each estimate}
+\label{tab:params}
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lcccc}
+\toprule
+Estimate & Net-load fit (target) & SF fit (pilot) & External & Pilot \\
+\midrule
+Energy \eqref{eq:energy} & $s_h, s_c, T_h, T_c$ & -- & -- & no \\
+Capacity \eqref{eq:capacity} & $s_h, s_c$ & $m_h, m_c$ & -- & yes \\
+Flexibility \eqref{eq:flex-energy} & $s_h, s_c, T_h, T_c$ & $m_h, m_c$ & $\Delta t_{Th}$ & yes \\
+\bottomrule
+\end{tabular}
+\par\smallskip{\footnotesize Not used by any estimate: $P_{\mathrm{base}}$ and $b_h$, $b_c$.}
+\end{table}
+
 % =====================================================================
 \section{Numerical Results}
 \label{sec:results}
