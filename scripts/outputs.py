@@ -2247,13 +2247,13 @@ def tab_transfer(n_splits=300, seed=0):
         body.append(r'\midrule')
     tex = r"""\begin{table}[t]
 \centering
-\caption{Ratio of the target's own to the pilot's SF sensitivity [IQR over random splits or a bootstrap over homes]}
+\caption{Ratio of the target's own to the pilot's SF sensitivity [IQR over random splits or a bootstrap over households]}
 \label{tab:transfer}
 \setlength{\tabcolsep}{2.5pt}
 \resizebox{\columnwidth}{!}{%
 \begin{tabular}{llcc}
 \toprule
-pilot $\rightarrow$ target & & homes & $m_h^{\mathrm{own}}/m_h^{\mathrm{pilot}}$ \\
+pilot $\rightarrow$ target & & households & $m_h^{\mathrm{own}}/m_h^{\mathrm{pilot}}$ \\
 \midrule
 """ + '\n'.join(body[:-1]) + r"""
 \bottomrule
@@ -2974,7 +2974,7 @@ def tab_cross():
         r"\item[] $n$: aggregated consumers. Climate: K{\"o}ppen--Geiger class~\cite{beck2018koppen}: Cfb, temperate oceanic; Dfa, Dfb, humid continental; Csb, warm-summer Mediterranean; Cfa, humid subtropical; BWh, hot desert. $R^2_h$, $R^2_c$: fit scores on the days of the heating and cooling regimes. ASHP, GSHP, WSHP: air-, ground-, water-source HP; DHP: ductless (mini-split) HP; AC: air conditioning; ER: electric resistance heating." "\n"
         r"%\item[a] The LCL London aggregate is submetered heat-pump load only (nine homes, no other household load), restricted to 2014, the single year all nine are metered together. Its net-load fit therefore coincides with the HP load, $P_{\mathrm{base}}$ is the winter standby/hot-water floor, and the installed capacity is the sum of the nine per-home 2014 peaks. The 2014 record ends in March, so the window is winter-only and never reaches $T_h$, which weakens the fit." "\n"
         r"\item[a] Hennepin's SF uses the ASHP compressor's own draw only, excluding its electric-resistance HP-backup element" "\n"
-        r"\item[b] The SF uses the submetered ductless HPs only. Most of these homes also have electric baseboard, furnace or other zonal heating circuits (17 of 22 in WA, 16 of 21 in OR), which the net load includes." "\n"
+        r"\item[b] The SF uses the submetered ductless HPs only. Most of these households also have electric baseboard, furnace or other zonal heating circuits (17 of 22 in WA, 16 of 21 in OR), which the net load includes." "\n"
         "\n"
         r"\end{tablenotes}" "\n"
         r"\end{threeparttable}" "\n" r"\end{table*}")
