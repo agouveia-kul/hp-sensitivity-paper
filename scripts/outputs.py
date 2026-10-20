@@ -1121,7 +1121,7 @@ def fig_quality_heatmap():
         ax.set_xlabel('averaging window')
         ax.set_title(title, fontsize=8.5)
         ax.grid(False)
-    axes[0].set_ylabel('consumers per aggregate, $N$')
+    axes[0].set_ylabel('households per aggregate, $N$')
     cb = fig.colorbar(im, ax=axes, pad=0.02, aspect=28, fraction=0.05)
     cb.set_label('median $R^2_h$', fontsize=8)
     cb.ax.tick_params(labelsize=7)
@@ -1167,7 +1167,7 @@ def fig_capacity_heatmap():
         ax.grid(False)
         cb = fig.colorbar(im, ax=ax, pad=0.02, aspect=28, fraction=0.05)
         cb.ax.tick_params(labelsize=7)
-    axes[0].set_ylabel('consumers per aggregate, $N$')
+    axes[0].set_ylabel('households per aggregate, $N$')
     hf.save(fig, 'fig_capacity_heatmap')
     print('saved -> fig_capacity_heatmap')
 
@@ -2971,7 +2971,7 @@ def tab_cross():
         + head + "\n" r"\midrule" "\n" + body + "\n" r"\bottomrule" "\n"
         r"\end{tabular}" "\n"
         r"\begin{tablenotes}[flushleft]\footnotesize" "\n"
-        r"\item[] $n$: aggregated consumers. Climate: K{\"o}ppen--Geiger class~\cite{beck2018koppen}: Cfb, temperate oceanic; Dfa, Dfb, humid continental; Csb, warm-summer Mediterranean; Cfa, humid subtropical; BWh, hot desert. $R^2_h$, $R^2_c$: fit scores on the days of the heating and cooling regimes. ASHP, GSHP, WSHP: air-, ground-, water-source HP; DHP: ductless (mini-split) HP; AC: air conditioning; ER: electric resistance heating." "\n"
+        r"\item[] $n$: aggregated households. Climate: K{\"o}ppen--Geiger class~\cite{beck2018koppen}: Cfb, temperate oceanic; Dfa, Dfb, humid continental; Csb, warm-summer Mediterranean; Cfa, humid subtropical; BWh, hot desert. $R^2_h$, $R^2_c$: fit scores on the days of the heating and cooling regimes. ASHP, GSHP, WSHP: air-, ground-, water-source HP; DHP: ductless (mini-split) HP; AC: air conditioning; ER: electric resistance heating." "\n"
         r"%\item[a] The LCL London aggregate is submetered heat-pump load only (nine homes, no other household load), restricted to 2014, the single year all nine are metered together. Its net-load fit therefore coincides with the HP load, $P_{\mathrm{base}}$ is the winter standby/hot-water floor, and the installed capacity is the sum of the nine per-home 2014 peaks. The 2014 record ends in March, so the window is winter-only and never reaches $T_h$, which weakens the fit." "\n"
         r"\item[a] Hennepin's SF uses the ASHP compressor's own draw only, excluding its electric-resistance HP-backup element" "\n"
         r"\item[b] The SF uses the submetered ductless HPs only. Most of these households also have electric baseboard, furnace or other zonal heating circuits (17 of 22 in WA, 16 of 21 in OR), which the net load includes." "\n"

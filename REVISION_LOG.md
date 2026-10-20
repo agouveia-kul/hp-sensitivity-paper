@@ -365,3 +365,33 @@ Changes from the brief's default spec: prior work becomes five paragraphs (¶5�
 - **Read-through test.** The first sentences of Sec. I–III and the conclusion carry the core message in order: growth → stress → need → lack → prior work → gap → idea → contributions; quantities and data → two fits → transfer as a tested hypothesis; capacity → energy → flexibility → summary table. Fixed: III-A "Both must describe the same load" → "The net-load arm and the SF must describe the same load". **Suggestion, not applied:** II-C opens by describing Table II ("Table II reports both fits…") rather than stating its point (both fits hold across climates; thresholds follow the climate).
 - **Deliverables.** `review/hp_sensitivity_diff_vs_reviewed.pdf` (latexdiff against the reviewed version); this log, with every row given a status; `review/RESPONSE_TO_SUPERVISORS.md` (draft for Alex).
 - **Still open:** Supervisor 2's marked sentences (S2-xx) have not been received.
+
+## Clarity and terminology pass (22 Oct; Supervisor 2's general comment)
+Supervisor 2 marked no sentences; the comment is that the paper is hard to read because of sentence complexity. Whole-paper pass, two parts.
+
+**Terminology: one term per concept** (counts before → after; text, captions, Table II footnote, figure labels)
+| Concept | Before | Now |
+|---|---|---|
+| temperature | outdoor (5) / ambient (6) | outdoor temperature (incl. the Fig. 1 box) |
+| unit | households (62) / consumers (23) | households (incl. N in the Nomenclature, "household count", heatmap axis labels, Table II footnote) |
+| s_h | net-load sensitivity / heating sensitivity (3) / net-load numerator (2) | net-load sensitivity ("numerator" kept only where the ratio is explained) |
+| m_h | SF sensitivity / transferred, pilot or pilot's sensitivity (11) / slope of the SF | SF sensitivity; "the pilot's SF sensitivity" when the source matters |
+| ground truth | true capacity (5) / submetered capacity (7) | true capacity |
+| energy | temperature-driven energy / energy consumption (4) / heating-regime energy (3) | temperature-driven energy |
+| estimator (iii) | full SF curve / full calibrated SF curve / full pilot curve | full pilot curve; in the conclusion "the pilot's full SF curve, intercept and threshold included" |
+| split halves | target half / held-out / second / other half (7) | target half |
+| threshold | threshold / balance-point (2) | threshold temperature; the one "also known as balance-point" definition kept |
+| spelling | percent / per cent | percent (follows Alex's edit) |
+| subsection titles | III: TCL Installed Capacity Estimation / TCL Energy Consumption Estimation / Flexibility Quantification; IV: Installed Capacity Estimation / Energy Consumption Estimation / Flexibility Potential | III: Installed Capacity / Temperature-Driven Energy / Flexibility Potential Estimation; IV: Installed Capacity / Temperature-Driven Energy / Flexibility Potential |
+
+Figures `fig_capacity_heatmap` and `fig_quality_heatmap` regenerated with the axis label "households per aggregate, N" (values identical; `scripts/outputs.py` updated, as is the Table II footnote string).
+
+**Clarity: sentence-level edits** (no number changed; whole-paper token check)
+- Removed a redundant sentence (II-A "Note that (2) needs only the net load…", already said at the start of Sec. II).
+- Plainer definitions: SF as "the share of the aggregate's installed capacity drawn"; "total" instead of "cumulative" installed capacity; "The measured SF is then defined per regime".
+- III-A: "The estimate is therefore only as good as the transferred sensitivity" → "as good as these two sensitivities", which agrees with the results (the net-load sensitivity dominates the error).
+- III-B: "The fitted TCL load alone suffices" → "No pilot is needed"; the forecast sentence split.
+- III-C: the noun chain "temperature-set energy demand" sentence merged into one plain sentence.
+- IV-D: "Spatial / temporal aggregation averages out the intermittent, non-thermal behaviour…" → "Summing more households evens out their individual, non-thermal behaviour. Averaging over longer windows does the same over time…".
+- 17 two-idea or nested sentences split (Sec. I HP peak; II-B TCL types and SF-fit inputs; II-C Köppen conclusion; IV-B penetration; IV-C pilot fit; IV-D end cells; IV-E dead-band energy and the hourly-integration sentence; IV-F unused-capacity factor and dead-band floor; V-A planning estimate; V-B housing; VI-D tariffs; VII real aggregates). Openers naming their subject: IV-C "Only the pilot's SF sensitivity transfers…", "The net-load sensitivity, in turn, grows with the installed capacity"; VI-B "The SF sensitivity generalises…".
+- After the pass: 535 sentences, longest 39 words, median 17.
