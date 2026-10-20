@@ -72,7 +72,7 @@ Missing input: the Supervisor 2 marks. Alex does not have them yet (16 Oct). The
 | R55 | 11 | VI-D "…but not the net-load numerator." | What was done to counter limits? | VI-D rewritten: each paragraph opens with its safeguard (pilot kept apart from targets; full estimator tested out of sample, within 10%; non-TCL response measured by the zero-HP control; real aggregates bound tariff control). Cooling moved to future work in Sec. VII | S8 | done |
 | R56 | 12 | "s" over "ted" of "This paper presented" (Conclusion, l.578) | "s" | "This paper presents" | S8 | done |
 | R57 | 12 | strike-out of "Most of this error stems from the net-load slope, … rather than from the transfer of the SF slope." (l.578) | (strike-out, no text) | Struck sentence deleted | S8 | done |
-| S2-xx | — | Supervisor 2 marks | — | | | needs Alex (file missing) |
+| S2 | — | General comment: hard to read because of sentence complexity (no sentences marked, Alex 22 Oct) | — | Content-first restructuring (Phase 1, S1–S8) and a whole-paper clarity and terminology pass | 1124de3 | done |
 
 ## Decisions for Alex
 
@@ -364,7 +364,7 @@ Changes from the brief's default spec: prior work becomes five paragraphs (¶5�
 - **Voice.** Fixes: three sentences over 40 words split (V-B population list, which also had an Oxford comma; VI-C pilot size; Sec. VII cooling); two unclear "It"s named ("The SF is by definition bounded…", "$R^2_h$ is lowest in Austin…"). Now 522 sentences, longest 39 words, median 18 (below the skill's 22, by the one-idea-per-sentence rule); no expletive openers; no US "-ize"; no em dashes; no avoid-list words. **Left for Alex:** "percent" (Sec. I ¶1, Alex's edit; British is "per cent").
 - **Read-through test.** The first sentences of Sec. I–III and the conclusion carry the core message in order: growth → stress → need → lack → prior work → gap → idea → contributions; quantities and data → two fits → transfer as a tested hypothesis; capacity → energy → flexibility → summary table. Fixed: III-A "Both must describe the same load" → "The net-load arm and the SF must describe the same load". **Suggestion, not applied:** II-C opens by describing Table II ("Table II reports both fits…") rather than stating its point (both fits hold across climates; thresholds follow the climate).
 - **Deliverables.** `review/hp_sensitivity_diff_vs_reviewed.pdf` (latexdiff against the reviewed version); this log, with every row given a status; `review/RESPONSE_TO_SUPERVISORS.md` (draft for Alex).
-- **Still open:** Supervisor 2's marked sentences (S2-xx) have not been received.
+- Supervisor 2 marked no sentences (Alex, 22 Oct); the general comment is answered by the clarity and terminology pass below.
 
 ## Clarity and terminology pass (22 Oct; Supervisor 2's general comment)
 Supervisor 2 marked no sentences; the comment is that the paper is hard to read because of sentence complexity. Whole-paper pass, two parts.

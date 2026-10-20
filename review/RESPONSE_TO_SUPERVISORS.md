@@ -57,4 +57,4 @@ No result has changed.
 ## Supervisor 2
 
 - **General comment** ("the content should come first, the sentences second"). The revision followed this. We first fixed a three-sentence core message and a paragraph-by-paragraph content map of the abstract and Sec. I–III, which are in the revision log. Every rewritten paragraph opens with its point, defines terms before using them and keeps to one idea per sentence. The abstract and Sec. I use no symbols.
-- **Marked sentences (S2-xx).** *Pending.* The marked sentences have not reached us yet. The abstract and Sec. I will be rechecked against them once they arrive.
+- **Sentence complexity, whole paper.** After the restructuring, the full text had a separate pass for clarity and terminology. Nested or two-idea sentences are split, and no sentence exceeds 40 words. Each concept now has one name throughout: for example outdoor temperature, households, the net-load and SF sensitivities, true capacity and temperature-driven energy. The figure labels follow the same terms.
