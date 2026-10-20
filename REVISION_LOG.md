@@ -340,3 +340,4 @@ Changes from the brief's default spec: prior work becomes five paragraphs (Â¶5â€
 - New label `sec:accuracy` on VI-A, so the limitations can point to the zero-HP control.
 - Numbers added: 0.28 kW (verbatim from VI-A) in VI-D, and the flexibility WAPE of 10% in the conclusion (as in the abstract and IV-F). None removed.
 - The conclusion now reports capacity, energy and flexibility, in that order.
+- Fig. 5 redrawn for legibility (Alex, 20 Oct): the five-column layout was shrunk to about half size to fit the column. The new three-column, top-to-bottom layout (`review/drafts/split_schematic_v2.tex`) fits the column at near full size, and its font is \footnotesize instead of \scriptsize. Same boxes, arrows and content; caption unchanged; still 14 pages. `calc` added to the TikZ libraries.
