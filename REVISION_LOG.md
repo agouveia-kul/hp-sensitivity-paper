@@ -84,7 +84,7 @@ Answered 16 Oct 2026: **D1 yes · D2 words · D5 capacity first · D7 as recomme
 | D2 | Regime names: words or new symbols? (Alex, 16 Oct: **words**; applied in S4) | Words: heating regime, dead band, cooling regime. |
 | D3 | Run the capacity-definition robustness check (max, HEAPO nameplate)? (Alex, 19 Oct: **run**; results below, needs Alex) | Run it. Numbers go in only after review. |
 | D4 | Δt_Th literature range (verified source found: Hong et al. 2013, 1–2 h existing, up to 6 h improved; proposed sentence in S6 specs, **needs Alex**) | Only with verified references; otherwise state it as an illustrative parameter. |
-| D5 | Sec. IV with capacity first? | Yes. |
+| D5 | Sec. IV with capacity first? (Alex: **yes**; applied in S7) | Yes. |
 | D6 | Non-TCL correction implemented or kept as future work? | Future work. |
 | D7 (new) | "feeder" vs "aggregate": the evaluated aggregates are summed household meters, not feeder-head measurements (l.529). | Use "feeder" for the DSO use case in Sec. I. Use "aggregate" (defined in Sec. I ¶11) for every result claim. Abstract: "aggregates of measured households". |
 
