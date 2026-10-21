@@ -153,7 +153,7 @@ def reproduce_baseline(rebuild=False):
            'zero_hp_kw_per_hh': float(Z.per_house.median()),
            'sf15_peak_coldest': sf15['sf15_peak_coldest'], 'sf15_peak_year': sf15['sf15_peak_year'],
            'p2m_coldest': sf15['p2m_coldest'],
-           'real_Hg': real['Hg, CH'], 'real_MqO': real['MqO, CH'], 'real_Hamelin': real['Hamelin, DE']}
+           'real_Hg': real['Affoltern, CH'], 'real_MqO': real['Einsiedeln, CH'], 'real_Hamelin': real['Hamelin, DE']}
     rows = []
     for k, (target, tol) in TARGETS.items():
         v = got[k]

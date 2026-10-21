@@ -1366,7 +1366,7 @@ def tab_real():
     kb, km, kt = _pilot_fit(K['T'], K, np.arange(len(K['cap'])))
     print(f'full Kloten pilot ({len(K["cap"])} HPs): b {kb:.4f} m {km:.5f} T_h {kt:.2f} '
           f'(module constants: {SWISS_SF})')
-    names = {'Hg': 'Hg, CH', 'MqO': 'MqO, CH', 'WPUQ': 'Hamelin, DE'}
+    names = {'Hg': 'Affoltern, CH', 'MqO': 'Einsiedeln, CH', 'WPUQ': 'Hamelin, DE'}
     rows = []
     for st in ('Hg', 'MqO', 'WPUQ'):
         X = D[st]; T = X['T']; hp = X['hp'].sum(0); net = hp + X['own'].sum(0); cap = float(X['cap'].sum())
@@ -2227,7 +2227,7 @@ def tab_transfer(n_splits=300, seed=0):
         R = cross_study_transfer(Hb, pil, tgt, label=lab, seed=seed)
         rows[key] = (lab, 'US', f'{len(pil)}/{len(tgt)}', f"{P['m']:.3f}/{Q['m']:.3f}", Q['m'] / P['m'], R.ratio)
     # Kloten -> real aggregates outside the pilot
-    for st, lab, c in (('Hg', 'Hg', 'CH'), ('MqO', 'MqO', 'CH'), ('WPUQ', 'Hamelin', r'CH$\rightarrow$DE')):
+    for st, lab, c in (('Hg', 'Affoltern', 'CH'), ('MqO', 'Einsiedeln', 'CH'), ('WPUQ', 'Hamelin', r'CH$\rightarrow$DE')):
         X = D[st]; mx = _pilot_fit(X['T'], X, np.arange(len(X['cap'])))[1]
         rows[st] = (rf'Kloten $\rightarrow$ {lab}', c, f"{nk}/{len(X['cap'])}", f'{mk:.3f}/{mx:.3f}', mx / mk,
                     _daily_bootstrap(K, X, seed=seed))
@@ -2253,7 +2253,7 @@ def tab_transfer(n_splits=300, seed=0):
 \resizebox{\columnwidth}{!}{%
 \begin{tabular}{llcc}
 \toprule
-pilot $\rightarrow$ target & & households & $m_h^{\mathrm{own}}/m_h^{\mathrm{pilot}}$ \\
+pilot $\rightarrow$ target & country & households & $m_h^{\mathrm{own}}/m_h^{\mathrm{pilot}}$ \\
 \midrule
 """ + '\n'.join(body[:-1]) + r"""
 \bottomrule
