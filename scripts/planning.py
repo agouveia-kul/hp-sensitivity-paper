@@ -437,3 +437,203 @@ def years_table(Y):
     """Households with >= 90 % of 15-min intervals per window, by source and role."""
     cols = list(WINTERS) + list(CAL_HEAT)
     return (Y[cols] >= 0.9).groupby([Y.source, Y.role]).sum().T
+
+
+# ===========================================================================
+# Shared design of Steps 2-5: split pool and 15-min Kloten matrices
+# ===========================================================================
+SPLIT_SEED = 2026          # seeds the non-HP halves, one child seed per split
+N_SPLITS = 20
+_K15 = {}
+
+
+def plan_splits(rebuild=False):
+    """The 20 splits of the new steps.
+
+    The HP halves are the published ones (pilot A, target B of ``outputs._kloten_design``),
+    so any change against Table IV comes from the non-HP pool alone. The 1307 households
+    without an HP are halved per split with its own seed: C (pilot side, calibration only)
+    and F (target side, aggregates only). Indices are rows of ``_daily_pools()['KLO']``.
+    """
+    def build():
+        Dz = rebuild_kloten_design()
+        nfree = Dz['K']['free'].shape[0]
+        seeds = np.random.SeedSequence(SPLIT_SEED).spawn(N_SPLITS)
+        out = []
+        for s, p in enumerate(Dz['pilots']):
+            perm = np.random.default_rng(seeds[s]).permutation(nfree)
+            out.append(dict(split=s, A=np.asarray(p['A']), B=np.asarray(p['B']),
+                            C=np.sort(perm[:nfree // 2]), F=np.sort(perm[nfree // 2:]),
+                            m=p['m'], b=p['b'], t=p['t'], seed=seeds[s].entropy))
+        return out
+    return _cached('splits', build, rebuild)
+
+
+def kloten_15min():
+    """15-min Kloten loads in local time, rows in ``_daily_pools()['KLO']`` order.
+
+    whole: HP households' HP plus other load (50 x T); hp: HP load only; free: the
+    1307 households without an HP; cap: robust peaks; T: daily mean temperature per
+    interval's day; cold5: mask of the five coldest days; wkd: weekday mask.
+    Memoized for the session (about 200 MB).
+    """
+    if 'KLO' in _K15:
+        return _K15['KLO']
+    from hp_capacity import robust_series_peak
+    M = kloten_members(); p = M['pool']
+    orow = {h: i for i, h in enumerate(p['households'])}
+    hrows = [p['hp_households'].index(h) for h in M['hp']]
+    hp = p['hp_mat'][hrows].astype(np.float32)
+    whole = hp + p['other_mat'][[orow[h] for h in M['hp']]]
+    free = p['other_mat'][[orow[h] for h in M['free']]].astype(np.float32)
+    idx = p['index'].tz_convert(LOCAL_TZ)
+    Td = pd.Series(p['temperature']['KLO'], index=idx).resample('D').mean()
+    day = idx.normalize()
+    cold5 = np.asarray(day.isin(Td.nsmallest(5).index))
+    K = _daily_pools_klo()
+    assert np.allclose(K['cap'], [robust_series_peak(r) for r in hp]), 'row order differs from _daily_pools'
+    _K15['KLO'] = dict(whole=whole, hp=hp, free=free, cap=K['cap'], index=idx, cold5=cold5,
+                       wkd=np.asarray(idx.dayofweek < 5), Td=Td)
+    return _K15['KLO']
+
+
+def _daily_pools_klo():
+    return O._daily_pools(include_wpuq=False)['KLO']
+
+
+PEAK_METRICS = ('max', 'p999', 'cold5', 'max_wkd', 'max_wke')
+
+
+def peak_metrics(x, K):
+    """Peak of one 15-min aggregate load: annual maximum (primary), 99.9th percentile,
+    maximum over the five coldest days, and the weekday / weekend maxima (diagnostic).
+    ``i_max`` is the interval of the annual maximum."""
+    n = len(x); k = int(np.ceil(0.999 * (n - 1)))
+    i = int(np.argmax(x))
+    return dict(max=float(x[i]), p999=float(np.partition(x, k)[k]), cold5=float(x[K['cold5']].max()),
+                max_wkd=float(x[K['wkd']].max()), max_wke=float(x[~K['wkd']].max()), i_max=i)
+
+
+def rebound_mask(K):
+    """Weekday intervals in the 45 min after the two Kloten block releases (12:00, 18:45)."""
+    hm = K['index'].hour * 60 + K['index'].minute
+    return K['wkd'] & np.asarray(((hm >= 720) & (hm < 765)) | ((hm >= 1125) & (hm < 1170)))
+
+
+# ===========================================================================
+# Step 2 -- increment model on the pilot side
+# ===========================================================================
+C_N = (30, 40, 50)
+C_K = (0, 5, 10, 15, 20, 25)
+
+
+def increment_model(draws=100, rebuild=False):
+    """Step 2: c(N, k0, k1) = [peak(future) - peak(current)] / sum of added HP capacities.
+
+    Pilot side only: HP households of the pilot half A (whole-house load) and the
+    pilot-side households without an HP, C. Per draw, the 25 pilot HPs are ordered at
+    random and 50 households of C are drawn; the aggregate (N, k) holds the first k HPs
+    and the first N - k households of C. The future of (N, k0) is (N, k1): the last
+    k1 - k0 non-HP households of the current aggregate are replaced by the next HPs,
+    so the two share every other household. All (N, k0 < k1) cells come from the same
+    draws. Returns one row per (split, draw, N, k0, k1).
+
+    Diagnostics next to the prompt's c (whole-house replacement):
+      c_on_*   switch-on: the HP circuits of the k1 - k0 added HPs are added to the
+               current aggregate, whose households all stay (adoption by existing
+               households; the reverse of Step 6's switch-off);
+      c_hp_*   HP circuits only, no other load at all: the increment of the HP fleet;
+      reb_*    whether the annual maximum falls in a post-release window (rebound).
+    """
+    def build():
+        K = kloten_15min(); rows, units = [], []
+        reb = rebound_mask(K)
+        for sp in plan_splits():
+            s = sp['split']
+            rng = np.random.default_rng(np.random.SeedSequence([SPLIT_SEED, 2, s]))
+            units.append(dict(split=s, P_unit=float(K['cap'][sp['A']].mean()),
+                              P_unit_sd=float(K['cap'][sp['A']].std())))
+            for d in range(draws):
+                H = rng.permutation(sp['A']); F = rng.choice(sp['C'], max(C_N), replace=False)
+                z = np.zeros(K['whole'].shape[1], np.float32)
+                hp_cum, hpc_cum, nf_cum = {0: z}, {0: z}, {0: z}
+                for k in C_K[1:]:
+                    hp_cum[k] = hp_cum[k - 5] + K['whole'][H[k - 5:k]].sum(0)
+                    hpc_cum[k] = hpc_cum[k - 5] + K['hp'][H[k - 5:k]].sum(0)
+                cap_cum = {k: float(K['cap'][H[:k]].sum()) for k in C_K}
+                for j in range(5, max(C_N) + 1, 5):
+                    nf_cum[j] = nf_cum[j - 5] + K['free'][F[j - 5:j]].sum(0)
+                cur = {(N, k): hp_cum[k] + nf_cum[N - k] for N in C_N for k in C_K}
+                pk = {key: peak_metrics(x, K) for key, x in cur.items()}
+                pc = {k: peak_metrics(hpc_cum[k], K) for k in C_K[1:]}
+                for N in C_N:
+                    for k0 in C_K:
+                        for k1 in C_K:
+                            if k1 <= k0:
+                                continue
+                            dc = cap_cum[k1] - cap_cum[k0]
+                            on = peak_metrics(cur[(N, k0)] + hpc_cum[k1] - hpc_cum[k0], K)
+                            hp0 = pc[k0]['max'] if k0 else 0.0
+                            rows.append(dict(split=s, draw=d, N=N, k0=k0, k1=k1, cap_added=dc,
+                                             **{f'cur_{m}': pk[(N, k0)][m] for m in PEAK_METRICS},
+                                             **{f'c_{m}': (pk[(N, k1)][m] - pk[(N, k0)][m]) / dc
+                                                for m in PEAK_METRICS},
+                                             c_on_max=(on['max'] - pk[(N, k0)]['max']) / dc,
+                                             c_on_p999=(on['p999'] - pk[(N, k0)]['p999']) / dc,
+                                             c_hp_max=(pc[k1]['max'] - hp0) / dc,
+                                             reb_cur=bool(reb[pk[(N, k0)]['i_max']]),
+                                             reb_fut=bool(reb[pk[(N, k1)]['i_max']]),
+                                             reb_on=bool(reb[on['i_max']])))
+        return dict(rows=pd.DataFrame(rows), units=pd.DataFrame(units))
+    return _cached('step2_increment', build, rebuild)
+
+
+def step2_tables(G, metrics=('max', 'p999', 'cold5', 'on_max', 'hp_max')):
+    """Pooled c per N and variant: median [IQR] over splits of the per-split median over
+    all (k0, k1) cells and draws, plus the spread of the cell medians within N."""
+    rows = []
+    for m in metrics:
+        col = f'c_{m}'
+        per = G.groupby(['N', 'split'])[col].median().groupby('N')
+        cells = split_summary(G, ['N', 'k0', 'k1'], col)['med'].groupby('N')
+        for N in C_N:
+            x = per.get_group(N)
+            rows.append(dict(variant=m, N=N, med=x.median(), q25=x.quantile(.25), q75=x.quantile(.75),
+                             cell_lo=cells.get_group(N).min(), cell_hi=cells.get_group(N).max()))
+    return pd.DataFrame(rows).set_index(['variant', 'N'])
+
+
+def split_summary(G, by, col, stat='median'):
+    """Per-split statistic of ``col`` within each ``by`` cell, then median [IQR], min and
+    max over the splits (the primary uncertainty of the new steps)."""
+    per = G.groupby(by + ['split'])[col].agg(stat).reset_index()
+    return per.groupby(by)[col].agg(med='median', q25=lambda x: x.quantile(.25),
+                                    q75=lambda x: x.quantile(.75), lo='min', hi='max')
+
+
+C_VARIANTS = (('c_max', 'whole-house replacement'), ('c_on_max', 'switch-on'), ('c_hp_max', 'HP circuits only'))
+
+
+def fig_increment(G, variants=C_VARIANTS, N=40, name='fig_step2_increment'):
+    """Median over splits of the per-split median c per (k0, k1), one panel per variant,
+    at one household count (c_hp does not depend on N)."""
+    import matplotlib.pyplot as plt
+    hf.use_style()
+    fig, axs = plt.subplots(1, len(variants), figsize=(hf.COL2, 2.5), sharey=True)
+    for ax, (col, label) in zip(axs, variants):
+        S = split_summary(G[G.N == N], ['k0', 'k1'], col)['med']
+        M = S.unstack('k1').reindex(index=list(C_K[:-1]), columns=list(C_K[1:]))
+        im = ax.imshow(M.to_numpy(), origin='lower', cmap='cividis', vmin=0.3, vmax=0.9, aspect='auto')
+        for i in range(M.shape[0]):
+            for j in range(M.shape[1]):
+                v = M.iat[i, j]
+                if np.isfinite(v):
+                    ax.text(j, i, f'{v:.2f}', ha='center', va='center', fontsize=6,
+                            color='k' if v > 0.62 else 'w')
+        ax.set_xticks(range(M.shape[1])); ax.set_xticklabels(M.columns)
+        ax.set_yticks(range(M.shape[0])); ax.set_yticklabels(M.index)
+        ax.set(xlabel='HPs after, $k_1$', title=label); ax.grid(False)
+    axs[0].set_ylabel('HPs before, $k_0$')
+    cb = fig.colorbar(im, ax=axs, pad=0.02, fraction=0.03)
+    cb.set_label('increment $c$ (kW per kW added)', fontsize=7)
+    return save_fig(fig, name)

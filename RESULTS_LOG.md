@@ -20,7 +20,8 @@ Written before each run of Steps 3, 4, 5 and 7, never edited afterwards.
 
 Changes to the design made after seeing results, with reasons. The original result stays in the step report.
 
-*(none yet)*
+- **D1 (Step 2): draws per cell raised from 30 to 100.** Reason: the run took 7 s, so more draws cost nothing and steady the cell medians. Original (30 draws): c medians per cell 0.63–0.68, the same range as with 100. No conclusion changed.
+- **D2 (Step 2): two diagnostic increments added next to the prompt's c** (switch-on, HP circuits only), plus the timing of each annual peak. Reason: c came out flat and above the 15-min peak SF (0.65 against 0.56), against the prompt's expectation, and the cause had to be found. The prompt's c is still computed and reported first.
 
 ---
 
@@ -169,10 +170,99 @@ Expectations: none required for Step 1.
 ### Alex's answers (21 Oct 2026)
 - Decision 4: keep the pilot-tariff households, as in the paper.
 - Decision 3: HEAPO has a separate PV channel, mostly NaN. Reading: the `kWh_received_*` channels are grid imports (after self-consumption) and the PV/return channel cannot rebuild import − export. Checked in Step 2: the 15-min HEAPO files have no export column; the daily files have `kWh_returned_Total`, but it is NaN on every 2023 day for all 26 Kloten HEAPO households. HEAPO stays import-only.
-- Decision 1: option (d) confirmed by Alex. Proposed after Alex asked why the pilot has only 26 HPs: per split, the 22 Swiss HPs with a 2024 year are halved 11/11. The pilot is the 26 HEAPO HPs plus 11 Swiss HPs (37 HPs, fitted on 2023). The targets use the other 11 Swiss HPs, scored in 2023 and in 2024. No household is on both sides, and there are 20 splits for spread. Awaiting confirmation.
+- Decision 1: option (d) confirmed by Alex. Proposed after Alex asked why the pilot has only 26 HPs: per split, the 22 Swiss HPs with a 2024 year are halved 11/11. The pilot is the 26 HEAPO HPs plus 11 Swiss HPs (37 HPs, fitted on 2023). The targets use the other 11 Swiss HPs, scored in 2023 and in 2024. No household is on both sides, and there are 20 splits for spread.
 - Decision 2: confirmed by Alex: Step 6 switches off the HP circuits of a random half of the households, with a matching switch-off increment calibrated on the Kloten pilot side.
 
 ### Confidence and caveats
 - HEAPO coverage relies on the kept daily counts, not on the raw files. Counts of 0 or 96 per day are taken at face value.
 - "Near zero" uses 5% of the robust peak. An HP can idle on its thermostat at any time, so the block is identified by its clock regularity across cold weekdays, not by single zeros. 13 cold weekdays is a small sample, but the 11:00–12:00 step (0.33 → 0.78) is far outside day-to-day variation.
 - Swiss PV detection follows the dataset's own rule (export > 0.025 kWh in ≥ 10 intervals). Households that self-consume nearly everything would not be flagged.
+
+---
+
+## Step 2 — Increment model calibrated on the pilot side
+
+### What was done
+- **Split pool, shared by Steps 2–5** (`planning.plan_splits`): the HP halves are the published ones (pilot A, target B of each of the 20 splits), so changes against Table IV come from the non-HP split alone. The 1307 households without an HP are halved per split with their own seed (`SeedSequence(2026).spawn(20)`): C, 653 households, on the pilot side; F, 654, on the target side.
+- **Loads:** 15-min loads of calendar 2023 from the cached pool, in local time. An HP household is its whole-house load (HP plus other load); a non-HP household is its metered import.
+- **Increment** (`planning.increment_model`): pilot side only (A and C). Per split and draw, the 25 pilot HPs are ordered at random and 50 households of C are drawn. The aggregate (N, k) holds the first k HP households and the first N − k non-HP households. The future of (N, k0) is (N, k1): the last k1 − k0 non-HP households are replaced by the next k1 − k0 HP households, as in the prompt. Then c = [peak(future) − peak(current)] / Σ(robust-peak capacities of the added HPs).
+- **Grid:** N ∈ {30, 40, 50}; k0 ∈ {0, 5, 10, 15, 20}; k1 ∈ {5, …, 25}, k1 > k0 (45 cells). 100 draws per cell per split, giving 90,000 rows.
+- **Peak metrics:** the annual maximum 15-min load (primary), the 99.9th percentile, and the maximum over the 5 coldest days; weekday and weekend maxima as a diagnostic.
+- **Diagnostics (D2):**
+  - **switch-on:** the added HPs' circuits are added to the current aggregate and every household stays. This is adoption by existing households.
+  - **HP circuits only:** the HP fleet's own increment, with no other load.
+  - **timing:** whether each annual peak falls in the 45 min after a weekday block release (12:00, 18:45).
+- **Statistics:** per split, the median over draws (and over cells when pooled); then the median [IQR] over the 20 splits.
+- Code: `planning.plan_splits`, `kloten_15min`, `peak_metrics`, `increment_model`, `step2_tables`, `fig_increment`; notebook section "Step 2". Pickles `results/planning/splits.pkl`, `step2_increment.pkl`.
+- Deviations: D1, D2 (see Deviations).
+
+### Results
+**P̄_unit** (mean robust-peak capacity of the 25 pilot HPs): **6.46 kW [5.90, 6.75]** over the 20 splits, min 5.50, max 7.29.
+
+**c pooled over cells**, median [IQR] over splits; the last column is the range of the cell medians within each N:
+
+| Increment | Peak metric | N = 30 | N = 40 | N = 50 | Cell range |
+|---|---|---|---|---|---|
+| **c, whole-house replacement (prompt)** | annual max | **0.67 [0.63, 0.72]** | **0.66 [0.62, 0.71]** | **0.65 [0.62, 0.71]** | 0.63–0.69 |
+| c, replacement | 99.9th percentile | 0.60 [0.58, 0.63] | 0.59 [0.56, 0.62] | 0.58 [0.56, 0.61] | 0.54–0.60 |
+| c, replacement | 5 coldest days | 0.68 [0.65, 0.73] | 0.68 [0.65, 0.73] | 0.67 [0.65, 0.73] | 0.64–0.71 |
+| c_on, switch-on (D2) | annual max | 0.49 [0.47, 0.51] | 0.49 [0.47, 0.51] | 0.49 [0.46, 0.51] | 0.42–0.51 |
+| c_hp, HP circuits only (D2) | annual max | 0.61 [0.58, 0.63] | (same) | (same) | 0.54–0.84 |
+
+Figure: `figures/planning/fig_step2_increment.pdf` (cell medians at N = 40, three increments).
+
+**How c depends on k:**
+- **Replacement c is flat:** 0.64–0.66 in every (k0, k1) cell at N = 40, with no fall as k grows.
+- **The HP fleet alone shows the expected diversity:** c_hp falls from 0.84 (0 → 5 HPs) to 0.62 (0 → 25), and the marginal increment at k0 ≥ 10 is 0.54–0.56.
+- **Switch-on c rises with k1:** 0.44 (0 → 5) to 0.51 (0 → 25) at N = 40, and it falls slightly with k0 at fixed k1.
+
+**Why the replacement c sits above the HP-only coincidence.** Replacement swaps a non-HP household for an HP household's whole-house load. The two are different kinds of household:
+- All 50 HP households are single-family houses (26 HEAPO houses, 23 of 24 Swiss).
+- 1214 of the 1306 Swiss non-HP households (93%) are apartments.
+- The HP households' other load is 2.8 times larger: median 5887 against 2091 kWh/year, and 1.24 against 0.57 kW at 18:00–19:00 on the coldest weekdays.
+
+Replacement therefore adds a house's appliance load on top of each HP. That is the gap between c (0.66) and c_on (0.49).
+
+**Why switch-on sits below 0.56 and rises with k.** Peak timing: the share of annual maxima in a post-release window grows from 11–12% for aggregates with no HP to 31% at k = 20, and to 39–47% for the futures at k1 = 25. Without HPs, the feeder peaks at the non-HP evening peak (17:45–18:45). That is exactly when 20 of the 50 HPs are blocked, so the first HPs added barely raise it (c_on 0.44). Once enough HPs are present, the peak moves to the rebound after a block, where HPs are synchronised, and c_on rises towards the fleet's own coincidence.
+
+**Comparison with the planning numbers:**
+
+| Quantity | Value |
+|---|---|
+| 15-min peak SF, 50 Kloten HPs, coldest day | 0.56 |
+| Planning SF of national LV studies | 0.425 |
+| c, replacement (prompt), annual max | 0.65–0.67 |
+| c, switch-on, annual max | 0.49 |
+| c_hp, marginal at k0 ≥ 10 | 0.54–0.56 |
+
+Sanity checks:
+- No draw gave c < 0.
+- c_hp at 0 → 25 HPs (0.62) is consistent with the annual 15-min SF of the 50-HP fleet (0.59, Step 0): fewer HPs, less diversity.
+- c_hp does not depend on N, as it must not.
+- The pilot side uses only A and C; no household of B or F enters Step 2.
+- The Step 0 checks still pass after the station rename (see caveats).
+
+Expectations (none required by §2.3 for Step 2; the prompt's stated anticipations are checked here):
+- "c is lower than the HP-only peak SF (0.56)": **not met** for the prompt's replacement c (0.65–0.67); met for switch-on (0.49).
+- "c falls as k grows (diversity)": **not met** for replacement (flat) or for switch-on (rises with k1). Met only for the HP fleet alone. **Flagged.**
+
+### Implications
+- For the paper:
+  - Nothing yet; c is an input to Steps 4–5.
+  - One point for the writing agent later: the Kloten HPs' evening block keeps them off the non-HP evening peak, so the feeder's first HPs raise its peak by only about 0.44 kW per kW. This is a property of Swiss ripple control, not of HPs, and any planning number derived here carries it.
+  - The draft's sentence that the 0.56 15-min SF "lies above the HP SF of 0.425" (IV-C) still holds. It concerns the fleet, not the feeder increment.
+- For the next steps:
+  1. **Step 4's ground truth uses the same operation as c.** With replacement (the prompt), each new HP also brings a single-family house's other load into an aggregate of mostly apartments. The predicted increments then run about 35% above an adoption in which existing households install HPs. That inflates the value of knowing the current HP count, since the error per missed or double-counted HP is larger.
+  2. **A single c per N is enough for replacement:** all cell medians lie within 0.63–0.69, inside the split IQR. For switch-on, c varies from 0.42 to 0.51 with (k0, k1), comparable to its split IQR (±0.02), so Step 4 should use the (N, k0, k1) lookup table. Lookups are cheap, so Step 4 will use the per-split lookup table, interpolated in k0 and k1, for both variants.
+  3. **E3's N̂_hp is continuous.** The lookup is interpolated, and k1 − N̂_hp may fall below 5. The smallest-step cell (k1 − k0 = 5) is used for any smaller step.
+- Decisions for Alex:
+  1. **Primary ground truth of Step 4: replacement (as in the prompt) or switch-on?** Recommendation: **switch-on primary, replacement kept as a secondary row.** Adoption happens in existing households, whose own load does not change into a single-family house's. Neither is perfect: switch-on attaches house-sized HPs (P̄_unit 6.5 kW) to mostly apartment loads. But c is per kW added, so the HP size enters through P̄_unit, and the household type no longer leaks into the increment. Changing the primary is a design change, so it waits for your answer.
+  2. **Restrict the non-HP pool to single-family houses** (92 Swiss + 1 HEAPO) as a further sensitivity in Step 4? That pool would be small (about 46 per side), so the aggregates would be capped at N ≤ 30 with k1 ≤ 25. Recommendation: no, not as the primary. Mention the household-type mix as a caveat.
+
+### Confidence and caveats
+- **Small pilot:** at k1 = 25 every draw uses all 25 pilot HPs, so the spread there comes from the non-HP draws and the 20 HP splits only.
+- **Calendar 2023 only.** The peaks of HP-rich aggregates are set by ripple-control rebounds. Their size depends on the Kloten utility's block schedule (two weekday blocks), so c will not transfer as such to feeders without blocking or with other schedules (Step 6 will test German data, which has no such blocks).
+- **Annual max of one 15-min interval is noisy:** the split IQR of c is ±0.05. The 99.9th percentile is less noisy (±0.03) and 0.07 lower.
+- **Capacities are robust peaks** (99.9th percentile of each HP's 15-min draw), as in Table IV. With plain maxima, c would be about 4% lower.
+- **Pilot-tariff households kept** (Alex, Step 1): 11 Swiss HP households and about half of the 330 Swiss non-HP households on pilot tariffs are on the pilot side, and their Oct–Dec 2023 behaviour includes the pilot.
+- **Branch note:** this branch also carries paper commits from a parallel writing session (4bcbc54, 9cbf1ea, a5692dc, ad8a9ff). The station rename in 4bcbc54 (Hg → Affoltern, MqO → Einsiedeln) made the cached Step 0 real-aggregate pickle stale. It was rebuilt; the Step 0 checks still pass.

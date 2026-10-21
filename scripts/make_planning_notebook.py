@@ -31,6 +31,8 @@ pd.set_option('display.width', 200)
 # control flags: True recomputes the step and overwrites its pickles
 REBUILD_STEP0 = False
 REBUILD_STEP1 = False   # True rescans ~1700 raw Swiss meter files (about 2 min)
+REBUILD_SPLITS = False  # the split pool of Steps 2-5 (non-HP halves)
+REBUILD_STEP2 = False
 print('repo root:', _root)"""
 
 CELLS = [
@@ -56,6 +58,19 @@ print(PL.fig_blocking(B))
 blocked_11 = [h for h, r in inv['windows'].items() if any(a <= 44 and b >= 48 for a, b in r)]
 print('HPs off 11:00-12:00 on >= 80 % of cold weekdays:', len(blocked_11), 'of', len(inv['windows']))"""),
     ('code', """display(inv['nameplate']); inv['real']"""),
+    ('markdown', """## Step 2 — Increment model on the pilot side
+
+c(N, k0, k1): rise of the annual 15-min peak per kW of added HP capacity, when
+k1 - k0 households without an HP are replaced by HP households. Pilot side only:
+pilot HPs (A) and pilot-side households without an HP (C)."""),
+    ('code', """splits = PL.plan_splits(rebuild=REBUILD_SPLITS)
+inc = PL.increment_model(draws=100, rebuild=REBUILD_STEP2)
+G2 = inc['rows']
+print('P_unit (mean pilot HP capacity, kW) over splits:')
+print(inc['units'].P_unit.describe().round(2).to_string())
+PL.split_summary(G2, ['N', 'k0', 'k1'], 'c_max').round(3)"""),
+    ('code', """print(PL.fig_increment(G2))
+PL.step2_tables(G2)"""),
 ]
 
 
