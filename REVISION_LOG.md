@@ -401,3 +401,12 @@ Figures `fig_capacity_heatmap` and `fig_quality_heatmap` regenerated with the ax
 - The manuscript's first mention (V-A) reads "Zürich-Affoltern (Affoltern below) and Einsiedeln"; "Affoltern" and "Einsiedeln" are used everywhere else (V-A, V-B, VI-B, Tables VI and VII). Generator labels updated in `scripts/outputs.py` (station keys unchanged) and `scripts/planning.py`.
 - Alex's edit kept: the Table VII column header "country", now also in the generator.
 - II-C opener (Alex, 21 Oct): "Table II reports both fits, P̂_net(T) and SF̂(T), on aggregates from four countries and a range of climates…" → "Both fits hold across climates. Table II reports them on aggregates from four countries, with each climate given as its Köppen–Geiger class." The paragraph now opens with its point.
+
+## Citation placement (Alex, 22 Oct; checked third-party audit)
+An external citation audit was checked against the sources before acting on it. It was right on Tre26, Bec24 and the Lov17/Che21b/Rou23 wording. It was wrong on Few24: the Methods state that HPs "contribute 4kW… associated with coincidence factors of 0.425… informed by data from field trials of HPs and EVs in the UK", a diversified peak of 4 kW × 0.425 = 1.7 kW per HP (open PDF on Imperial Spiral). Its dataset complaints misread which sentence the citations sit on.
+- Sec. I ¶4: the privacy sentence now also carries the incomplete or out-of-date DER records, citing `Gou26`. "The DSO usually knows how many households each feeder serves" cites `Tre26` (housing units per feeder in its metadata). The clause "but seldom holds the appliance registers or nameplate ratings…" is dropped, because `Tre26` itself holds DSO-recorded low-carbon-technology power.
+- Sec. I ¶2: HP peak in cold spells [Vel11, Akm14, Som21, Bec24, Lia26]; new sentence "Electric vehicles (EVs) add further load to the same feeders [Bec24]". This replaces "comes on top of the peak of EVs", which Bec24 does not show (it analyses HP-only and EV-only feeders).
+- Sec. I ¶3: design peak = installed capacity × SF [Few24]; "For HPs, it is set by cold weather, when their coincident demand peaks [Lov17, Che21b, Rou23]".
+- Sec. I ¶9: "Studies of HP demand measure the coincident peak, as an after-diversity maximum demand, or model the coincidence factor…" [Lov17, Che21b, Rou23].
+- IV-B (iv) and IV-C: "national LV (network) studies" → "a Great Britain-wide LV network study" (one study cited), plus "UK field trials".
+- No number changed and no new reference added; clean build, 14 pages.
