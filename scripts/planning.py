@@ -173,3 +173,267 @@ def _tab_real_quiet():
         return O.tab_real()
     finally:
         O.TABDIR = old
+
+
+# ===========================================================================
+# Step 1 -- inventory of the data
+# ===========================================================================
+SWISS_META = os.path.join('data', 'Swiss_dataset', 'metadata.csv')
+SWISS_METERS = os.path.join('data', 'Swiss_dataset', 'smart_meter_data')
+HEAPO_HH = os.path.join('data', 'heapo_data', 'meta_data', 'households.csv')
+HEAPO_COVER = os.path.join('data', '_heapo_daily_coverage.parquet')
+HEAPO_PROTOCOLS = os.path.join('data', 'heapo_data', 'reports', 'protocols.csv')
+LOCAL_TZ = 'Europe/Zurich'
+
+# Heating windows scored for completeness. Nov-Mar winters, plus the heating months of
+# a calendar year (Jan-Mar and Nov-Dec), which is how the paper's 2023 enters the fits.
+WINTERS = {
+    'W2019/20': ('2019-11-01', '2020-03-31'), 'W2020/21': ('2020-11-01', '2021-03-31'),
+    'W2021/22': ('2021-11-01', '2022-03-31'), 'W2022/23': ('2022-11-01', '2023-03-31'),
+    'W2023/24': ('2023-11-01', '2024-03-31'), 'W2024/25': ('2024-11-01', '2025-03-31'),
+}
+CAL_HEAT = {'cal2023 heat': ('2023', (1, 2, 3, 11, 12)), 'cal2024 heat': ('2024', (1, 2, 3, 11, 12))}
+
+
+def kloten_members():
+    """The Kloten pool split by source and role: HP households (with the Swiss HP
+    meter paired to each Swiss dwelling) and the 1307 households without an HP."""
+    import hp_pools as hpp
+    p = hpp.build_pool_combined(verbose=False)
+    w = p['weather_of']; eheat = set(p['eheat_households']); hp_set = set(p['hp_households'])
+    hp = [h for h in p['hp_households'] if w.get(h) == 'KLO']
+    free = [h for h in p['households'] if w.get(h) == 'KLO' and h not in hp_set and h not in eheat]
+    meta = pd.read_csv(SWISS_META, sep=';', encoding='utf-8-sig')
+    obj = meta.set_index('0_meter_id')['0_object_id']
+    hpm = meta[meta['0_installation_type'] == 'Heat pump'].groupby('0_object_id')['0_meter_id'].first()
+    pair = {h: int(hpm[obj[int(str(h).split(':')[1])]]) for h in hp if str(h).startswith('swiss:')}
+    return dict(pool=p, hp=hp, free=free, swiss_hp_meter=pair)
+
+
+def _swiss_coverage(meter_id):
+    """Share of 15-min intervals present per window, for one raw Swiss meter file."""
+    f = os.path.join(SWISS_METERS, f'{meter_id}.csv')
+    if not os.path.exists(f):
+        return None
+    d = pd.read_csv(f, sep=';', usecols=['timestamp_utc', 'kWh_to_installation', 'kWh_to_grid'])
+    ts = pd.to_datetime(d['timestamp_utc'], utc=True)
+    ok = pd.to_numeric(d['kWh_to_installation'], errors='coerce').notna().to_numpy()
+    s = pd.Series(ok, index=ts.dt.tz_convert(LOCAL_TZ))
+    s = s[~s.index.duplicated()]
+    out = {}
+    for k, (a, b) in WINTERS.items():
+        n = len(pd.date_range(a, pd.Timestamp(b) + pd.Timedelta('23:45:00'), freq='15min', tz=LOCAL_TZ))
+        out[k] = s.loc[a:f'{b} 23:59'].sum() / n
+    for k, (yr, months) in CAL_HEAT.items():
+        idx = pd.date_range(f'{yr}-01-01', f'{yr}-12-31 23:45', freq='15min', tz=LOCAL_TZ)
+        idx = idx[idx.month.isin(months)]
+        out[k] = s.reindex(idx).fillna(False).sum() / len(idx)
+    exp = pd.to_numeric(d['kWh_to_grid'], errors='coerce')
+    out['kWh_to_grid_total'] = float(exp.sum())
+    return out
+
+
+def inventory_years(rebuild=False):
+    """1.1: completeness (share of 15-min intervals present) per winter, Kloten members.
+
+    Swiss members are scored on their raw files (HP households on BOTH the dwelling and
+    the paired HP meter). HEAPO members are scored on ``_heapo_daily_coverage.parquet``,
+    the daily interval counts kept from the earlier HEAPO download (raw files absent).
+    """
+    def build():
+        M = kloten_members(); rows = []
+        for role, hh in (('hp', M['hp']), ('free', M['free'])):
+            for h in hh:
+                src, hid = str(h).split(':')
+                if src != 'swiss':
+                    continue
+                cov = _swiss_coverage(int(hid))
+                if role == 'hp':
+                    c2 = _swiss_coverage(M['swiss_hp_meter'][h])
+                    cov = {k: min(cov[k], c2[k]) for k in cov if k != 'kWh_to_grid_total'} | \
+                          {'kWh_to_grid_total': cov['kWh_to_grid_total']}
+                rows.append(dict(household=h, source=src, role=role, **cov))
+        C = pd.read_parquet(HEAPO_COVER)
+        C.index = pd.to_datetime(C.index).tz_convert(LOCAL_TZ).normalize()
+        for role, hh in (('hp', M['hp']), ('free', M['free'])):
+            for h in hh:
+                src, hid = str(h).split(':')
+                if src != 'heapo':
+                    continue
+                col = int(hid) if int(hid) in C.columns else (hid if hid in C.columns else None)
+                r = dict(household=h, source=src, role=role, in_cover_file=col is not None)
+                for k, (a, b) in WINTERS.items():
+                    days = pd.date_range(a, b, freq='D', tz=LOCAL_TZ)
+                    r[k] = (C[col].reindex(days).fillna(0).sum() / (96 * len(days))) if col is not None else np.nan
+                for k, (yr, months) in CAL_HEAT.items():
+                    days = pd.date_range(f'{yr}-01-01', f'{yr}-12-31', freq='D', tz=LOCAL_TZ)
+                    days = days[days.month.isin(months)]
+                    r[k] = (C[col].reindex(days).fillna(0).sum() / (96 * len(days))) if col is not None else np.nan
+                rows.append(r)
+        return pd.DataFrame(rows)
+    return _cached('step1_years', build, rebuild)
+
+
+def inventory_pv(Y=None):
+    """1.2: PV flags of the Kloten members, by source and role.
+
+    HEAPO: ``Installation_HasPVSystem`` (households.csv). Swiss: ``0_max_net_injection``
+    (set by the dataset for meters that export) and the exported energy of the raw file
+    (``kWh_to_grid``, from the 1.1 scan). Both pools keep only the imported energy
+    (HEAPO ``kWh_received_*``, Swiss ``kWh_to_installation``), so a PV household enters
+    the aggregates with its grid import, export discarded.
+    """
+    M = kloten_members(); Y = inventory_years() if Y is None else Y
+    hh = pd.read_csv(HEAPO_HH, sep=';').set_index('Household_ID')['Installation_HasPVSystem']
+    meta = pd.read_csv(SWISS_META, sep=';', encoding='utf-8-sig').set_index('0_meter_id')
+    exp = Y.set_index('household')['kWh_to_grid_total']
+    rows = []
+    for role, members in (('hp', M['hp']), ('free', M['free'])):
+        for h in members:
+            src, hid = str(h).split(':'); hid = int(hid)
+            if src == 'heapo':
+                rows.append(dict(household=h, source=src, role=role, pv_flag=bool(hh.get(hid, False)),
+                                 max_inj=np.nan, kwh_export=np.nan))
+            else:
+                mi = meta['0_max_net_injection'].get(hid, np.nan)
+                rows.append(dict(household=h, source=src, role=role, pv_flag=bool(np.isfinite(mi)),
+                                 max_inj=mi, kwh_export=exp.get(h, np.nan)))
+    return pd.DataFrame(rows)
+
+
+def blocking_profile(cold_T=0.0, off_frac=0.05):
+    """1.3: share of the 50 Kloten HPs at near-zero load against local time of day.
+
+    Near zero: below ``off_frac`` of the HP's robust peak. Cold days: daily mean below
+    ``cold_T``. Returns per-slot shares (cold weekdays, cold weekends, mild heating days),
+    the per-HP probability of being off per slot on cold weekdays, and the HP ids.
+    """
+    from hp_capacity import robust_series_peak
+    M = kloten_members(); p = M['pool']
+    rows = [p['hp_households'].index(h) for h in M['hp']]
+    cap = np.array([robust_series_peak(p['hp_mat'][i]) for i in rows])
+    idx = p['index'].tz_convert(LOCAL_TZ)
+    X = pd.DataFrame(p['hp_mat'][rows].T / cap, index=idx)
+    Td = pd.Series(p['temperature']['KLO'], index=idx).resample('D').mean()
+    day = X.index.normalize()
+    cold = day.isin(Td.index[Td < cold_T]); mild = day.isin(Td.index[(Td >= 5) & (Td < 12)])
+    wkd = X.index.dayofweek < 5
+    slot = X.index.hour * 4 + X.index.minute // 15
+    off = (X < off_frac)
+
+    def share(mask):
+        return off[mask].mean(1).groupby(slot[mask]).mean()
+
+    def sf(mask):
+        return (X[mask] * cap).sum(1).groupby(slot[mask]).mean() / cap.sum()
+    prof = pd.DataFrame({'cold_wkd': share(cold & wkd), 'cold_wke': share(cold & ~wkd),
+                         'mild_wkd': share(mild & wkd),
+                         'sf_cold_wkd': sf(cold & wkd), 'sf_cold_wke': sf(cold & ~wkd)})
+    per_hp = off[cold & wkd].groupby(slot[cold & wkd]).mean()          # slots x HPs
+    per_hp.columns = M['hp']
+    return dict(profile=prof, per_hp=per_hp, cap=cap, n_cold=int((Td < cold_T).sum()),
+                n_cold_wkd=int(((Td < cold_T) & (Td.index.dayofweek < 5)).sum()), ids=M['hp'])
+
+
+def blocked_windows(per_hp, p_off=0.8, min_slots=2):
+    """Per HP, the clock windows (runs of >= min_slots 15-min slots) in which it is off
+    on at least ``p_off`` of the cold weekdays: the signature of a recurring block."""
+    out = {}
+    for h in per_hp.columns:
+        s = (per_hp[h] >= p_off).to_numpy(); runs, k = [], 0
+        while k < len(s):
+            if s[k]:
+                j = k
+                while j < len(s) and s[j]:
+                    j += 1
+                if j - k >= min_slots:
+                    runs.append((k, j))
+                k = j
+            else:
+                k += 1
+        out[h] = runs
+    return out
+
+
+def fig_blocking(B, name='fig_step1_blocking'):
+    """Share of Kloten HPs at near-zero load and the HP SF against local time, cold days."""
+    import matplotlib.pyplot as plt
+    hf.use_style()
+    P = B['profile']; x = P.index / 4
+    fig, axs = plt.subplots(1, 2, figsize=(hf.COL2, 2.6))
+    ax = axs[0]
+    ax.plot(x, P.cold_wkd, color='k', lw=1.4, label=f"cold weekdays ({B['n_cold_wkd']})")
+    ax.plot(x, P.cold_wke, color='0.45', lw=1.2, ls='--', label='cold weekends')
+    ax.plot(x, P.mild_wkd, color='0.65', lw=1.0, ls=':', label='mild weekdays (5-12 °C)')
+    ax.set(xlabel='local time (h)', ylabel='share of HPs near zero', xlim=(0, 24), ylim=(0, 1),
+           xticks=range(0, 25, 3))
+    ax.legend(fontsize=6.5, loc='upper right')
+    ax.text(0.02, 0.97, '(a)', transform=ax.transAxes, va='top')
+    ax = axs[1]
+    ax.plot(x, P.sf_cold_wkd, color='k', lw=1.4, label='cold weekdays')
+    ax.plot(x, P.sf_cold_wke, color='0.45', lw=1.2, ls='--', label='cold weekends')
+    ax.set(xlabel='local time (h)', ylabel='SF of the 50 HPs', xlim=(0, 24), ylim=(0, None),
+           xticks=range(0, 25, 3))
+    ax.legend(fontsize=6.5, loc='lower right')
+    ax.text(0.02, 0.97, '(b)', transform=ax.transAxes, va='top')
+    fig.tight_layout()
+    return save_fig(fig, name)
+
+
+def inventory_nameplate():
+    """1.4: protocol ratings of the submetered HPs at Kloten, Hg and MqO (HEAPO only;
+    the Swiss dataset has no protocols)."""
+    import hp_pools as hpp
+    p = hpp.build_pool_combined(verbose=False); w = p['weather_of']
+    pr = pd.read_csv(HEAPO_PROTOCOLS, sep=';', low_memory=False)
+    idc = [c for c in pr.columns if c.lower() == 'household_id'][0]
+    cols = ['HeatPump_Installation_HeatingCapacity', 'HeatPump_Installation_Normpoint_ElectricPower',
+            'HeatPump_Installation_Normpoint_HeatingPower']
+    have = {c: set(pr.loc[pd.to_numeric(pr[c], errors='coerce') > 0, idc].dropna().astype(int)) for c in cols}
+    proto = set(pr[idc].dropna().astype(int))
+    rows = []
+    for st in ('KLO', 'Hg', 'MqO'):
+        hps = [h for h in p['hp_households'] if w.get(h) == st]
+        heapo = [int(str(h).split(':')[1]) for h in hps if str(h).startswith('heapo:')]
+        rows.append(dict(station=st, n_hp=len(hps), heapo=len(heapo), with_protocol=sum(h in proto for h in heapo),
+                         **{c.split('_')[-1]: sum(h in have[c] for h in heapo) for c in cols}))
+    return pd.DataFrame(rows)
+
+
+def inventory_real():
+    """1.5: are the real aggregates sums of separately metered households?"""
+    import hp_pools as hpp
+    p = hpp.build_pool_combined(verbose=False); w = p['weather_of']
+    q = hpp.build_pool_wpuq(verbose=False)
+    hp_set = set(p['hp_households']); eheat = set(p['eheat_households'])
+    rows = []
+    for st in ('Hg', 'MqO'):
+        hps = [h for h in p['hp_households'] if w.get(h) == st]
+        other = [h for h in p['households'] if w.get(h) == st and h not in hp_set]
+        rows.append(dict(aggregate=st, n_hp_households=len(hps), hp_series=len(hps),
+                         other_load_series=len(hps), non_hp_households=len(other),
+                         non_hp_without_eheat=sum(h not in eheat for h in other), resolution='15 min'))
+    rows.append(dict(aggregate='Hamelin (WPuQ)', n_hp_households=q['hp_mat'].shape[0],
+                     hp_series=q['hp_mat'].shape[0], other_load_series=q['other_mat'].shape[0],
+                     non_hp_households=0, non_hp_without_eheat=0,
+                     resolution=str(q['index'][1] - q['index'][0])))
+    return pd.DataFrame(rows)
+
+
+def step1_inventory(rebuild=False):
+    """Step 1: every inventory item, cached. The coverage scan (1.1) reads ~1700 raw files."""
+    Y = inventory_years(rebuild)
+
+    def build():
+        B = blocking_profile()
+        return dict(pv=inventory_pv(Y), blocking=B, windows=blocked_windows(B['per_hp']),
+                    nameplate=inventory_nameplate(), real=inventory_real())
+    out = _cached('step1_inventory', build, rebuild)
+    out['years'] = Y
+    return out
+
+
+def years_table(Y):
+    """Households with >= 90 % of 15-min intervals per window, by source and role."""
+    cols = list(WINTERS) + list(CAL_HEAT)
+    return (Y[cols] >= 0.9).groupby([Y.source, Y.role]).sum().T
