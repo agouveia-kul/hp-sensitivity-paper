@@ -6,6 +6,14 @@
 \usepackage{graphicx}
 \usepackage{tikz}
 \usetikzlibrary{positioning,arrows.meta,calc}
+% shared style of the two block diagrams (Figs. 1 and 5)
+\tikzset{
+  flow/.style={font=\footnotesize, >=latex},
+  fin/.style={draw, fill=black!6, rounded corners=1pt, align=center, text width=22mm, minimum height=9mm, inner sep=2pt},
+  fproc/.style={draw, rounded corners=3pt, align=center, text width=22mm, minimum height=9mm, inner sep=2pt},
+  fout/.style={fproc, thick},
+  flab/.style={font=\scriptsize, text=black!60, align=center},
+}
 \usepackage{textcomp}
 \usepackage{booktabs}
 \usepackage{threeparttable}
@@ -112,28 +120,25 @@ The rest of the paper is structured as follows. Section~\ref{sec:problem} states
 \begin{figure}[t]
 \centering
 \resizebox{\columnwidth}{!}{%
-\begin{tikzpicture}[font=\scriptsize, >=latex,
-  io/.style={draw, fill=black!6, rounded corners=1pt, align=center, text width=19mm, minimum height=10mm, inner sep=2pt},
-  proc/.style={draw, rounded corners=3pt, align=center, text width=19mm, minimum height=10mm, inner sep=2pt},
-  node distance=5mm and 6mm]
-\node[io] (temp) {Outdoor temperature};
-\node[io, above=of temp] (sub) {Submetered pilot TCL load};
-\node[io, below=of temp] (net) {Aggregated net load};
-\node[proc, right=of temp] (bath) {Net-load fit\\[-1pt]{\scriptsize\color{black!60}Sec.~\ref*{sec:fits-net}}};
-\node[proc, right=of sub] (sf) {SF fit\\[-1pt]{\scriptsize\color{black!60}Sec.~\ref*{sec:fits-sf}}};
-\node[proc, right=13mm of sf] (cap) {Installed capacity\\[-1pt]{\scriptsize\color{black!60}Sec.~\ref*{sec:uc-capacity}}};
-\node[proc, right=13mm of bath] (en) {Energy\\[-1pt]{\scriptsize\color{black!60}Sec.~\ref*{sec:uc-energy}}};
-\node[proc, right=of cap] (fl) {Flexibility\\[-1pt]{\scriptsize\color{black!60}Sec.~\ref*{sec:uc-flex}}};
+\begin{tikzpicture}[flow]
+% columns at x = 0, 28, 64 mm; rows at y = 0, -15, -30 mm
+\node[fin]   (sub)  at (0, 0)         {Submetered pilot TCL load};
+\node[fin]   (temp) at (0, -15mm)     {Outdoor temperature};
+\node[fin]   (net)  at (0, -30mm)     {Aggregated net load};
+\node[fproc] (sf)   at (28mm, 0)      {SF fit\\[-1pt]{\scriptsize\color{black!60}Sec.~\ref*{sec:fits-sf}}};
+\node[fproc] (bath) at (28mm, -30mm)  {Net-load fit\\[-1pt]{\scriptsize\color{black!60}Sec.~\ref*{sec:fits-net}}};
+\node[fout]  (cap)  at (64mm, 0)      {Installed capacity\\[-1pt]{\scriptsize\color{black!60}Sec.~\ref*{sec:uc-capacity}}};
+\node[fout]  (fl)   at (64mm, -15mm)  {Flexibility\\[-1pt]{\scriptsize\color{black!60}Sec.~\ref*{sec:uc-flex}}};
+\node[fout]  (en)   at (64mm, -30mm)  {Energy\\[-1pt]{\scriptsize\color{black!60}Sec.~\ref*{sec:uc-energy}}};
 \draw[->] (sub) -- (sf);
-\draw[->] (net) -| (bath);
-\draw[->] (temp) -- (bath);
-\draw[->] (temp) -- (sf);
+\draw[->] (temp.east) -- (sf.south west);
+\draw[->] (temp.east) -- (bath.north west);
+\draw[->] (net) -- (bath);
+\draw[->] (sf) -- (cap) node[midway, above, flab, text=black] {SF\\sensitivity};
+\draw[->] (bath.north east) -- (cap.south west);
 \draw[->] (bath) -- (en);
-\draw[->] (sf) -- (cap) node[midway, above, font=\scriptsize, align=center] {SF\\sensitivity};
-\draw[->] (bath) -- (cap.south west);
 \draw[->] (cap) -- (fl);
-\draw[->] (en) -| (fl);
-\draw[->] (sf.north) -- ([yshift=6mm]sf.north) -| (fl.north);
+\draw[->] (en) -- (fl);
 \end{tikzpicture}%
 }
 \caption{Overview of the method, with the section that defines each step. Sections~\ref{sec:results} and~\ref{sec:validation} evaluate the three outputs.}
@@ -434,36 +439,28 @@ The experiment of this section emulates a DSO that submeters one pilot and estim
 \begin{figure}[t]
 \centering
 \resizebox{\columnwidth}{!}{%
-\begin{tikzpicture}[font=\footnotesize, >=latex,
-  io/.style={draw, fill=black!6, rounded corners=1pt, align=center, text width=24mm, minimum height=9mm, inner sep=2pt},
-  proc/.style={draw, rounded corners=3pt, align=center, text width=24mm, minimum height=9mm, inner sep=2pt},
-  res/.style={draw, thick, rounded corners=3pt, align=center, text width=24mm, minimum height=9mm, inner sep=2pt},
-  lab/.style={font=\footnotesize, text=black!60, align=center}]
-% columns at x = 0, 30, 60 mm; rows top to bottom
-\node[io]   (hps)   at (15mm, 0)      {50 submetered Kloten HPs};
-\node[proc] (pilot) at (0, -16mm)     {Pilot\\25 HPs};
-\node[proc] (half)  at (30mm, -16mm)  {Target half\\25 HPs};
-\node[io]   (free)  at (60mm, -16mm)  {1307 households without an HP};
-\node[proc] (sffit) at (0, -31mm)     {SF fit\\[1pt]$m_h$};
-\node[proc] (agg)   at (30mm, -31mm)  {Aggregates\\10--50 households,\\5--25 HPs};
-\node[res]  (est)   at (0, -46mm)     {Estimate\\[1pt]$s_h / m_h$};
-\node[proc] (net)   at (30mm, -46mm)  {Net-load fit\\[1pt]$s_h$};
-\node[proc] (truth) at (60mm, -46mm)  {True capacity\\sum over its HPs};
-\node[res]  (score) at (30mm, -61mm)  {WAPE over all\\20 splits (1260)};
-% split
-\node[lab, right=2mm of hps] {split at random,\\repeated 20 times};
+\begin{tikzpicture}[flow]
+% columns at x = 0, 32, 64 mm; rows every 15 mm
+\node[fin]   (hps)   at (16mm, 0)       {50 submetered Kloten HPs};
+\node[fproc] (pilot) at (0, -15mm)      {Pilot\\25 HPs};
+\node[fproc] (half)  at (32mm, -15mm)   {Target half\\25 HPs};
+\node[fin]   (free)  at (64mm, -15mm)   {1307 households without an HP};
+\node[fproc] (sffit) at (0, -30mm)      {SF fit\\[1pt]$m_h$};
+\node[fproc] (agg)   at (32mm, -30mm)   {Aggregates\\10--50 households,\\5--25 HPs};
+\node[fout]  (est)   at (0, -45mm)      {Estimate\\[1pt]$s_h / m_h$};
+\node[fproc] (net)   at (32mm, -45mm)   {Net-load fit\\[1pt]$s_h$};
+\node[fproc] (truth) at (64mm, -45mm)   {True capacity\\sum over its HPs};
+\node[fout]  (score) at (32mm, -60mm)   {WAPE over all\\20 splits (1260)};
+\node[flab, right=2mm of hps] {split at random,\\repeated 20 times};
 \draw[->] (hps.south) -- ++(0,-2.5mm) -| (pilot.north);
 \draw[->] (hps.south) -- ++(0,-2.5mm) -| (half.north);
-% pilot branch
 \draw[->] (pilot) -- (sffit);
 \draw[->] (sffit) -- (est);
-% target branch
 \draw[->] (half) -- (agg);
 \draw[->] (free.south) |- ([yshift=2mm]agg.east);
 \draw[->] (agg) -- (net);
 \draw[->] ([yshift=-2mm]agg.east) -| (truth.north);
 \draw[->] (net) -- (est);
-% scoring
 \draw[->] (est.south) |- (score.west);
 \draw[->] (truth.south) |- (score.east);
 \end{tikzpicture}%

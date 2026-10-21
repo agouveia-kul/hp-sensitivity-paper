@@ -410,3 +410,9 @@ An external citation audit was checked against the sources before acting on it. 
 - Sec. I ¶9: "Studies of HP demand measure the coincident peak, as an after-diversity maximum demand, or model the coincidence factor…" [Lov17, Che21b, Rou23].
 - IV-B (iv) and IV-C: "national LV (network) studies" → "a Great Britain-wide LV network study" (one study cited), plus "UK field trials".
 - No number changed and no new reference added; clean build, 14 pages.
+
+## Figs. 1 and 5 harmonised (Alex, 22 Oct)
+- Shared TikZ styles defined once in the preamble (`flow`, `fin` grey inputs, `fproc` processes, `fout` thick outputs, `flab` grey labels): \footnotesize text, 22 × 9 mm boxes.
+- Both drawn on a three-column grid 86 mm wide, so they render at the same scale. Before, Fig. 1 (≈101 mm, scaled down) had visibly smaller text than Fig. 5.
+- Fig. 1 relaid out in three columns: inputs | SF fit, net-load fit | installed capacity, flexibility, energy (outputs thick). Same boxes, section labels and arrows, except the direct SF-fit → flexibility arrow, which is dropped: the SF sensitivity reaches flexibility through the capacity box, as before.
+- Fig. 5 unchanged in content; it now uses the shared styles.
