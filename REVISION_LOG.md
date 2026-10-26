@@ -436,3 +436,6 @@ An external citation audit was checked against the sources before acting on it. 
 - All seven tables in the paper use it, plus the generators in `scripts/outputs.py` and `scripts/gen_litreview.py`. Table notes (Tables I and II) are the optional argument; `\tnote{a}` marks a note. `threeparttable`, `\tabw` and the per-table `\adjustbox`/`\resizebox` are gone.
 - Result: IEEE — Tables I, II span both columns, the rest single column (IV and VI at `\scriptsize`). Elsevier 5p — same, with Tables 4 and 6 at `\scriptsize`. Preprint — all single column; Tables 1 and 2 are still scaled down (as before), and Table 2 no longer overflows the margin by 190 pt.
 - Table typography changes only: every table's numbers are unchanged (numeric tokens identical per file). Page counts unchanged (IEEE 14, Elsevier 5p 17, preprint 39).
+
+## Affiliations (Alex, 26 Oct)
+- Elsevier wrapper: affiliations copied from Gouveia et al., IJEPES 177 (2026) 111848 (ScienceDirect, read 26 Oct): a ESAT, KU Leuven; b EnergyVille; c VITO; d Orion Grid Technologies; all Belgium. Gouveia a,b,c; Hashmi a,b; D'hulst b,c,d; Van Hertem a,b. The IEEE wrapper still has no affiliations.
