@@ -502,3 +502,28 @@ Marks (Alex, 2026-10-26): F1 accept, F2 accept, F3 accept (minimal), F4 modify (
   - The day-to-day spread is narrow on cold days (IQR 4–5% of the median) and widens in mild weather (10–16% at 5–13 °C, 54% at 13–15 °C).
   - The actual bends smoothly through T_h. It is about 8 kWh/h just below the threshold, against an estimate that reaches zero there, and it keeps a floor of 4–6 kWh/h on dead-band days.
   - On the coldest days the actual flattens near 32 kWh/h, while the estimate keeps rising towards 0.25·P̂^max (about 35 kWh/h at −8 °C).
+
+## Note — all aggregates on one plot, normalised by own maximum (Alex's question)
+
+- Plot: `figures/flex_temperature/fig_flex_all_normalised.{pdf,png}` (`flex_temperature.fig_flex_all()`, data in `flex_all_normalised()`, cached as `results/flex_temperature/flex_all_normalised.pkl`). Exploration only.
+- Method:
+  - All 1260 aggregates, common 2 °C bins merged to ≥ 5 days. Per aggregate, a bin needs ≥ 5 of its own days.
+  - Each aggregate's daily actual F (hourly reference) gives a median, q25 and q75 per bin, and its estimate a mean per bin. All are divided by the aggregate's largest actual bin median, so the estimate keeps its level error relative to the actual.
+  - Panel (a): median over aggregates (line), IQR across aggregates of the bin medians (dark band), typical day-to-day IQR as the median over aggregates of their q25 and q75 (light band), estimate dashed with its IQR across aggregates, and dead-band days dotted.
+  - Panel (b): day-to-day IQR / median for 5, 15 and 25 HPs.
+  - Bins reached by fewer than 10% of the aggregates are not drawn.
+- Results (heating bins, normalised):
+
+| Bin centre (°C) | −3.3 | 0.0 | 4.1 | 7.7 | 10.1 | 12.0 | 13.9 | 16.1 |
+|---|---|---|---|---|---|---|---|---|
+| Actual median [IQR across aggregates] | 1.00 [1.00, 1.00] | 0.97 [0.96, 0.99] | 0.82 [0.80, 0.83] | 0.67 [0.65, 0.69] | 0.53 [0.52, 0.56] | 0.43 [0.41, 0.45] | 0.26 [0.24, 0.27] | 0.22 [0.20, 0.24] |
+| Actual, typical day-to-day IQR | [0.98, 1.03] | [0.95, 1.00] | [0.78, 0.85] | [0.61, 0.72] | [0.50, 0.58] | [0.37, 0.46] | [0.21, 0.32] | [0.19, 0.24] |
+| Estimate median [IQR across aggregates] | 1.18 [1.09, 1.33] | 1.08 [1.00, 1.21] | 0.90 [0.83, 1.01] | 0.69 [0.64, 0.77] | 0.53 [0.49, 0.60] | 0.39 [0.35, 0.44] | 0.23 [0.20, 0.28] | 0.07 [0.05, 0.09] |
+| Day-to-day IQR / median, 5 / 15 / 25 HPs | 0.06 / 0.06 / 0.05 | 0.06 / 0.05 / 0.05 | 0.10 / 0.08 / 0.07 | 0.17 / 0.17 / 0.16 | 0.17 / 0.15 / 0.14 | 0.24 / 0.22 / 0.21 | 0.46 / 0.45 / 0.45 | 0.30 / 0.25 / 0.24 |
+
+- Dead band, actual median: 0.18 (16.1 °C), 0.15 (18.1 °C), falling to 0.10 at 24–26 °C.
+- Reading:
+  - Normalised by their own maximum, the 1260 actual curves collapse onto one shape (IQR across aggregates ±2%). Part of this agreement is shared data: one weather year, and all HPs drawn from the same 50 Kloten HPs.
+  - The estimate's spread across aggregates is much wider than the actual's, since it carries each aggregate's capacity and fit error. It overshoots on the cold side (1.18 at −3.3 °C) and matches at 8–12 °C.
+  - The day-to-day spread barely depends on the number of HPs, and peaks at 13–15 °C (0.45), as in Step 2.
+- Trade-off against the paper's per-kW normalisation (Fig. 7): dividing by the own maximum shows shape and spread, but hides the absolute level and the 0.25 ceiling. Per kW of true installed capacity keeps both.

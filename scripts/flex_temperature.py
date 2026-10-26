@@ -898,6 +898,95 @@ def fig_flex_example(split=0, name='fig_flex_example'):
     return path, R
 
 
+def flex_all_normalised(D=None, min_days=MIN_DAYS):
+    """Every aggregate's binned flexibility against T, normalised by its own maximum.
+
+    Per aggregate and 2 degC bin (common edges over the heating range, merged to
+    >= ``min_days`` days; per aggregate a bin needs ``min_days`` of its own days):
+    median, q25 and q75 across days of the actual F (hourly reference) and the
+    mean of the estimate, all divided by the aggregate's largest actual bin
+    median. Dead-band days (T >= own T_h) are binned the same way, with the
+    estimate left out. Returns a long frame, one row per aggregate and bin.
+    """
+    Dz, _ = rebuild_design()
+    D = daily_frames() if D is None else D
+    G = Dz['rows']; T = D['T']
+    th = G.T_h.to_numpy()
+    edges, _ = temperature_bins(T, min_days, FIRM_WIDTH)
+    idx = np.clip(np.digitize(T, edges) - 1, 0, len(edges) - 2)
+    xb = np.array([T[idx == b].mean() for b in range(len(edges) - 1)])
+    rows = []
+    for i, r in enumerate(G.itertuples()):
+        fa = D['fa_h'][i].astype(float)
+        sf_e = O.sf_target(T, r.T_h, r.m_pilot)
+        fe = sf_e * (1 - sf_e) * r.cap_est
+        cur = []
+        for b in range(len(edges) - 1):
+            for regime, m in (('heating', (idx == b) & (T < th[i])), ('dead band', (idx == b) & (T >= th[i]))):
+                if m.sum() < min_days:
+                    continue
+                q25, med, q75 = np.quantile(fa[m], [.25, .5, .75])
+                cur.append(dict(row=i, split=r.split, N=r.N, N_hp=r.N_hp, bin=b, x=xb[b], regime=regime,
+                                days=int(m.sum()), med=med, q25=q25, q75=q75,
+                                est=float(fe[m].mean()) if regime == 'heating' else np.nan))
+        c = pd.DataFrame(cur)
+        ref = c.loc[c.regime == 'heating', 'med'].max()
+        for k in ('med', 'q25', 'q75', 'est'):
+            c[k] = c[k] / ref
+        rows.append(c)
+    return pd.concat(rows, ignore_index=True)
+
+
+def fig_flex_all(L=None, name='fig_flex_all_normalised'):
+    """Draft figure: all aggregates on one axis, normalised by own maximum.
+
+    (a) Actual: median over aggregates of their bin medians, a dark band for the
+    IQR across aggregates and a light band for the typical day-to-day IQR (median
+    over aggregates of their own q25 and q75); estimate dashed with its IQR across
+    aggregates; dead-band floor dotted. (b) Day-to-day IQR / median of the
+    actual for 5, 15 and 25 HPs per aggregate.
+    """
+    import matplotlib.pyplot as plt
+    import hp_figures as hf
+    L = flex_all_normalised() if L is None else L
+    # show only bins that at least 10% of the aggregates reach
+    cover = L.groupby(['regime', 'bin']).row.transform('nunique')
+    L = L[cover >= 0.1 * L.row.nunique()]
+    hf.use_style()
+    fig, axs = plt.subplots(2, 1, figsize=(hf.COL1, 4.4), sharex=True, gridspec_kw=dict(height_ratios=[1.6, 1]))
+    ax = axs[0]
+    h = L[L.regime == 'heating'].groupby('bin')
+    x = h.x.first()
+    ax.fill_between(x, h.q25.median(), h.q75.median(), color='0.2', alpha=.12, lw=0, label='actual, day-to-day IQR (typical)')
+    ax.fill_between(x, h.med.quantile(.25), h.med.quantile(.75), color='0.2', alpha=.35, lw=0, label='actual, IQR across aggregates')
+    ax.plot(x, h.med.median(), color='0.1', lw=1.4, label='actual, median')
+    ax.fill_between(x, h.est.quantile(.25), h.est.quantile(.75), color=hf.C_HP, alpha=.15, lw=0)
+    ax.plot(x, h.est.median(), color=hf.C_HP, ls='--', lw=1.4, label='estimate, median and IQR')
+    d = L[L.regime == 'dead band'].groupby('bin')
+    ax.plot(d.x.first(), d.med.median(), color='0.5', ls=':', lw=1.2, label='actual, $T \\geq T_h$ (not counted)')
+    ax.axhline(1, color='0.6', lw=.6)
+    ax.set_ylabel('flexibility / own maximum')
+    ax.set_ylim(0, 1.3)
+    ax.legend(fontsize=5.8, loc='upper right')
+    ax = axs[1]
+    for nh, c, ls in zip((5, 15, 25), ('#9ecae1', '#4292c6', '#08306b'), (':', '--', '-')):
+        g = L[(L.regime == 'heating') & (L.N_hp == nh)].assign(w=lambda v: (v.q75 - v.q25) / v.med).groupby('bin')
+        ax.plot(g.x.first(), g.w.median(), color=c, ls=ls, marker='o', ms=2.5, label=f'{nh} HPs')
+    ax.set_ylabel('day-to-day IQR\n/ median')
+    ax.set_xlabel('daily mean temperature ($^\\circ$C)')
+    ax.legend(fontsize=6, loc='upper left')
+    th = float(rebuild_design()[0]['rows'].T_h.median())
+    for ax in axs:
+        ax.axvline(th, color='0.45', lw=.7, ls=(0, (3, 3)))
+    axs[0].annotate('median $T_h$', (th, 0.6), xytext=(3, 0), textcoords='offset points', fontsize=6.5, color='0.3')
+    for ax, lab in zip(axs, 'ab'):
+        ax.text(-0.22, 1.04, f'({lab})', transform=ax.transAxes, fontsize=8, va='top')
+    fig.tight_layout()
+    path = save_fig(fig, name)
+    plt.close(fig)
+    return path
+
+
 def step2(rebuild=False):
     """Step 2: long frame, summary against N, bin table, checks, the figure and
     the two D2 diagnostics."""
