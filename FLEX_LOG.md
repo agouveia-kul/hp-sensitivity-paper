@@ -440,3 +440,8 @@ Marks (Alex, 2026-10-26): F1 accept, F2 accept, F3 accept (minimal), F4 modify (
 - Calendar clause kept: the dead-band days are a third of the year (246 of 365 heating days in the Step 0 split).
 - **Beyond the listed F2 content (flag for Alex):** to keep the paper no longer, two sentences of the first IV-F paragraph were cut. They repeat III-C and the dead-band sentence: "This annual sum is the volume of heating energy that could be shifted over a year, which a DSO or aggregator needs to value a flexibility product." and "The estimate therefore covers only temperature-driven flexibility; weather-independent use that could also be shifted, such as hot-water heating, falls outside it." The two dead-band sentences of the third paragraph are merged into one.
 - Words after F2: 8633 (baseline 8695). Pages: 15 (baseline 16).
+
+### F3 — content bullets (minimal version)
+- III-C: Δt_Th is an exogenous building-stock parameter, held constant across temperatures (clause added to the existing sentence).
+- Conclusion, future work: recorded flexibility events would let Δt_Th be calibrated against temperature, and the TCLs' response to a call (participation) be measured. "Four directions" becomes "Five directions". This sentence also carries F4's participation point (F6 item 7).
+- No temperature-dependent window, no new symbol, no number.
