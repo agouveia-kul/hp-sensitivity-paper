@@ -459,3 +459,7 @@ Marks (Alex, 2026-10-26): F1 accept, F2 accept, F3 accept (minimal), F4 modify (
 - Item 6, conclusion summary: "…a flexibility potential at a WAPE of 10%, overestimated by 17% on the coldest days." Deviation from the suggestion's wording: "by up to 17%" became "by 17%", since 17% is the median of the coldest bin, not its maximum (IQR [1.07, 1.22]).
 - Item 7: done under F3 ("Five directions"; the flexibility-events sentence).
 - Unchanged, as recommended: abstract (250 words, WAPE 10% still correct), Fig. 1 labels, Table III, highlights, nomenclature, VI-A.
+
+### Length pass (after F6)
+- Trimmed only text added in Part C: the N = 10/30 sentence of the new IV-F paragraph (dropped), the headroom sentences, the "colder days set the annual ratio" clause, the caption's line legend and uncounted-days phrase, the F1 clause ("the curtailable load"), and the F3 future-work sentence.
+- Result: 8686 words (baseline 8695, −9), 16 pages (baseline 16), one figure fewer (two removed, one added). Page 16 holds only the last reference. Regaining 15 pages would need a further cut of unapproved text, e.g. the IV-F sentence "Computed from the daily mean SF instead … 1.01", which overlaps the factor split of the previous paragraph. Not made.
