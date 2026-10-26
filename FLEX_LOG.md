@@ -24,7 +24,25 @@ Uncertainty is reported across the 20 splits (median [IQR]) unless stated otherw
 
 Written before each run of Steps 1 and 2, never edited afterwards.
 
-*(none yet)*
+### Step 1 (written 2026-10-26, before the run; split W2 expectation approved by Alex)
+
+Definitions, fixed before the run:
+- Primary setting: N = 50, N_hp = 25 (60 aggregates, 3 per split). Heating-regime day: daily mean T below the aggregate's own net-load threshold T_h. Bins: 1 °C of daily mean T; a bin with fewer than 5 days is merged into its neighbour towards the centre of the range.
+- Actual F: the paper's hourly reference (mean over the day's hours of SF_t(1 − SF_t)·P^max). Actual P_down, P_up: from the daily mean submetered SF. Estimate: SF = m_h(T_h − T) with the pilot m_h, P̂^max = s_h/m_h (eqs. sf-target, capacity).
+- Peak temperature of a curve: vertex of the parabola through the largest bin and its two neighbours (the bin centre when the largest bin is at an edge). Per aggregate, then the median within each split; reported as median [IQR] over the 20 splits.
+
+| # | Expectation | Test |
+|---|---|---|
+| E1.1 | Under W1, F(T) rises monotonically across the observed range, for estimate and actual. | Per-bin median F/P^max never drops by more than 2% from one bin to the next colder one. |
+| E1.2a | Under W2, the **actual** F(T) peaks near 7–9 °C and falls towards the coldest days. | Median peak over splits in [6.5, 9.5] °C (±0.5 °C, half a bin), for T_in = 20 and 21 °C; coldest bin below the peak. |
+| E1.2b | Under W2, the **estimated** F(T) peaks near 5–6 °C and falls towards the coldest days. | Median peak over splits in [4.5, 6.5] °C, for T_in = 20 and 21 °C; coldest bin below the peak. |
+| E1.3 | P_up > P_down on almost all observed days. | Daily SF < 0.5 on ≥ 99% of heating-regime aggregate-days, for estimate and actual. |
+| E1.4 | Estimate/actual of F is roughly flat across bins, near 1.04. | Per-bin median ratio (W1) within [0.94, 1.14] in every bin. |
+| E1.5 | The peak location is stable across splits. | IQR over splits of the W2 peak ≤ 2 °C, for estimate and actual. |
+| E1.6 (mine) | Estimate/actual falls below 1 in the warmest heating bins, since the estimate has no intercept b_h while the actual SF does. | Median ratio < 0.94 in the bins within 3 °C of the median T_h. |
+| E1.7 (mine) | The W2 hump is broad: F on the coldest bin stays at ≥ 0.7 of the peak. | Median over aggregates of F_coldest / F_peak ≥ 0.7, for estimate and actual. |
+
+E1.4 and E1.6 cannot both be met; E1.6 is my prior, E1.4 the prompt's.
 
 ---
 
