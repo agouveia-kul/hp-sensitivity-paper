@@ -44,6 +44,24 @@ Definitions, fixed before the run:
 
 E1.4 and E1.6 cannot both be met; E1.6 is my prior, E1.4 the prompt's.
 
+### Step 2 (written 2026-10-26, before the run; 2 °C bins approved by Alex)
+
+Definitions, fixed before the run:
+- Settings: N ∈ {10, 20, 30, 40, 50} at 50% penetration (N_hp = N/2), 60 aggregates each (3 per split).
+- Bins: 2 °C of daily mean T over the heating regime, merged towards the centre of the range until each holds ≥ 10 days of the year. Per aggregate, a bin with fewer than 10 of its own heating days is left out.
+- Per aggregate and bin: the 10th percentile (P10) and median across days of F under W1 (actual: hourly reference; estimate: eq. flex-energy), and r = P10/median. The window cancels in r.
+- Summary per N: per aggregate, the median of r over its bins; the median within each split; median [IQR] over the 20 splits.
+- Diagnostic: "firm over promised" = P10 of the actual over the median of the estimate, per bin; it is what a DSO relying on the estimate could count on 9 days in 10.
+- Fig. 9 link: the daily-resolution median R²_h of the net-load and SF fits per N, read from the paper's cache `data/_kloten_quality.pkl` (not recomputed).
+
+| # | Expectation | Test |
+|---|---|---|
+| E2.1 | The actual P10/median rises with N. | The summary never falls by more than 0.01 from one N to the next larger, and is higher at N = 50 than at N = 10. |
+| E2.2 (mine) | The estimate's P10/median does not rise with N, since the estimate varies only with T inside a bin. | Range of the estimate's summary across N ≤ 0.02. |
+| E2.3 (mine) | The estimate understates the day-to-day spread. | Estimate summary > actual summary at every N. |
+| E2.4 (mine) | The relative spread of the actual is largest near T_h. | At N = 50, the warmest bin has the lowest median r of the actual. |
+| E2.5 (mine) | Even at N = 50 the lower decile sits well below the median. | Actual summary at N = 50 in [0.80, 0.95]. |
+
 ---
 
 ## Deviations
