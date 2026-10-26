@@ -527,3 +527,42 @@ Marks (Alex, 2026-10-26): F1 accept, F2 accept, F3 accept (minimal), F4 modify (
   - The estimate's spread across aggregates is much wider than the actual's, since it carries each aggregate's capacity and fit error. It overshoots on the cold side (1.18 at −3.3 °C) and matches at 8–12 °C.
   - The day-to-day spread barely depends on the number of HPs, and peaks at 13–15 °C (0.45), as in Step 2.
 - Trade-off against the paper's per-kW normalisation (Fig. 7): dividing by the own maximum shows shape and spread, but hides the absolute level and the 0.25 ceiling. Per kW of true installed capacity keeps both.
+
+### Follow-up (Alex): figure simplified; three questions answered
+- Figure: panel (a) no longer shows the day-to-day IQR. The legend gives one entry per curve ("actual, median and IQR across aggregates"; "estimate, median and IQR"; dead band).
+- Diagnostics: `flex_temperature.flex_all_diagnostics()`, N = 50, N_hp = 25, medians over the 60 aggregates.
+
+Day-to-day IQR / median of the actual F per bin, raw and net of a linear T trend inside the bin:
+
+| Bin (°C) | Days | T span (°C) | Raw | Net of T trend | Spring share (Jan–Jun) |
+|---|---|---|---|---|---|
+| [−9, −1) | 9 | 6.9 | 0.054 | 0.030 | 0.78 |
+| [5, 7) | 29 | 1.9 | 0.130 | 0.119 | 0.55 |
+| [11, 13) | 34 | 1.9 | 0.209 | 0.179 | 0.65 |
+| [13, 15) | 20 | 1.8 | 0.447 | 0.487 | 0.35 |
+| [15, T_h) | 13 | 1.2 | 0.241 | 0.203 | 0.23 |
+
+Downward headroom per kW of true capacity (actual = daily-mean SF; estimate = m_h(T_h − T)·P̂^max/P^max). The floor is each aggregate's median daily SF on days ≥ T_h + 2 °C (median 0.027).
+
+| Bin centre (°C) | −3.3 | 0.0 | 4.1 | 7.7 | 10.1 | 12.0 | 13.9 | 15.8 |
+|---|---|---|---|---|---|---|---|---|
+| Actual | 0.370 | 0.336 | 0.250 | 0.190 | 0.146 | 0.107 | 0.066 | 0.053 |
+| Estimate | 0.404 | 0.336 | 0.254 | 0.178 | 0.130 | 0.090 | 0.052 | 0.015 |
+| Est. / act. | 1.09 | 1.00 | 1.02 | 0.94 | 0.90 | 0.84 | 0.79 | 0.28 |
+| Est. / (act. − floor) | 1.18 | 1.09 | 1.14 | 1.10 | 1.10 | 1.12 | 1.34 | 0.57 |
+
+- **Why the day-to-day IQR falls just below T_h.**
+  - The peak at 13–15 °C is not the temperature trend inside the bin: removing it leaves 0.49.
+  - That bin mixes spring days (35%) with late-summer and autumn days. Its lowest days (Step 2, D2-ii) look like heating switched off for the season, so heating-on and heating-off days sit side by side.
+  - In the last bin, [15, T_h), most days are already near the weather-independent floor (77% from August to October), which varies less from day to day, so the relative IQR falls to 0.24.
+  - That bin is also narrower (1.2 °C span, 13 days).
+  - The on/off reading rests on dates, not on a metered heating-mode signal.
+- **Cold-side overestimate and P̂^max.** P̂^max cancels out of the estimate: E_flex = SF(1 − SF)·P̂^max·Δt = s_h(T_h − T)(1 − m_h(T_h − T))·Δt.
+  - The +17% in the coldest bin is the product of three factors (Step 1): the net-load arm above the measured HP load (energy factor 1.09), the daily resolution (1.04) and the pilot's slightly low SF (unused-capacity factor 1.02).
+  - The measured downward headroom rises about 0.02 per °C down to 0 °C but only 0.010 per °C below it, whereas the fitted arm stays linear. The cause of this flattening is not identified here.
+  - P̂^max (1.14 × true at N = 50) enters directly only the upward headroom.
+- **Mild-side underestimate and hot water.** Mostly yes. The estimate excludes weather-independent HP use by construction.
+  - With each aggregate's summer floor subtracted from the actual, the estimate is 9–18% high from −3 to 12 °C, instead of 0–16% low from 7 to 14 °C.
+  - So in the middle of the range the fitted arm runs about 10–15% steeper than the floor-free HP load, which happens to make up for the missing floor. The steeper arm possibly reflects the non-TCL temperature response, the paper's first error source.
+  - Near T_h (last bin) the estimate is still low with the floor removed (0.57), so the gradual switch-off of heating across buildings adds to the gap there.
+  - The summer floor may understate the winter hot-water load (colder mains water), so this attribution is approximate.

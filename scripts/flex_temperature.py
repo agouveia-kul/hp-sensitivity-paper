@@ -954,20 +954,25 @@ def fig_flex_all(L=None, name='fig_flex_all_normalised'):
     L = L[cover >= 0.1 * L.row.nunique()]
     hf.use_style()
     fig, axs = plt.subplots(2, 1, figsize=(hf.COL1, 4.4), sharex=True, gridspec_kw=dict(height_ratios=[1.6, 1]))
+    from matplotlib.lines import Line2D
+    from matplotlib.patches import Patch
     ax = axs[0]
     h = L[L.regime == 'heating'].groupby('bin')
     x = h.x.first()
-    ax.fill_between(x, h.q25.median(), h.q75.median(), color='0.2', alpha=.12, lw=0, label='actual, day-to-day IQR (typical)')
-    ax.fill_between(x, h.med.quantile(.25), h.med.quantile(.75), color='0.2', alpha=.35, lw=0, label='actual, IQR across aggregates')
-    ax.plot(x, h.med.median(), color='0.1', lw=1.4, label='actual, median')
+    ax.fill_between(x, h.med.quantile(.25), h.med.quantile(.75), color='0.2', alpha=.3, lw=0)
+    ax.plot(x, h.med.median(), color='0.1', lw=1.4)
     ax.fill_between(x, h.est.quantile(.25), h.est.quantile(.75), color=hf.C_HP, alpha=.15, lw=0)
-    ax.plot(x, h.est.median(), color=hf.C_HP, ls='--', lw=1.4, label='estimate, median and IQR')
+    ax.plot(x, h.est.median(), color=hf.C_HP, ls='--', lw=1.4)
     d = L[L.regime == 'dead band'].groupby('bin')
-    ax.plot(d.x.first(), d.med.median(), color='0.5', ls=':', lw=1.2, label='actual, $T \\geq T_h$ (not counted)')
+    ax.plot(d.x.first(), d.med.median(), color='0.5', ls=':', lw=1.2)
     ax.axhline(1, color='0.6', lw=.6)
     ax.set_ylabel('flexibility / own maximum')
     ax.set_ylim(0, 1.3)
-    ax.legend(fontsize=5.8, loc='upper right')
+    handles = [(Patch(color='0.2', alpha=.3, lw=0), Line2D([], [], color='0.1', lw=1.4)),
+               (Patch(color=hf.C_HP, alpha=.15, lw=0), Line2D([], [], color=hf.C_HP, ls='--', lw=1.4)),
+               Line2D([], [], color='0.5', ls=':', lw=1.2)]
+    ax.legend(handles, ['actual, median and IQR across aggregates', 'estimate, median and IQR',
+                        'actual, $T \\geq T_h$ (not counted)'], fontsize=6, loc='upper right')
     ax = axs[1]
     for nh, c, ls in zip((5, 15, 25), ('#9ecae1', '#4292c6', '#08306b'), (':', '--', '-')):
         g = L[(L.regime == 'heating') & (L.N_hp == nh)].assign(w=lambda v: (v.q75 - v.q25) / v.med).groupby('bin')
@@ -985,6 +990,48 @@ def fig_flex_all(L=None, name='fig_flex_all_normalised'):
     path = save_fig(fig, name)
     plt.close(fig)
     return path
+
+
+def flex_all_diagnostics(N=50, N_hp=25):
+    """Two diagnostics for the normalised plot (Alex's questions), on the (N, N_hp) aggregates.
+
+    iqr: per 2 degC bin of heating days, the day-to-day IQR / median of the actual
+    F, raw and net of a linear temperature trend within the bin, with the bin's
+    temperature span and spring share (Jan-Jun), median over aggregates.
+    floor: per bin, the actual and estimated downward headroom per kW of true
+    capacity, the aggregate's summer floor (median daily SF on days >= T_h + 2),
+    and the estimated / actual ratio with and without the floor, median over
+    aggregates.
+    """
+    Dz, _ = rebuild_design(); D = daily_frames(); G = Dz['rows']; T = D['T']
+    days = pd.date_range('2023-01-01', periods=len(T), freq='D')
+    edges, _ = temperature_bins(T, MIN_DAYS, FIRM_WIDTH)
+    idx = np.clip(np.digitize(T, edges) - 1, 0, len(edges) - 2)
+    sel = np.flatnonzero(((G.N == N) & (G.N_hp == N_hp)).to_numpy())
+    r1, r2 = [], []
+    for i in sel:
+        r = G.iloc[i]
+        fa = D['fa_h'][i].astype(float); sf_a = D['sf_a'][i].astype(float)
+        pd_e = O.sf_target(T, r.T_h, r.m_pilot) * r.cap_est / r.cap
+        floor = float(np.median(sf_a[T >= r.T_h + 2]))
+        for b in range(len(edges) - 1):
+            m = (idx == b) & (T < r.T_h)
+            if m.sum() < MIN_DAYS:
+                continue
+            y, t = fa[m], T[m]
+            res = y - np.polyval(np.polyfit(t, y, 1), t) + np.median(y)
+
+            def rel_iqr(v):
+                return (np.quantile(v, .75) - np.quantile(v, .25)) / np.median(y)
+            r1.append(dict(bin=b, lo=edges[b], hi=edges[b + 1], days=int(m.sum()), T_span=float(t.max() - t.min()),
+                           raw=rel_iqr(y), detrended=rel_iqr(res), spring=float((days[m].month <= 6).mean())))
+            r2.append(dict(bin=b, x=float(t.mean()), act=float(sf_a[m].mean()), floor=floor,
+                           est=float(pd_e[m].mean())))
+    iqr = pd.DataFrame(r1).groupby(['bin', 'lo', 'hi']).median()
+    fl = pd.DataFrame(r2).groupby('bin').median()
+    fl['est/act'] = fl.est / fl.act
+    fl['est/(act-floor)'] = fl.est / (fl.act - fl.floor)
+    return dict(iqr=iqr, floor=fl)
 
 
 def step2(rebuild=False):
