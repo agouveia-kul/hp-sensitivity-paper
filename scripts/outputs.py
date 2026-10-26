@@ -1143,6 +1143,54 @@ def fig_quality_heatmap():
     print('saved -> fig_quality_heatmap')
 
 
+def fig_aggregation_heatmap():
+    """fig_aggregation_heatmap: fit quality and capacity error against spatial x temporal aggregation.
+
+    One row of three panels on the Kloten aggregates at a 50% ETL rate (``_kloten_quality``):
+    median R^2_h of the net-load fit and of the SF fit (shared scale), and the WAPE of s_h / m_h.
+    Replaces fig_quality_heatmap and fig_capacity_heatmap in the paper.
+    """
+    Q = _kloten_quality()
+    labs = [lab for lab, _ in QUALITY_RES]
+    r2 = {c: Q.pivot_table(index='N', columns='resolution', values=c, aggfunc='median')[labs] for c in ('r2_net', 'r2_sf')}
+    wape = Q.groupby(['N', 'resolution']).apply(lambda g: (g.cap_est - g.cap).abs().sum() / g.cap.sum() * 100).unstack()[labs]
+    for c, p in list(r2.items()) + [('WAPE (%)', wape)]:
+        print(c); print(p.round(2).to_string())
+    r2v = np.concatenate([p.values.ravel() for p in r2.values()])
+    lo, hi = float(np.nanmin(r2v)), float(np.nanmax(r2v))
+    hf.use_style()
+    fig, axes = plt.subplots(1, 3, figsize=(hf.COL2, 2.35), gridspec_kw=dict(width_ratios=[1, 1, 1.18]))
+    panels = [(r2['r2_net'], 'net-load fit, median $R^2_h$', 'magma', lo, hi, '{:.2f}'),
+              (r2['r2_sf'], 'SF fit, median $R^2_h$', 'magma', lo, hi, '{:.2f}'),
+              (wape, 'capacity estimate, WAPE (%)', 'magma_r', float(np.nanmin(wape.values)) - 1,
+               float(np.nanmax(wape.values)) + 1, '{:.0f}')]
+    ims = []
+    for ax, (piv, title, cmap, vmin, vmax, fmt) in zip(axes, panels):
+        vals = piv.values
+        im = ax.imshow(vals, aspect='auto', origin='lower', cmap=cmap, vmin=vmin, vmax=vmax)
+        ims.append(im)
+        ax.set_xticks(range(len(piv.columns))); ax.set_xticklabels(piv.columns, fontsize=7)
+        ax.set_yticks(range(len(piv.index))); ax.set_yticklabels(piv.index, fontsize=7)
+        for i in range(len(piv.index)):
+            for j in range(len(piv.columns)):
+                v = vals[i, j]
+                if np.isfinite(v):
+                    level = (v - vmin) / (vmax - vmin)
+                    dark = level < 0.55 if cmap == 'magma' else level > 0.6
+                    ax.text(j, i, fmt.format(v), ha='center', va='center', fontsize=6,
+                            color='white' if dark else 'black')
+        ax.set_xlabel('averaging window')
+        ax.set_title(title, fontsize=8)
+        ax.grid(False)
+    axes[0].set_ylabel('households per aggregate, $N$')
+    for ax in axes[1:]:
+        ax.set_yticklabels([])
+    cb = fig.colorbar(ims[1], ax=axes[:2], pad=0.02, aspect=22, fraction=0.04); cb.ax.tick_params(labelsize=7)
+    cb = fig.colorbar(ims[2], ax=axes[2], pad=0.03, aspect=22, fraction=0.08); cb.ax.tick_params(labelsize=7)
+    hf.save(fig, 'fig_aggregation_heatmap')
+    print('saved -> fig_aggregation_heatmap')
+
+
 def fig_capacity_heatmap():
     """fig_capacity_heatmap: capacity error against spatial x temporal aggregation (Kloten, 50% ETL rate).
 

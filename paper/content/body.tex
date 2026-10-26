@@ -397,12 +397,14 @@ With the pilot's SF sensitivity, \eqref{eq:capacity} recovers the installed capa
 
 \begin{figure*}[t]
 \centering
-\includegraphics[width=0.7\linewidth]{figures/fig_capacity_heatmap.pdf}
-\caption{Capacity error of \eqref{eq:capacity} on the Kloten aggregates against spatial aggregation (households per aggregate, $N$) and temporal aggregation (averaging window), at a fixed 50\% HP penetration. Left: WAPE; right: median signed error.}
-\label{fig:capacity-heatmap}
+\includegraphics[width=\linewidth]{figures/fig_aggregation_heatmap.pdf}
+\caption{Fit quality and capacity error on the Kloten aggregates against spatial aggregation (households per aggregate, $N$) and temporal aggregation (averaging window), at a fixed 50\% HP penetration. Left and centre: median $R^2_h$ of the net-load fit and the SF fit. Right: WAPE of the capacity estimate \eqref{eq:capacity}.}
+\label{fig:aggregation}
 \end{figure*}
 
-Fig.~\ref{fig:capacity-heatmap} repeats the estimate over a grid of household counts and averaging windows, the same grid on which Section~\ref{sec:res-ff} scores the fit quality, at a fixed 50\% HP penetration. In each cell, both the target's net-load fit and the pilot's SF fit are made at the cell's resolution. The averaging window barely matters: along each row, the WAPE varies by at most 1.5 points, as both sensitivities of \eqref{eq:capacity} come from fits at the same resolution. The household count matters more. The WAPE falls from 19\% at ten households to between 12\% and 14\% at fifty, while the median overestimate stays between 9\% and 14\%. Five HPs among ten households give a WAPE of 19\%, against 41\% for five HPs across all household counts. This points to the HP penetration, rather than the HP count, as what drives the error. Unlike the fit quality (Section~\ref{sec:res-ff}), the capacity estimate needs no resolution finer than the daily mean.
+Fig.~\ref{fig:aggregation} repeats both fits and the estimate over a grid of household counts and averaging windows. It uses a separate set of Kloten aggregates at a fixed 50\% HP penetration, also drawn without replacement. In each cell, the target's net-load fit and the pilot's SF fit are made at the cell's resolution. Both fits are scored on the points below the net-load threshold $T_h$. Summing more households and averaging over longer windows both smooth out behaviour that does not follow the temperature, so both raise the fit quality. The median $R^2_h$ rises from 0.42 for the net-load fit and 0.60 for the SF fit, at ten households and hourly resolution, to 0.91 and 0.95 at fifty households and daily resolution. The two forms of aggregation are, to some extent, substitutable: a coarser window recovers much of what a larger aggregate would.
+
+The capacity estimate depends far less on the averaging window. Along each row, its WAPE varies by at most 1.5 points, as both sensitivities of \eqref{eq:capacity} come from fits at the same resolution. The household count matters more. The WAPE falls from 19\% at ten households to between 12\% and 14\% at fifty, while the median overestimate stays between 9\% and 14\%. Five HPs among ten households give a WAPE of 19\%, against 41\% for five HPs across all household counts. This points to the HP penetration, rather than the HP count, as what drives the error. The daily mean, used throughout this paper, therefore suffices for the capacity estimate.
 
 Table~\ref{tab:baselines} compares four estimators on the same aggregates:
 \begin{itemize}
@@ -448,20 +450,6 @@ The net-load sensitivity, in turn, grows with the installed capacity. Fig.~\ref{
 \caption{Fitted net-load sensitivity $s_h$ against installed HP capacity across the 1260 Kloten aggregates, coloured by the number of HPs.}
 \label{fig:slope-capacity}
 \end{figure}
-
-\subsection{Fit Quality across Spatial and Temporal Aggregation}
-\label{sec:res-ff}
-
-Both fits, \eqref{eq:bathtub} and \eqref{eq:sffit}, are made to each aggregate's measurements, varying the number of households and the averaging window. The HP penetration is kept fixed at 50\%, on a separate set of Kloten aggregates, also drawn without replacement. Summing more households evens out their individual, non-thermal behaviour. Averaging over longer windows does the same over time, smoothing out occupancy swings and building thermal inertia that do not follow the temperature hour by hour. Fig.~\ref{fig:quality-heatmap} reports the median $R^2_h$ of both fits for every combination of household count and averaging window. Both fits are scored on the points below the net-load threshold $T_h$, at which the SF fit is anchored.
-
-\begin{figure*}[t]
-\centering
-\includegraphics[width=0.7\linewidth]{figures/fig_quality_heatmap.pdf}
-\caption{Median $R^2_h$ of the net-load fit (left) and the SF fit (right) of the Kloten aggregates against spatial aggregation (households per aggregate, $N$) and temporal aggregation (averaging window), at a fixed 50\% HP penetration.}
-\label{fig:quality-heatmap}
-\end{figure*}
-
-More households and longer averaging windows both raise the median $R^2_h$ of both fits, and the two effects compound. The weakest cell, ten households at hourly resolution, gives a median $R^2_h$ of 0.42 for the net-load fit and 0.60 for the SF fit. The strongest, fifty households at daily resolution, reaches 0.91 and 0.95. This suggests the two forms of aggregation are, to some extent, substitutable: a coarser averaging window recovers much of what a larger aggregate would. The daily mean, used throughout this paper, sits at the right edge of this range, with sixteen hours already close behind it.
 
 \subsection{Temperature-Driven Energy}
 \label{sec:res-energy}
