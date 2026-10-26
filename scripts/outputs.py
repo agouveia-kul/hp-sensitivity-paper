@@ -726,7 +726,7 @@ def fig_energy_error(below_th=True):
 
 
 def fig_slope_capacity():
-    """fig_slope_capacity: heating sensitivity vs installed HP capacity (Kloten)."""
+    """fig_slope_capacity: net-load sensitivity vs installed HP capacity (Kloten)."""
     G = _kloten_design()['rows']
     x, y = G.cap.to_numpy(), G.s_h.to_numpy()
     slope0 = np.sum(x * y) / np.sum(x * x); r = np.corrcoef(x, y)[0, 1]
@@ -737,7 +737,7 @@ def fig_slope_capacity():
     xl = np.array([0, x.max() * 1.02])
     ax.plot(xl, slope0 * xl, color=hf.C_HP, lw=1.4,
             label=f'through-origin fit\n($r={r:.2f}$, $m={slope0:.4f}\\,^\\circ$C$^{{-1}}$)')
-    ax.set(xlabel='installed HP capacity $P_h^{\\max}$ (kW)', ylabel='heating sensitivity $s_h$ (kW/$^\\circ$C)')
+    ax.set(xlabel='installed HP capacity $P_h^{\\max}$ (kW)', ylabel='net-load sensitivity $s_h$ (kW/$^\\circ$C)')
     ax.legend(fontsize=7, loc='upper left')
     cb = fig.colorbar(sc, ax=ax, pad=0.02); cb.set_label('$N_{hp}$', fontsize=8)
     fig.tight_layout(); hf.save(fig, 'fig_slope_capacity')

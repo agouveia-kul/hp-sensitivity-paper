@@ -425,3 +425,6 @@ An external citation audit was checked against the sources before acting on it. 
 - Elsevier only: relaxed float fractions, so the tall transfer table stays in Sec. 5.2 instead of drifting past the references.
 - Overleaf: upload the `content/` folder along with the wrapper(s).
 - Alex's in-progress edits to the manuscript ("energy demand", the moved "This paper joins…" sentence, contribution 2, and the "% this sentence is weird" note on the TCL-control sentence) are carried over unchanged into `content/body.tex`.
+- **Layout fixes (Alex, 26 Oct; after switching to `[5p,times,twocolumn]`):** float widths now follow the class option. Two-column: figures and tables at the column width, as in IEEE. One-column preprint: figures at 0.6 text width, tables up to the text width. All three builds (Elsevier two-column 17 pp, Elsevier preprint 39 pp, IEEE 14 pp) have no overfull boxes. The reference list uses footnote size with tight spacing (`\bibfont`, `\bibsep`). URLs and DOIs are in the text font (`\urlstyle{same}`) and may break anywhere (`xurl`).
+- Fig. 8 y-axis relabelled "net-load sensitivity s_h" (was "heating sensitivity"), matching the text; regenerated with identical values (r = 0.97, slope 0.020).
+- "% this sentence is weird" (Sec. I, TCL control models): replacement suggested to Alex, not applied.

@@ -1,7 +1,8 @@
 % Elsevier version for Applied Energy (elsarticle, numbered references).
 % The text lives in content/; the IEEE version is hp_sensitivity_overleaf.tex.
 % Layout: [preprint,12pt] single column (submission). For a journal-like two-column proof use [5p,times,twocolumn].
-\documentclass[preprint,12pt]{elsarticle}
+%\documentclass[preprint,12pt]{elsarticle}
+\documentclass[5p,times,twocolumn]{elsarticle}
 
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -13,14 +14,29 @@
 \usepackage{booktabs}
 \usepackage{threeparttable}
 \usepackage[hidelinks]{hyperref}
+\usepackage{xurl}% long URLs in the references may break anywhere, so they stay inside the column
+\urlstyle{same}% URLs and DOIs in the text font, not typewriter
 \graphicspath{{figures/}}
 
-% single-column figures at about the IEEE column width; tables only shrink, never grow
-\newlength{\figw}\setlength{\figw}{0.6\textwidth}
-\newlength{\tabw}\setlength{\tabw}{\textwidth}
+% Float widths follow the layout chosen in \documentclass:
+%   two-column (5p): one-column floats fit the column, as in the IEEE version;
+%   one-column (preprint): figures at about the IEEE column width, tables up to the text width.
+% Tables only shrink to fit, never grow.
+\newlength{\figw}\newlength{\tabw}
+\makeatletter
+\if@twocolumn
+  \setlength{\figw}{\columnwidth}\setlength{\tabw}{\columnwidth}
+\else
+  \setlength{\figw}{0.6\textwidth}\setlength{\tabw}{\textwidth}
+\fi
+\makeatother
 \input{content/macros}
 
-% single-column floats: let tall tables sit near their text instead of drifting to the end
+% reference list in journal style: footnote size, tight spacing (natbib, loaded by elsarticle)
+\renewcommand{\bibfont}{\footnotesize}
+\setlength{\bibsep}{1pt plus 0.3ex}
+
+% let tall floats sit near their text instead of drifting to the end
 \renewcommand{\topfraction}{0.9}
 \renewcommand{\bottomfraction}{0.8}
 \renewcommand{\textfraction}{0.07}
