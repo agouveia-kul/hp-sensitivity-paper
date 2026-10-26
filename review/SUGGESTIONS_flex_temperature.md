@@ -26,7 +26,7 @@ Mark each suggestion in its `Alex:` line. Part C starts only for items marked ac
 - Length effect: III-C +20 words (two sentences replace one); IV-F +30 words. No figure.
 - Reviewer risk: "This is a trivial restatement of SF and 1 − SF." Answer: it identifies which half of the flexibility depends on the transferred SF. That matters to a DSO, since only the upward half carries the pilot's error.
 - Recommendation: accept — it is short, derived and backed by a measured asymmetry.
-- Alex: [ accept | modify | reject ]
+- Alex: **accept** (2026-10-26)
 
 ### F2 — One flexibility–temperature figure replacing Figs. 10 and 11
 - What: replace Figs. 10 and 11 with one two-panel figure on the temperature axis: (a) upward and downward headroom, (b) flexible energy per hour of window. Both panels are per kW of true installed capacity, estimate against actual.
@@ -52,7 +52,7 @@ Mark each suggestion in its `Alex:` line. Part C starts only for items marked ac
 - Length effect: −1 figure. Text −316 words (Fig. 11 paragraph 169, the two captions 112, and the two dead-band sentences of the third IV-F paragraph, about 35). New caption about +65 and new paragraph about +100. Net about −150 words.
 - Reviewer risk: "The temperature profile shows the estimate is biased; the annual 1.04 looked better." Answer: the profile is a feature of the net-load fit, shared with the energy estimate, and it is stated rather than hidden. A DSO valuing cold-day flexibility needs exactly this. Second risk: "Why only N = 50?" Answer: the other N give the same profile (Step 1), and one sentence says so.
 - Recommendation: accept — the paper loses a figure and gains the error profile and the up/down split, while the annual numbers survive as text. (Modify option: if you want to keep the full 1260-aggregate distribution, keep Fig. 10 and replace only Fig. 11; net then about −60 words and no figure saved.)
-- Alex: [ accept | modify | reject ]
+- Alex: **accept** (2026-10-26)
 
 ### F3 — Temperature-dependent window *(reverted to the minimal version after Step 1b, at Alex's decision)*
 - What: add no temperature-dependent window to the method or results. State in III-C that Δt_Th is held constant across temperature, and list a temperature-dependent window under future work.
@@ -72,7 +72,7 @@ Mark each suggestion in its `Alex:` line. Part C starts only for items marked ac
 - Length effect: III-C +5 words (or about +25 with the sample sentence in place of the clause); conclusion +25 words (F6 item 7). No figure.
 - Reviewer risk: "The window surely shrinks in cold weather; why ignore it?" Answer: the clause acknowledges it, and the paper reports E_flex per hour of window, so any window model can be applied to its curve. The data hold no flexibility events to calibrate one.
 - Recommendation: accept the minimal version — any temperature-dependent window adds assumptions the data cannot test, and near T_h there is little load to shift anyway.
-- Alex: [ accept | modify | reject ]
+- Alex: **accept**, minimal version (2026-10-26)
 
 ### F4 — Firm flexibility paragraph in the Discussion, linked to Fig. 9
 - What: add a short paragraph to Sec. VI-B (Limitations) quantifying how firm the flexibility potential is from day to day, and how little aggregation changes that.
@@ -89,7 +89,7 @@ Mark each suggestion in its `Alex:` line. Part C starts only for items marked ac
 - Length effect: about +55 words. No figure (`fig_firm_flex.pdf` stays in the log, not in the paper).
 - Reviewer risk: "This is one station and one year; the haircut cannot be generalised." Answer: the paragraph says so and reports it as a measured bound for Kloten, not a transferable constant. Second risk: "Is this participation?" Answer: no, and the paragraph says so in one sentence.
 - Recommendation: modify — keep the haircut and the Fig. 9 contrast, drop any scaling claim, cap at about 55 words.
-- Alex: [ accept | modify | reject ]
+- Alex: **modify**: ≤ 55 words, haircut without scaling law (2026-10-26)
 
 ### F5 — Flexibility at the planning condition
 - What: not assessed. Step 2b was not run: `RESULTS_LOG.md` holds no overloaded aggregates and no headroom proxy R yet (the planning experiments stop at their Step 2).
@@ -99,7 +99,7 @@ Mark each suggestion in its `Alex:` line. Part C starts only for items marked ac
 - Length effect: 0.
 - Reviewer risk: —
 - Recommendation: reject for this revision — no evidence yet.
-- Alex: [ accept | modify | reject ]
+- Alex: **reject** (2026-10-26)
 
 ### F6 — Knock-on edits
 - What: the edits elsewhere that keep the paper consistent with F1–F4, listed and not made. Each applies only if its parent suggestion is accepted.
@@ -127,7 +127,7 @@ Mark each suggestion in its `Alex:` line. Part C starts only for items marked ac
 - Length effect: +13 words (items 1 and 6); item 7 counted under F3.
 - Reviewer risk: inconsistency between abstract and IV-F if F2 is accepted without item 6. Answer: item 6 aligns the conclusion; the abstract's WAPE stays correct.
 - Recommendation: accept the items that follow from the accepted suggestions; keep the abstract, Fig. 1, Table III and highlights unchanged.
-- Alex: [ accept | modify | reject ]
+- Alex: **accept**: the items triggered by F1–F4, i.e. 1, 6 and 7 (2026-10-26)
 
 ---
 
