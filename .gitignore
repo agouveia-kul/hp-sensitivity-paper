@@ -23,3 +23,15 @@ __pycache__/
 
 # recomputed figures/tables and work files (scripts/replication.py)
 /results/
+
+# Elsevier (Applied Energy) build of the manuscript
+paper/hp_sensitivity_elsevier.aux
+paper/hp_sensitivity_elsevier.bbl
+paper/hp_sensitivity_elsevier.blg
+paper/hp_sensitivity_elsevier.log
+paper/hp_sensitivity_elsevier.out
+paper/hp_sensitivity_elsevier.pdf
+paper/hp_sensitivity_elsevier.spl
+paper/hp_sensitivity_elsevier.synctex.gz
+paper/hp_sensitivity_elsevier.fls
+paper/hp_sensitivity_elsevier.fdb_latexmk

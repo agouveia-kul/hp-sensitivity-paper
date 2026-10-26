@@ -1,0 +1,7 @@
+Highlights
+
+- Installed heat-pump capacity is estimated from feeder net load and temperature
+- A simultaneity-factor sensitivity is calibrated once on a small submetered pilot
+- 19% WAPE on 1260 semi-synthetic aggregates and within 10% on three real ones
+- The calibration transfers within one climate zone, not across housing types
+- Temperature-driven energy needs no pilot; flexibility follows from the same fits

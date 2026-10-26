@@ -876,7 +876,7 @@ def tab_baselines():
 \caption{Capacity WAPE (\%) on the Kloten aggregates, by HP penetration $N_{hp}/N$}
 \label{tab:baselines}
 \setlength{\tabcolsep}{2.5pt}
-\resizebox{\columnwidth}{!}{%
+\adjustbox{max width=\tabw}{%
 \begin{tabular}{lccccc}
 \toprule
 estimate & all & $\le 15\%$ & 15--35\% & 35--65\% & $> 65\%$ \\
@@ -1400,7 +1400,7 @@ def tab_real():
 \caption{Transfer to real aggregates outside Kloten}
 \label{tab:real}
 \setlength{\tabcolsep}{2.5pt}
-\resizebox{\columnwidth}{!}{%
+\adjustbox{max width=\tabw}{%
 \begin{tabular}{lcccccccc}
 \toprule
  & & & & \multicolumn{4}{c}{capacity error (\%)} & \\
@@ -2059,7 +2059,7 @@ def tab_bpa_nrel():
 \caption{SF transfer with complete heating submetering (heat pump and backup heat). Top: disjoint halves of BPA pools, median and interquartile range over 600 transfers. Bottom: across the BPA and NREL studies, with the 10th--90th percentiles of a bootstrap over homes. The target's numerator is its own heating load, so the capacity error isolates the transfer}
 \label{tab:bpa-nrel}
 \setlength{\tabcolsep}{3pt}
-\resizebox{\columnwidth}{!}{%
+\adjustbox{max width=\tabw}{%
 \begin{tabular}{lcccc}
 \toprule
 pilot $\rightarrow$ target & homes & $m_h$ ($^\circ$C$^{-1}$) & $m_h$ ratio & capacity error (\%) \\
@@ -2151,7 +2151,7 @@ def tab_rhpp():
 \caption{SF transfer in the GB RHPP trial (182 homes, heat pump and electric boost submetered). Top: disjoint random pools, median and interquartile range over 600 transfers. Bottom: between heat-pump technologies and between social and private housing, with the 10th--90th percentiles of a bootstrap over homes. The target's numerator is its own heating load}
 \label{tab:rhpp}
 \setlength{\tabcolsep}{3pt}
-\resizebox{\columnwidth}{!}{%
+\adjustbox{max width=\tabw}{%
 \begin{tabular}{lcccc}
 \toprule
 pilot $\rightarrow$ target & homes & $m_h$ ($^\circ$C$^{-1}$) & $m_h$ ratio & capacity error (\%) \\
@@ -2250,7 +2250,7 @@ def tab_transfer(n_splits=300, seed=0):
 \caption{Ratio of the target's own to the pilot's SF sensitivity [IQR over random splits or a bootstrap over households]}
 \label{tab:transfer}
 \setlength{\tabcolsep}{2.5pt}
-\resizebox{\columnwidth}{!}{%
+\adjustbox{max width=\tabw}{%
 \begin{tabular}{llcc}
 \toprule
 pilot $\rightarrow$ target & country & households & $m_h^{\mathrm{own}}/m_h^{\mathrm{pilot}}$ \\

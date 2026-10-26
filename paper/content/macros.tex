@@ -1,0 +1,12 @@
+% Shared macros for both templates (IEEE and Elsevier wrappers \input this file).
+% Widths \figw (single-column figure) and \tabw (maximum table width) are set by each wrapper.
+\definecolor{chgblue}{HTML}{0645AD}
+\newcommand{\chg}[1]{#1}
+% shared style of the two block diagrams (Figs. 1 and 5)
+\tikzset{
+  flow/.style={font=\footnotesize, >=latex},
+  fin/.style={draw, fill=black!6, rounded corners=1pt, align=center, text width=22mm, minimum height=9mm, inner sep=2pt},
+  fproc/.style={draw, rounded corners=3pt, align=center, text width=22mm, minimum height=9mm, inner sep=2pt},
+  fout/.style={fproc, thick},
+  flab/.style={font=\scriptsize, text=black!60, align=center},
+}

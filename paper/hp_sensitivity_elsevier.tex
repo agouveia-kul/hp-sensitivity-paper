@@ -1,0 +1,96 @@
+% Elsevier version for Applied Energy (elsarticle, numbered references).
+% The text lives in content/; the IEEE version is hp_sensitivity_overleaf.tex.
+% Layout: [preprint,12pt] single column (submission). For a journal-like two-column proof use [5p,times,twocolumn].
+\documentclass[preprint,12pt]{elsarticle}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{adjustbox}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,calc}
+\usepackage{textcomp}
+\usepackage{booktabs}
+\usepackage{threeparttable}
+\usepackage[hidelinks]{hyperref}
+\graphicspath{{figures/}}
+
+% single-column figures at about the IEEE column width; tables only shrink, never grow
+\newlength{\figw}\setlength{\figw}{0.6\textwidth}
+\newlength{\tabw}\setlength{\tabw}{\textwidth}
+\input{content/macros}
+
+% single-column floats: let tall tables sit near their text instead of drifting to the end
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\bottomfraction}{0.8}
+\renewcommand{\textfraction}{0.07}
+\renewcommand{\floatpagefraction}{0.7}
+\setcounter{topnumber}{3}
+\setcounter{totalnumber}{5}
+
+\journal{Applied Energy}
+
+\begin{document}
+
+\begin{frontmatter}
+
+\title{Estimating the Installed Capacity of Aggregated Thermostatically Controlled Loads from Net Load and Temperature}
+
+% TODO (authors): affiliations and the corresponding author's details
+\author[aff1]{Alexandre M. V. Gouveia\corref{cor1}}
+\ead{alexandremiguel.venanciogouveia@kuleuven.be}
+\author[aff1]{Md. Umar Hashmi}
+\author[aff1]{Reinhilde D'hulst}
+\author[aff1]{Dirk Van Hertem}
+\cortext[cor1]{Corresponding author}
+\affiliation[aff1]{organization={TODO: department and organisation},
+            city={TODO},
+            country={Belgium}}
+
+\begin{abstract}
+\input{content/abstract}
+\end{abstract}
+
+% Applied Energy: 3 to 5 highlights of at most 85 characters each, also submitted as a separate file (highlights.txt)
+\begin{highlights}
+\input{content/highlights}
+\end{highlights}
+
+% Applied Energy: 1 to 7 keywords
+\begin{keyword}
+Thermostatically controlled loads \sep heat pumps \sep low-voltage networks \sep simultaneity factor \sep installed capacity \sep flexibility \sep distribution system observability
+\end{keyword}
+
+\end{frontmatter}
+
+% =====================================================================
+\section*{Nomenclature}
+\newcommand{\nomentry}[2]{\item[#1] #2}
+\begin{list}{}{\setlength{\labelwidth}{2.6cm}\setlength{\leftmargin}{2.8cm}\setlength{\labelsep}{0.2cm}%
+  \setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}\renewcommand{\makelabel}[1]{#1\hfil}}
+\input{content/nomenclature}
+\end{list}
+
+\input{content/body}
+
+% =====================================================================
+% Declarations required by Applied Energy (TODO: authors to complete)
+\section*{CRediT authorship contribution statement}
+TODO.
+
+\section*{Declaration of competing interest}
+TODO.
+
+\section*{Declaration of generative AI use}
+TODO: required at submission (see the Applied Energy guide for authors).
+
+\section*{Data availability}
+TODO.
+
+\section*{Acknowledgements}
+TODO: funding sources and acknowledgements.
+
+\bibliographystyle{elsarticle-num}
+\bibliography{references}
+
+\end{document}
