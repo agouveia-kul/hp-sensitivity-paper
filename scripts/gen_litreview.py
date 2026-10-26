@@ -97,7 +97,7 @@ FLAGS = ('cap', 'target', 'train', 'transfer')   # shown as marks: Y -> check, P
 MARK = {'Y': r'\checkmark', 'Part': r'(\checkmark)', 'N': ''}
 SUBMETER = ('target', 'train')                   # grouped under one "Submetering needed" header
 
-KEY = (r"\par\smallskip{\footnotesize Installed capacity: recovers the installed capacity. Submetering needed: "
+KEY = (r"Installed capacity: recovers the installed capacity. Submetering needed: "
        r"submetered device data or labels are needed on the target aggregate itself (Target), or only to train or "
        r"calibrate the method on other data, such as a submetered pilot (Training). Transferable: a calibration "
        r"transfers to un-submetered aggregates. Level: individual meter; summed meters of an aggregate; feeder, "
@@ -105,7 +105,7 @@ KEY = (r"\par\smallskip{\footnotesize Installed capacity: recovers the installed
        r"AC: air conditioning; ADMD: after-diversity maximum demand; CNN: convolutional neural network; "
        r"DER: distributed energy resource; DR: demand response; EV: electric vehicle; GHI: global horizontal "
        r"irradiance; HVAC: heating, ventilation and air conditioning; ML: machine learning; NILM: non-intrusive "
-       r"load monitoring; PU: positive-unlabelled; PV: photovoltaics.}")
+       r"load monitoring; PU: positive-unlabelled; PV: photovoltaics.")
 
 
 def cite(ref):
@@ -140,14 +140,12 @@ def build(tabdir=os.path.join('paper', 'tables')):
             group = r['group']
         lines.append(' & '.join(cell(r, k) for _, k in cols) + r' \\')
     tex = (
-        r"\begin{table*}[t]" "\n" r"\centering" "\n"
-        r"\caption{Prior work on detecting and quantifying DERs and TCLs}" "\n"
-        r"\label{tab:litreview}" "\n" r"\footnotesize\setlength{\tabcolsep}{2.4pt}" "\n"
-        r"\resizebox{\textwidth}{!}{%" "\n"
+        r"\begin{autotable}[%" "\n" + KEY + "]\n"
+        r"{Prior work on detecting and quantifying DERs and TCLs}{tab:litreview}" "\n"
+        r"\setlength{\tabcolsep}{2.4pt}" "\n"
         r"\begin{tabular}{" + spec + "}\n" r"\toprule" "\n"
         + head + "\n" r"\midrule" "\n" + '\n'.join(lines) + "\n" r"\bottomrule" "\n"
-        r"\end{tabular}}" "\n"
-        + KEY + "\n" r"\end{table*}" "\n")
+        r"\end{tabular}" "\n" r"\end{autotable}" "\n")
     os.makedirs(tabdir, exist_ok=True)
     out = os.path.join(tabdir, 'tab_litreview.tex')
     with open(out, 'w', encoding='utf-8', newline='\n') as fh:

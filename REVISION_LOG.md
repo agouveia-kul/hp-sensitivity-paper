@@ -429,3 +429,10 @@ An external citation audit was checked against the sources before acting on it. 
 - Fig. 8 y-axis relabelled "net-load sensitivity s_h" (was "heating sensitivity"), matching the text; regenerated with identical values (r = 0.97, slope 0.020).
 - "% this sentence is weird" (Sec. I, TCL control models): replacement suggested to Alex, not applied.
 - Sec. I, TCL control models (Alex chose option A): "These models describe a population through the thermal parameters of its devices. Callaway [Cal09] uses such a model to make a population follow a load signal, and Hao et al. [Hao15] represent a population as a stochastic battery whose power and energy limits bound its flexibility." The "% this sentence is weird" note is removed.
+
+## Automatic table sizing (Alex, 26 Oct)
+- New `autotable` environment in `paper/content/macros.tex` (needs `environ`, loaded by both wrappers): `\begin{autotable}[notes]{caption}{label} tabular \end{autotable}`.
+- Rule: set the tabular at `\footnotesize`, then `\scriptsize`; use one column if it fits (it may shrink to `\autotableshrink` = 0.9 of its `\scriptsize` width), else span both columns (`table*`) at `\footnotesize`, then `\scriptsize`; only a table wider than the text block is scaled down. In a one-column layout every table is a plain `table`. The log reports each choice (`autotable tab:...`).
+- All seven tables in the paper use it, plus the generators in `scripts/outputs.py` and `scripts/gen_litreview.py`. Table notes (Tables I and II) are the optional argument; `\tnote{a}` marks a note. `threeparttable`, `\tabw` and the per-table `\adjustbox`/`\resizebox` are gone.
+- Result: IEEE — Tables I, II span both columns, the rest single column (IV and VI at `\scriptsize`). Elsevier 5p — same, with Tables 4 and 6 at `\scriptsize`. Preprint — all single column; Tables 1 and 2 are still scaled down (as before), and Table 2 no longer overflows the margin by 190 pt.
+- Table typography changes only: every table's numbers are unchanged (numeric tokens identical per file). Page counts unchanged (IEEE 14, Elsevier 5p 17, preprint 39).

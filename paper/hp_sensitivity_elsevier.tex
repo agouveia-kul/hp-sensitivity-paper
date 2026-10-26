@@ -8,26 +8,26 @@
 \usepackage{amssymb}
 \usepackage{graphicx}
 \usepackage{adjustbox}
+\usepackage{environ}% autotable (content/macros.tex)
 \usepackage{tikz}
 \usetikzlibrary{positioning,arrows.meta,calc}
 \usepackage{textcomp}
 \usepackage{booktabs}
-\usepackage{threeparttable}
 \usepackage[hidelinks]{hyperref}
 \usepackage{xurl}% long URLs in the references may break anywhere, so they stay inside the column
 \urlstyle{same}% URLs and DOIs in the text font, not typewriter
 \graphicspath{{figures/}}
 
-% Float widths follow the layout chosen in \documentclass:
-%   two-column (5p): one-column floats fit the column, as in the IEEE version;
-%   one-column (preprint): figures at about the IEEE column width, tables up to the text width.
-% Tables only shrink to fit, never grow.
-\newlength{\figw}\newlength{\tabw}
+% Figure width follows the layout chosen in \documentclass:
+%   two-column (5p): one-column figures fit the column, as in the IEEE version;
+%   one-column (preprint): figures at about the IEEE column width.
+% Tables size themselves (autotable in content/macros.tex).
+\newlength{\figw}
 \makeatletter
 \if@twocolumn
-  \setlength{\figw}{\columnwidth}\setlength{\tabw}{\columnwidth}
+  \setlength{\figw}{\columnwidth}
 \else
-  \setlength{\figw}{0.6\textwidth}\setlength{\tabw}{\textwidth}
+  \setlength{\figw}{0.6\textwidth}
 \fi
 \makeatother
 \input{content/macros}

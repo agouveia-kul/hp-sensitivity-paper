@@ -434,10 +434,7 @@ def tab_sf():
                                   mm=('m_anch', 'median'), mi=('m_anch', iqr))
     body = "\n".join(f"{int(n)} & {r.r2:.2f}\\,({r.ri:.2f}) & {r.sm:.2f}\\,({r.si:.2f}) & {r.bm:.3f}\\,({r.bi:.3f}) & "
                      f"{r.mm:.4f}\\,({r.mi:.4f}) \\\\" for n, r in par.iterrows())
-    tex = r"""\begin{table}[t]
-\centering
-\caption{SF fits of the Kloten aggregates, median (interquartile range, IQR)}
-\label{tab:sf}
+    tex = r"""\begin{autotable}{SF fits of the Kloten aggregates, median (interquartile range, IQR)}{tab:sf}
 \begin{tabular}{rcccc}
 \toprule
 $N_{hp}$ & $R^2_h$ & SF$^{\max}_h$ & $b_h$ & $m_h$ ($^\circ$C$^{-1}$) \\
@@ -445,7 +442,7 @@ $N_{hp}$ & $R^2_h$ & SF$^{\max}_h$ & $b_h$ & $m_h$ ($^\circ$C$^{-1}$) \\
 """ + body + r"""
 \bottomrule
 \end{tabular}
-\end{table}"""
+\end{autotable}"""
     _write_table('tab_sf', tex)
     pm = pd.Series([p['m'] for p in Dz['pilots']])
     print(f'{len(g50)} aggregates at N=50; Spearman m_anch vs N_hp {spearmanr(g50.N_hp, g50.m_anch).statistic:+.3f}, '
@@ -676,10 +673,7 @@ def tab_energy():
 
     def r(name, c):
         return f"{name} & {_wape(G[c], G.e_act):.1f} & {np.median(G[c] / G.e_act):.2f} \\\\"
-    tex = r"""\begin{table}[t]
-\centering
-\caption{Energy error on the Kloten aggregates}
-\label{tab:energy}
+    tex = r"""\begin{autotable}{Energy error on the Kloten aggregates}{tab:energy}
 \begin{tabular}{lcc}
 \toprule
 fit + integration & WAPE (\%) & median $\hat{E}_{\mathrm{TCL}}/E_{\mathrm{TCL}}$ \\
@@ -687,7 +681,7 @@ fit + integration & WAPE (\%) & median $\hat{E}_{\mathrm{TCL}}/E_{\mathrm{TCL}}$
 """ + r("daily + daily", 'e_dd') + "\n" + r("hourly + hourly", 'e_hh') + "\n" + r("daily + hourly", 'e_dh') + r"""
 \bottomrule
 \end{tabular}
-\end{table}"""
+\end{autotable}"""
     _write_table('tab_energy', tex)
     rho = np.corrcoef(G.e_dd, G.e_act)[0, 1]
     print(f'{len(G)} aggregates; daily+daily Pearson {rho:.3f}, WAPE {_wape(G.e_dd, G.e_act):.1f}%, '
@@ -871,20 +865,16 @@ def tab_baselines():
         w = [_wape(G[c], G.cap)] + [_wape(g[c], g.cap) for _, g in G.groupby(bins, observed=True)]
         print(f'{c:10s} ' + ' '.join(f'{x:5.1f}' for x in w) + f'  median ratio {np.median(G[c] / G.cap):.3f}')
         lines.append(name + ' & ' + ' & '.join(f'{x:.1f}' for x in w) + r' \\')
-    tex = r"""\begin{table}[t]
-\centering
-\caption{Capacity WAPE (\%) on the Kloten aggregates, by HP penetration $N_{hp}/N$}
-\label{tab:baselines}
+    tex = r"""\begin{autotable}{Capacity WAPE (\%) on the Kloten aggregates, by HP penetration $N_{hp}/N$}{tab:baselines}
 \setlength{\tabcolsep}{2.5pt}
-\adjustbox{max width=\tabw}{%
 \begin{tabular}{lccccc}
 \toprule
 estimate & all & $\le 15\%$ & 15--35\% & 35--65\% & $> 65\%$ \\
 \midrule
 """ + "\n".join(lines) + r"""
 \bottomrule
-\end{tabular}}
-\end{table}"""
+\end{tabular}
+\end{autotable}"""
     _write_table('tab_baselines', tex)
     print('wrote tab_baselines.tex')
 
@@ -901,10 +891,7 @@ def tab_capacity():
     print(f"all: transferred WAPE {_wape(G.cap_est, G.cap):.1f}% ratio {np.median(G.cap_est / G.cap):.3f} "
           f"R2 {U.metrics(G.cap, G.cap_est)[1]:.3f} | oracle WAPE {_wape(G.cap_or, G.cap):.1f}% "
           f"ratio {np.median(G.cap_or / G.cap):.3f} R2 {U.metrics(G.cap, G.cap_or)[1]:.3f}")
-    tex = r"""\begin{table}[t]
-\centering
-\caption{Capacity error on the Kloten aggregates}
-\label{tab:capacity}
+    tex = r"""\begin{autotable}{Capacity error on the Kloten aggregates}{tab:capacity}
 \begin{tabular}{lcc}
 \toprule
 $m_h$ in \eqref{eq:capacity} & WAPE (\%) & median $\hat{P}^{\max}_{h}/{P}^{\max}_{h}$ \\
@@ -912,7 +899,7 @@ $m_h$ in \eqref{eq:capacity} & WAPE (\%) & median $\hat{P}^{\max}_{h}/{P}^{\max}
 """ + line('transferred (pilot)', 'cap_est') + "\n" + line('oracle (own SF)', 'cap_or') + r"""
 \bottomrule
 \end{tabular}
-\end{table}"""
+\end{autotable}"""
     _write_table('tab_capacity', tex)
     print('wrote tab_capacity.tex')
 
@@ -1344,10 +1331,7 @@ def tab_feeder_sweep():
         r = g.loc[nhp]
         return f"{label or nhp} & \\chg{{{r['e_cap']:+.0f}}} \\\\"
     body = "\n".join(row(k) for k in grid[:-1]) + "\n\\midrule\n" + row(grid[-1], '37 (all)')
-    tex = r"""\begin{table}[t]
-\centering
-\caption{Median capacity error on Hamelin as HPs are removed}
-\label{tab:feeder-sweep}
+    tex = r"""\begin{autotable}{Median capacity error on Hamelin as HPs are removed}{tab:feeder-sweep}
 \begin{tabular}{cc}
 \toprule
 $N_{hp}$ & \chg{capacity (\%)} \\
@@ -1355,7 +1339,7 @@ $N_{hp}$ & \chg{capacity (\%)} \\
 """ + body + r"""
 \bottomrule
 \end{tabular}
-\end{table}"""
+\end{autotable}"""
     _write_table('tab_feeder_sweep', tex)
     print('wrote tab_feeder_sweep.tex')
 
@@ -1395,12 +1379,8 @@ def tab_real():
     s = lambda v: f"${v:+.0f}$"
     body = "\n".join(f"{r.agg} & {r.n} & {r.cap:.0f} & {r.cap_e:.0f} & {s(r.err)} & {s(r.oracle)} & "
                      f"{s(r.whole)} & {s(r.plan)} & {r.flex_b:.2f} \\\\" for r in R.itertuples())
-    tex = r"""\begin{table}[t]
-\centering
-\caption{Transfer to real aggregates outside Kloten}
-\label{tab:real}
+    tex = r"""\begin{autotable}{Transfer to real aggregates outside Kloten}{tab:real}
 \setlength{\tabcolsep}{2.5pt}
-\adjustbox{max width=\tabw}{%
 \begin{tabular}{lcccccccc}
 \toprule
  & & & & \multicolumn{4}{c}{capacity error (\%)} & \\
@@ -1409,8 +1389,8 @@ aggregate & $N_{hp}$ & $P_h^{\max}$ (kW) & $\hat{P}_h^{\max}$ (kW) & \begin{tabu
 \midrule
 """ + body + r"""
 \bottomrule
-\end{tabular}}
-\end{table}"""
+\end{tabular}
+\end{autotable}"""
     _write_table('tab_real', tex)
     print('wrote tab_real.tex')
     return R
@@ -2054,20 +2034,16 @@ def tab_bpa_nrel():
         rows.append(f"{lab} & {len(pil)}/{len(tgt)} & {P['m']:.3f}/{Q['m']:.3f} & "
                     f"{Q['m'] / P['m']:.2f} ({R.ratio.quantile(.1):.2f}, {R.ratio.quantile(.9):.2f}) & "
                     f"{(Q['s_h'] / P['m'] - Q['cap']) / Q['cap'] * 100:+.0f} ({R.err.quantile(.1):+.0f}, {R.err.quantile(.9):+.0f}) \\\\")
-    tex = r"""\begin{table}[t]
-\centering
-\caption{SF transfer with complete heating submetering (heat pump and backup heat). Top: disjoint halves of BPA pools, median and interquartile range over 600 transfers. Bottom: across the BPA and NREL studies, with the 10th--90th percentiles of a bootstrap over homes. The target's numerator is its own heating load, so the capacity error isolates the transfer}
-\label{tab:bpa-nrel}
+    tex = r"""\begin{autotable}{SF transfer with complete heating submetering (heat pump and backup heat). Top: disjoint halves of BPA pools, median and interquartile range over 600 transfers. Bottom: across the BPA and NREL studies, with the 10th--90th percentiles of a bootstrap over homes. The target's numerator is its own heating load, so the capacity error isolates the transfer}{tab:bpa-nrel}
 \setlength{\tabcolsep}{3pt}
-\adjustbox{max width=\tabw}{%
 \begin{tabular}{lcccc}
 \toprule
 pilot $\rightarrow$ target & homes & $m_h$ ($^\circ$C$^{-1}$) & $m_h$ ratio & capacity error (\%) \\
 \midrule
 """ + '\n'.join(rows[:3]) + "\n\\midrule\n" + '\n'.join(rows[3:]) + r"""
 \bottomrule
-\end{tabular}}
-\end{table}"""
+\end{tabular}
+\end{autotable}"""
     _write_table('tab_bpa_nrel', tex)
     print('wrote tab_bpa_nrel.tex')
 
@@ -2146,20 +2122,16 @@ def tab_rhpp():
         rows.append(f"{a} $\\rightarrow$ {b} & {len(grp[a])}/{len(grp[b])} & {P['m']:.3f}/{Q['m']:.3f} & "
                     f"{Q['m'] / P['m']:.2f} ({R.ratio.quantile(.1):.2f}, {R.ratio.quantile(.9):.2f}) & "
                     f"{(Q['s_h'] / P['m'] - Q['cap']) / Q['cap'] * 100:+.0f} ({R.err.quantile(.1):+.0f}, {R.err.quantile(.9):+.0f}) \\\\")
-    tex = r"""\begin{table}[t]
-\centering
-\caption{SF transfer in the GB RHPP trial (182 homes, heat pump and electric boost submetered). Top: disjoint random pools, median and interquartile range over 600 transfers. Bottom: between heat-pump technologies and between social and private housing, with the 10th--90th percentiles of a bootstrap over homes. The target's numerator is its own heating load}
-\label{tab:rhpp}
+    tex = r"""\begin{autotable}{SF transfer in the GB RHPP trial (182 homes, heat pump and electric boost submetered). Top: disjoint random pools, median and interquartile range over 600 transfers. Bottom: between heat-pump technologies and between social and private housing, with the 10th--90th percentiles of a bootstrap over homes. The target's numerator is its own heating load}{tab:rhpp}
 \setlength{\tabcolsep}{3pt}
-\adjustbox{max width=\tabw}{%
 \begin{tabular}{lcccc}
 \toprule
 pilot $\rightarrow$ target & homes & $m_h$ ($^\circ$C$^{-1}$) & $m_h$ ratio & capacity error (\%) \\
 \midrule
 """ + '\n'.join(rows[:4]) + "\n\\midrule\n" + '\n'.join(rows[4:]) + r"""
 \bottomrule
-\end{tabular}}
-\end{table}"""
+\end{tabular}
+\end{autotable}"""
     _write_table('tab_rhpp', tex)
     print('wrote tab_rhpp.tex')
 
@@ -2245,20 +2217,16 @@ def tab_transfer(n_splits=300, seed=0):
             print(f'{lab:45s} m_h {m:12s} {est:.2f} {q(dist)}')
             body.append(f'{lab} & {c} & {n} & {est:.2f} {q(dist)} \\\\')
         body.append(r'\midrule')
-    tex = r"""\begin{table}[t]
-\centering
-\caption{Ratio of the target's own to the pilot's SF sensitivity [IQR over random splits or a bootstrap over households]}
-\label{tab:transfer}
+    tex = r"""\begin{autotable}{Ratio of the target's own to the pilot's SF sensitivity [IQR over random splits or a bootstrap over households]}{tab:transfer}
 \setlength{\tabcolsep}{2.5pt}
-\adjustbox{max width=\tabw}{%
 \begin{tabular}{llcc}
 \toprule
 pilot $\rightarrow$ target & country & households & $m_h^{\mathrm{own}}/m_h^{\mathrm{pilot}}$ \\
 \midrule
 """ + '\n'.join(body[:-1]) + r"""
 \bottomrule
-\end{tabular}}
-\end{table}"""
+\end{tabular}
+\end{autotable}"""
     _write_table('tab_transfer', tex)
     print('wrote tab_transfer.tex')
 
@@ -2688,11 +2656,8 @@ def neea_transfer(pilot='WA', target='OR', A=None, write=True):
     if write:
         body = "\n".join(f"{r.regime} & {r.m_pilot:.3f} & {r.m_own:.3f} & {r.cap_e:.0f} & {r.err:+.0f} & "
                          f"{r.oracle:+.0f} & {r.energy:+.0f} & {r.flex:.2f} \\\\" for r in R.itertuples())
-        tex = r"""\begin{table}[t]
-\centering
-\caption{Two-regime transfer from a Washington pilot to an Oregon aggregate of """ + str(X['n']) + \
-            r""" homes with ductless HPs ($P^{\max} = """ + f"{cap:.0f}" + r"""$~kW, the same devices in both regimes). Errors are signed; energy and flex are scored on the days of each regime}
-\label{tab:neea}
+        tex = r"""\begin{autotable}{Two-regime transfer from a Washington pilot to an Oregon aggregate of """ + str(X['n']) + \
+            r""" homes with ductless HPs ($P^{\max} = """ + f"{cap:.0f}" + r"""$~kW, the same devices in both regimes). Errors are signed; energy and flex are scored on the days of each regime}{tab:neea}
 \setlength{\tabcolsep}{3pt}
 \begin{tabular}{lccccccc}
 \toprule
@@ -2701,7 +2666,7 @@ regime & $m_k$ (WA) & $m_k$ (OR) & $\hat{P}_k^{\max}$ (kW) & cap. (\%) & oracle 
 """ + body + r"""
 \bottomrule
 \end{tabular}
-\end{table}"""
+\end{autotable}"""
         _write_table('tab_neea', tex)
         print('wrote tab_neea.tex')
     return R
@@ -2960,24 +2925,19 @@ def tab_cross():
         return ('%' + s) if lab in COMMENTED else s
     body = '\n'.join(row(lab) for lab in order)
     head = 'dataset & TCL tech & $n$ & Climate & ' + ' & '.join(h for h, _, _ in COLS) + r' \\'
+    NOTES = (
+        r"$n$: aggregated households. Climate: K{\"o}ppen--Geiger class~\cite{beck2018koppen}: Cfb, temperate oceanic; Dfa, Dfb, humid continental; Csb, warm-summer Mediterranean; Cfa, humid subtropical; BWh, hot desert. $R^2_h$, $R^2_c$: fit scores on the days of the heating and cooling regimes. ASHP, GSHP, WSHP: air-, ground-, water-source HP; DHP: ductless (mini-split) HP; AC: air conditioning; ER: electric resistance heating." "\n"
+        r"%\par\tnote{a}\,The LCL London aggregate is submetered heat-pump load only (nine homes, no other household load), restricted to 2014, the single year all nine are metered together. Its net-load fit therefore coincides with the HP load, $P_{\mathrm{base}}$ is the winter standby/hot-water floor, and the installed capacity is the sum of the nine per-home 2014 peaks. The 2014 record ends in March, so the window is winter-only and never reaches $T_h$, which weakens the fit." "\n"
+        r"\par\tnote{a}\,Hennepin's SF uses the ASHP compressor's own draw only, excluding its electric-resistance HP-backup element" "\n"
+        r"\par\tnote{b}\,The SF uses the submetered ductless HPs only. Most of these households also have electric baseboard, furnace or other zonal heating circuits (17 of 22 in WA, 16 of 21 in OR), which the net load includes." "\n")
     tex = (
-        r"\begin{table*}[t]" "\n" r"\centering" "\n"
-        r"\begin{threeparttable}" "\n"
-        r"\caption{Net-load and SF fits, one aggregate per dataset}" "\n"
-        r"\label{tab:cross}" "\n" r"\scriptsize" "\n" r"\setlength{\tabcolsep}{3.5pt}" "\n"
+        r"\begin{autotable}[%" "\n" + NOTES + "]\n"
+        r"{Net-load and SF fits, one aggregate per dataset}{tab:cross}" "\n" r"\setlength{\tabcolsep}{3.5pt}" "\n"
         r"\begin{tabular}{ll" + "c" * (len(COLS) + 2) + "}\n" r"\toprule" "\n"
         r" & & & & \multicolumn{7}{c}{Net-load fit $\hat{P}_{\mathrm{net}}(T)$} & \multicolumn{8}{c}{SF fit $\hat{\mathrm{SF}}(T)$}\\" "\n"
         r"\cmidrule(lr){5-11}\cmidrule(lr){12-19}" "\n"
         + head + "\n" r"\midrule" "\n" + body + "\n" r"\bottomrule" "\n"
-        r"\end{tabular}" "\n"
-        r"\begin{tablenotes}[flushleft]\footnotesize" "\n"
-        r"\item[] $n$: aggregated households. Climate: K{\"o}ppen--Geiger class~\cite{beck2018koppen}: Cfb, temperate oceanic; Dfa, Dfb, humid continental; Csb, warm-summer Mediterranean; Cfa, humid subtropical; BWh, hot desert. $R^2_h$, $R^2_c$: fit scores on the days of the heating and cooling regimes. ASHP, GSHP, WSHP: air-, ground-, water-source HP; DHP: ductless (mini-split) HP; AC: air conditioning; ER: electric resistance heating." "\n"
-        r"%\item[a] The LCL London aggregate is submetered heat-pump load only (nine homes, no other household load), restricted to 2014, the single year all nine are metered together. Its net-load fit therefore coincides with the HP load, $P_{\mathrm{base}}$ is the winter standby/hot-water floor, and the installed capacity is the sum of the nine per-home 2014 peaks. The 2014 record ends in March, so the window is winter-only and never reaches $T_h$, which weakens the fit." "\n"
-        r"\item[a] Hennepin's SF uses the ASHP compressor's own draw only, excluding its electric-resistance HP-backup element" "\n"
-        r"\item[b] The SF uses the submetered ductless HPs only. Most of these households also have electric baseboard, furnace or other zonal heating circuits (17 of 22 in WA, 16 of 21 in OR), which the net load includes." "\n"
-        "\n"
-        r"\end{tablenotes}" "\n"
-        r"\end{threeparttable}" "\n" r"\end{table*}")
+        r"\end{tabular}" "\n" r"\end{autotable}")
     _write_table('tab_cross', tex)
     print('wrote tab_cross.tex')
 

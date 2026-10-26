@@ -1,5 +1,5 @@
 % Shared macros for both templates (IEEE and Elsevier wrappers \input this file).
-% Widths \figw (single-column figure) and \tabw (maximum table width) are set by each wrapper.
+% The single-column figure width \figw is set by each wrapper; tables size themselves (autotable, below).
 \definecolor{chgblue}{HTML}{0645AD}
 \newcommand{\chg}[1]{#1}
 % shared style of the two block diagrams (Figs. 1 and 5)
@@ -10,3 +10,36 @@
   fout/.style={fproc, thick},
   flab/.style={font=\scriptsize, text=black!60, align=center},
 }
+% Automatic table sizing (needs the environ package):
+%   \begin{autotable}[notes]{caption}{label} ... tabular ... \end{autotable}
+% The tabular is set at \footnotesize, then at \scriptsize, and placed in the first layout it fits:
+% one column (table), then across both columns (table*); only a table wider than the text block is scaled down.
+% A table may shrink to \autotableshrink of its \scriptsize width to stay in one column.
+% In a one-column layout the column is the text block, so a table is never a table*.
+% \tnote{a} marks a note in the tabular and in the notes.
+\newcommand{\autotableshrink}{0.9}
+\makeatletter
+\newsavebox{\autotab@box}
+\newcommand{\autotab@tnote}[1]{\textsuperscript{\itshape #1}}
+\newcommand{\autotab@set}[1]{\def\autotab@size{#1}%
+  \sbox{\autotab@box}{\csname #1\endcsname\let\tnote\autotab@tnote\BODY}}
+\NewEnviron{autotable}[3][]{%
+  \def\autotab@env{table}\autotab@set{footnotesize}%
+  \ifdim\wd\autotab@box>\columnwidth \autotab@set{scriptsize}\fi
+  \ifdim\autotableshrink\wd\autotab@box>\columnwidth
+    \ifdim\columnwidth<\textwidth
+      \def\autotab@env{table*}\autotab@set{footnotesize}%
+      \ifdim\wd\autotab@box>\textwidth \autotab@set{scriptsize}\fi
+    \fi
+  \fi
+  \typeout{autotable #3: \autotab@env, \autotab@size, \the\wd\autotab@box\space (column \the\columnwidth, text \the\textwidth)}%
+  \expandafter\begin\expandafter{\autotab@env}[t]
+  \centering
+  \caption{#2}\label{#3}%
+  \ifdim\wd\autotab@box>\linewidth \resizebox{\linewidth}{!}{\usebox{\autotab@box}}\else\usebox{\autotab@box}\fi
+  \if\relax\detokenize{#1}\relax\else
+    \par\smallskip{\csname\autotab@size\endcsname\raggedright\let\tnote\autotab@tnote #1\par}%
+  \fi
+  \expandafter\end\expandafter{\autotab@env}%
+}
+\makeatother
