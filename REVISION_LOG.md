@@ -439,3 +439,15 @@ An external citation audit was checked against the sources before acting on it. 
 
 ## Affiliations (Alex, 26 Oct)
 - Elsevier wrapper: affiliations copied from Gouveia et al., IJEPES 177 (2026) 111848 (ScienceDirect, read 26 Oct): a ESAT, KU Leuven; b EnergyVille; c VITO; d Orion Grid Technologies; all Belgium. Gouveia a,b,c; Hashmi a,b; D'hulst b,c,d; Van Hertem a,b. The IEEE wrapper still has no affiliations.
+
+## Shortening, tier 1 (Alex, 26 Oct)
+Layout and repetition only; no result changed, no number added, every citation kept (checked per item). IEEE 14 → 12 pages, Elsevier 5p 17 → 16, preprint 39 → 36. Body 9,077 → 8,461 words; 11 → 8 figures.
+1. **Sec. II, Figs. 2 and 3** (Austin net-load and SF fits) → one two-panel figure, `fig_austin_fits` (a) above (b), shared temperature axis. Same fits (R²_h 0.68/0.91; SF m_h 0.0186, R² 0.84/0.94). Label `fig:austin`; text refers to (a) and (b).
+2. **Flatter plots:** slope against capacity, flexibility ratio, flexibility season and flexibility schedule (heights only). The season plot's y-label drops "Δt = 4 h", which its caption already gives.
+3. **Sec. IV-B/IV-D:** the two heatmaps → one full-width figure `fig_aggregation_heatmap` (median R²_h of both fits, capacity WAPE). The median signed-error panel is dropped; its range (9–14%) stays in the text. IV-D is folded into IV-B as one paragraph; "sixteen hours close behind" dropped.
+4. **Sec. IV-C:** the figure of one Kloten pilot's SF fit is dropped; its fitted line stays in the text.
+5. **Sec. VI:** Accuracy, Generalisation and Data Requirements → "Error Sources and Transfer" (365 words); Limitations kept as approved, minus the repeated 0.28 kW figure (848 → 649 words).
+6. **Sec. VII:** summary paragraph cut to the method, the two accuracy figures, the transfer rule and energy/flexibility; future work tightened (459 → 356 words). Dropped from the summary only: 12–14% at fifty households, 26% for the full curve.
+7. **Sec. I:** opening statistics tightened ("13% more than in 2024" dropped); literature paragraphs and gap paragraph shortened; the roadmap paragraph replaced by one sentence pointing to Fig. 1 (1332 → 1152 words).
+- `scripts/outputs.py`: new `fig_austin_fits` and `fig_aggregation_heatmap`; the old single-panel functions remain.
+- Diff PDF: the latexdiff build now writes autotables back as plain floats in its scratch copy (latexdiff marked up their arguments).
