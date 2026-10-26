@@ -492,6 +492,149 @@ def step1(rebuild=False):
 
 
 # ===========================================================================
+# Step 1b -- window referenced to the threshold T_h, capped
+# ===========================================================================
+CAP_RATIOS = (3, 6, 12)        # Dt_max / Dt_5: 12 h, 24 h at Dt_5 = 4 h; 12 h, 24 h at Dt_5 = 2 h
+T_REF = 5.0                    # temperature of the reference window Dt_5 (degC)
+C_CAP = ('#1b9e77', '#d95f02', '#7570b3')
+
+
+def step1b_curves(N, N_hp, D=None, ratios=CAP_RATIOS):
+    """Binned flexibility under W3, Dt = Dt_5 (T_h - 5)/(T_h - T) capped at r Dt_5.
+
+    Per aggregate and 1 degC bin of heating-regime days, the bin mean of F_W1
+    times Dt/Dt_5 (estimate and actual, per kW of true capacity), unnormalised
+    and normalised by the aggregate's own value in the bin holding 5 degC. T_h is
+    the aggregate's net-load threshold, for estimate and actual alike.
+    """
+    Dz, _ = rebuild_design()
+    D = daily_frames() if D is None else D
+    G = Dz['rows']; T = D['T']
+    sel = np.flatnonzero(((G.N == N) & (G.N_hp == N_hp)).to_numpy())
+    g = G.iloc[sel].reset_index(drop=True)
+    cap = g.cap.to_numpy()[:, None]; cap_e = g.cap_est.to_numpy()[:, None]
+    th = g.T_h.to_numpy()[:, None]; m = g.m_pilot.to_numpy()[:, None]
+    heat = T[None, :] < th
+    sf_e = np.clip(m * np.maximum(0, th - T[None, :]), 0, 1)
+    f_e = sf_e * (1 - sf_e) * cap_e / cap
+    f_a = D['fa_h'][sel].astype(float) / cap
+    edges, _ = temperature_bins(T[T < th.max()])
+    nb = len(edges) - 1
+    idx = np.clip(np.digitize(T, edges) - 1, 0, nb - 1)
+    idx[(T < edges[0]) | (T >= edges[-1])] = -1
+    b5 = int(np.searchsorted(edges, T_REF, side='right') - 1)
+    xb = np.array([T[idx == b].mean() for b in range(nb)])
+    with np.errstate(divide='ignore', invalid='ignore'):
+        w_raw = np.where(heat, (th - T_REF) / (th - T[None, :]), np.nan)
+    out = dict(g=g, edges=edges, x=xb, b5=b5, T_c={}, B={})
+    out['B']['ratio_w1'] = _bin_means(f_e, idx, nb, heat)[0] / _bin_means(f_a, idx, nb, heat)[0]
+    for r in ratios:
+        w = np.minimum(w_raw, r)
+        e, _ = _bin_means(f_e * w, idx, nb, heat)
+        a, _ = _bin_means(f_a * w, idx, nb, heat)
+        out['B'][f'e_{r}'] = e / e[:, [b5]]
+        out['B'][f'a_{r}'] = a / a[:, [b5]]
+        out['B'][f'ratio_{r}'] = e / a
+        out['T_c'][r] = th[:, 0] - (th[:, 0] - T_REF) / r
+    # closed form for the estimate below the cap onset, at the median m_h and T_h
+    mm, tt = float(np.median(m)), float(np.median(th))
+    sf = np.clip(mm * np.maximum(0, tt - xb), 0, 1)
+    out['closed'] = (1 - sf) / (1 - mm * (tt - xb[b5]))
+    return out
+
+
+def step1b_peaks(C, ratios=CAP_RATIOS):
+    """Per cap ratio: peak temperature and peak value (median [IQR] over splits),
+    median cap onset, and the coldest bin relative to 5 degC, estimate and actual."""
+    g, x, B = C['g'], C['x'], C['B']
+    rows = []
+    for r in ratios:
+        for who in ('e', 'a'):
+            M = B[f'{who}_{r}']
+            pk = pd.Series([_peak(x, M[i]) for i in range(len(g))]).groupby(g.split.to_numpy()).median()
+            pv = pd.Series(np.nanmax(M, 1)).groupby(g.split.to_numpy()).median()
+            cold = np.array([M[i][np.isfinite(M[i])][0] for i in range(len(g))])
+            rows.append(dict(r=r, curve='estimate' if who == 'e' else 'actual',
+                             T_c=float(np.median(C['T_c'][r])),
+                             peak_med=pk.median(), peak_q25=pk.quantile(.25), peak_q75=pk.quantile(.75),
+                             peak_value=pv.median(), cold_over_5C=float(np.median(cold))))
+    return pd.DataFrame(rows)
+
+
+def step1b_checks(C, P, ratio_w1_step1, ratios=CAP_RATIOS):
+    """E1b.1-E1b.6 of FLEX_LOG.md."""
+    B, x = C['B'], C['x']
+    res = {}
+    for r in ratios:
+        tc = float(np.median(C['T_c'][r]))
+        med = np.nanmedian(B[f'e_{r}'], 0)
+        below = (x < tc - 1) & np.isfinite(med)
+        dev = med[below] / C['closed'][below] - 1
+        res[f'E1b.1 r={r}'] = (bool((np.abs(dev) <= .03).all()), float(np.abs(dev).max()))
+    for r in ratios:
+        p = P[(P.r == r) & (P.curve == 'estimate')].iloc[0]
+        res[f'E1b.2 r={r}'] = (bool(abs(p.peak_med - p.T_c) <= 1), (round(p.peak_med, 2), round(p.T_c, 2)))
+    ce = P[P.curve == 'estimate'].cold_over_5C; ca = P[P.curve == 'actual'].cold_over_5C
+    res['E1b.3'] = (bool(((ce >= .75) & (ce <= .85)).all()), ce.round(3).tolist())
+    res['E1b.4'] = (bool(((ca >= .70) & (ca <= .80)).all()), ca.round(3).tolist())
+    for r in (6, 12):
+        p = P[(P.r == r) & (P.curve == 'actual')].iloc[0]
+        res[f'E1b.5 r={r}'] = (bool(p.peak_med >= 14 and p.peak_value > 1.2), (round(p.peak_med, 2), round(p.peak_value, 2)))
+    for r in ratios:
+        d = np.nanmedian(B[f'ratio_{r}'], 0) - np.nanmedian(ratio_w1_step1, 0)
+        res[f'E1b.6 r={r}'] = (bool((np.abs(d[np.isfinite(d)]) <= .03).all()), float(np.nanmax(np.abs(d))))
+    return res
+
+
+def fig_window_th(C, name='fig_flex_window_th', ratios=CAP_RATIOS):
+    """Draft figure: F under W3 relative to its 5 degC value, (a) estimate with the
+    uncapped closed form, (b) actual; one line per cap ratio, IQR band for r = 6."""
+    import matplotlib.pyplot as plt
+    import hp_figures as hf
+    hf.use_style()
+    B, x = C['B'], C['x']
+    th = float(np.median(C['g'].T_h))
+    fig, axs = plt.subplots(2, 1, figsize=(hf.COL1, 4.2), sharex=True, sharey=True)
+    for ax, who, title in ((axs[0], 'e', 'estimate'), (axs[1], 'a', 'actual')):
+        for r, c in zip(ratios, C_CAP):
+            M = B[f'{who}_{r}']; med = np.nanmedian(M, 0); ok = np.isfinite(med)
+            if r == 6:
+                ax.fill_between(x[ok], np.nanquantile(M, .25, 0)[ok], np.nanquantile(M, .75, 0)[ok], color=c, alpha=.18, lw=0)
+            ax.plot(x[ok], med[ok], color=c, lw=1.3, ls=('-', '--', ':')[ratios.index(r)],
+                    label=f'cap $r$ = {r}')
+            ax.axvline(float(np.median(C['T_c'][r])), color=c, lw=.6, ls=(0, (1, 2)))
+        if who == 'e':
+            ok = x < th
+            ax.plot(x[ok], C['closed'][ok], color='0.2', lw=.8, ls=(0, (4, 2)), label='uncapped, $(1-\\mathrm{SF})$')
+        ax.axhline(1, color='0.6', lw=.6)
+        ax.axvline(th, color='0.45', lw=.7, ls=(0, (3, 3)))
+        ax.set_ylabel(f'{title}: $F$ relative\nto its 5 °C value')
+        ax.legend(fontsize=6, loc='upper left')
+    axs[1].set_xlabel('daily mean temperature (°C)')
+    axs[0].annotate('$T_h$', (th, axs[0].get_ylim()[1] * .95), xytext=(3, 0), textcoords='offset points', fontsize=7, color='0.3')
+    for ax, lab in zip(axs, 'ab'):
+        ax.text(-0.27, 1.05, f'({lab})', transform=ax.transAxes, fontsize=8, va='top')
+    fig.tight_layout()
+    path = save_fig(fig, name)
+    plt.close(fig)
+    return path
+
+
+def step1b():
+    """Step 1b: W3 curves at N = 50 (primary), 30 and 10; peaks, checks and figure."""
+    D = daily_frames()
+    out = {}
+    for N, nh in SETTINGS:
+        C = step1b_curves(N, nh, D)
+        out[(N, nh)] = dict(C=C, peaks=step1b_peaks(C))
+    P = out[PRIMARY]
+    C1 = step1_curves(*PRIMARY, D)
+    P['checks'] = step1b_checks(P['C'], P['peaks'], C1['B']['ratio'])
+    P['fig'] = fig_window_th(P['C'])
+    return out
+
+
+# ===========================================================================
 # Step 2 -- firm flexibility and aggregation
 # ===========================================================================
 FIRM_Q = 0.10                  # lower quantile across days: "firm" flexibility

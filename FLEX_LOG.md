@@ -326,7 +326,7 @@ Expectations (written before the run; definitions in "Expectations"):
 |---|---|---|
 | F1 up/down headroom in III-C | accept | derived; Step 1 (P_up 1.16–1.23×, P_down 0.99–1.02) |
 | F2 one temperature figure replacing Figs. 10–11 | accept (modify option: replace Fig. 11 only) | Step 1 (ratio 1.17 cold to 0.87–0.92 mild; energy factor carries it) |
-| F3 temperature-dependent window | future work only | Step 1 (plateau; peak moves with T_in; E1.2a/E1.5 not met) |
+| F3 temperature-dependent window | future work only (revised after Step 1b: modify, a two-sentence III-C remark on the T_h-referenced window plus one IV-F sentence) | Step 1 (plateau; peak moves with T_in; E1.2a/E1.5 not met); Step 1b |
 | F4 firm flexibility paragraph | modify (haircut, no scaling law, ≤ 70 words) | Step 2 (P10/median 0.85 to 0.87; estimate 0.91; shoulder days) |
 | F5 planning condition | not assessed | Step 2b not run |
 | F6 knock-on edits | accept those triggered; abstract, Fig. 1, Table III and highlights unchanged | derived |
@@ -339,3 +339,68 @@ Total if F1–F4 and the F6 items they trigger are accepted: ≈ +13 words (with
 
 ### Confidence and caveats
 - Word counts are approximate (±10%), so the length totals are estimates. Removing one figure is the firm part of the saving.
+
+---
+
+## Step 1b — Window referenced to the threshold, capped (run after Step 3, at Alex's request)
+
+### What was done
+- Question (Alex): in Step 1's W2 window, why does the actual spike near T_h, and why not use T_h instead of T_in?
+- Physical basis: take a single-capacity building (capacity C, conductance UA) with internal and solar gains Q_g that persist during the event. Its heating demand is UA(T_h − T), with balance temperature T_h = T_in − Q_g/UA. With heating off, it cools at UA(T_h − T)/C, so the time to drift through a comfort band is proportional to 1/(T_h − T). The prompt's 1/(T_in − T) holds only without gains. This is derived, not a new result, and no source is cited.
+- W3: Δt = Δt_5 (T_h − 5)/(T_h − T), capped at r·Δt_5, with r ∈ {3, 6, 12}. That is 12 h and 24 h caps for a 4 h window at 5 °C (r = 3, 6), or for a 2 h window (r = 6, 12). T_h is each aggregate's net-load threshold, for estimate and actual alike.
+- F relative to its 5 °C value (the [5, 6) °C bin), per aggregate. Bins, settings and the peak definition are as in Step 1. Primary N = 50, N_hp = 25; repeated at N = 30 and 10.
+- Code: `flex_temperature.step1b()`; notebook cells "Step 1b". Results in `results/flex_temperature/step1b_results.pkl`.
+- Deviations: none. The reading of "12 h and 24 h relative to the 5 °C window" as cap ratios is stated in the Expectations.
+
+### Results
+Figure: `figures/flex_temperature/fig_flex_window_th.{pdf,png}`. Panel (a) shows the estimate with the uncapped closed form (1 − SF), and panel (b) the actual. Each has one line per cap ratio, with the IQR band for r = 6 and the cap onsets dotted.
+
+**Headline.**
+1. **The estimate follows the closed form E_flex ∝ s_h(1 − SF(T)) exactly below the cap,** within 0.2% in every bin. Under this window, flexibility per event changes little with temperature. It is 0.79 of its 5 °C value on the coldest days and 1.15–1.20 just below the cap. Per event, the mildest uncapped days hold about 1.5 times the flexibility of the coldest.
+2. **The cap sets where the curve turns down, and nothing else.** Below 12.7 °C, the curves for r = 3, 6 and 12 coincide, since the cap onset T_c = T_h − (T_h − 5)/r lies at 12.7, 14.6 and 15.6 °C. The coldest-day value (0.79 estimate, 0.73 actual) does not depend on the cap.
+3. **The actual departs from the estimate above 7 °C, and strongly near T_h for long caps.** The actual reaches 1.27–1.39 of its 5 °C value at 10–13 °C, against 1.11–1.15 for the estimate. Near T_h it reaches 1.8 (r = 6) and 3.3 (r = 12). That is the weather-independent floor (about 0.05 per kW) multiplied by a long window, the same mechanism as the spike under W2. The estimate has no floor, so it turns down instead.
+4. **Estimate/actual per bin is unchanged from W1** (within 0.01), since both share the window on each day. W3 changes the shape of the curve, not its accuracy.
+
+Peaks (N = 50, N_hp = 25), median [IQR] over the 20 splits. "Coldest / 5 °C" is the median over aggregates.
+
+| r | Cap onset T_c (°C) | Est. peak (°C) | Est. peak value | Act. peak (°C) | Act. peak value | Coldest / 5 °C, est. | Coldest / 5 °C, act. |
+|---|---|---|---|---|---|---|---|
+| 3 | 12.7 | 12.0 [11.9, 12.1] | 1.15 | 12.2 [12.2, 12.3] | 1.37 | 0.79 | 0.73 |
+| 6 | 14.6 | 13.4 [13.2, 13.8] | 1.18 | 15.6 [15.6, 15.6] | 1.80 | 0.79 | 0.73 |
+| 12 | 15.6 | 14.1 [14.1, 14.2] | 1.20 | 15.6 [15.6, 15.6] | 3.28 | 0.79 | 0.73 |
+
+At N = 30 and N = 10, the peaks and coldest-day values match within 0.3 °C and 0.01, except the actual's peak value at r = 12 (2.9 at N = 10).
+
+Median curve relative to the 5 °C value, selected bins (N = 50):
+
+| Bin centre (°C) | −3.8 | 0.4 | 5.6 | 9.4 | 11.5 | 13.4 | 14.6 | 15.6 |
+|---|---|---|---|---|---|---|---|---|
+| Closed form (1 − SF) | 0.79 | 0.89 | 1.00 | 1.09 | 1.13 | 1.17 | 1.20 | 1.22 |
+| Estimate, r = 3 / 6 / 12 | 0.79 | 0.89 | 1.00 | 1.09 | 1.13 | 0.95 / 1.18 / 1.18 | 0.61 / 1.14 / 1.20 | 0.29 / 0.59 / 1.05 |
+| Actual, r = 3 / 6 / 12 | 0.73 | 0.87 | 1.00 | 1.16 | 1.29 | 1.11 / 1.36 / 1.36 | 0.91 / 1.70 / 1.79 | 0.90 / 1.80 / 3.24 |
+
+Sanity checks: the estimate equals the uncapped closed form below T_c − 1 °C (largest deviation 0.2%). All three caps give identical curves below the lowest cap onset. The per-bin ratio equals Step 1's W1 ratio.
+
+Expectations (written before the run):
+
+| # | Outcome | Value |
+|---|---|---|
+| E1b.1 closed form below T_c | **met** | largest deviation 0.2% |
+| E1b.2 estimate peak at T_c ±1 °C | **met** for r = 3 (12.0 against 12.7); **not met** for r = 6 (13.4 against 14.6) and r = 12 (14.1 against 15.6) | the peak falls in the last bin wholly below T_c, because the 1 °C bin holding T_c mixes capped and uncapped days and the estimate falls steeply once capped. The substance holds, at bin resolution. |
+| E1b.3 estimate coldest ≈ 0.8 | **met** | 0.79 |
+| E1b.4 actual coldest ≈ 0.75 | **met** | 0.73 |
+| E1b.5 actual peaks near T_h for r = 6, 12 | **met** | 15.6 °C, at 1.8 and 3.3 times its 5 °C value |
+| E1b.6 ratio unchanged from W1 | **met** | largest change 0.01 |
+
+### Implications
+- **Why the actual spiked under W2.** Near T_h, the actual keeps a weather-independent floor of about 0.05 per kW, most plausibly hot water plus buildings whose own threshold lies above the aggregate's. Any window that grows towards T_h multiplies that floor, whether the window grows as 1/(T_in − T) or as 1/(T_h − T) with a long cap. A building's coasting time does not govern that load: hot water shifts against its tank, not against the building.
+- **Referencing T_h removes the unsourced T_in.** T_h comes from the target's own net-load fit, and the coasting constant cancels in the normalised curve. The only new assumption is the cap, an event length the DSO chooses. It affects only the last 2–4 °C below T_h, which hold about 6% of the heating-regime flexible energy (Step 1).
+- **Message for the paper, if this window is adopted.** The shiftable thermal energy per event is the same at every temperature. Only the headroom 1 − SF limits it, so flexibility per event falls by about a fifth from 5 °C to the coldest days and is largest on mild heating days. This reverses the W1 message (largest on the coldest days). The data cannot tell W1 from W3, so either one is an assumption.
+- **For F3:** the T_h form gives a closed-form, derived remark with no unsourced constant, so it can go into III-C as an alternative reading of Δt_Th rather than only into future work. The suggestions file is revised accordingly.
+- Decisions for Alex: the F3 mark (revised), and whether a building-physics source for the single-capacity model should back the derivation (needs Alex).
+
+### Confidence and caveats
+- W3 assumes a single thermal capacity, a fixed comfort band, and gains that persist during the event. Solar gains vary between days, which the aggregate T_h averages over.
+- T_h is the aggregate's net-load threshold. It equals the buildings' balance temperature only on average, and it is a fitted quantity with its own error (target T_h 16.5 [16.2, 17.0] °C).
+- The comparison with the actual near T_h depends on the weather-independent load, which W3 should not be applied to. The cold side (0.79 against 0.73) does not depend on it.
+- The validation partly checks itself, as in Step 1: the actual uses the same formula with submetered inputs.

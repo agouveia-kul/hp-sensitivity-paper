@@ -62,6 +62,20 @@ P['peaks'].round(2)"""),
     ('code', """for k in [(30, 15), (10, 5), 'primary_with_b']:
     print('=====', k)
     display(step1[k]['peaks'].round(2), step1[k]['bins'])"""),
+    ('markdown', """## Step 1b — Window referenced to the threshold, capped
+
+W3: Δt = Δt_5 (T_h − 5)/(T_h − T), capped at r·Δt_5 with r ∈ {3, 6, 12}
+(12 h and 24 h caps for a 4 h or 2 h window at 5 °C). F relative to its 5 °C
+value, estimate against actual. Requested by Alex after Step 3."""),
+    ('code', """step1b = FT.step1b()
+P1b = step1b[FT.PRIMARY]
+print(P1b['fig'])
+for k, v in P1b['checks'].items():
+    print(k, v)
+P1b['peaks'].round(3)"""),
+    ('code', """for k in [(30, 15), (10, 5)]:
+    print('=====', k)
+    display(step1b[k]['peaks'].round(3))"""),
     ('markdown', """## Step 2 — Firm flexibility and aggregation
 
 Per aggregate and 2 °C bin (merged to ≥ 10 days): P10/median of daily F across
