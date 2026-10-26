@@ -307,7 +307,7 @@ The flexible energy is this schedule's symmetric deviation from the baseline. Du
 E_{\mathrm{flex}} = \hat{\mathrm{SF}}(T)\big(1 - \hat{\mathrm{SF}}(T)\big)\,\hat{P}^{\max}\,\Delta t_{Th}.
 \label{eq:flex-energy}
 \end{equation}
-Since $\hat{\mathrm{SF}}(T)\,\hat{P}^{\max}$ equals the fitted TCL load, \eqref{eq:flex-energy} equals $\hat{P}_{\mathrm{TCL}}(T)\,\big(1-\hat{\mathrm{SF}}(T)\big)\,\Delta t_{Th}$. The shiftable load therefore comes from the net-load fit. The transferred SF only sets the headroom above it, $1-\hat{\mathrm{SF}}(T)$, so the capacity estimate drops out. Since $E_{\mathrm{flex}}$ is linear in $\Delta t_{Th}$, Section~\ref{sec:res-flex} reports it per hour of window, or as ratios in which the window cancels. The instantaneous unused capacity $(1 - \hat{\mathrm{SF}}(T))\,\hat{P}^{\max}$ is the special case of the on phase drawn to full power.
+Since $\hat{\mathrm{SF}}(T)\,\hat{P}^{\max}$ equals the fitted TCL load, \eqref{eq:flex-energy} equals $\hat{P}_{\mathrm{TCL}}(T)\,\big(1-\hat{\mathrm{SF}}(T)\big)\,\Delta t_{Th}$. The shiftable load therefore comes from the net-load fit. The transferred SF only sets the headroom above it, $1-\hat{\mathrm{SF}}(T)$, so the capacity estimate drops out. Since $E_{\mathrm{flex}}$ is linear in $\Delta t_{Th}$, Section~\ref{sec:res-flex} reports it per hour of window, or as ratios in which the window cancels. The downward headroom, the load that can be curtailed, is $\hat{P}_{\mathrm{TCL}}(T)$ and needs no pilot. The upward headroom, the unused capacity $(1 - \hat{\mathrm{SF}}(T))\,\hat{P}^{\max}$, inherits the error of the capacity estimate; the two are equal only where $\hat{\mathrm{SF}}(T) = 0.5$.
 
 \begin{figure}[t]
 \centering

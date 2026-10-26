@@ -417,3 +417,16 @@ Expectations (written before the run):
 - **Further gap found while discussing the caps:** the Step 1b claim that "the cap affects only the last 2–4 °C below T_h" holds only for events of at least three times the coasting time at 5 °C. For few-hour congestion events, the cap would bind over most of the heating range. Caps below r = 3 were not run.
 - **What stays in the paper's frame:** the headrooms of F1, which need no window, and E_flex per hour of window, which states its single assumption openly.
 - **What stays in the log:** the Step 1b code, results and figure (`fig_flex_window_th`) remain as an explored and rejected variant.
+
+---
+
+## Part C — Edits after approval
+
+Marks (Alex, 2026-10-26): F1 accept, F2 accept, F3 accept (minimal), F4 modify (≤ 55 words, haircut without scaling law), F5 reject, F6 accept (items 1, 6 and 7). Baseline before Part C: `paper/content/` at commit 1700861, 8695 words (`scripts/tex_wordcount.py`; abstract 250), 16 pages in the Elsevier build. In that build the flexibility figures are Figs. 7 and 8 and the aggregation figure is Fig. 5 (the prompt's Figs. 10, 11 and 9).
+
+### F1 — content bullets
+- III-C, replacing "The instantaneous unused capacity … is the special case of the on phase drawn to full power."
+- Downward headroom = load that can be curtailed = $\hat{P}_{\mathrm{TCL}}(T)$, the fitted TCL load; no pilot.
+- Upward headroom = unused capacity $(1-\hat{\mathrm{SF}})\hat{P}^{\max}$; inherits the capacity error.
+- Equal only at SF = 0.5. The observation that no observed day reaches it goes to IV-F (F2).
+- No new symbol.
