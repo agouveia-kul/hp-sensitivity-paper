@@ -840,6 +840,64 @@ def step2_shoulder(D=None, lo=11, hi=13):
     return pd.DataFrame({'date': days[m].date, 'T': T[m], 'F_per_kW': fa[m]}).sort_values('F_per_kW')
 
 
+def flex_example(split=0, min_days=MIN_DAYS):
+    """Daily flexibility of one example aggregate against temperature, binned.
+
+    The aggregate is the target half of ``split`` (the draft's Fig. 11 example:
+    25 HPs with their homes' other load). Per 2 degC bin merged to >= ``min_days``
+    days, the median and IQR across days of the actual F (hourly reference, kW
+    per hour of window), separately for heating-regime days and dead-band days.
+    """
+    Dz, _ = rebuild_design()
+    s = fig11_split(Dz, split)
+    T, fa = s['T'], s['fa']
+    rows = []
+    for regime, mask in (('heating', T < s['T_h']), ('dead band', T >= s['T_h'])):
+        edges, merged = temperature_bins(T[mask], min_days, FIRM_WIDTH)
+        idx = np.clip(np.digitize(T, edges) - 1, 0, len(edges) - 2)
+        for b in range(len(edges) - 1):
+            m = mask & (idx == b) & (T >= edges[0]) & (T < edges[-1])
+            if not m.any():
+                continue
+            q25, med, q75 = np.quantile(fa[m], [.25, .5, .75])
+            rows.append(dict(regime=regime, lo=edges[b], hi=edges[b + 1], x=float(T[m].mean()), days=int(m.sum()),
+                             med=med, q25=q25, q75=q75))
+    return s, pd.DataFrame(rows)
+
+
+def fig_flex_example(split=0, name='fig_flex_example'):
+    """Draft figure: one aggregate's flexible energy per hour of window against
+    daily mean temperature. Actual as median and IQR across days per bin, daily
+    values as dots; the estimate as its fitted curve."""
+    import matplotlib.pyplot as plt
+    import hp_figures as hf
+    s, R = flex_example(split)
+    hf.use_style()
+    T, fa, th = s['T'], s['fa'], s['T_h']
+    fig, ax = plt.subplots(figsize=(hf.COL1, 2.6))
+    ax.scatter(T, fa, s=5, color='0.7', edgecolor='none', zorder=1, label='actual, daily')
+    for regime, c, lab in (('heating', '0.2', 'actual, median and IQR'), ('dead band', '0.55', 'actual, $T \\geq T_h$ (not counted)')):
+        r = R[R.regime == regime]
+        ax.fill_between(r.x, r.q25, r.q75, color=c, alpha=.25, lw=0, zorder=2)
+        ax.plot(r.x, r.med, color=c, lw=1.4, marker='o', ms=2.5, zorder=3, label=lab)
+    tg = np.linspace(T.min(), th, 200)
+    sf = O.sf_target(tg, th, s['m'])
+    ax.plot(tg, sf * (1 - sf) * s['cap_e'], color=hf.C_HP, ls='--', lw=1.4, zorder=4, label='estimate')
+    ax.axhline(.25 * s['cap'], color='0.6', lw=.6, ls=(0, (1, 2)))
+    ax.annotate('$0.25\\,P^{\\max}$', (T.max(), .25 * s['cap']), xytext=(0, 2), textcoords='offset points',
+                ha='right', va='bottom', fontsize=6.5, color='0.4')
+    ax.axvline(th, color='0.45', lw=.7, ls=(0, (3, 3)))
+    ax.annotate('$T_h$', (th, .22 * s['cap']), xytext=(3, 0), textcoords='offset points', fontsize=7, color='0.3')
+    ax.set_xlabel('daily mean temperature ($^\\circ$C)')
+    ax.set_ylabel('$E_{\\mathrm{flex}}$ per h of window (kWh/h)')
+    ax.set_ylim(0, .3 * s['cap'])
+    ax.legend(fontsize=6, loc='lower left')
+    fig.tight_layout()
+    path = save_fig(fig, name)
+    plt.close(fig)
+    return path, R
+
+
 def step2(rebuild=False):
     """Step 2: long frame, summary against N, bin table, checks, the figure and
     the two D2 diagnostics."""

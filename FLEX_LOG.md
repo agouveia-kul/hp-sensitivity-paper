@@ -472,3 +472,33 @@ Marks (Alex, 2026-10-26): F1 accept, F2 accept, F3 accept (minimal), F4 modify (
 - **Style:** new sentences ≤ 40 words; British spelling; no Oxford comma; spaced en dashes as in the rest of the text.
 - **Diff PDF:** `review/hp_sensitivity_diff_flex_temperature.pdf`, latexdiff of `paper/` at 1700861 (before this task) against the current text, Elsevier build. It was built in scratch copies with `\chg{}` stripped and autotables as plain floats, as in the earlier diff (`REVISION_LOG.md`). Deleted text still points to the two removed figure labels, so it shows "??"; that is expected.
 - **Not done (follow-up):** `paper_results.ipynb` still holds the stored outputs of the old `flex_figures` step. Its registry entry in `scripts/replication.py` now points to `flex_temperature_figure`, but the notebook was not re-run.
+
+---
+
+## Note — flexibility against temperature for one example aggregate (Alex's question, after Part C)
+
+- Aggregate: the target half of split 0, i.e. the draft's former Fig. 11 example, out of sample. It holds 25 HPs with their homes' other load; true P^max 144.3 kW, estimated 141.7 kW; T_h 16.52 °C; pilot m_h 0.0187 °C⁻¹.
+- Plot: `figures/flex_temperature/fig_flex_example.{pdf,png}` (`flex_temperature.fig_flex_example()`). It shows the actual flexible energy per hour of window (hourly reference, kWh/h) against daily mean temperature. Daily values are dots, with median and IQR across days per 2 °C bin, merged to ≥ 5 days (the cold end becomes [−9, −1) °C, 9 days). The estimate is drawn as its fitted curve SF(1 − SF)·P̂^max. Dead-band days are shown separately and are not counted.
+- Not in the paper; exploration only.
+
+| Bin (°C) | Days | Median (kWh/h) | IQR | IQR / median |
+|---|---|---|---|---|
+| [−9, −1) | 9 | 32.0 | [32.0, 33.2] | 0.04 |
+| [−1, 1) | 24 | 30.6 | [30.3, 31.6] | 0.04 |
+| [1, 3) | 21 | 28.7 | [27.8, 29.3] | 0.05 |
+| [3, 5) | 25 | 26.1 | [25.6, 27.0] | 0.05 |
+| [5, 7) | 29 | 23.4 | [22.4, 24.8] | 0.10 |
+| [7, 9) | 40 | 21.7 | [20.1, 23.2] | 0.14 |
+| [9, 11) | 31 | 17.4 | [16.4, 19.2] | 0.16 |
+| [11, 13) | 34 | 14.7 | [13.1, 15.5] | 0.16 |
+| [13, 15) | 20 | 8.8 | [7.4, 12.1] | 0.54 |
+| [15, 17), below T_h | 13 | 7.9 | [7.0, 8.5] | 0.18 |
+| dead band [16, 18) | 19 | 6.0 | [5.4, 8.3] | 0.48 |
+| dead band [18, 20) | 46 | 5.1 | [4.6, 5.4] | 0.17 |
+| dead band [20, 24) | 43 | 4.0–4.4 | — | 0.22–0.23 |
+| dead band [24, 28) | 11 | 3.9 | [3.6, 4.2] | 0.15 |
+
+- Reading:
+  - The day-to-day spread is narrow on cold days (IQR 4–5% of the median) and widens in mild weather (10–16% at 5–13 °C, 54% at 13–15 °C).
+  - The actual bends smoothly through T_h. It is about 8 kWh/h just below the threshold, against an estimate that reaches zero there, and it keeps a floor of 4–6 kWh/h on dead-band days.
+  - On the coldest days the actual flattens near 32 kWh/h, while the estimate keeps rising towards 0.25·P̂^max (about 35 kWh/h at −8 °C).
