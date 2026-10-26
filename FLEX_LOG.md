@@ -293,3 +293,32 @@ Expectations (written before the run; definitions in "Expectations"):
 - One station and one year (2023). The cold end is one spell, and the shoulder-season explanation rests on dates, not on any metered heating-mode signal.
 - The binned P10/median depends on the bin width, especially in the 10 °C cold bin. The detrended diagnostic avoids bins and gives the same trend with N (0.84 to 0.87).
 - The quadratic detrending (D2-i) is a choice. Days where the fit falls below 0.05 per kW are left out, about the 2–3 °C below T_h.
+
+---
+
+## Step 3 — Suggestions (hard stop)
+
+### What was done
+- Wrote `review/SUGGESTIONS_flex_temperature.md`: a 5-line summary, F1–F6 in the prompt's format, the total length effect, and the open items. No `.tex` file was edited.
+- Word counts are of the current `paper/content/body.tex`, prose only. IV-F: 163, 141 and 86 words in its first three paragraphs, 169 in the Fig. 11 paragraph, and 46 and 66 in the captions of Figs. 10 and 11.
+- Cross-references checked with grep. `fig:flex-ratio` and `fig:flex-season` are referenced only at `body.tex:457` and `:475`, and no figure follows them.
+- Step 2b was skipped at Alex's instruction, so F5 is marked not assessed.
+
+### Results
+| Item | Recommendation | Rests on |
+|---|---|---|
+| F1 up/down headroom in III-C | accept | derived; Step 1 (P_up 1.16–1.23×, P_down 0.99–1.02) |
+| F2 one temperature figure replacing Figs. 10–11 | accept (modify option: replace Fig. 11 only) | Step 1 (ratio 1.17 cold to 0.87–0.92 mild; energy factor carries it) |
+| F3 temperature-dependent window | future work only | Step 1 (plateau; peak moves with T_in; E1.2a/E1.5 not met) |
+| F4 firm flexibility paragraph | modify (haircut, no scaling law, ≤ 70 words) | Step 2 (P10/median 0.85 to 0.87; estimate 0.91; shoulder days) |
+| F5 planning condition | not assessed | Step 2b not run |
+| F6 knock-on edits | accept those triggered; abstract, Fig. 1, Table III and highlights unchanged | derived |
+
+Total if F1–F4 and the F6 items they trigger are accepted: ≈ +13 words (within counting error) and −1 figure.
+
+### Implications
+- For the paper: nothing changes until Alex marks the suggestions. Part C then follows the accepted items, one commit each.
+- Decisions for Alex: the marks in the suggestions file. T_in and building time constants stay open (needs Alex); F3 avoids them.
+
+### Confidence and caveats
+- Word counts are approximate (±10%), so the length totals are estimates. Removing one figure is the firm part of the saving.
