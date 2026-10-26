@@ -94,13 +94,13 @@ where $T$ is the daily mean temperature [$^\circ$C], $P_{\mathrm{base}}$ the tem
 
 %\textcolor{red}{should mention that $P_{\mathrm{base}}, s_h, s_c$ are the outcome of least square fit}
 
-Fig.~\ref{fig:bathtub} shows the net-load fit to aggregated Austin smart-meter data \cite{pecanstreet}, with the parameters of \eqref{eq:bathtub} marked. The thresholds divide the temperature axis into three regimes, marked in Fig.~\ref{fig:bathtub}: the heating regime below $T_h$, the cooling regime above $T_c$ and the dead band between them, where the population neither heats nor cools. This work characterises the heating and cooling regimes alike and leaves the dead band out of scope. The evaluation of Sections~\ref{sec:results} and~\ref{sec:validation} covers the heating regime only, since the available data allow no test of the transfer in the cooling regime (Section~\ref{sec:discussion}).
+Fig.~\ref{fig:austin}(a) shows the net-load fit to aggregated Austin smart-meter data \cite{pecanstreet}, with the parameters of \eqref{eq:bathtub} marked. The thresholds divide the temperature axis into three regimes: the heating regime below $T_h$, the cooling regime above $T_c$ and the dead band between them, where the population neither heats nor cools. This work characterises the heating and cooling regimes alike and leaves the dead band out of scope. The evaluation of Sections~\ref{sec:results} and~\ref{sec:validation} covers the heating regime only, since the available data allow no test of the transfer in the cooling regime (Section~\ref{sec:discussion}).
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=\figw]{figures/fig_bathtub_example.pdf}
-\caption{Net-load fit \eqref{eq:bathtub} to the daily mean load of an aggregate of air-conditioned and furnace-heated households in Austin, Texas \cite{pecanstreet}, with the heating regime, dead band and cooling regime. $R^2_h$ and $R^2_c$ score each arm on the days of its own regime.}
-\label{fig:bathtub}
+\includegraphics[width=\figw]{figures/fig_austin_fits.pdf}
+\caption{The two fits of one aggregate of air-conditioned and furnace-heated households in Austin, Texas \cite{pecanstreet}. (a) Net-load fit \eqref{eq:bathtub} to the daily mean load, with the heating regime, dead band and cooling regime. (b) SF fit \eqref{eq:sffit} to the TCLs of the same households, with each daily point normalised by the installed capacity of the TCLs active in its regime \eqref{eq:sf-piecewise}. $R^2_h$ and $R^2_c$ score each arm on the days of its own regime.}
+\label{fig:austin}
 \end{figure}
 
 From \eqref{eq:bathtub}, the temperature-driven component of the aggregated load of an aggregate $i$, with its own fitted parameters, is
@@ -200,14 +200,7 @@ with $h$ denoting heating and $c$ cooling. The SF is by definition bounded in $[
 \end{aligned}
 \label{eq:sffit}
 \end{equation}
-where $T_h$ and $T_c$ are the thresholds of the net-load fit \eqref{eq:bathtub} of the same aggregate. The SF fit does not fit thresholds of its own. It borrows them from the net-load fit, so both fits describe the same heating and cooling regimes. The intercepts $b_h$ and $b_c$ and the heating and cooling SF sensitivities $m_h$ and $m_c$ [1/$^\circ$C] are determined by OLS on the days of each regime. The intercepts capture the weather-independent share of TCL use, such as domestic hot water, which the net-load fit instead places in $P_{\mathrm{base}}$. The SF fit therefore needs three inputs for the same aggregate: its daily submetered TCL load, its installed TCL capacity per regime and the daily mean temperature. Its thresholds come from the aggregate's own net-load fit. In practice, only a submetered pilot provides the first two (Section~\ref{sec:transfer}). Fig.~\ref{fig:sf} shows the SF data points and the SF fit for the same Austin population of Fig.~\ref{fig:bathtub}.
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=\figw]{figures/fig_sf_arms_anchored.pdf}
-\caption{SF fit \eqref{eq:sffit} to the aggregated Austin TCLs \cite{pecanstreet}, with each daily point normalised by the installed capacity of the TCLs active in its regime \eqref{eq:sf-piecewise}.}
-\label{fig:sf}
-\end{figure}
+where $T_h$ and $T_c$ are the thresholds of the net-load fit \eqref{eq:bathtub} of the same aggregate. The SF fit does not fit thresholds of its own. It borrows them from the net-load fit, so both fits describe the same heating and cooling regimes. The intercepts $b_h$ and $b_c$ and the heating and cooling SF sensitivities $m_h$ and $m_c$ [1/$^\circ$C] are determined by OLS on the days of each regime. The intercepts capture the weather-independent share of TCL use, such as domestic hot water, which the net-load fit instead places in $P_{\mathrm{base}}$. The SF fit therefore needs three inputs for the same aggregate: its daily submetered TCL load, its installed TCL capacity per regime and the daily mean temperature. Its thresholds come from the aggregate's own net-load fit. In practice, only a submetered pilot provides the first two (Section~\ref{sec:transfer}). Fig.~\ref{fig:austin}(b) shows the SF data points and the SF fit for the same Austin population.
 
 The SF fit gives the SF at any temperature of its regime, which links it to the design peak of Section~\ref{sec:intro}. At a design temperature $T_{\mathrm{d}} < T_h$, the design SF is $\hat{\mathrm{SF}}_h(T_{\mathrm{d}}) = b_h + m_h (T_h - T_{\mathrm{d}})$, and the design peak is the installed capacity multiplied by this SF. Since the SF of this paper is a daily mean, this product is a daily-mean design load. The 15-min design peak lies above it by the peak-to-mean ratio of Section~\ref{sec:res-sf}.
 
@@ -221,7 +214,7 @@ The observed SF stays well below 1. Each arm would reach the installed capacity 
 
 \input{tables/tab_cross}
 
-Both fits hold across climates. Table~\ref{tab:cross} reports them on aggregates from four countries, with each climate given as its K{\"o}ppen--Geiger class \cite{beck2018koppen}. The heating regime, the cooling regime or both are resolved as the local climate dictates (Fig.~\ref{fig:bathtub}). Each fit is scored by its coefficient of determination on the days of its own regime, $R^2_h$ for heating and $R^2_c$ for cooling. In the heating regime, the net-load fit reaches an $R^2_h$ between 0.68 and 0.92 across the year-round aggregates. $R^2_h$ is lowest in Austin, where electric heating is marginal. In the cooling regime, $R^2_c$ ranges from 0.95 in hot Maricopa to 0.75 in mild Oregon, where cooling is rare.
+Both fits hold across climates. Table~\ref{tab:cross} reports them on aggregates from four countries, with each climate given as its K{\"o}ppen--Geiger class \cite{beck2018koppen}. The heating regime, the cooling regime or both are resolved as the local climate dictates (Fig.~\ref{fig:austin}(a)). Each fit is scored by its coefficient of determination on the days of its own regime, $R^2_h$ for heating and $R^2_c$ for cooling. In the heating regime, the net-load fit reaches an $R^2_h$ between 0.68 and 0.92 across the year-round aggregates. $R^2_h$ is lowest in Austin, where electric heating is marginal. In the cooling regime, $R^2_c$ ranges from 0.95 in hot Maricopa to 0.75 in mild Oregon, where cooling is rare.
 
 The threshold temperatures follow the local climate. $T_h$ falls between 8 and 17\,$^\circ$C, and $T_c$ between 18 and 26\,$^\circ$C. A hot county such as Maricopa has a steep cooling arm, whereas a cold one such as Hamelin has no cooling whatsoever. The sensitivities $s_h$ and $s_c$ of the net-load fit scale with the aggregate's total installed TCL, and therefore with its size. The 849-household Norwegian aggregate and the electrified ResStock counties show the steepest arms for this reason. The SF sensitivities $m_h$ and $m_c$ remove this size dependence.
 

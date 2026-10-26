@@ -62,9 +62,31 @@ def _work(name):
 # Section 1 -- net-load bathtub
 # ===========================================================================
 def fig_bathtub_example():
-    """Fig. 2: Austin bathtub fit with the terms of Eq. (1) mapped onto it."""
-    import pecan_street as ps
+    """Austin bathtub fit with the terms of Eq. (1) mapped onto it (single panel; the paper uses fig_austin_fits)."""
     hf.use_style()
+    fig, ax = plt.subplots(figsize=(hf.COL1, 3.0))
+    _draw_net_fit(ax)
+    fig.tight_layout()
+    hf.save(fig, 'fig_bathtub_example')
+    print('saved -> fig_bathtub_example')
+
+
+def fig_austin_fits():
+    """Fig. 2: the two fits of one Austin aggregate, net-load fit (a) above the SF fit (b), sharing the temperature axis."""
+    hf.use_style()
+    fig, (a1, a2) = plt.subplots(2, 1, figsize=(hf.COL1, 4.3), sharex=True)
+    _draw_net_fit(a1, xlabel=False)
+    _draw_sf_arms(a2)
+    for ax, lab in ((a1, '(a)'), (a2, '(b)')):
+        ax.text(0.56, 0.96, lab, transform=ax.transAxes, ha='center', va='top', fontsize=8, fontweight='bold')
+    fig.tight_layout(h_pad=0.4)
+    hf.save(fig, 'fig_austin_fits')
+    print('saved -> fig_austin_fits')
+
+
+def _draw_net_fit(ax, xlabel=True):
+    """Net-load (bathtub) fit to the Austin aggregate on ``ax``."""
+    import pecan_street as ps
     pecan_daily, _ = ps.load_austin_ac_pool(verbose=False)
     agg = None
     for d in pecan_daily.values():
@@ -74,7 +96,6 @@ def fig_bathtub_example():
     Tv, yv = df['T'].to_numpy(), df['y'].to_numpy()
     base, hs, th, cs, tc, r2 = fit_bathtub_stick(Tv, yv)
 
-    fig, ax = plt.subplots(figsize=(hf.COL1, 3.0))
     ax.grid(False)
     ax.scatter(Tv, yv, s=8, color='0.65', alpha=.45, edgecolor='none', label='daily mean load')
     xa = np.linspace(Tv.min(), th, 100)
@@ -83,7 +104,7 @@ def fig_bathtub_example():
     ax.plot([th, tc], [base, base], color='0.2', lw=1.9, zorder=4, label='base load')
     ax.plot(xd, base + cs * (xd - tc), color=hf.C_CH, lw=1.9, zorder=4, label='cooling arm')
     ax.axvspan(th, tc, color='0.5', alpha=.08, lw=0)
-    y0 = yv.min() - 3
+    y0 = yv.min() - 0.2 * (yv.max() - yv.min())   # room below the data for the regime labels
     ax.set_ylim(y0, yv.max() * 1.06)
     g = dict(color='0.35', lw=0.8, ls=(0, (3, 3)), zorder=3)
     ax.hlines(base, th, tc, **g)
@@ -99,23 +120,23 @@ def fig_bathtub_example():
     xc = tc + (Tv.max() - tc) * 0.45; yc = base + cs * (xc - tc)
     ax.annotate(r'$s_c$', xy=(xc, yc), xytext=(-20, 6), textcoords='offset points',
                 fontsize=8, color=hf.C_CH, arrowprops=dict(arrowstyle='-', lw=0.6, color='0.5'))
-    # regimes: heating (below T_h), dead band, cooling (above T_c)
-    for (lo, hi), lab in zip([(Tv.min(), th), (th, tc), (tc, Tv.max())], ['heating', 'dead band', 'cooling']):
-        ax.text((lo + hi) / 2, 0.05, lab, transform=ax.get_xaxis_transform(), ha='center', va='bottom',
-                fontsize=8.5, color='0.35', fontweight='bold', zorder=6)
-    ax.set_xlabel('daily mean temperature (°C)')
+    # regimes: heating (below T_h), dead band, cooling (above T_c); the dead-band label sits above
+    # the base load, clear of the T_h and T_c labels
+    for (lo, hi), lab, yl in zip([(Tv.min(), th), (th, tc), (tc, Tv.max())], ['heating', 'dead band', 'cooling'],
+                                 (0.05, 0.5, 0.05)):
+        ax.text((lo + hi) / 2, yl, lab, transform=ax.get_xaxis_transform(), ha='center', va='bottom',
+                fontsize=8, color='0.35', fontweight='bold', zorder=6)
+    if xlabel:
+        ax.set_xlabel('daily mean temperature (°C)')
     ax.set_ylabel('aggregate load (kW)')
     ax.legend(fontsize=7, loc='upper left')
     # each arm scored on the days of its own regime only (dead band excluded)
     r2h = _arm_r2(Tv, yv, th, hs, base)
     mc = Tv > tc; yc = yv[mc]
     r2c = float(1 - np.sum((yc - (base + cs * (Tv[mc] - tc))) ** 2) / np.sum((yc - yc.mean()) ** 2))
-    ax.text(0.035, 0.72, f'$R^2_h$ {r2h:.2f}, $R^2_c$ {r2c:.2f}', transform=ax.transAxes,
+    ax.text(0.035, 0.62, f'$R^2_h$ {r2h:.2f}, $R^2_c$ {r2c:.2f}', transform=ax.transAxes,
             ha='left', va='top', fontsize=7, color='0.3')
     print(f'bathtub example: R2_h {r2h:.3f} R2_c {r2c:.3f} (all days {r2:.3f})')
-    fig.tight_layout()
-    hf.save(fig, 'fig_bathtub_example')
-    print('saved -> fig_bathtub_example')
 
 
 def fig_bathtub_critical():
@@ -180,8 +201,17 @@ def fig_bathtub_critical():
 # Section 2 -- simultaneity factor
 # ===========================================================================
 def fig_sf_arms_anchored():
-    """Fig. 3 (overleaf): SF arms fit independently, anchored at the net-load thresholds."""
+    """SF arms fit independently, anchored at the net-load thresholds (single panel; the paper uses fig_austin_fits)."""
     hf.use_style()
+    fig, ax = plt.subplots(figsize=(hf.COL1, 3.0))
+    _draw_sf_arms(ax)
+    fig.tight_layout()
+    hf.save(fig, 'fig_sf_arms_anchored')
+    print('saved -> fig_sf_arms_anchored')
+
+
+def _draw_sf_arms(ax):
+    """SF fit to the Austin TCLs on ``ax``, anchored at the net-load thresholds."""
     m = U.load_austin_arm_capacity()
     devices = m.devices
     CapH, CapC = m.capH, m.capC
@@ -209,8 +239,8 @@ def fig_sf_arms_anchored():
     r2h = r2f((Th - dh['T']).to_numpy(), dh['sf'].to_numpy(), mh, bh)
     r2c = r2f((dc['T'] - Tc).to_numpy(), dc['sf'].to_numpy(), mc, bc)
     Tmin, Tmax = dh['T'].min(), dc['T'].max()
+    print(f'Austin SF fit: m_h {mh:.4f} b_h {bh:.3f} R2_h {r2h:.3f}; m_c {mc:.4f} b_c {bc:.3f} R2_c {r2c:.3f}')
 
-    fig, ax = plt.subplots(figsize=(hf.COL1, 3.0))
     ax.grid(False)
     ax.scatter(dh['T'], dh['sf'], s=8, color='0.65', alpha=.45, edgecolor='none', label='daily mean SF')
     ax.scatter(dc['T'], dc['sf'], s=8, color='0.65', alpha=.45, edgecolor='none')
@@ -240,9 +270,6 @@ def fig_sf_arms_anchored():
     ax.legend(fontsize=7, loc='upper left')
     ax.text(0.035, 0.72, f'$R^2_h$ {r2h:.2f}, $R^2_c$ {r2c:.2f}', transform=ax.transAxes,
             ha='left', va='top', fontsize=7, color='0.3')
-    fig.tight_layout()
-    hf.save(fig, 'fig_sf_arms_anchored')
-    print('saved -> fig_sf_arms_anchored')
 
 
 def fig_sf_austin_activity():
