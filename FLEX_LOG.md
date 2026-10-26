@@ -50,7 +50,7 @@ E1.4 and E1.6 cannot both be met; E1.6 is my prior, E1.4 the prompt's.
 
 Changes to the design made after seeing results, with reasons. The original result stays in the step report.
 
-*(none yet)*
+- **D1 (Step 1): a P_up estimate/actual column added to the bin table.** Reason: panel (a) of the draft figure showed the estimated upward headroom above the actual in every bin, so the size of that gap had to be reported. No other quantity changed.
 
 ---
 
@@ -99,3 +99,100 @@ Expectations: none required for Step 0.
 ### Confidence and caveats
 - High confidence: the rebuilt design and hourly flexibility are identical to the paper caches element-wise.
 - The reproduction runs from cached pools, not from the raw files (as in the planning Step 0).
+
+---
+
+## Step 1 — Headroom and flexible energy against temperature
+
+### What was done
+- Data and design: the Step 0 aggregates (20 splits, seed 0). Primary setting N = 50, N_hp = 25 (60 aggregates, 3 per split); repeated at N = 30, N_hp = 15 and N = 10, N_hp = 5.
+- Per aggregate and day: actual daily-mean SF from its own HPs and true P^max; actual F from the hourly SF (the paper's reference); estimate from SF = m_h(T_h − T) with the pilot m_h and P̂^max = s_h/m_h. P_down = SF·P^max, P_up = (1 − SF)·P^max, F = SF(1 − SF)·P^max per hour of window (W1). W2: F/(T_in − T), T_in ∈ {20, 21} °C, normalised by each aggregate's own maximum. All quantities per kW of **true** installed capacity, so aggregates of different size can be pooled.
+- Bins: 1 °C of daily mean T over the heating regime. Bins with fewer than 5 days were merged: the six bins from −9 to −3 °C (1–4 days each) cascade into one bin [−9, −2) °C with 7 days, and [−2, −1) (2 days) merges into [−2, 0). Per aggregate, a bin with fewer than 5 of its own heating days is left out; this only affects the bins above 16 °C.
+- Diagnostic (planned before the run): the estimate with the pilot's intercept b_h added, SF = b_h + m_h(T_h − T). The paper's estimate has no intercept.
+- Code: `flex_temperature.step1()`; notebook cells "Step 1". Results pickled in `results/flex_temperature/step1_results.pkl`.
+- Deviations: the draft figure has three panels, not two. W1 and W2 are on separate panels, since six lines with bands on one panel were not legible. D1 (one table column added).
+
+### Results
+Figure: `figures/flex_temperature/fig_flex_temperature.{pdf,png}`. Panel (a) shows P_up and P_down, (b) F under W1, and (c) F under W2, normalised. Each panel shows the estimate (dashed) against the actual (solid), as the median with the IQR across the 60 aggregates. Panel (b) also shows the actual on dead-band days, dotted.
+
+**Headline (negative first).**
+1. **The estimate/actual ratio is not flat in temperature.** It is +17% in the coldest bin, about +8% from −2 to 7 °C, about 1.0 at 7–10 °C, −8 to −13% at 10–14 °C, and −30 to −74% within 2 °C of T_h. The annual 1.04 balances overestimates in the cold against underestimates in mild weather. The temperature profile comes entirely from the energy factor (P_down, the net-load fit). The unused-capacity factor (1.02–1.06) and the hourly factor (1.02–1.04) are flat.
+2. **Under W2, F(T) is a plateau, not a peak, and the window assumption sets its shape.** For T_in = 20 °C, the actual stays within 10% of its maximum from 2 to 12.5 °C and the estimate from −1 to 11 °C; for T_in = 21 °C, from 0 to 11.5 °C and from −4 to 9.5 °C. The coldest bin lies 10–25% below the maximum. The location of the "peak" moves by 1–2.5 °C with T_in. For T_in = 20 °C, the actual has a second maximum at 15–16 °C: there, the 1/(T_in − T) window diverges while the actual F keeps a floor. Under W1, F rises monotonically to the coldest bin.
+3. **Upward headroom carries the capacity error; downward headroom does not.** The estimated P_up is 1.16–1.23 times the actual in every bin, matching P̂^max/P^max = 1.14 [1.02, 1.22] at N = 50. The estimated P_down, which comes from the net-load fit alone, is within 0.99–1.02 of the actual from −2 to 7 °C.
+4. **P_up and P_down never cross on an observed day.** The daily SF is below 0.5 on every heating-regime aggregate-day, for estimate and actual alike.
+
+Peak temperature (°C), median [IQR] over the 20 splits, N = 50, N_hp = 25. "Coldest/peak" is the median over aggregates of F in the coldest bin divided by its maximum.
+
+| Window | Estimate | Actual | Coldest/peak, est. | Coldest/peak, act. |
+|---|---|---|---|---|
+| W1 | −3.8 (coldest bin) | −3.8 (coldest bin) | 1.00 | 1.00 |
+| W2, T_in = 20 °C | 5.8 [5.1, 6.1] | 10.4 [10.3, 15.6] | 0.89 | 0.76 |
+| W2, T_in = 21 °C | 4.7 [4.2, 5.0] | 7.9 [7.9, 8.0] | 0.91 | 0.81 |
+| W2, T_in = 20 °C, estimate with b_h | 9.7 [9.0, 10.3] | — | 0.80 | — |
+| W2, T_in = 21 °C, estimate with b_h | 7.9 [7.5, 8.7] | — | 0.84 | — |
+
+At N = 30 and N = 10, the W2 peaks of the estimate are 5.5 / 5.3 °C (T_in = 20) and 4.5 / 4.3 °C (T_in = 21). For the actual at T_in = 20, the IQR stays wide (5.4 and 7.2 °C).
+
+F under W1 per kW of true installed capacity, and the factors of the ratio, by bin (N = 50, N_hp = 25). "Days" is the median count of heating days per aggregate. Estimate, actual and ratio are given as median [IQR] across the 60 aggregates. The ratio over splits has the same median within ±0.02 and is in the notebook. The three factors multiply exactly to the ratio, bin by bin.
+
+| Bin (°C) | Days | F est. | F act. | Est./act. | Energy | Unused cap. | Hourly | P_up est./act. |
+|---|---|---|---|---|---|---|---|---|
+| [−9, −2) | 7 | 0.263 [0.239, 0.278] | 0.226 [0.223, 0.229] | 1.17 [1.07, 1.22] | 1.09 | 1.02 | 1.04 | 1.17 |
+| [−2, 0) | 13 | 0.242 | 0.217 | 1.11 [1.04, 1.16] | 1.01 | 1.06 | 1.03 | 1.21 |
+| [0, 1) | 13 | 0.234 | 0.215 | 1.08 [1.02, 1.13] | 0.99 | 1.06 | 1.02 | 1.22 |
+| [1, 2) | 10 | 0.222 | 0.205 | 1.08 [1.02, 1.13] | 0.99 | 1.06 | 1.03 | 1.21 |
+| [2, 3) | 11 | 0.214 | 0.194 | 1.09 [1.03, 1.15] | 1.01 | 1.04 | 1.03 | 1.20 |
+| [3, 4) | 11 | 0.205 | 0.186 | 1.09 [1.03, 1.14] | 1.00 | 1.04 | 1.04 | 1.20 |
+| [4, 5) | 14 | 0.193 | 0.179 | 1.07 [1.02, 1.12] | 1.00 | 1.03 | 1.03 | 1.19 |
+| [5, 6) | 14 | 0.181 | 0.170 | 1.05 [1.01, 1.11] | 0.99 | 1.03 | 1.03 | 1.19 |
+| [6, 7) | 15 | 0.168 | 0.153 | 1.08 [1.04, 1.14] | 1.02 | 1.02 | 1.03 | 1.17 |
+| [7, 8) | 29 | 0.156 | 0.153 | 1.00 [0.96, 1.06] | 0.94 | 1.04 | 1.02 | 1.19 |
+| [8, 9) | 11 | 0.140 | 0.139 | 0.99 [0.95, 1.05] | 0.93 | 1.04 | 1.02 | 1.19 |
+| [9, 10) | 14 | 0.126 | 0.127 | 0.98 [0.94, 1.05] | 0.92 | 1.03 | 1.03 | 1.18 |
+| [10, 11) | 17 | 0.107 | 0.115 | 0.92 [0.88, 0.98] | 0.87 | 1.04 | 1.03 | 1.19 |
+| [11, 12) | 16 | 0.092 | 0.099 | 0.92 [0.88, 1.00] | 0.88 | 1.03 | 1.03 | 1.18 |
+| [12, 13) | 18 | 0.075 | 0.086 | 0.87 [0.83, 0.95] | 0.82 | 1.04 | 1.03 | 1.18 |
+| [13, 14) | 11 | 0.058 | 0.066 | 0.90 [0.84, 1.01] | 0.87 | 1.02 | 1.02 | 1.16 |
+| [14, 15) | 9 | 0.038 | 0.053 | 0.69 [0.63, 0.82] | 0.66 | 1.03 | 1.03 | 1.17 |
+| [15, 16) | 9 | 0.018 | 0.052 | 0.35 [0.28, 0.44] | 0.32 | 1.05 | 1.02 | 1.19 |
+| [16, 18) | 4 | 0.010 | 0.038 | 0.26 [0.26, 0.27] | 0.25 | 1.03 | 1.03 | 1.23 |
+
+- Weight of the bins: the bins from 13 °C to T_h hold 6% of the heating-regime actual flexible energy, and the coldest bin holds 4.5%. The annual ratio is therefore set by the bins from −2 to 13 °C.
+- With the pilot intercept b_h added, the ratio rises to 1.13–1.34 in almost every bin. The intercept closes the gap only near T_h, because b_h·P̂^max carries the capacity overestimate into every bin.
+- N = 30 and N = 10 show the same pattern. The IQR widens at N = 10: 1.14 [1.05, 1.37] in the coldest bin.
+
+Sanity checks: the replayed HP members reproduce every design capacity (checked in `_replay_members`). Summing the bins, the annual ratio comes out at median 1.02, against the paper's 1.04. The bins drop days from bins with fewer than 5 of an aggregate's own heating days. The actual F stays below the 0.25 ceiling in every bin. The estimated F exceeds 0.25 per kW of *true* capacity only in the coldest bin (0.263), because P̂^max > P^max.
+
+Expectations (written before the run; definitions in "Expectations"):
+
+| # | Outcome | Value |
+|---|---|---|
+| E1.1 W1 monotonic | **met**, estimate and actual | no drop; the smallest step towards the cold is +3.5% (estimate) and +0.3% (actual) |
+| E1.2a actual W2 peak 7–9 °C | **met** for T_in = 21 (7.9 °C); **not met** for T_in = 20 (10.4 °C) | |
+| E1.2b estimate W2 peak 5–6 °C | **met** | 5.8 °C (T_in = 20), 4.7 °C (T_in = 21) |
+| E1.3 P_up > P_down on ≥ 99% of days | **met** | 0% of aggregate-days with SF ≥ 0.5, estimate and actual |
+| E1.4 ratio flat near 1.04 | **not met** | per-bin median 0.26 to 1.17 |
+| E1.5 peak stable (IQR ≤ 2 °C) | **met** for the estimate (≤ 0.93 °C); **not met** for the actual (5.3 °C at T_in = 20) | |
+| E1.6 (mine) ratio < 0.94 within 3 °C of T_h | **met** | 0.69, 0.35, 0.26 |
+| E1.7 (mine) coldest ≥ 0.7 of peak under W2 | **met** | minimum 0.76 |
+
+### Implications
+- **Does estimate/actual vary with T?** Yes, from +17% on the coldest days to −13% at 12–13 °C, and to −65 to −74% just below T_h. The cause is the energy factor, so the net-load fit, not the transferred SF. Its linear arm s_h(T_h − T) reaches zero at T_h, while the measured HP load still runs at 0.05–0.06 kW per kW installed at 14–16 °C. A line through that curved load undershoots it near the threshold and overshoots it on the coldest days. That the HP load bends with temperature is my reading, not yet tested. The non-TCL slope is not the main driver at N = 50: it would bias all bins alike, but the factor is about 1.00 from −2 to 7 °C. The intercept b_h does not fix it either, because adding it raises every bin.
+  - This affects IV-F: "The flexibility and energy ratios correlate at 0.96. The flexibility estimate therefore inherits its accuracy mainly from the net-load fit". The bins support this sentence and add a temperature profile to it. The sentence "On the coldest day, the estimate recovers the flexible energy at a WAPE of 21%" agrees with the +17% of the coldest bin.
+- **Does the window assumption change the message?** Yes. Under W1, flexibility per event is largest on the coldest days. Under W2, it is roughly constant from 0 to 11 °C and 10–25% lower on the coldest days. Its location depends on T_in, and for T_in = 20 °C on the dead-band floor near T_h. The data cannot tell W1 from W2. So the W2 result stands only as an illustration of an assumption, and its "peak at 7–9 °C" should not be stated as a finding.
+- **Upward headroom (F1):** the estimate's P_up inherits the capacity error, +16–23% in every bin, whereas P_down needs no pilot. This is new information for III-C: "The instantaneous unused capacity (1 − SF̂(T)) P̂^max is the special case of the on phase drawn to full power."
+- **What Figs. 10 and 11 show that this figure would lose:**
+  - Fig. 10: the spread of the annual ratio over all 1260 aggregates, across every N and N_hp. This figure shows one setting, binned.
+  - Fig. 11: the calendar, with a third of the days above T_h, mostly in summer; the day-to-day tracking of one out-of-sample aggregate; and the absolute scale (kWh at 144 kW, 4 h).
+  - Kept here: the dead-band floor (panel b, dotted), the 0.25 ceiling, and the coldest-day comparison.
+  - Gained here: the temperature profile of the error, and the up/down split.
+- Decisions for Alex:
+  1. **Bin width for Step 2.** A 10th percentile across days needs more days than the 9–15 that most 1 °C bins hold. Recommendation: for Step 2, use 2 °C bins, merging until each holds at least 10 days, and report that as a deviation.
+  2. **Normalisation of the figure.** Recommendation: keep it per kW of true installed capacity, as drafted. It pools aggregates of any size and shows the 0.25 ceiling directly. The absolute kWh of Fig. 11 can move to one sentence.
+
+### Confidence and caveats
+- The validation partly checks itself: the actual F uses the same SF(1 − SF)·P^max formula, with submetered inputs. The result checks the inputs, not observed flexibility.
+- The coldest bin holds 7 days spread over 6 °C (−8.2 to −2 °C), and every split shares them. Its +17% rests on one cold spell.
+- W2 is an assumption. T_in = 20–21 °C is a parameter range, not a sourced value, and no time constant is used.
+- Medians across aggregates pool 3 aggregates per split that share HPs. The split-level medians agree within ±0.02, which keeps the pooling honest at the median but not for the IQR.
+- The actual P_up and P_down use the daily-mean SF, while the actual F uses the hourly SF, as in the paper. The hourly factor (1.02–1.04) is the gap between the two.

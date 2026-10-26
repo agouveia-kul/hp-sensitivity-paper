@@ -172,3 +172,320 @@ def reproduce_flex(rebuild=False):
                fig11_sf_e_max=float(s['sf_e'].max()))
     extras = dict(G=G, Fh=Fh, pilots=Dz['pilots'], fig11=s, pilot0=pf, same_as_paper_cache=same, context=ctx)
     return checks, extras
+
+
+# ===========================================================================
+# Step 1 -- headroom and flexible energy against temperature
+# ===========================================================================
+T_IN = (20.0, 21.0)            # indoor temperatures of the W2 window (assumption, parameter range)
+MIN_DAYS = 5                   # a temperature bin needs this many days
+PRIMARY = (50, 25)             # (N, N_hp): 50 consumers at 50% HP penetration
+SETTINGS = ((10, 5), (30, 15), (50, 25))
+C_UP, C_DOWN = '#1f77b4', '#d95f02'      # blue / orange: colour-blind safe pair
+C_W2 = ('#1b9e77', '#7570b3')            # T_in = 20, 21 degC
+
+
+def _replay_members(Dz):
+    """HP rows of every aggregate, row-aligned with ``Dz['rows']``.
+
+    Replays the draw of ``outputs._kloten_design`` (one generator, seed 0, same
+    order), as ``outputs._kloten_flex_hourly`` does.
+    """
+    K = Dz['K']
+    rng = np.random.default_rng(0); nfree = K['free'].shape[0]
+    out = []
+    for _ in range(len(Dz['pilots'])):
+        A, B = O._pilot_split(len(K['cap']), rng)
+        for N in O.N_GRID_K:
+            for nh in O.NHP_GRID_K:
+                if nh > N:
+                    continue
+                for _ in range(3):
+                    H = rng.choice(B, nh, replace=False)
+                    if N > nh:
+                        rng.choice(nfree, N - nh, replace=False)
+                    out.append(H)
+    caps = np.array([K['cap'][H].sum() for H in out])
+    if len(out) != len(Dz['rows']) or not np.allclose(caps, Dz['rows'].cap.to_numpy()):
+        raise RuntimeError('replay does not reproduce _kloten_design')
+    return out
+
+
+def daily_frames(rebuild=False):
+    """Per aggregate and day: actual daily-mean SF and hourly-reference flexibility.
+
+    Returns dict(T, sf_a, fa_h, members) with ``sf_a`` and ``fa_h`` arrays of
+    shape (aggregates, days), row-aligned with the design rows. ``fa_h`` is the
+    paper's actual flexibility per hour of window (kW): the mean over the day's
+    hours of SF_t (1 - SF_t) P_max.
+    """
+    def build():
+        Dz, _ = rebuild_design()
+        G = Dz['rows']; K = Dz['K']; Kh = O._kloten_hourly(); T = Dz['T']; nd = len(T)
+        members = _replay_members(Dz)
+        sf_a = np.empty((len(G), nd), np.float32); fa_h = np.empty_like(sf_a)
+        for i, H in enumerate(members):
+            cap = float(G.cap.iat[i])
+            sf_a[i] = np.clip(K['hp'][H].sum(0) / cap, 0, 1)
+            fa_h[i] = O._hourly_flex(Kh['hp'][H].sum(0).reshape(nd, 24), cap)
+        return dict(T=np.asarray(T, float), sf_a=sf_a, fa_h=fa_h, members=members)
+    return _cached('step1_daily', build, rebuild)
+
+
+def temperature_bins(T, min_days=MIN_DAYS):
+    """1 degC bins of daily mean temperature; a bin with fewer than ``min_days``
+    days is merged into its neighbour towards the centre of the range.
+
+    Returns (edges, merged) with ``merged`` the list of bins (lo, hi, days) that
+    were merged away.
+    """
+    T = np.asarray(T)
+    edges = list(np.arange(np.floor(T.min()), np.ceil(T.max()) + 1))
+    if len(edges) < 2:
+        edges.append(edges[0] + 1)
+    merged = []
+    while True:
+        n = np.histogram(T, edges)[0]
+        bad = np.flatnonzero(n < min_days)
+        if not len(bad) or len(n) == 1:
+            return np.array(edges), merged
+        k = bad[0]
+        merged.append((edges[k], edges[k + 1], int(n[k])))
+        # drop the inner edge of bin k: merges it with its neighbour towards the centre
+        edges.pop(k + 1 if k < (len(n) - 1) / 2 else k)
+
+
+def _peak(x, y):
+    """Vertex of the parabola through the largest point and its two neighbours."""
+    ok = np.isfinite(y)
+    x, y = np.asarray(x)[ok], np.asarray(y)[ok]
+    if len(y) == 0:
+        return np.nan
+    k = int(np.argmax(y))
+    if k == 0 or k == len(y) - 1:
+        return float(x[k])
+    a, b, _ = np.polyfit(x[k - 1:k + 2], y[k - 1:k + 2], 2)
+    if a >= 0:
+        return float(x[k])
+    return float(np.clip(-b / (2 * a), x[k - 1], x[k + 1]))
+
+
+def _bin_means(v, idx, nb, mask):
+    """Mean of ``v`` (aggregates x days) per bin over the masked days; NaN for
+    bins with fewer than MIN_DAYS masked days of that aggregate."""
+    out = np.full((v.shape[0], nb), np.nan); cnt = np.zeros((v.shape[0], nb), int)
+    for b in range(nb):
+        m = mask & (idx == b)[None, :]
+        cnt[:, b] = m.sum(1)
+        with np.errstate(invalid='ignore', divide='ignore'):
+            out[:, b] = np.where(m, v, 0).sum(1) / cnt[:, b]
+    out[cnt < MIN_DAYS] = np.nan
+    return out, cnt
+
+
+def step1_curves(N, N_hp, D=None, use_b=False):
+    """Binned headroom and flexibility of the (N, N_hp) aggregates against T.
+
+    Per aggregate and 1 degC bin of heating-regime days (T < own T_h): bin means
+    of P_down, P_up and F (W1, per hour of window) for estimate and actual, all
+    per kW of true installed capacity, and F under W2, Dt ~ 1/(T_in - T),
+    normalised by its own maximum over the bins. Dead-band days (T >= T_h) give
+    the actual floor, binned separately. ``use_b`` adds the pilot's intercept b_h
+    to the estimated SF (diagnostic only; the paper's estimate has none).
+    """
+    Dz, _ = rebuild_design()
+    D = daily_frames() if D is None else D
+    G = Dz['rows']; T = D['T']
+    sel = np.flatnonzero(((G.N == N) & (G.N_hp == N_hp)).to_numpy())
+    g = G.iloc[sel].reset_index(drop=True)
+    cap = g.cap.to_numpy()[:, None]; cap_e = g.cap_est.to_numpy()[:, None]
+    th = g.T_h.to_numpy()[:, None]; m = g.m_pilot.to_numpy()[:, None]
+    heat = T[None, :] < th
+    sf_e = np.clip(m * np.maximum(0, th - T[None, :]), 0, 1)
+    if use_b:
+        b = np.array([Dz['pilots'][s]['b'] for s in g.split])[:, None]
+        sf_e = np.where(heat, np.clip(b + sf_e, 0, 1), 0)
+    sf_a = D['sf_a'][sel].astype(float); fa_h = D['fa_h'][sel].astype(float)
+
+    edges, merged = temperature_bins(T[T < th.max()])
+    nb = len(edges) - 1
+    idx = np.clip(np.digitize(T, edges) - 1, 0, nb - 1)
+    idx[(T < edges[0]) | (T >= edges[-1])] = -1
+    q = dict(pdown_e=sf_e * cap_e / cap, pup_e=(1 - sf_e) * cap_e / cap,
+             pdown_a=sf_a, pup_a=1 - sf_a,
+             f_e=sf_e * (1 - sf_e) * cap_e / cap, f_a=fa_h / cap, f_ad=sf_a * (1 - sf_a))
+    for t_in in T_IN:
+        w = 1 / (t_in - T[None, :])
+        q[f'w2_e_{t_in:g}'] = q['f_e'] * w
+        q[f'w2_a_{t_in:g}'] = q['f_a'] * w
+    B = {}
+    for k, v in q.items():
+        B[k], ndays = _bin_means(v, idx, nb, heat)
+    for k in [k for k in B if k.startswith('w2_')]:
+        B[k] = B[k] / np.nanmax(B[k], 1, keepdims=True)
+    # exact identity per bin: ratio = energy factor x headroom factor x hourly factor
+    B['ratio'] = B['f_e'] / B['f_a']
+    B['energy_factor'] = B['pdown_e'] / B['pdown_a']
+    B['headroom_factor'] = (B['f_e'] / B['pdown_e']) / (B['f_ad'] / B['pdown_a'])
+    B['hourly_factor'] = B['f_ad'] / B['f_a']
+    xb = np.array([T[idx == b].mean() for b in range(nb)])        # bin x: mean daily T of its days
+    # dead-band floor of the actual (days >= own T_h), on its own 1 degC grid
+    we, _ = temperature_bins(T[T >= th.min()])
+    wi = np.clip(np.digitize(T, we) - 1, 0, len(we) - 2)
+    wi[T < we[0]] = -1
+    floor, _ = _bin_means(q['f_a'], wi, len(we) - 1, ~heat)
+    xw = np.array([T[wi == b].mean() for b in range(len(we) - 1)])
+    return dict(g=g, edges=edges, x=xb, merged=merged, ndays=ndays, B=B, floor=floor, x_floor=xw,
+                share_sf_ge_half=dict(est=float((sf_e[heat] >= .5).mean()), act=float((sf_a[heat] >= .5).mean())),
+                n_heat_days=int(heat.sum()))
+
+
+def _qstr(v, f='{:.2f}'):
+    v = pd.Series(np.asarray(v, float)).dropna()
+    if not len(v):
+        return '–'
+    return (f + ' [' + f + ', ' + f + ']').format(v.median(), v.quantile(.25), v.quantile(.75))
+
+
+def step1_peaks(C):
+    """Peak temperature per curve: per aggregate, median within split, then
+    median [IQR] over splits; plus the coldest bin as a share of the peak."""
+    g, x, B = C['g'], C['x'], C['B']
+    rows = []
+    for name, keys in [('W1', ('f_e', 'f_a'))] + [(f'W2, T_in = {t:g} °C', (f'w2_e_{t:g}', f'w2_a_{t:g}')) for t in T_IN]:
+        for who, k in zip(('estimate', 'actual'), keys):
+            pk = np.array([_peak(x, B[k][i]) for i in range(len(g))])
+            first = np.array([B[k][i][np.isfinite(B[k][i])][0] for i in range(len(g))])
+            cold = first / np.nanmax(B[k], 1)
+            per_split = pd.Series(pk).groupby(g.split.to_numpy()).median()
+            rows.append(dict(window=name, curve=who,
+                             peak_split_med=per_split.median(), peak_split_q25=per_split.quantile(.25),
+                             peak_split_q75=per_split.quantile(.75),
+                             peak_split_iqr=per_split.quantile(.75) - per_split.quantile(.25),
+                             cold_over_peak=float(np.median(cold))))
+    return pd.DataFrame(rows)
+
+
+def step1_bin_table(C):
+    """Per bin: days, median [IQR] across aggregates of F (W1) estimate, actual and
+    their ratio, the ratio over splits, and the three factors of the ratio."""
+    B, g = C['B'], C['g']
+    rows = []
+    for b in range(len(C['x'])):
+        r = B['ratio'][:, b]
+        rs = pd.Series(r).groupby(g.split.to_numpy()).median()
+        rows.append({'bin (°C)': f"[{C['edges'][b]:.0f}, {C['edges'][b + 1]:.0f})",
+                     'days': int(np.median(C['ndays'][:, b])), 'aggregates': int(np.isfinite(r).sum()),
+                     'F est': _qstr(B['f_e'][:, b], '{:.3f}'), 'F act': _qstr(B['f_a'][:, b], '{:.3f}'),
+                     'est/act (aggregates)': _qstr(r), 'est/act (splits)': _qstr(rs),
+                     'P_up est/act': f"{np.nanmedian(B['pup_e'][:, b] / B['pup_a'][:, b]):.2f}",
+                     'energy': f"{np.nanmedian(B['energy_factor'][:, b]):.2f}",
+                     'headroom': f"{np.nanmedian(B['headroom_factor'][:, b]):.2f}",
+                     'hourly': f"{np.nanmedian(B['hourly_factor'][:, b]):.2f}"})
+    return pd.DataFrame(rows)
+
+
+def step1_checks(C, peaks):
+    """E1.1-E1.7 of FLEX_LOG.md against the primary-setting curves."""
+    B, x = C['B'], C['x']
+    res = {}
+
+    def mono(k):    # warm to cold: never more than 2% below the next warmer bin
+        med = np.nanmedian(B[k], 0)
+        mc = med[np.isfinite(med)][::-1]
+        drops = mc[1:] / mc[:-1] - 1
+        return bool((drops >= -0.02).all()), float(drops.min())
+    res['E1.1 estimate'] = mono('f_e'); res['E1.1 actual'] = mono('f_a')
+    for t in T_IN:
+        for who, rng_, tag in (('actual', (6.5, 9.5), 'E1.2a'), ('estimate', (4.5, 6.5), 'E1.2b')):
+            p = peaks[(peaks.window == f'W2, T_in = {t:g} °C') & (peaks.curve == who)].iloc[0]
+            res[f'{tag} T_in={t:g}'] = (bool(rng_[0] <= p.peak_split_med <= rng_[1] and p.cold_over_peak < 1),
+                                        round(p.peak_split_med, 2))
+    sh = C['share_sf_ge_half']
+    res['E1.3 estimate'] = (sh['est'] <= .01, sh['est']); res['E1.3 actual'] = (sh['act'] <= .01, sh['act'])
+    rm = np.nanmedian(B['ratio'], 0)
+    res['E1.4'] = (bool(((rm >= .94) & (rm <= 1.14))[np.isfinite(rm)].all()),
+                   (float(np.nanmin(rm)), float(np.nanmax(rm))))
+    for who in ('estimate', 'actual'):
+        iq = peaks[peaks.window.str.startswith('W2') & (peaks.curve == who)].peak_split_iqr
+        res[f'E1.5 {who}'] = (bool((iq <= 2).all()), float(iq.max()))
+    th = float(np.median(C['g'].T_h))
+    warm = (x >= th - 3) & np.isfinite(rm)
+    res['E1.6'] = (bool((rm[warm] < .94).all()), [round(v, 2) for v in rm[warm]])
+    co = peaks[peaks.window.str.startswith('W2')].cold_over_peak
+    res['E1.7'] = (bool((co >= .7).all()), float(co.min()))
+    return res
+
+
+def fig_flex_temperature(C, name='fig_flex_temperature'):
+    """Draft figure: (a) P_up and P_down, (b) F under W1, (c) F under W2
+    (normalised), estimate against actual, median and IQR across aggregates."""
+    import matplotlib.pyplot as plt
+    import hp_figures as hf
+    hf.use_style()
+    B, x = C['B'], C['x']
+    th = float(np.median(C['g'].T_h))
+    fig, axs = plt.subplots(3, 1, figsize=(hf.COL1, 5.6), sharex=True)
+
+    def band(ax, M, color, ls, label, xx=x, fill=True, lw=1.3):
+        med = np.nanmedian(M, 0); ok = np.isfinite(med)
+        if fill:
+            ax.fill_between(xx[ok], np.nanquantile(M, .25, 0)[ok], np.nanquantile(M, .75, 0)[ok], color=color,
+                            alpha=.20 if ls == '-' else .12, lw=0)
+        ax.plot(xx[ok], med[ok], color=color, ls=ls, lw=lw, label=label)
+
+    from matplotlib.lines import Line2D
+    ax = axs[0]
+    band(ax, B['pup_a'], C_UP, '-', None)
+    band(ax, B['pup_e'], C_UP, '--', None)
+    band(ax, B['pdown_a'], C_DOWN, '-', None)
+    band(ax, B['pdown_e'], C_DOWN, '--', None)
+    ax.text(-4, 1.07, 'upward $(1-\\mathrm{SF})P^{\\max}$', color=C_UP, fontsize=6.5)
+    ax.text(-4, 0.47, 'downward $\\mathrm{SF}\\,P^{\\max}$', color=C_DOWN, fontsize=6.5)
+    ax.legend([Line2D([], [], color='0.3', ls='-'), Line2D([], [], color='0.3', ls='--')],
+              ['actual', 'estimate'], fontsize=6, loc='center right')
+    ax.set_ylabel('headroom per kW\ninstalled (kW/kW)')
+    ax.set_ylim(0, 1.25)
+
+    ax = axs[1]
+    band(ax, B['f_a'], '0.25', '-', 'actual (hourly SF)')
+    band(ax, B['f_e'], hf.C_HP, '--', 'estimate')
+    band(ax, C['floor'], '0.55', ':', 'actual, $T \\geq T_h$ (not counted)', xx=C['x_floor'], fill=False, lw=1.1)
+    ax.axhline(.25, color='0.6', lw=.6, ls=(0, (1, 2)))
+    ax.set_ylabel('$F$ per h of window\nper kW installed')
+    ax.set_ylim(0, .3)
+    ax.legend(fontsize=6, loc='lower left')
+
+    ax = axs[2]
+    for t, c, lw in zip(T_IN, C_W2, (1.3, 0.9)):
+        band(ax, B[f'w2_a_{t:g}'], c, '-', f'actual, $T_{{in}}$ = {t:g} °C', fill=(t == T_IN[0]), lw=lw)
+        band(ax, B[f'w2_e_{t:g}'], c, '--', f'estimate, $T_{{in}}$ = {t:g} °C', fill=(t == T_IN[0]), lw=lw)
+    ax.set_ylabel('$F$, $\\Delta t \\propto 1/(T_{in}-T)$\n(normalised)')
+    ax.set_ylim(0, 1.1)
+    ax.legend(fontsize=6, loc='lower left')
+    ax.set_xlabel('daily mean temperature (°C)')
+    for ax in axs:
+        ax.axvline(th, color='0.45', lw=.7, ls=(0, (3, 3)))
+    axs[1].annotate('$T_h$', (th, .27), xytext=(3, 0), textcoords='offset points', fontsize=7, color='0.3')
+    for ax, lab in zip(axs, 'abc'):
+        ax.text(-0.24, 1.0, f'({lab})', transform=ax.transAxes, fontsize=8, va='top')
+    fig.tight_layout()
+    path = save_fig(fig, name)
+    plt.close(fig)
+    return path
+
+
+def step1(rebuild=False):
+    """Step 1: curves for every setting, peaks, bin tables, checks and the figure."""
+    D = daily_frames(rebuild)
+    out = {}
+    for N, nh in SETTINGS:
+        C = step1_curves(N, nh, D)
+        out[(N, nh)] = dict(C=C, peaks=step1_peaks(C), bins=step1_bin_table(C))
+    Cb = step1_curves(*PRIMARY, D, use_b=True)
+    out['primary_with_b'] = dict(C=Cb, peaks=step1_peaks(Cb), bins=step1_bin_table(Cb))
+    P = out[PRIMARY]
+    P['checks'] = step1_checks(P['C'], P['peaks'])
+    P['fig'] = fig_flex_temperature(P['C'])
+    return out
+

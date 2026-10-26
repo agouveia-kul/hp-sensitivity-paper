@@ -31,6 +31,7 @@ pd.set_option('display.width', 200)
 
 # control flags: True recomputes the step and overwrites its pickles
 REBUILD_STEP0 = False   # rebuilds the 1260-aggregate design and its hourly flexibility (about 15 s)
+REBUILD_STEP1 = False   # rebuilds the per-aggregate daily SF and hourly flexibility (about 15 s)
 print('repo root:', _root)"""
 
 CELLS = [
@@ -43,6 +44,23 @@ draft against its tolerance."""),
 print('rebuilt design identical to the paper cache:', step0['same_as_paper_cache'])
 checks"""),
     ('code', """step0['context']"""),
+    ('markdown', """## Step 1 — Headroom and flexible energy against temperature
+
+Per aggregate and 1 °C bin of heating-regime days: P_down, P_up and F under W1
+(constant window, per hour of window) and W2 (Δt ∝ 1/(T_in − T), normalised), for
+the estimate and the actual, per kW of true installed capacity. Primary setting
+N = 50, N_hp = 25; repeated at N = 10 and 30, and with the pilot intercept b_h
+added to the estimate (diagnostic only). Expectations are in `FLEX_LOG.md`."""),
+    ('code', """step1 = FT.step1(rebuild=REBUILD_STEP1)
+P = step1[FT.PRIMARY]
+print(P['fig'])
+for k, v in P['checks'].items():
+    print(k, v)
+P['peaks'].round(2)"""),
+    ('code', """P['bins']"""),
+    ('code', """for k in [(30, 15), (10, 5), 'primary_with_b']:
+    print('=====', k)
+    display(step1[k]['peaks'].round(2), step1[k]['bins'])"""),
 ]
 
 
