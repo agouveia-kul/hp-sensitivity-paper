@@ -62,6 +62,23 @@ Definitions, fixed before the run:
 | E2.4 (mine) | The relative spread of the actual is largest near T_h. | At N = 50, the warmest bin has the lowest median r of the actual. |
 | E2.5 (mine) | Even at N = 50 the lower decile sits well below the median. | Actual summary at N = 50 in [0.80, 0.95]. |
 
+### Step 1b (written 2026-10-26, before the run; requested by Alex after Step 3)
+
+Window W3: Δt(T) = Δt_5 · (T_h − 5)/(T_h − T), capped at Δt_max. Δt_5 is the window at 5 °C, and T_h is each aggregate's own net-load threshold, used for estimate and actual alike. A single-capacity building with gains that persist during the event gives this form (see the Step 1b report).
+- Cap. "12 h and 24 h relative to the 5 °C window" is read as a cap ratio r = Δt_max/Δt_5. With the paper's illustrative Δt_5 = 4 h (Fig. 11), 12 h and 24 h give r = 3 and 6. With a 2 h window at 5 °C (the 1–2 h baseline of the cited UK study), they give r = 6 and 12. So r ∈ {3, 6, 12} is run, and the result is reported per r.
+- Quantity: F_W3(T) = F_W1(T) · Δt(T)/Δt_5, i.e. flexible energy relative to a 1 h window at 5 °C, per kW of true installed capacity. Each aggregate's curve is normalised by its value in the bin containing 5 °C. Bins, settings and the peak definition are as in Step 1 (1 °C bins, 5-day merge, N = 50, N_hp = 25 primary).
+- Cap onset: T_c = T_h − (T_h − 5)/r. Above it the window is Δt_max.
+- Closed form for the estimate below T_c: F_W3 ∝ s_h (1 − SF(T)), so relative to 5 °C it is (1 − SF(T))/(1 − SF(5 °C)).
+
+| # | Expectation | Test |
+|---|---|---|
+| E1b.1 | Below the cap onset, the estimate follows the closed form (1 − SF)/(1 − SF(5 °C)). | Median binned curve within ±3% of the closed form (evaluated at the median m_h and T_h) in every bin below T_c − 1 °C. |
+| E1b.2 | The cap sets the estimate's peak. | Median peak over splits within ±1 °C of the median T_c, for r = 3, 6 and 12. |
+| E1b.3 | On the coldest days the estimate is about 0.8 of its 5 °C value. | Coldest bin, median over aggregates, in [0.75, 0.85]. |
+| E1b.4 | On the coldest days the actual is about 0.75 of its 5 °C value. | Coldest bin, median over aggregates, in [0.70, 0.80]. |
+| E1b.5 | For r = 6 and 12, the actual peaks in the warmest bins, above its 5 °C value: the floor near T_h times the long window dominates. | Median peak over splits ≥ 14 °C and peak value > 1.2 × the 5 °C value. |
+| E1b.6 | The window barely changes estimate/actual per bin, since both share the same window on each day. | Per-bin median ratio within ±0.03 of Step 1's W1 ratio in every bin, for every r. |
+
 ---
 
 ## Deviations
