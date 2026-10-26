@@ -326,7 +326,7 @@ Expectations (written before the run; definitions in "Expectations"):
 |---|---|---|
 | F1 up/down headroom in III-C | accept | derived; Step 1 (P_up 1.16–1.23×, P_down 0.99–1.02) |
 | F2 one temperature figure replacing Figs. 10–11 | accept (modify option: replace Fig. 11 only) | Step 1 (ratio 1.17 cold to 0.87–0.92 mild; energy factor carries it) |
-| F3 temperature-dependent window | future work only (revised after Step 1b: modify, a two-sentence III-C remark on the T_h-referenced window plus one IV-F sentence) | Step 1 (plateau; peak moves with T_in; E1.2a/E1.5 not met); Step 1b |
+| F3 temperature-dependent window | minimal: Δt_Th held constant across temperature, window as future work (briefly revised to a T_h remark after Step 1b, then reverted at Alex's decision; see "Decision after Step 1b") | Step 1 (plateau; peak moves with T_in; E1.2a/E1.5 not met); Step 1b |
 | F4 firm flexibility paragraph | modify (haircut, no scaling law, ≤ 70 words) | Step 2 (P10/median 0.85 to 0.87; estimate 0.91; shoulder days) |
 | F5 planning condition | not assessed | Step 2b not run |
 | F6 knock-on edits | accept those triggered; abstract, Fig. 1, Table III and highlights unchanged | derived |
@@ -404,3 +404,16 @@ Expectations (written before the run):
 - T_h is the aggregate's net-load threshold. It equals the buildings' balance temperature only on average, and it is a fitted quantity with its own error (target T_h 16.5 [16.2, 17.0] °C).
 - The comparison with the actual near T_h depends on the weather-independent load, which W3 should not be applied to. The cold side (0.79 against 0.73) does not depend on it.
 - The validation partly checks itself, as in Step 1: the actual uses the same formula with submetered inputs.
+
+### Decision after Step 1b (Alex, 2026-10-26): not carried into the paper
+- **Decision:** F3 is reverted to its minimal version. III-C states that Δt_Th is held constant across temperature, and a temperature-dependent window goes to future work. The T_h remark and its IV-F sentence are dropped from the suggestions, and the length budget returns to about −2 words and −1 figure.
+- **Reason (Alex):** the window variant turns an abstract concept, the thermal window Δt_Th, into a more abstract one.
+  - Δt_Th is already an assumed building-stock parameter.
+  - The 1/(T_h − T) form adds a single-capacity building model with persistent gains, and then a cap on event length, because the form diverges at T_h.
+  - None of these is measured.
+- **Reason (data):** near T_h few HPs run (SF near 0). The curtailable load SF·P^max falls to about 0.06 kW per kW installed for the actual and 0.02 for the estimate (Step 1, panel a), and the constant-window F to about 0.05 per kW (panel b), mostly hot water.
+  - The 1/(T_h − T) window offsets this SF → 0 only by stretching the event to many hours.
+  - Its "constant energy per event" is the heat the building mass can buffer within its comfort band. That is real physically, but these data cannot observe it, and a DSO facing a few-hour peak does not need it.
+- **Further gap found while discussing the caps:** the Step 1b claim that "the cap affects only the last 2–4 °C below T_h" holds only for events of at least three times the coasting time at 5 °C. For few-hour congestion events, the cap would bind over most of the heating range. Caps below r = 3 were not run.
+- **What stays in the paper's frame:** the headrooms of F1, which need no window, and E_flex per hour of window, which states its single assumption openly.
+- **What stays in the log:** the Step 1b code, results and figure (`fig_flex_window_th`) remain as an explored and rejected variant.

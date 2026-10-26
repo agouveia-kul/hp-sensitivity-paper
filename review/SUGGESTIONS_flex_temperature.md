@@ -2,9 +2,9 @@
 
 1. **Finding:** the annual flexibility ratio of 1.04 averages two opposite errors. It is +17% on the coldest days and −8 to −13% at 10–14 °C, and the net-load fit causes both, not the pilot.
 2. **Finding:** the upward headroom carries the capacity error (+16–23%), while the downward headroom needs no pilot. The two never cross on an observed day.
-3. **Window:** with the window referenced to an assumed indoor temperature T_in, F(T) is a plateau whose "peak" moves with T_in. Referenced to the threshold T_h instead (Step 1b), E_flex follows s_h(1 − SF) exactly, and per event it is 0.79 (estimate) and 0.73 (actual) of its 5 °C value on the coldest days. **Negative:** aggregating 5 to 25 HPs raises firm flexibility (P10/median) only from 0.85 to 0.87.
+3. **Negative:** a temperature-dependent window, referenced to T_in (Step 1) or to T_h (Step 1b), gives a shape set by the assumed window rather than by the data. The paper keeps the constant window. Aggregating 5 to 25 HPs raises firm flexibility (P10/median) only from 0.85 to 0.87.
 4. **Does the idea add to the paper?** Yes, in a narrow form. One temperature-axis figure can replace Figs. 10 and 11, showing up/down headroom and the temperature profile of the error. The window and firmness results fit in one sentence or a short paragraph each.
-5. **Overall recommendation:** accept F1 and F2; modify F3 (a two-sentence remark on the T_h-referenced window) and F4; F5 not assessed. Together with F6, the paper loses one figure, and the word count changes by about +30 (within counting error), or about 0 with the lean F3.
+5. **Overall recommendation:** accept F1, F2 and the minimal F3; modify F4; F5 not assessed. Together with F6, the paper loses one figure, and the word count changes by about −2.
 
 Evidence for every number: `FLEX_LOG.md`, Steps 0–2 (branch `explore/flex-temperature`). Draft figures: `figures/flex_temperature/fig_flex_temperature.pdf` (Step 1) and `fig_firm_flex.pdf` (Step 2). Word counts are of the current `paper/content/body.tex`, prose only, ±10%.
 
@@ -49,35 +49,29 @@ Mark each suggestion in its `Alex:` line. Part C starts only for items marked ac
   - (iii) Day-to-day tracking of one out-of-sample aggregate. It is lost; the bands show the spread instead.
   - (iv) The absolute kWh scale. The per-kW axis replaces it; the 144 kW, 4 h example keeps one number in the floor sentence.
   - Nothing in the abstract, conclusion or real-aggregates section cites Fig. 10 or 11 directly (checked with grep).
-- Length effect: −1 figure. Text −316 words (Fig. 11 paragraph 169, the two captions 112, and the two dead-band sentences of the third IV-F paragraph, about 35). New caption about +65 and new paragraph about +100. Net about −150 words. If F3 is accepted, also cut the two sentences splitting the unused-capacity factor ("About three percentage points…", "About four more…", about 35 words), giving about −185.
+- Length effect: −1 figure. Text −316 words (Fig. 11 paragraph 169, the two captions 112, and the two dead-band sentences of the third IV-F paragraph, about 35). New caption about +65 and new paragraph about +100. Net about −150 words.
 - Reviewer risk: "The temperature profile shows the estimate is biased; the annual 1.04 looked better." Answer: the profile is a feature of the net-load fit, shared with the energy estimate, and it is stated rather than hidden. A DSO valuing cold-day flexibility needs exactly this. Second risk: "Why only N = 50?" Answer: the other N give the same profile (Step 1), and one sentence says so.
 - Recommendation: accept — the paper loses a figure and gains the error profile and the up/down split, while the annual numbers survive as text. (Modify option: if you want to keep the full 1260-aggregate distribution, keep Fig. 10 and replace only Fig. 11; net then about −60 words and no figure saved.)
 - Alex: [ accept | modify | reject ]
 
-### F3 — Temperature-dependent window, referenced to the threshold T_h *(revised after Step 1b)*
-- What: in III-C, add a short derived remark. If the window is the time a building coasts on its gains, Δt_Th scales with 1/(T_h − T) and eq. (13) becomes proportional to s_h(1 − SF(T)). Report one cold-day number in IV-F. The 1/(T_in − T) form stays out of the paper.
+### F3 — Temperature-dependent window *(reverted to the minimal version after Step 1b, at Alex's decision)*
+- What: add no temperature-dependent window to the method or results. State in III-C that Δt_Th is held constant across temperature, and list a temperature-dependent window under future work.
 - Where:
-  - III-C, after "Since $E_{\mathrm{flex}}$ is linear in $\Delta t_{Th}$, Section~\ref{sec:res-flex} reports it per hour of window, or as ratios in which the window cancels." Two sentences.
-  - IV-F, inside the new figure's paragraph (F2). One sentence.
-  - Conclusion, future work: one sentence on calibrating the window, and on participation, against recorded flexibility events. It is shared with F4 and is F6 item 7.
+  - III-C, the sentence "Building-stock insulation and indoor-comfort data are lacking, so $\Delta t_{Th}$ enters as an exogenous parameter of the building stock, not as an output of the fits." Append a short clause such as "and is held constant across temperatures".
+  - Conclusion, future work: one sentence, shared with F4's participation item (F6 item 7).
 - Content:
-  - Derivation, in one sentence. A building with gains needs heat UA(T_h − T), where T_h is its balance temperature. With heating off, it cools at that rate over its heat capacity, so it can stay within a comfort band for a time proportional to 1/(T_h − T).
-  - Consequence: E_flex = SF(1 − SF)·P̂^max·Δt_Th ∝ s_h(1 − SF(T)), since m_h·P̂^max = s_h. The shiftable thermal energy per event is the same at every temperature, and only the headroom 1 − SF limits it. Per event, flexibility is then largest on mild heating days and falls by about a fifth from 5 °C to the coldest days. This reverses the constant-window reading, and the data cannot tell the two apart.
-  - Near T_h the window grows without bound, so it must be capped at the event length the DSO considers. The cap affects only the last 2–4 °C below T_h (onsets at 12.7, 14.6 and 15.6 °C for caps of 3, 6 and 12 times the 5 °C window), which hold about 6% of the heating-regime flexible energy.
-  - Result for IV-F: on the coldest days, the estimated flexibility per event is 0.79 of its value at 5 °C, against 0.73 for the actual, whatever the cap. Estimate/actual per bin is unchanged from the constant window (within 0.01), since both share the window on each day.
-  - Not for the paper: near T_h with long caps, the actual rises to 1.8–3.3 times its 5 °C value. That comes from its weather-independent floor (most plausibly hot water) multiplied by a long window, which is the same mechanism as the spike under 1/(T_in − T). A building's coasting time does not govern that load.
-  - Why T_h and not T_in. T_h comes from the target's own net-load fit, so no unsourced constant is needed. The coasting constant (heat capacity × comfort band / UA) cancels in any normalised statement. The 1/(T_in − T) form ignores gains and depends on an assumed T_in: its "peak" moved by 1–2.5 °C between 20 and 21 °C (Step 1).
-  - Notation: no new symbol is needed. The remark uses Δt_Th, s_h, SF and T_h, and the proportionality avoids naming the coasting constant.
-  - Sample: "If the window is the time a building coasts on its internal gains, $\Delta t_{Th}$ scales with $1/(T_h - T)$, and \eqref{eq:flex-energy} becomes proportional to $s_h\,(1-\hat{\mathrm{SF}}(T))$."
+  - Δt_Th is already an assumed building-stock parameter. Making it depend on temperature stacks further unmeasured assumptions on it: a building model, a reference temperature (T_in or T_h), and, for T_h, a cap on the event length.
+  - Near T_h few HPs run (SF near 0). The curtailable load SF·P^max falls to about 0.06 kW per kW installed for the actual and 0.02 for the estimate, and the constant-window F to about 0.05 per kW. Both window variants tried (Step 1, Step 1b) offset this only by stretching the window to many hours, so their results rest on the assumed window rather than on the data.
+  - The measured quantities a DSO needs at a given hour are the headrooms of F1, which need no window. The paper's E_flex per hour of window already states its single assumption openly.
+  - Future work: calibrate a temperature-dependent window, and test participation, against recorded flexibility events, which the datasets do not contain.
+  - Sample: "The window $\Delta t_{Th}$ is held constant across temperatures, since no recorded flexibility events are available to calibrate how it changes with the weather."
 - Evidence:
-  - Step 1b: closed form matched within 0.2%; cold-day values 0.79 and 0.73 independent of the cap; ratio unchanged within 0.01; E1b.1 and E1b.3–6 met, E1b.2 met at r = 3 and missed at bin resolution for r = 6 and 12.
-  - Step 1 for the rejected 1/(T_in − T) form.
-  - The single-capacity derivation is first principles. A building-physics source would strengthen it (needs Alex; none cited here).
-- Length effect: III-C +45 words, IV-F +30, conclusion +20 (F6 item 7). No figure: `fig_flex_window_th.pdf` stays in the log. Net +95. Compensation: under F2, also cut the two IV-F sentences that split the unused-capacity factor into pilot and daily-resolution parts ("About three percentage points…", "About four more…", about 35 words). The new bin factors replace them.
-- Reviewer risk:
-  - "This assumes gains persist during the event and a single thermal capacity." Answer: the remark says so, labels it an alternative reading of Δt_Th, and states its main use as the cold-side number. That number does not depend on the cap.
-  - "Which window is right?" Answer: the data hold no flexibility events. The paper states both readings and reports E_flex per hour of window, so either can be applied.
-- Recommendation: modify (method remark plus one result sentence; replaces the earlier "future work only"). The T_h form needs no unsourced constant and has an exact closed form, so it earns two sentences in III-C. The 1/(T_in − T) form stays out. Lean variant, if the length budget must be strictly met: the III-C remark only (+45), dropping the IV-F sentence.
+  - Step 1: under 1/(T_in − T), F is a plateau whose "peak" moves by 1–2.5 °C with T_in (E1.2a and E1.5 not met).
+  - Step 1b: under 1/(T_h − T), the shape is set by the cap onset; near T_h the actual's floor times a long window dominates.
+  - Both are logged and not carried into the paper.
+- Length effect: III-C +5 words (or about +25 with the sample sentence in place of the clause); conclusion +25 words (F6 item 7). No figure.
+- Reviewer risk: "The window surely shrinks in cold weather; why ignore it?" Answer: the clause acknowledges it, and the paper reports E_flex per hour of window, so any window model can be applied to its curve. The data hold no flexibility events to calibrate one.
+- Recommendation: accept the minimal version — any temperature-dependent window adds assumptions the data cannot test, and near T_h there is little load to shift anyway.
 - Alex: [ accept | modify | reject ]
 
 ### F4 — Firm flexibility paragraph in the Discussion, linked to Fig. 9
@@ -125,7 +119,7 @@ Mark each suggestion in its `Alex:` line. Part C starts only for items marked ac
   7. **Conclusion, future work** ("Four directions follow for future work."), if F3 or F4.
      - Add one sentence on a temperature-dependent window and on participation, calibrated on recorded flexibility events.
      - Change "Four" to "Five", or merge the sentence into the first direction (more diverse metered HPs).
-     - +20 words, counted under F3.
+     - +25 words, counted under F3.
   8. **Nomenclature:** no new entries (F1 adds no symbol).
   9. **Real aggregates, VI-A** (`body.tex:489`): no change. Its "follows the energy ratios" agrees with the energy-factor finding of F2.
   10. **Cross-references:** if F2, the two references (`body.tex:457` to `fig:flex-ratio`, `body.tex:475` to `fig:flex-season`) point to the new label. Grep finds no other reference to either label, and no figure follows them, so no other figure number shifts.
@@ -142,16 +136,14 @@ Mark each suggestion in its `Alex:` line. Part C starts only for items marked ac
 | Suggestion | Words | Figures |
 |---|---|---|
 | F1 | +50 | 0 |
-| F2 (with the F3 compensation cut) | −185 | −1 (two removed, one added) |
-| F3 (III-C remark, IV-F sentence, future-work sentence) | +95 | 0 |
+| F2 | −150 | −1 (two removed, one added) |
+| F3 (III-C clause, future-work sentence) | +30 | 0 |
 | F4 (≤ 55 words) | +55 | 0 |
 | F6 (items 1, 6) | +13 | 0 |
-| **Total** | **≈ +28 (within the ±10% counting error on the ~1300 words affected)** | **−1** |
+| **Total** | **≈ −2** | **−1** |
 
-The net word change is within the counting error, and one single-column figure leaves, so the paper gets shorter on the page. To make the text strictly no longer, take the lean F3 (the III-C remark only, dropping its IV-F sentence, −30). That brings the total to about −2 words.
+The text is no longer than now, and one single-column figure leaves, so the paper gets shorter on the page. Word counts carry about ±10% error, so the text change is best read as neutral. The figure is the firm saving.
 
 ## Open items that need Alex
-- T_in and building time constants: no verified source. The revised F3 needs neither: T_h comes from the net-load fit, and the coasting constant cancels.
-- A building-physics source for the single-capacity derivation in F3 (optional; the derivation is first principles).
-- The window cap is an event length the DSO chooses. F3 states only results that do not depend on it.
+- T_in and building time constants: no verified source. The minimal F3 needs neither.
 - The bending of the HP load with temperature near T_h (F2 mechanism) and the seasonal heating switch-off (F4) are readings of the data, not tested. Both are hedged in the content bullets.
