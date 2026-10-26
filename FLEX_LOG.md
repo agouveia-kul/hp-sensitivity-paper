@@ -463,3 +463,12 @@ Marks (Alex, 2026-10-26): F1 accept, F2 accept, F3 accept (minimal), F4 modify (
 ### Length pass (after F6)
 - Trimmed only text added in Part C: the N = 10/30 sentence of the new IV-F paragraph (dropped), the headroom sentences, the "colder days set the annual ratio" clause, the caption's line legend and uncounted-days phrase, the F1 clause ("the curtailable load"), and the F3 future-work sentence.
 - Result: 8686 words (baseline 8695, −9), 16 pages (baseline 16), one figure fewer (two removed, one added). Page 16 holds only the last reference. Regaining 15 pages would need a further cut of unapproved text, e.g. the IV-F sentence "Computed from the daily mean SF instead … 1.01", which overlaps the factor split of the previous paragraph. Not made.
+
+### Part C — final checks
+- **Length:** 8686 words against 8695 before (`scripts/tex_wordcount.py`, abstract unchanged at 250). Elsevier build 16 pages against 16; IEEE build 12 pages against 13. Figures: two removed (flex ratio, flex season), one added (`fig:flex-temperature`).
+- **Numbers:** every number in the lines added to `body.tex` since 1700861 appears in this log (checked by script; 0 missing). The claims were also checked by hand against Steps 0–2.
+- **References:** Elsevier and IEEE builds have 0 undefined references and 0 errors. `fig:flex-ratio` and `fig:flex-season` are no longer referenced anywhere.
+- **Consistency:** the abstract ("flexibility potential at a WAPE of 10%") and the highlights are unchanged and agree with IV-F. Contribution 3 now says "a flexibility potential against temperature, whose upward headroom also uses the SF sensitivity" (III-C, F1). The conclusion says "at a WAPE of 10%, overestimated by 17% on the coldest days" (IV-F, F2). Future work has five directions (F3).
+- **Style:** new sentences ≤ 40 words; British spelling; no Oxford comma; spaced en dashes as in the rest of the text.
+- **Diff PDF:** `review/hp_sensitivity_diff_flex_temperature.pdf`, latexdiff of `paper/` at 1700861 (before this task) against the current text, Elsevier build. It was built in scratch copies with `\chg{}` stripped and autotables as plain floats, as in the earlier diff (`REVISION_LOG.md`). Deleted text still points to the two removed figure labels, so it shows "??"; that is expected.
+- **Not done (follow-up):** `paper_results.ipynb` still holds the stored outputs of the old `flex_figures` step. Its registry entry in `scripts/replication.py` now points to `flex_temperature_figure`, but the notebook was not re-run.
