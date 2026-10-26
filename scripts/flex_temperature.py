@@ -476,6 +476,60 @@ def fig_flex_temperature(C, name='fig_flex_temperature'):
     return path
 
 
+def fig_flex_temperature_paper(C=None, name='fig_flex_temperature'):
+    """Paper figure (Sec. IV-F, F2): panels (a) and (b) of the Step 1 draft.
+
+    (a) upward and downward headroom, (b) flexible energy per hour of window,
+    both per kW of true installed capacity, estimate against actual, median and
+    IQR across the N = 50, N_hp = 25 aggregates. Saved with ``hp_figures.save``
+    (``paper/figures`` unless HP_FIGDIR is set).
+    """
+    import matplotlib.pyplot as plt
+    from matplotlib.lines import Line2D
+    import hp_figures as hf
+    C = step1_curves(*PRIMARY) if C is None else C
+    hf.use_style()
+    B, x = C['B'], C['x']
+    th = float(np.median(C['g'].T_h))
+    fig, axs = plt.subplots(2, 1, figsize=(hf.COL1, 3.9), sharex=True)
+
+    def band(ax, M, color, ls, label=None, xx=x, fill=True, lw=1.3):
+        med = np.nanmedian(M, 0); ok = np.isfinite(med)
+        if fill:
+            ax.fill_between(xx[ok], np.nanquantile(M, .25, 0)[ok], np.nanquantile(M, .75, 0)[ok], color=color,
+                            alpha=.20 if ls == '-' else .12, lw=0)
+        ax.plot(xx[ok], med[ok], color=color, ls=ls, lw=lw, label=label)
+
+    ax = axs[0]
+    band(ax, B['pup_a'], C_UP, '-'); band(ax, B['pup_e'], C_UP, '--')
+    band(ax, B['pdown_a'], C_DOWN, '-'); band(ax, B['pdown_e'], C_DOWN, '--')
+    ax.text(-4, 1.07, 'upward, $(1-\\mathrm{SF})\\,P^{\\max}$', color=C_UP, fontsize=6.5)
+    ax.text(-4, 0.47, 'downward, $P_{\\mathrm{TCL}}$', color=C_DOWN, fontsize=6.5)
+    ax.legend([Line2D([], [], color='0.3', ls='-'), Line2D([], [], color='0.3', ls='--')],
+              ['actual', 'estimate'], fontsize=6.5, loc='center right')
+    ax.set_ylabel('headroom / $P^{\\max}$')
+    ax.set_ylim(0, 1.25)
+
+    ax = axs[1]
+    band(ax, B['f_a'], '0.25', '-', 'actual')
+    band(ax, B['f_e'], hf.C_HP, '--', 'estimate')
+    band(ax, C['floor'], '0.55', ':', 'actual, $T \\geq T_h$ (not counted)', xx=C['x_floor'], fill=False, lw=1.1)
+    ax.axhline(.25, color='0.6', lw=.6, ls=(0, (1, 2)))
+    ax.set_ylabel('$E_{\\mathrm{flex}} / (\\Delta t_{Th}\\,P^{\\max})$')
+    ax.set_ylim(0, .3)
+    ax.legend(fontsize=6.5, loc='lower left')
+    ax.set_xlabel('daily mean temperature ($^\\circ$C)')
+    for ax in axs:
+        ax.axvline(th, color='0.45', lw=.7, ls=(0, (3, 3)))
+    axs[1].annotate('$T_h$', (th, .27), xytext=(3, 0), textcoords='offset points', fontsize=7, color='0.3')
+    for ax, lab in zip(axs, 'ab'):
+        ax.text(-0.2, 1.05, f'({lab})', transform=ax.transAxes, fontsize=8, va='top')
+    fig.tight_layout()
+    path = hf.save(fig, name)
+    plt.close(fig)
+    return path
+
+
 def step1(rebuild=False):
     """Step 1: curves for every setting, peaks, bin tables, checks and the figure."""
     D = daily_frames(rebuild)

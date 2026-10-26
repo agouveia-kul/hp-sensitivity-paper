@@ -1045,6 +1045,15 @@ def flex_figures():
     print('saved -> fig_flex_ratio, fig_flex_season')
 
 
+def flex_temperature_figure():
+    """fig_flex_temperature: upward/downward headroom and flexible energy against
+    temperature, estimate against actual (N = 50, N_hp = 25). Replaces
+    fig_flex_ratio and fig_flex_season in Sec. IV-F; the bins and checks are in
+    ``flex_temperature`` (Step 1 of FLEX_LOG.md)."""
+    import flex_temperature as FT
+    print('saved ->', FT.fig_flex_temperature_paper())
+
+
 KLOTEN_QUALITY = 'data/_kloten_quality.pkl'
 QUALITY_RES = (('1 h', '1h'), ('4 h', '4h'), ('8 h', '8h'), ('16 h', '16h'), ('24 h', '24h'))
 

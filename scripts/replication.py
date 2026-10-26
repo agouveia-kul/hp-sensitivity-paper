@@ -367,7 +367,7 @@ STEPS = {s.key: s for s in [
     Step('tab_sf', 'Table III, Fig. 7', ['tab_sf', 'fig_sf_pilot'], SWISS, _o('tab_sf'), '<1'),
     Step('fig_capacity_heatmap', 'Fig. 8', ['fig_capacity_heatmap'], SWISS, _o('fig_capacity_heatmap'), '<1'),
     Step('tab_baselines', 'Table IV', ['tab_baselines'], SWISS, _o('tab_baselines'), '<1'),
-    Step('flex_figures', 'Figs. 9-10', ['fig_flex_ratio', 'fig_flex_season'], SWISS, _o('flex_figures'), '1 / 5'),
+    Step('flex_temperature_figure', 'Fig. 7', ['fig_flex_temperature'], SWISS, _o('flex_temperature_figure'), '<1 / 5'),
     Step('tab_real', 'Table V', ['tab_real'], SWISS + ['wpuq'], _o('tab_real'), '2 / 5'),
     Step('tab_transfer', 'Table VI', ['tab_transfer'],
          SWISS + ['wpuq', 'cofactor', 'rhpp', 'hadcet', 'bpa', 'nrel'], _o('tab_transfer'), '10 / 30'),

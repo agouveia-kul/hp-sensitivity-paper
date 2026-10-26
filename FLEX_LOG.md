@@ -430,3 +430,13 @@ Marks (Alex, 2026-10-26): F1 accept, F2 accept, F3 accept (minimal), F4 modify (
 - Upward headroom = unused capacity $(1-\hat{\mathrm{SF}})\hat{P}^{\max}$; inherits the capacity error.
 - Equal only at SF = 0.5. The observation that no observed day reaches it goes to IV-F (F2).
 - No new symbol.
+
+### F2 — content bullets
+- New figure `paper/figures/fig_flex_temperature.pdf` (label `fig:flex-temperature`; Fig. 7 in the Elsevier build). Panels (a) headroom and (b) E_flex/(Δt_Th P^max), per kW of true capacity; N = 50, N_hp = 25, 60 aggregates; median and IQR. Generator: `outputs.flex_temperature_figure()` → `flex_temperature.fig_flex_temperature_paper()`; `replication.py` entry `flex_figures` replaced by `flex_temperature_figure`.
+- Caption carries the validation caveat (the actual applies eq. 13 to submetered inputs).
+- Removed: Figs. `fig:flex-ratio` and `fig:flex-season`, their captions, and the Fig. 11 paragraph. The absolute totals (5.2/4.7 MWh, 19 kWh/day, 144 kW) go; the 1.04 ratio carries the comparison.
+- Kept: the 1.04 [0.97, 1.17] and WAPE 10% sentence (now without the figure pointer), the factor split, the 0.96 correlation, the daily-mean 1.01, the 9% floor, and the coldest-day WAPE 21% and R² 0.73.
+- New paragraph: +17% coldest, −8 to −13% at 10–14 °C, two opposite errors; energy factor carries the profile, unused-capacity factor flat; fitted arm zero at T_h, HP load still 0.05–0.06 kW per kW at 14–16 °C, hedged mechanism; days above 13 °C hold 6%; downward headroom within 2% (−2 to 7 °C), upward +16–23%; SF never reaches 0.5; N = 10 and 30 show the same profile, with wider spread at 10.
+- Calendar clause kept: the dead-band days are a third of the year (246 of 365 heating days in the Step 0 split).
+- **Beyond the listed F2 content (flag for Alex):** to keep the paper no longer, two sentences of the first IV-F paragraph were cut. They repeat III-C and the dead-band sentence: "This annual sum is the volume of heating energy that could be shifted over a year, which a DSO or aggregator needs to value a flexibility product." and "The estimate therefore covers only temperature-driven flexibility; weather-independent use that could also be shifted, such as hot-water heating, falls outside it." The two dead-band sentences of the third paragraph are merged into one.
+- Words after F2: 8633 (baseline 8695). Pages: 15 (baseline 16).
