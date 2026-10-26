@@ -445,3 +445,11 @@ Marks (Alex, 2026-10-26): F1 accept, F2 accept, F3 accept (minimal), F4 modify (
 - III-C: Δt_Th is an exogenous building-stock parameter, held constant across temperatures (clause added to the existing sentence).
 - Conclusion, future work: recorded flexibility events would let Δt_Th be calibrated against temperature, and the TCLs' response to a call (participation) be measured. "Four directions" becomes "Five directions". This sentence also carries F4's participation point (F6 item 7).
 - No temperature-dependent window, no new symbol, no number.
+
+### F4 — content bullets (modified: ≤ 55 words, haircut without scaling law)
+- VI-B, after the non-TCL paragraph.
+- On 9 days in 10, the measured flexibility at a given temperature stays above 85% of its median with 5 HPs and 87% with 25 (P10/median 0.852 at N = 10 and 0.873 at N = 50, Step 2).
+- Unlike the fit quality of the aggregation figure (Fig. 5 in this build, the prompt's Fig. 9), this spread barely shrinks with aggregation. No scaling law.
+- The estimate carries only the median (its own P10/median of 0.91 reflects temperature within a bin only).
+- Not participation: no flexibility events were recorded. The future-work sentence of F3 names it as future work.
+- Left out for length: the shoulder-season days and the firm-over-promised ratio (0.81–0.87). Both stay in Step 2.
