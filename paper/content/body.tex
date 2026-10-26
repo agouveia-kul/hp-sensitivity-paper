@@ -431,14 +431,7 @@ More HPs behind the meter do not shift these values but tighten them, as the int
 
 \input{tables/tab_sf}
 
-Only the pilot's SF sensitivity transfers to the target aggregates. Fig.~\ref{fig:sf-pilot} shows the pilot of one split. At the pilot's own net-load threshold, its SF fit gives $\hat{\mathrm{SF}}_h(T) = 0.021 + 0.019\,(16.6 - T)$ for $T<16.6\,^\circ$C, at an $R^2_h$ of 0.94. Across the twenty splits, the pilot's SF sensitivity $m_h$ has a median of $0.018\,^\circ$C$^{-1}$ and an interquartile range of 0.017--0.019. This sensitivity is the only parameter that \eqref{eq:capacity} and the flexibility estimate transfer to a target.
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=\figw]{figures/fig_sf_pilot.pdf}
-\caption{SF fit to the aggregated pilot half of the Kloten HPs in one random split (grey), at an $R^2_h$ of 0.94. Its sensitivity $m_h$ is the parameter transferred to the target aggregates.}
-\label{fig:sf-pilot}
-\end{figure}
+Only the pilot's SF sensitivity transfers to the target aggregates. In one split, the pilot's SF fit at its own net-load threshold gives $\hat{\mathrm{SF}}_h(T) = 0.021 + 0.019\,(16.6 - T)$ for $T<16.6\,^\circ$C, at an $R^2_h$ of 0.94. Across the twenty splits, the pilot's SF sensitivity $m_h$ has a median of $0.018\,^\circ$C$^{-1}$ and an interquartile range of 0.017--0.019. This sensitivity is the only parameter that \eqref{eq:capacity} and the flexibility estimate transfer to a target.
 
 A direct test sets the pilot against the whole target half, over 120 random splits. Placed at the target half's net-load threshold, the pilot's SF curve reproduces the SF of that half at a median $R^2_h$ of 0.91, with an interquartile range of 0.85--0.94. The pilot's SF sensitivity also recovers the capacity of the target half through \eqref{eq:capacity}. The median error is $+8\%$, with an interquartile range from $0$ to $+18\%$.
 
