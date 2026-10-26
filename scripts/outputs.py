@@ -753,7 +753,7 @@ def fig_slope_capacity():
     slope0 = np.sum(x * y) / np.sum(x * x); r = np.corrcoef(x, y)[0, 1]
     print(f'n={len(G)} Pearson r={r:.3f} through-origin slope={slope0:.4f}')
     hf.use_style()
-    fig, ax = plt.subplots(figsize=(hf.COL1, 3.0))
+    fig, ax = plt.subplots(figsize=(hf.COL1, 2.3))
     sc = ax.scatter(x, y, c=G.N_hp, s=9, cmap='viridis', alpha=.7, edgecolor='none')
     xl = np.array([0, x.max() * 1.02])
     ax.plot(xl, slope0 * xl, color=hf.C_HP, lw=1.4,
@@ -1009,7 +1009,7 @@ def flex_figures():
           f'dead-band share of actual {np.median(1 - Fh.act_h / Fh.act_h_all) * 100:.0f}%; '
           f'coldest-day WAPE {_wape(G.cold_est, Fh.cold_h):.1f}% R2 {U.metrics(Fh.cold_h, G.cold_est)[1]:.3f}')
     hf.use_style()
-    fig, ax = plt.subplots(figsize=(hf.COL1, 2.7))
+    fig, ax = plt.subplots(figsize=(hf.COL1, 2.2))
     ax.hist(ratio.clip(0, 2.5), bins=40, color=hf.C_CH, alpha=.8, edgecolor='none')
     ax.axvline(1, color='0.4', lw=0.8, ls=(0, (3, 3)))
     ax.axvline(ratio.median(), color=hf.C_HP, lw=1.6, label=f'median {ratio.median():.2f}')
@@ -1031,13 +1031,13 @@ def flex_figures():
           f"actual floor median {np.median(fa[warm]) * DT:.0f} kWh vs max {fa.max() * DT:.0f}; est max {fe.max() * DT:.0f}; "
           f"ceiling {0.25 * cap * DT:.0f} kWh")
     days = pd.date_range('2023-01-01', periods=len(T), freq='D')
-    fig, ax = plt.subplots(figsize=(hf.COL1, 2.7))
+    fig, ax = plt.subplots(figsize=(hf.COL1, 2.3))
     # only R1 days count; days at or above T_h are shaded and left out
     ax.fill_between(days, 0, 1, where=warm, transform=ax.get_xaxis_transform(), color='0.5', alpha=.12, lw=0,
                     label='$T \\geq T_h$ (not counted)')
     ax.plot(days, np.where(warm, np.nan, fa * DT), color='0.5', lw=0.9, label='actual')
     ax.plot(days, np.where(warm, np.nan, fe * DT), color=hf.C_HP, lw=1.0, label='estimated')
-    ax.set(xlabel='month', ylabel=f'daily flexible energy (kWh), $\\Delta t = {DT}$ h')
+    ax.set(xlabel='month', ylabel='daily flexible energy (kWh)')   # the window DT is given in the caption
     ax.xaxis.set_major_locator(mdates.MonthLocator((1, 4, 7, 10)))
     ax.xaxis.set_major_formatter(mdates.DateFormatter('%b'))
     ax.legend(fontsize=7, loc='upper center')
@@ -1195,7 +1195,7 @@ def fig_flex_schedule():
     hf.use_style()
     Pmax, base, af = 1.0, 0.4, 0.4
     RED, BLU = hf.C_HP, hf.C_CH
-    fig, ax = plt.subplots(figsize=(hf.COL1 + 0.9, 3.3))
+    fig, ax = plt.subplots(figsize=(hf.COL1 + 0.9, 2.7))
 
     ax.axhline(Pmax, color='0.6', lw=0.8, zorder=1)
     ax.axhline(base, color='0.35', lw=0.9, ls=(0, (4, 2)), zorder=2)
