@@ -453,3 +453,9 @@ Marks (Alex, 2026-10-26): F1 accept, F2 accept, F3 accept (minimal), F4 modify (
 - The estimate carries only the median (its own P10/median of 0.91 reflects temperature within a bin only).
 - Not participation: no flexibility events were recorded. The future-work sentence of F3 names it as future work.
 - Left out for length: the shoulder-season days and the firm-over-promised ratio (0.81–0.87). Both stay in Step 2.
+
+### F6 — content bullets (items 1, 6, 7)
+- Item 1, contribution 3 (Sec. I): "…and of a flexibility potential against temperature, whose upward headroom also uses the SF sensitivity."
+- Item 6, conclusion summary: "…a flexibility potential at a WAPE of 10%, overestimated by 17% on the coldest days." Deviation from the suggestion's wording: "by up to 17%" became "by 17%", since 17% is the median of the coldest bin, not its maximum (IQR [1.07, 1.22]).
+- Item 7: done under F3 ("Five directions"; the flexibility-events sentence).
+- Unchanged, as recommended: abstract (250 words, WAPE 10% still correct), Fig. 1 labels, Table III, highlights, nomenclature, VI-A.
