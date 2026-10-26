@@ -232,17 +232,18 @@ def daily_frames(rebuild=False):
     return _cached('step1_daily', build, rebuild)
 
 
-def temperature_bins(T, min_days=MIN_DAYS):
-    """1 degC bins of daily mean temperature; a bin with fewer than ``min_days``
-    days is merged into its neighbour towards the centre of the range.
+def temperature_bins(T, min_days=MIN_DAYS, width=1):
+    """``width`` degC bins of daily mean temperature; a bin with fewer than
+    ``min_days`` days is merged into its neighbour towards the centre of the range.
 
     Returns (edges, merged) with ``merged`` the list of bins (lo, hi, days) that
     were merged away.
     """
     T = np.asarray(T)
-    edges = list(np.arange(np.floor(T.min()), np.ceil(T.max()) + 1))
+    lo = np.floor(T.min())
+    edges = list(np.arange(lo, np.ceil(T.max()) + width, width))
     if len(edges) < 2:
-        edges.append(edges[0] + 1)
+        edges.append(edges[0] + width)
     merged = []
     while True:
         n = np.histogram(T, edges)[0]
@@ -488,4 +489,165 @@ def step1(rebuild=False):
     P['checks'] = step1_checks(P['C'], P['peaks'])
     P['fig'] = fig_flex_temperature(P['C'])
     return out
+
+
+# ===========================================================================
+# Step 2 -- firm flexibility and aggregation
+# ===========================================================================
+FIRM_Q = 0.10                  # lower quantile across days: "firm" flexibility
+FIRM_MIN_DAYS = 10             # a bin needs this many days (Alex, Step 1 decision 1)
+FIRM_WIDTH = 2                 # bin width (degC)
+
+
+def step2_rows(D=None):
+    """Long frame, one row per aggregate and 2 degC bin of its heating days.
+
+    For F under W1 per kW of true capacity, the P10 and median across days of the
+    actual (hourly reference) and of the estimate, their ratios r = P10/median,
+    and P10(actual)/median(estimate) ("firm over promised"). N in N_GRID_K at
+    50% penetration.
+    """
+    Dz, _ = rebuild_design()
+    D = daily_frames() if D is None else D
+    G = Dz['rows']; T = D['T']
+    rows = []
+    for N in O.N_GRID_K:
+        sel = np.flatnonzero(((G.N == N) & (G.N_hp == N // 2)).to_numpy())
+        g = G.iloc[sel]
+        th_max = g.T_h.max()
+        edges, _ = temperature_bins(T[T < th_max], FIRM_MIN_DAYS, FIRM_WIDTH)
+        idx = np.clip(np.digitize(T, edges) - 1, 0, len(edges) - 2)
+        for j, r in zip(sel, g.itertuples()):
+            sf_e = O.sf_target(T, r.T_h, r.m_pilot)
+            f_e = sf_e * (1 - sf_e) * r.cap_est / r.cap
+            f_a = D['fa_h'][j].astype(float) / r.cap
+            for b in range(len(edges) - 1):
+                m = (T < r.T_h) & (idx == b) & (T >= edges[0])
+                if m.sum() < FIRM_MIN_DAYS:
+                    continue
+                pa, ma = np.quantile(f_a[m], FIRM_Q), np.median(f_a[m])
+                pe, me = np.quantile(f_e[m], FIRM_Q), np.median(f_e[m])
+                rows.append(dict(N=N, N_hp=N // 2, split=r.split, row=j, bin=b,
+                                 lo=edges[b], hi=edges[b + 1], x=float(T[m].mean()), days=int(m.sum()),
+                                 med_a=ma, p10_a=pa, med_e=me, p10_e=pe,
+                                 r_a=pa / ma, r_e=pe / me, firm_promised=pa / me))
+    return pd.DataFrame(rows)
+
+
+def _split_summary(L, col):
+    """Per aggregate the median over its bins, then the median within each split;
+    returns median, q25, q75 over the 20 splits for every N."""
+    s = L.groupby(['N', 'split', 'row'])[col].median().groupby(['N', 'split']).median()
+    return s.groupby('N').agg(med='median', q25=lambda v: v.quantile(.25), q75=lambda v: v.quantile(.75))
+
+
+def step2_summary(L):
+    """P10/median (actual, estimate) and firm over promised against N, with the
+    daily-resolution fit quality of Fig. 9 from the paper's cache."""
+    out = pd.concat({c: _split_summary(L, c) for c in ('r_a', 'r_e', 'firm_promised')}, axis=1)
+    Q = pd.read_pickle(O.KLOTEN_QUALITY)
+    q = Q[Q.resolution == '24 h'].groupby('N')[['r2_net', 'r2_sf']].median()
+    out[('fig9', 'r2_net')] = q.r2_net.reindex(out.index)
+    out[('fig9', 'r2_sf')] = q.r2_sf.reindex(out.index)
+    return out
+
+
+def step2_bins(L):
+    """Median across aggregates of r (actual, estimate) and firm over promised, per bin and N."""
+    lab = L.apply(lambda r: f'[{r.lo:.0f}, {r.hi:.0f})', axis=1)
+    t = L.assign(bin_label=lab).groupby(['N', 'lo', 'bin_label'])[['days', 'r_a', 'r_e', 'firm_promised']].median()
+    return t.reset_index(level='lo', drop=True)
+
+
+def step2_checks(S, L):
+    """E2.1-E2.5 of FLEX_LOG.md."""
+    a, e = S[('r_a', 'med')], S[('r_e', 'med')]
+    res = {'E2.1': (bool((a.diff().dropna() >= -0.01).all() and a.iloc[-1] > a.iloc[0]), a.round(3).tolist()),
+           'E2.2': (bool(e.max() - e.min() <= 0.02), e.round(3).tolist()),
+           'E2.3': (bool((e > a).all()), (e - a).round(3).tolist())}
+    b50 = L[L.N == 50].groupby('bin')['r_a'].median()
+    res['E2.4'] = (bool(b50.idxmin() == b50.index.max()), b50.round(3).tolist())
+    res['E2.5'] = (bool(0.80 <= a.loc[50] <= 0.95), round(float(a.loc[50]), 3))
+    return res
+
+
+def fig_firm(S, L, name='fig_firm_flex'):
+    """Draft figure: (a) P10/median against N, actual vs estimate, with firm over
+    promised; (b) actual P10/median by temperature bin for N = 10, 30, 50."""
+    import matplotlib.pyplot as plt
+    import hp_figures as hf
+    hf.use_style()
+    fig, axs = plt.subplots(2, 1, figsize=(hf.COL1, 4.0))
+    ax = axs[0]
+    n = S.index.to_numpy()
+    for col, c, ls, mk, lab in (('r_a', '0.25', '-', 'o', 'actual'), ('r_e', hf.C_HP, '--', 's', 'estimate'),
+                                ('firm_promised', C_UP, ':', '^', 'P10 actual / median estimate')):
+        ax.fill_between(n, S[(col, 'q25')], S[(col, 'q75')], color=c, alpha=.15, lw=0)
+        ax.plot(n, S[(col, 'med')], color=c, ls=ls, marker=mk, label=lab)
+    ax.set_xlabel('households per aggregate $N$ (50% with an HP)')
+    ax.set_ylabel('P10 / median of daily $F$')
+    ax.set_xticks(n)
+    ax.legend(fontsize=6, loc='lower right')
+
+    ax = axs[1]
+    for N, c in zip((10, 30, 50), ('#9ecae1', '#4292c6', '#08306b')):
+        t = L[L.N == N].groupby('bin').agg(x=('x', 'median'), r=('r_a', 'median'))
+        ax.plot(t.x, t.r, color=c, marker='o', label=f'actual, $N$ = {N}')
+    t = L[L.N == 50].groupby('bin').agg(x=('x', 'median'), r=('r_e', 'median'))
+    ax.plot(t.x, t.r, color=hf.C_HP, ls='--', marker='s', label='estimate, $N$ = 50')
+    ax.set_xlabel('daily mean temperature (°C)')
+    ax.set_ylabel('P10 / median of daily $F$')
+    ax.legend(fontsize=6, loc='lower left')
+    for ax, lab in zip(axs, 'ab'):
+        ax.text(-0.27, 1.05, f'({lab})', transform=ax.transAxes, fontsize=8, va='top')
+    fig.tight_layout()
+    path = save_fig(fig, name)
+    plt.close(fig)
+    return path
+
+
+def step2_detrended(D=None, f_min=0.05):
+    """Diagnostic (D2): day-to-day spread of the actual F net of temperature.
+
+    Per aggregate, a quadratic in T fitted to its actual F (per kW) over its
+    heating days; on the days where the fit exceeds ``f_min`` (leaves out the
+    near-threshold days where the ratio blows up), the P10 and standard deviation
+    of actual / fit. Median within split, then median [IQR] over splits, per N.
+    """
+    Dz, _ = rebuild_design()
+    D = daily_frames() if D is None else D
+    G = Dz['rows']; T = D['T']
+    rows = []
+    for N in O.N_GRID_K:
+        for j in np.flatnonzero(((G.N == N) & (G.N_hp == N // 2)).to_numpy()):
+            r = G.iloc[j]; h = T < r.T_h
+            f = D['fa_h'][j][h] / r.cap; t = T[h]
+            fit = np.polyval(np.polyfit(t, f, 2), t); ok = fit > f_min
+            q = f[ok] / fit[ok]
+            rows.append(dict(N=N, split=r.split, p10=np.quantile(q, FIRM_Q), sd=q.std(), days=int(ok.sum())))
+    s = pd.DataFrame(rows).groupby(['N', 'split'])[['p10', 'sd']].median()
+    return s.groupby('N').agg(['median', lambda v: v.quantile(.25), lambda v: v.quantile(.75)]).rename(
+        columns={'<lambda_0>': 'q25', '<lambda_1>': 'q75'})
+
+
+def step2_shoulder(D=None, lo=11, hi=13):
+    """Diagnostic (D2): the days of one bin at N = 50, ranked by the median actual
+    F per kW over the 60 aggregates, with their date."""
+    Dz, _ = rebuild_design()
+    D = daily_frames() if D is None else D
+    G = Dz['rows']; T = D['T']
+    sel = np.flatnonzero(((G.N == 50) & (G.N_hp == 25)).to_numpy())
+    fa = np.median(D['fa_h'][sel] / G.cap.to_numpy()[sel, None], 0)
+    days = pd.date_range('2023-01-01', periods=len(T), freq='D')
+    m = (T >= lo) & (T < hi)
+    return pd.DataFrame({'date': days[m].date, 'T': T[m], 'F_per_kW': fa[m]}).sort_values('F_per_kW')
+
+
+def step2(rebuild=False):
+    """Step 2: long frame, summary against N, bin table, checks, the figure and
+    the two D2 diagnostics."""
+    L = _cached('step2_rows', step2_rows, rebuild)
+    S = step2_summary(L)
+    return dict(L=L, summary=S, bins=step2_bins(L), checks=step2_checks(S, L), fig=fig_firm(S, L),
+                detrended=step2_detrended(), shoulder=step2_shoulder())
 

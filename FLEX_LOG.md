@@ -69,6 +69,7 @@ Definitions, fixed before the run:
 Changes to the design made after seeing results, with reasons. The original result stays in the step report.
 
 - **D1 (Step 1): a P_up estimate/actual column added to the bin table.** Reason: panel (a) of the draft figure showed the estimated upward headroom above the actual in every bin, so the size of that gap had to be reported. No other quantity changed.
+- **D2 (Step 2): two diagnostics added after the run.** (i) The day-to-day spread of the actual net of temperature: per aggregate, a quadratic in T fitted to its own actual F, then the P10 of actual/fit. (ii) The days of the 11–13 °C bin, ranked by F. Reason: the binned P10/median mixes the temperature trend inside the bins with the day-to-day spread. The coldest bin spans 10 °C after merging. And the 11–13 °C bin was the least firm, against E2.4. The prompt's binned metric is still reported first.
 
 ---
 
@@ -214,3 +215,81 @@ Expectations (written before the run; definitions in "Expectations"):
 - W2 is an assumption. T_in = 20–21 °C is a parameter range, not a sourced value, and no time constant is used.
 - Medians across aggregates pool 3 aggregates per split that share HPs. The split-level medians agree within ±0.02, which keeps the pooling honest at the median but not for the IQR.
 - The actual P_up and P_down use the daily-mean SF, while the actual F uses the hourly SF, as in the paper. The hourly factor (1.02–1.04) is the gap between the two.
+
+---
+
+## Step 2 — Firm flexibility and aggregation
+
+### What was done
+- Data and design: the Step 0 aggregates at 50% penetration, N ∈ {10, 20, 30, 40, 50} with N_hp = N/2 ∈ {5, …, 25}; 60 aggregates per N (3 per split).
+- Per aggregate and bin: the P10 and median across days of daily F under W1, per kW of true capacity, for the actual (hourly reference) and the estimate. From them, r = P10/median, and P10 of the actual over the median of the estimate ("firm over promised"). Summary per N: the median over each aggregate's bins, then the median within each split, then median [IQR] over the 20 splits. The window cancels in every ratio.
+- Bins: 2 °C, merged towards the centre until each holds ≥ 10 days (Alex's Step 1 decision). Few days are cold, so the merges cascade into one cold bin [−9, 1) °C of 33 days. Per aggregate, a bin with fewer than 10 of its own heating days is left out.
+- Fig. 9 link: the median daily R²_h of the net-load and SF fits per N, read from the paper's cache `data/_kloten_quality.pkl`.
+- Code: `flex_temperature.step2()`; notebook cells "Step 2". Results pickled in `results/flex_temperature/step2_rows.pkl` and `step2_results.pkl`.
+- Deviations: D2, two diagnostics added after the run.
+- Step 2b (flexibility at the planning condition) **not run**. Its precondition is missing: `RESULTS_LOG.md` has no overloaded aggregates and no headroom proxy R, since the planning experiments stop at their Step 2, the increment model.
+
+### Results
+Figure: `figures/flex_temperature/fig_firm_flex.{pdf,png}`. Panel (a) shows P10/median against N, for the actual, the estimate and firm over promised (median and IQR over splits). Panel (b) shows the actual P10/median by bin for N = 10, 30 and 50, and the estimate's for N = 50.
+
+**Headline (negative first).**
+1. **Aggregation buys little firmness.** The actual P10/median rises from 0.85 at 5 HPs to 0.87 at 25 HPs, and is flat from N = 40 on. Net of temperature (D2-i), the lower decile lies 16% below the expected value at 5 HPs and still 13% below it at 25 HPs. The spread that remains is shared by all HPs, so summing more of them does not average it out.
+2. **The estimate does not capture the spread, only the median.** Its P10/median of 0.91 comes from the temperature varying inside each bin, and it does not change with N. It overstates firmness by 0.04–0.07. On 9 days in 10, a DSO relying on the estimate's median could count on 0.81 of it at N = 10 and 0.87 at N = 50, with wide IQRs over splits ([0.75, 0.87] and [0.82, 0.91]).
+3. **The least firm temperatures are 11–13 °C, not those nearest T_h.** That bin's P10/median is 0.63 at N = 50 and 0.67 at N = 10. Its lowest days are 29 August, 23–25 September, 5–6 October and 24 May (D2-ii). They have the same daily mean temperature as heating days in March, April or late October, but about half their flexibility (0.05–0.07 against 0.10 per kW). These shoulder-season days look like heating switched off for the season. A model in daily mean temperature cannot see that switch, and aggregation does not remove it.
+
+Summary against N, median [IQR] over the 20 splits:
+
+| N (N_hp) | P10/median, actual | P10/median, estimate | P10 act. / median est. | Net of T: P10 act./fit (D2-i) | Fig. 9: R²_net, daily | Fig. 9: R²_SF, daily |
+|---|---|---|---|---|---|---|
+| 10 (5) | 0.852 [0.838, 0.862] | 0.917 [0.911, 0.921] | 0.810 [0.752, 0.870] | 0.837 [0.832, 0.847] | 0.83 | 0.92 |
+| 20 (10) | 0.865 [0.855, 0.877] | 0.915 [0.911, 0.917] | 0.841 [0.814, 0.880] | 0.855 [0.848, 0.865] | 0.88 | 0.94 |
+| 30 (15) | 0.869 [0.859, 0.875] | 0.909 [0.906, 0.915] | 0.845 [0.830, 0.875] | 0.858 [0.856, 0.865] | 0.89 | 0.95 |
+| 40 (20) | 0.874 [0.864, 0.881] | 0.910 [0.908, 0.913] | 0.866 [0.833, 0.909] | 0.867 [0.857, 0.870] | 0.91 | 0.95 |
+| 50 (25) | 0.873 [0.863, 0.880] | 0.909 [0.907, 0.911] | 0.872 [0.818, 0.908] | 0.868 [0.862, 0.872] | 0.91 | 0.95 |
+
+Net of temperature, the standard deviation of actual/fit falls from 0.151 [0.136, 0.182] at N = 10 to 0.127 [0.124, 0.131] at N = 50.
+
+By bin, at N = 50 (medians across aggregates):
+
+| Bin (°C) | Days | P10/median, actual | P10/median, estimate | P10 act. / median est. |
+|---|---|---|---|---|
+| [−9, 1) | 33 | 0.94 | 0.98 | 0.87 |
+| [1, 3) | 21 | 0.94 | 0.97 | 0.87 |
+| [3, 5) | 25 | 0.92 | 0.97 | 0.87 |
+| [5, 7) | 29 | 0.87 | 0.95 | 0.81 |
+| [7, 9) | 40 | 0.85 | 0.91 | 0.86 |
+| [9, 11) | 31 | 0.90 | 0.90 | 0.94 |
+| [11, 13) | 34 | 0.63 | 0.86 | 0.75 |
+| [13, 15) | 20 | 0.75 | 0.62 | 0.80 |
+| [15, 19) | 13 | 0.78 | 0.39 | 2.92 |
+
+- In the bins near T_h, the estimate's median tends to zero, so firm over promised exceeds 1 (16% of all aggregate-bins). Restricted to bins up to 13 °C, firm over promised is 0.82 [0.75, 0.85] at N = 10 and 0.87 [0.82, 0.91] at N = 50, the same picture. On the same bins, the actual P10/median rises from 0.88 to 0.90, and the estimate's stays at 0.95.
+- The other N show the same bin profile (notebook, `step2['bins']`).
+
+Sanity checks: P10 ≤ median in every row. The estimate's P10/median falls towards T_h, where F changes fastest relative to its level, as expected for a curve that varies only with T. At N = 50, the actual is identical across the 3 aggregates of a split (see caveats), so its IQR reflects the 20 HP halves only.
+
+Expectations (written before the run; definitions in "Expectations"):
+
+| # | Outcome | Value |
+|---|---|---|
+| E2.1 actual P10/median rises with N | **met**, but by +0.02 only | 0.852, 0.865, 0.869, 0.874, 0.873 |
+| E2.2 (mine) estimate flat in N | **met** | 0.917 to 0.909 (range 0.008) |
+| E2.3 (mine) estimate > actual at every N | **met** | gap 0.065 at N = 10 to 0.037 at N = 50 |
+| E2.4 (mine) least firm bin nearest T_h | **not met** | least firm bin is [11, 13) °C (0.63), against 0.78 in [15, 19) |
+| E2.5 (mine) actual at N = 50 in [0.80, 0.95] | **met** | 0.873 |
+
+### Implications
+- **For the paper, firm flexibility can take one number, not a scaling law.** On 9 days in 10, the potential at a given temperature stays within about 13–15% of its median, for 5 to 25 HPs. Aggregating more HPs barely changes this. A DSO applying the estimate would need a haircut of about 0.81–0.87 on 9 days in 10, and more in the shoulder season.
+  - This gives a number to the current sentence in III-C: "It therefore stands as a potential against temperature and window length, not as a firm reserve."
+  - It qualifies the Fig. 9 sentence: "Summing more households and averaging over longer windows both smooth out behaviour that does not follow the temperature, so both raise the fit quality." Fit quality rises with N mostly through the net-load fit (R²_net 0.83 to 0.91), as the non-HP households average out. The HP load's own spread around its temperature line falls far less (R²_SF 0.92 to 0.95), and that spread sets the firmness.
+- **The estimate carries the median, not the spread.** Any firm-flexibility statement must come from submetered data, as a haircut, not from the estimate. The haircut here is measured on one station and one year, so it cannot be transferred as a constant without that caveat.
+- **Participation:** none of this is participation in demand response. The datasets hold no flexibility events. P10/median measures how the *potential* varies from day to day, not how the HPs would respond to a call. Participation goes to future work.
+- **Shoulder season:** a seasonal on/off state of heating, invisible to the daily-mean temperature, is the largest single source of spread. This is a limitation for the paper, and a candidate for future work: a calendar or heating-season indicator next to T.
+- Decision for Alex: Step 2b is not run, since no planning overload results exist yet. Recommendation: go to Step 3 (the suggestions file) now, and note F5 as "not assessed".
+
+### Confidence and caveats
+- At N = 50, N_hp = 25 is the whole target half, so the 3 aggregates of a split hold identical HPs and identical actuals. The same holds for the N = 50 setting of Step 1. Its "IQR across aggregates" counted each HP half three times, which slightly overstates the precision there. The split-level IQRs in Step 1 are unaffected. The scaling therefore stops at 25 HPs, and nothing here says how firmness grows on larger feeders.
+- The validation partly checks itself: the actual F uses the same SF(1 − SF)·P^max formula, with submetered inputs.
+- One station and one year (2023). The cold end is one spell, and the shoulder-season explanation rests on dates, not on any metered heating-mode signal.
+- The binned P10/median depends on the bin width, especially in the 10 °C cold bin. The detrended diagnostic avoids bins and gives the same trend with N (0.84 to 0.87).
+- The quadratic detrending (D2-i) is a choice. Days where the fit falls below 0.05 per kW are left out, about the 2–3 °C below T_h.

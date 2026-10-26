@@ -32,6 +32,7 @@ pd.set_option('display.width', 200)
 # control flags: True recomputes the step and overwrites its pickles
 REBUILD_STEP0 = False   # rebuilds the 1260-aggregate design and its hourly flexibility (about 15 s)
 REBUILD_STEP1 = False   # rebuilds the per-aggregate daily SF and hourly flexibility (about 15 s)
+REBUILD_STEP2 = False   # rebuilds the per-bin P10 and median frame (a few seconds)
 print('repo root:', _root)"""
 
 CELLS = [
@@ -61,6 +62,20 @@ P['peaks'].round(2)"""),
     ('code', """for k in [(30, 15), (10, 5), 'primary_with_b']:
     print('=====', k)
     display(step1[k]['peaks'].round(2), step1[k]['bins'])"""),
+    ('markdown', """## Step 2 — Firm flexibility and aggregation
+
+Per aggregate and 2 °C bin (merged to ≥ 10 days): P10/median of daily F across
+days, actual and estimate, and P10 of the actual over the median of the estimate.
+N = 10–50 at 50% penetration, next to the daily fit quality of Fig. 9. Two
+diagnostics (D2 in `FLEX_LOG.md`): the spread net of temperature, and the days
+of the 11–13 °C bin."""),
+    ('code', """step2 = FT.step2(rebuild=REBUILD_STEP2)
+print(step2['fig'])
+for k, v in step2['checks'].items():
+    print(k, v)
+step2['summary'].round(3)"""),
+    ('code', """step2['bins'].round(3)"""),
+    ('code', """display(step2['detrended'].round(3)); step2['shoulder'].round(3)"""),
 ]
 
 
