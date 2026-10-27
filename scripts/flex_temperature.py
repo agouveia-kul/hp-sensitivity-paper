@@ -971,8 +971,9 @@ def fig_flex_all(L=None, name='fig_flex_all_normalised', saver=None):
     handles = [(Patch(color='0.2', alpha=.3, lw=0), Line2D([], [], color='0.1', lw=1.4)),
                (Patch(color=hf.C_HP, alpha=.15, lw=0), Line2D([], [], color=hf.C_HP, ls='--', lw=1.4)),
                Line2D([], [], color='0.5', ls=':', lw=1.2)]
-    ax.legend(handles, ['actual, median and IQR across aggregates', 'estimate, median and IQR',
-                        'actual, $T \\geq T_h$ (not counted)'], fontsize=6, loc='upper right')
+    # lower left is empty: the curves stay above 0.6 below about 8 degC
+    ax.legend(handles, ['actual (median, IQR)', 'estimate (median, IQR)', 'actual, $T \\geq T_h$'],
+              fontsize=6.5, loc='lower left')
     ax = axs[1]
     for nh, c, ls in zip((5, 15, 25), ('#9ecae1', '#4292c6', '#08306b'), (':', '--', '-')):
         g = L[(L.regime == 'heating') & (L.N_hp == nh)].assign(w=lambda v: (v.q75 - v.q25) / v.med).groupby('bin')
