@@ -566,3 +566,35 @@ Downward headroom per kW of true capacity (actual = daily-mean SF; estimate = m_
   - So in the middle of the range the fitted arm runs about 10–15% steeper than the floor-free HP load, which happens to make up for the missing floor. The steeper arm possibly reflects the non-TCL temperature response, the paper's first error source.
   - Near T_h (last bin) the estimate is still low with the floor removed (0.57), so the gradual switch-off of heating across buildings adds to the gap there.
   - The summer floor may understate the winter hot-water load (colder mains water), so this attribution is approximate.
+
+---
+
+## Storyline pass on the flexibility sections (Alex, 2026-10-27)
+
+Request: update the flexibility sections with the storyline from the normalised plot and the three diagnostics; open each section with a headline paragraph and each paragraph with a headline sentence. Built on the current text, including Alex's opener pass (commits a6f1950–2bb9c22). Fig. 7 (`fig:flex-temperature`) stays as approved in F2. Words before this pass: 8476.
+
+Content bullets:
+- **IV-F, opening paragraph:** the estimate recovers the annual flexible energy at a WAPE of 10%, but its error changes sign with temperature, too high on the coldest days and too low in mild weather. Both errors come mainly from the net-load fit, not the transferred SF.
+- **IV-F, annual paragraph:** unchanged (1.04 [0.97, 1.17], WAPE 10%; how the estimate and actual are formed; no shared input).
+- **IV-F, factors paragraph:**
+  - Headline: the net-load fit sets most of the ratio. Energy 0.97, unused capacity 1.07 (3 points pilot, about 4 points daily resolution), correlation 0.96, window cancels.
+  - The separate daily-mean sentence (3% higher, ratio 1.01) is folded into the daily-resolution clause.
+- **IV-F, profile paragraph:** two opposite errors (Fig. 7), +17% coldest and −8 to −13% at 10–14 °C. Only the energy factor follows the profile. Days above 13 °C hold 6% of the flexible energy.
+- **IV-F, cold paragraph:**
+  - The fitted arm runs above the measured HP load. The measured downward headroom grows about 0.02 kW per kW installed per °C down to 0 °C and 0.010 below, while the arm stays linear.
+  - Energy factor 1.09 there; daily resolution +4% (1.04) and pilot SF +2% (1.02).
+  - The capacity estimate drops out of eq. (13), so it plays no part.
+- **IV-F, mild paragraph:**
+  - The estimate misses weather-independent HP use. The arm reaches zero at T_h, while the measured load still draws 0.05–0.06 kW per kW at 14–16 °C. On the dead-band days (a third of the year) the floor is worth a median 9% of the actual, most plausibly hot water [Bru23].
+  - With the summer floor (median daily SF 0.027, i.e. 2.7% of capacity) removed from the actual, the estimate is 9–18% high from −3 to 12 °C. So the arm is steeper than the floor-free load, possibly through the non-TCL temperature response (VI-A), which offsets the missing floor over most of the range.
+  - Just below T_h the estimate stays low even without the floor (0.57), possibly because buildings stop heating at different temperatures.
+- **IV-F, headroom paragraph:** only the upward headroom carries the capacity error (downward within 2% from −2 to 7 °C; upward +16–23%); SF never reaches 0.5 on an observed day.
+- **III-C:** one clause added. The baseline is the temperature-driven load, so weather-independent TCL use such as hot-water heating lies outside the estimate (sets up the mild-side result).
+- **VI-B:** one sentence added. The day-to-day spread is narrowest on cold days (IQR about 5% of the median) and widest at 13–15 °C (about 45%), where heating seems on for some days and off for others.
+- **Conclusion:** "…at a WAPE of 10%, overestimated by 17% on the coldest days" gains "and underestimated in mild weather".
+
+Result of the pass:
+- **IV-F:** seven paragraphs, each led by its headline: the section message; annual result; the factors ("the net-load fit sets most of it"); "The annual agreement averages two opposite errors"; "On the coldest days, the fitted arm runs above the measured HP load"; "In mild weather, the estimate misses the HP use that does not depend on temperature"; "Only the upward headroom carries the capacity error". The separate daily-mean paragraph is folded into the factors paragraph. Its dead-band sentence moves to the mild-weather paragraph.
+- **III-C:** already led by headlines (opener pass); one clause added on weather-independent use. **VI-B:** one sentence on the temperature profile of the spread. **Conclusion:** "and underestimated in mild weather".
+- **Checks:** 8699 words (8476 before this pass; 8695 before the whole task), 16 pages, 0 undefined references, no new sentence over 40 words. Every number in the lines changed since 2bb9c22 appears in this log.
+- **Diff PDFs:** `review/hp_sensitivity_diff_flex_storyline.pdf` (this pass, against 2bb9c22) and `review/hp_sensitivity_diff_flex_temperature.pdf` (refreshed, against 1700861).
