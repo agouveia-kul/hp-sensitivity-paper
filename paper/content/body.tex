@@ -8,7 +8,7 @@ The demand of these devices follows the outdoor temperature, and their uptake lo
 
 A DSO needs the installed capacity of the TCLs behind each feeder, rather than only their coincident peak, for three reasons. First, the installed capacity scales with adoption, so it supports planning scenarios as the number of TCLs grows. Second, the installed capacity bounds the peak the TCLs can draw when they are synchronised. Third, network planning sizes transformers and cables for a design peak. This design peak is the installed capacity multiplied by the simultaneity factor (SF), the share of the installed capacity drawn at once \cite{Few24}. For HPs, it is set by cold weather, when their coincident demand peaks \cite{Lov17, Che21b, Rou23}. The SF also bounds the flexibility the TCLs can offer \cite{Mul19, Zir19, Dhu15}, since only the capacity not in use can be switched on.
 
-A DSO rarely knows this capacity. Privacy concerns and limits on metering and data exchange restrict the DSO's access to household data, and its records of distributed energy resources (DERs) are often incomplete or out of date \cite{Gou26}. What the DSO does hold is the net load metered at the substation or feeder head, and the outdoor temperature. Where smart meters are rolled out, the DSO also meters each household, but its access to these data is often restricted. The DSO usually knows how many households each feeder serves \cite{Tre26}. The installed capacity of the TCLs behind a feeder therefore stays largely unobserved.
+A DSO rarely knows this capacity. Privacy concerns and limits on metering and data exchange restrict the DSO's access to household data, and its records of distributed energy resources (DERs) are often incomplete or out of date \cite{Gou26}. What the DSO does hold is the net load metered for a collection of consumers, such as a substation. This paper calls such a metered point, together with the households behind it, an aggregate. Where smart meters are rolled out, the DSO also meters each household, but its access to these data is often restricted. The DSO usually knows how many households each feeder serves \cite{Tre26}. The installed capacity of the TCLs behind a feeder therefore stays largely unobserved.
 
 \input{tables/tab_litreview}
 
@@ -68,7 +68,7 @@ Fig.~\ref{fig:pipeline} maps each step of the method to the section that defines
 \label{sec:problem}
 \label{sec:fits}
 
-For the TCLs behind a metered point of an LV network, this paper estimates three quantities: their installed capacity, their temperature-driven energy and their flexibility potential. A metered point, such as a substation or feeder, together with the households behind it, is called an aggregate. The energy needs only the net load of the aggregate and the outdoor temperature, both held by the DSO. The installed capacity and the flexibility also need the SF sensitivity, calibrated once on a submetered pilot (Section~\ref{sec:transfer}).
+For the TCLs within an aggregate, this paper estimates three quantities: their installed capacity, their temperature-driven energy and their flexibility potential. The energy needs only the net load of the aggregate and the outdoor temperature, both held by the DSO. The installed capacity and the flexibility also need the SF sensitivity, calibrated once on a submetered pilot (Section~\ref{sec:transfer}).
 
 The net load is the sum of a TCL and a non-TCL component,
 \begin{equation}
