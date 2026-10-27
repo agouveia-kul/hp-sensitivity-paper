@@ -30,7 +30,7 @@ The contributions of this paper are threefold.
 \begin{enumerate}
 \item A method to estimate the installed TCL capacity behind a feeder from its net load and temperature, calibrated once on a small submetered pilot. The households of the target feeder are never submetered.
 \item An evaluation of when the SF sensitivity of a pilot transfers: within one population, across HP penetration, aggregate size and data resolution; to real aggregates outside the pilot and to populations from five countries.
-\item Estimates of the temperature-driven TCL energy, which needs only the net-load sensitivity and no pilot, and of a flexibility potential against temperature, whose upward headroom also uses the SF sensitivity.
+\item Estimates of the temperature-driven TCL energy, which needs only the net-load sensitivity and no pilot, and of a flexibility potential against temperature, which also uses the SF sensitivity.
 \end{enumerate}
 
 Fig.~\ref{fig:pipeline} maps each step of the method to the section that defines it.
@@ -311,8 +311,7 @@ E_{\mathrm{flex}} = \hat{\mathrm{SF}}(T)\big(1 - \hat{\mathrm{SF}}(T)\big)\,\hat
 \label{eq:flex-energy}
 \end{equation}
 
-The shiftable load comes from the net-load fit, and the transferred SF sets only the headroom above it, $1-\hat{\mathrm{SF}}(T)$. Since $\hat{\mathrm{SF}}(T)\,\hat{P}^{\max}$ equals the fitted TCL load, \eqref{eq:flex-energy} equals $\hat{P}_{\mathrm{TCL}}(T)\,\big(1-\hat{\mathrm{SF}}(T)\big)\,\Delta t_{Th}$, so the capacity estimate drops out. Since $E_{\mathrm{flex}}$ is linear in $\Delta t_{Th}$, Section~\ref{sec:res-flex} reports it per hour of window, or as ratios in which the window cancels. The downward headroom, the curtailable load $\hat{P}_{\mathrm{TCL}}(T)$, needs no pilot. The upward headroom, the unused capacity $(1 - \hat{\mathrm{SF}}(T))\,\hat{P}^{\max}$, inherits the error of the capacity estimate; the two are equal only where $\hat{\mathrm{SF}}(T) = 0.5$.
-
+The shiftable load comes from the net-load fit, and the transferred SF sets only the headroom above it, $1-\hat{\mathrm{SF}}(T)$. Since $\hat{\mathrm{SF}}(T)\,\hat{P}^{\max}$ equals the fitted TCL load, \eqref{eq:flex-energy} equals $\hat{P}_{\mathrm{TCL}}(T)\,\big(1-\hat{\mathrm{SF}}(T)\big)\,\Delta t_{Th}$, so the capacity estimate drops out. Since $E_{\mathrm{flex}}$ is linear in $\Delta t_{Th}$, Section~\ref{sec:res-flex} reports it per hour of window, or as ratios in which the window cancels.
 \begin{figure}[t]
 \centering
 \includegraphics[width=\figw]{figures/fig_flex_schedule.pdf}
