@@ -937,14 +937,14 @@ def flex_all_normalised(D=None, min_days=MIN_DAYS):
     return pd.concat(rows, ignore_index=True)
 
 
-def fig_flex_all(L=None, name='fig_flex_all_normalised'):
-    """Draft figure: all aggregates on one axis, normalised by own maximum.
+def fig_flex_all(L=None, name='fig_flex_all_normalised', saver=None):
+    """All aggregates on one axis, normalised by own maximum (paper Fig. 7 since
+    the storyline pass; ``outputs.flex_temperature_figure`` saves it to paper/).
 
-    (a) Actual: median over aggregates of their bin medians, a dark band for the
-    IQR across aggregates and a light band for the typical day-to-day IQR (median
-    over aggregates of their own q25 and q75); estimate dashed with its IQR across
-    aggregates; dead-band floor dotted. (b) Day-to-day IQR / median of the
-    actual for 5, 15 and 25 HPs per aggregate.
+    (a) Actual: median over aggregates of their bin medians with the IQR across
+    aggregates; estimate dashed with its IQR across aggregates; dead-band floor
+    dotted. (b) Day-to-day IQR / median of the actual for 5, 15 and 25 HPs per
+    aggregate. ``saver`` defaults to FLEX_FIG; pass ``hp_figures.save`` for paper/.
     """
     import matplotlib.pyplot as plt
     import hp_figures as hf
@@ -953,7 +953,7 @@ def fig_flex_all(L=None, name='fig_flex_all_normalised'):
     cover = L.groupby(['regime', 'bin']).row.transform('nunique')
     L = L[cover >= 0.1 * L.row.nunique()]
     hf.use_style()
-    fig, axs = plt.subplots(2, 1, figsize=(hf.COL1, 4.4), sharex=True, gridspec_kw=dict(height_ratios=[1.6, 1]))
+    fig, axs = plt.subplots(2, 1, figsize=(hf.COL1, 4.0), sharex=True, gridspec_kw=dict(height_ratios=[1.6, 1]))
     from matplotlib.lines import Line2D
     from matplotlib.patches import Patch
     ax = axs[0]
@@ -966,7 +966,7 @@ def fig_flex_all(L=None, name='fig_flex_all_normalised'):
     d = L[L.regime == 'dead band'].groupby('bin')
     ax.plot(d.x.first(), d.med.median(), color='0.5', ls=':', lw=1.2)
     ax.axhline(1, color='0.6', lw=.6)
-    ax.set_ylabel('flexibility / own maximum')
+    ax.set_ylabel('$E_{\\mathrm{flex}}$ / own maximum')
     ax.set_ylim(0, 1.3)
     handles = [(Patch(color='0.2', alpha=.3, lw=0), Line2D([], [], color='0.1', lw=1.4)),
                (Patch(color=hf.C_HP, alpha=.15, lw=0), Line2D([], [], color=hf.C_HP, ls='--', lw=1.4)),
@@ -987,7 +987,7 @@ def fig_flex_all(L=None, name='fig_flex_all_normalised'):
     for ax, lab in zip(axs, 'ab'):
         ax.text(-0.22, 1.04, f'({lab})', transform=ax.transAxes, fontsize=8, va='top')
     fig.tight_layout()
-    path = save_fig(fig, name)
+    path = (saver or save_fig)(fig, name)
     plt.close(fig)
     return path
 

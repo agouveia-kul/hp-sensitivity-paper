@@ -1046,12 +1046,14 @@ def flex_figures():
 
 
 def flex_temperature_figure():
-    """fig_flex_temperature: upward/downward headroom and flexible energy against
-    temperature, estimate against actual (N = 50, N_hp = 25). Replaces
-    fig_flex_ratio and fig_flex_season in Sec. IV-F; the bins and checks are in
-    ``flex_temperature`` (Step 1 of FLEX_LOG.md)."""
+    """fig_flex_normalised: flexible energy against temperature for all 1260 Kloten
+    aggregates, each normalised by its own maximum, estimate against actual, and
+    the day-to-day spread by HP count (Sec. IV-F). Replaced fig_flex_temperature
+    (headroom, N = 50), which replaced fig_flex_ratio and fig_flex_season; the
+    bins and checks are in ``flex_temperature`` (FLEX_LOG.md)."""
     import flex_temperature as FT
-    print('saved ->', FT.fig_flex_temperature_paper())
+    L = FT._cached('flex_all_normalised', FT.flex_all_normalised)
+    print('saved ->', FT.fig_flex_all(L, name='fig_flex_normalised', saver=hf.save))
 
 
 KLOTEN_QUALITY = 'data/_kloten_quality.pkl'
