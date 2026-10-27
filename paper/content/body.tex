@@ -453,7 +453,7 @@ With no pilot, the energy estimate reaches a WAPE of 9\% at a median ratio of 0.
 \subsection{Flexibility Potential}
 \label{sec:res-flex}
 
-The flexibility estimate recovers the annual flexible energy at a WAPE of 10\%, but its error changes sign with temperature. It overstates the flexibility on the coldest days and understates it in mild weather, and both errors come mainly from the net-load fit, not from the transferred SF.
+The flexibility estimate recovers the annual flexible energy at a WAPE of 10\%, but its error changes sign with temperature. It overestimates the flexibility on the coldest days and underestimates it in mild weather, and both errors come mainly from the net-load fit, not from the transferred SF.
 
 Across the 1260 aggregates, the ratio of estimated to actual annual flexible energy has a median of 1.04 and an interquartile range of [0.97, 1.17], at a WAPE of 10\%. The estimate sums \eqref{eq:flex-energy} over the heating-regime days, each at its daily mean temperature, since the Kloten aggregates have no cooling regime. The actual covers the same days and applies the same expression to each hour's submetered SF and the true capacity, averaged over the day. The two share no input other than the HP load in the net load, so their agreement does not follow by construction.
 
@@ -466,7 +466,7 @@ The ratio splits into two factors, and the net-load fit sets most of it. The tem
 \label{fig:flex-temperature}
 \end{figure}
 
-The annual agreement averages two opposite errors across temperature (Fig.~\ref{fig:flex-temperature}a). The estimate overstates the flexible energy by 18\% on the coldest days and understates it by 9--11\% between 11 and 15~$^\circ$C. For the aggregates of 50 households with 25 HPs, only the energy factor follows this profile, and the days above 13~$^\circ$C hold only 6\% of the flexible energy.
+The annual ratio of 1.04 averages two opposite errors across temperature (Fig.~\ref{fig:flex-temperature}a). The estimate overstates the flexible energy by 18\% on the coldest days and understates it by 9--11\% between 11 and 15~$^\circ$C. For the aggregates of 50 households with 25 HPs, only the energy factor follows this profile, and the days above 13~$^\circ$C hold only 6\% of the flexible energy.
 
 On the coldest days, the fitted arm runs above the measured HP load. The measured load grows by about 0.02~kW per kW installed and degree down to 0~$^\circ$C, but by half that below it, whereas the fitted arm stays linear. The energy factor reaches 1.09 on these days, and the daily resolution and the pilot's SF add 4\% and 2\%. The capacity estimate plays no part, since it drops out of \eqref{eq:flex-energy}.
 
