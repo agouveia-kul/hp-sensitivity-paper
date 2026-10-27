@@ -223,7 +223,7 @@ The SF sensitivities $m_h$ and $m_c$ group partly by K{\"o}ppen class \cite{beck
 \subsection{Transferability of SF}
 \label{sec:transfer}
 
-The SF fit needs submetered TCL data, which a DSO rarely holds for the aggregate under study. The method therefore calibrates the SF sensitivity once on a pilot and reuses it on targets. The pilot is a small set of households whose TCL load is submetered, so that its installed capacity is known. A target is an aggregate whose installed capacity is to be estimated and whose households are not submetered. Pilot and targets belong to the same population, i.e.\ the households of one dataset or study. In the experiments, a split is one random partition of a population into a pilot and targets. Table~\ref{tab:cross} involves no such transfer, since there both fits are made on each dataset's own data.
+The method calibrates the SF sensitivity once on a submetered pilot and reuses it on every target. The SF fit needs submetered TCL data, which a DSO rarely holds for the aggregate under study. The pilot is a small set of households whose TCL load is submetered, so that its installed capacity is known. A target is an aggregate whose installed capacity is to be estimated and whose households are not submetered. Pilot and targets belong to the same population, i.e.\ the households of one dataset or study. In the experiments, a split is one random partition of a population into a pilot and targets. Table~\ref{tab:cross} involves no such transfer, since there both fits are made on each dataset's own data.
 
 Only the SF sensitivities $m_h$ and $m_c$ transfer. The pilot's thresholds follow its own building stock and climate, so the target's thresholds $T_h$ and $T_c$ are read from the target's net-load fit instead. The pilot's intercepts $b_h$ and $b_c$ describe weather-independent TCL use, which the target's net-load fit places in $P_{\mathrm{base}}$ and never attributes to its TCL arms.
 
@@ -246,7 +246,7 @@ The two fits, \eqref{eq:tclfit} and \eqref{eq:sffit}, are complementary. The net
 \subsection{Installed Capacity Estimation}
 \label{sec:uc-capacity}
 
-The installed capacity is the sum of the individual peak demands \eqref{eq:pk}, defined per regime. The aggregated TCLs never draw it at once, so the net load never exposes it directly. The net-load fit does expose the temperature-driven TCL load $\hat{P}_{\mathrm{TCL}}^{\,i}(T)$ of aggregate $i$. Rearranging \eqref{eq:sf-piecewise}, the capacity of regime $k$ follows from this load and the SF at the same temperature.
+The installed capacity of each regime is the target's net-load sensitivity divided by the pilot's SF sensitivity, $s_k/m_k$. It is the sum of the individual peak demands \eqref{eq:pk}, which the aggregated TCLs never draw at once, so the net load never exposes it directly. The net-load fit does expose the temperature-driven TCL load $\hat{P}_{\mathrm{TCL}}^{\,i}(T)$ of aggregate $i$. Rearranging \eqref{eq:sf-piecewise}, the capacity of regime $k$ follows from this load and the SF at the same temperature.
 
 The net-load arm and the SF must describe the same load. The net-load arm is zero at the aggregate's own threshold by construction, and the weather-independent TCL use sits in $P_{\mathrm{base}}$. The matching SF is therefore the temperature-driven part of \eqref{eq:sffit}. It starts from zero at the aggregate's own thresholds and grows with the pilot's SF sensitivity,
 \begin{equation}
@@ -275,14 +275,14 @@ The two regimes are estimated separately. A reversible HP counts in both $\hat{P
 \subsection{Temperature-Driven Energy Estimation}
 \label{sec:uc-energy}
 
-The energy the TCL population draws follows from integrating its temperature response over a certain period.
+The temperature-driven energy follows from the net-load fit alone, with no pilot.
 %In the heating regime, $T < T_h$, the fitted TCL load of Equation~\eqref{eq:tclfit} reduces to its heating arm $\hat{P}_{\mathrm{TCL}}(T) = s_h (T_h - T)$.
 Over a day of mean temperature $T$, the temperature-driven TCL energy is given by
 \begin{equation}
 \hat{E}_{\mathrm{TCL}} = \left ( s_h \max(0, T_h - T) + s_c \max(0, T-T_c) \right ) \,\Delta t,
 \label{eq:energy}
 \end{equation}
-with $\Delta t$ being the length of the period, here one day. The annual energy is the sum of \eqref{eq:energy} over the days of the year. No pilot is needed. With the measured daily mean temperature, the fitted TCL load $\hat{P}_{\mathrm{TCL}}(T)$ separates the daily TCL load from the daily net load. With a forecast temperature, it forecasts that load.
+with $\Delta t$ being the length of the period, here one day. The annual energy is the sum of \eqref{eq:energy} over the days of the year. With the measured daily mean temperature, the fitted TCL load $\hat{P}_{\mathrm{TCL}}(T)$ separates the daily TCL load from the daily net load. With a forecast temperature, it forecasts that load.
 
 The dead band bounds the estimate. Between $T_h$ and $T_c$ both arms are zero. The estimate therefore misses any TCL energy that persists into mild weather, such as domestic hot water. The estimate captures the temperature-driven share, not the annual total.
 
@@ -291,7 +291,10 @@ The dead band bounds the estimate. Between $T_h$ and $T_c$ both arms are zero. T
 \label{sec:uc-flex}
 \label{sec:flex}
 
-A DSO or an aggregator needs to know how much heating energy the TCLs behind a feeder could shift, for congestion management or to offer a flexibility product. This flexibility is the energy the TCL population can shift from its baseline consumption without breaching indoor thermal comfort \cite{Zir19}. How long a shift can last is set by the building stock, through a time window $\Delta t_{Th}$ within which the population must deliver a fixed thermal energy to stay comfortable. A larger $\Delta t_{Th}$ means a better-insulated building, or wider comfort bands \cite{Cha16}. Load-shifting studies of HPs treat this window the same way, as a property of the building \cite{Hon13}. In simulations of UK residential buildings, HP operation could be shifted by 1--2~h in the baseline case and by up to 6~h with much improved insulation and thermal buffering. Building-stock insulation and indoor-comfort data are lacking, so $\Delta t_{Th}$ enters as an exogenous parameter of the building stock, held constant across temperatures, not as an output of the fits.
+The flexibility potential is the energy the TCL population can shift from its baseline consumption without breaching indoor thermal comfort \cite{Zir19}. Over a window $\Delta t_{Th}$, it equals $\hat{\mathrm{SF}}(T)\big(1-\hat{\mathrm{SF}}(T)\big)\,\hat{P}^{\max}\,\Delta t_{Th}$ \eqref{eq:flex-energy}. A DSO or an aggregator needs this energy for congestion management or to offer a flexibility product.
+
+How long a shift can last is set by the building stock, through a time window $\Delta t_{Th}$ within which the population must deliver a fixed thermal energy to stay comfortable. A larger $\Delta t_{Th}$ means a better-insulated building, or wider comfort bands \cite{Cha16}. Load-shifting studies of HPs treat this window the same way, as a property of the building \cite{Hon13}. In simulations of UK residential buildings, HP operation could be shifted by 1--2~h in the baseline case and by up to 6~h with much improved insulation and thermal buffering. Building-stock insulation and indoor-comfort data are lacking, so $\Delta t_{Th}$ enters as an exogenous parameter of the building stock, held constant across temperatures, not as an output of the fits.
+
 Over this window, the TCLs must still deliver the temperature-driven energy of \eqref{eq:energy}, drawn at the baseline power $\hat{P}_{\mathrm{TCL}}(T) = \hat{\mathrm{SF}}(T)\,\hat{P}^{\max}$,
 \begin{equation}
 \hat{E}_{\mathrm{TCL}}^{\Delta t_{Th}} = \hat{P}_{\mathrm{TCL}}(T)\,\Delta t_{Th} = \hat{\mathrm{SF}}(T)\,\hat{P}^{\max}\,\Delta t_{Th},
@@ -307,7 +310,8 @@ The flexible energy is this schedule's symmetric deviation from the baseline. Du
 E_{\mathrm{flex}} = \hat{\mathrm{SF}}(T)\big(1 - \hat{\mathrm{SF}}(T)\big)\,\hat{P}^{\max}\,\Delta t_{Th}.
 \label{eq:flex-energy}
 \end{equation}
-Since $\hat{\mathrm{SF}}(T)\,\hat{P}^{\max}$ equals the fitted TCL load, \eqref{eq:flex-energy} equals $\hat{P}_{\mathrm{TCL}}(T)\,\big(1-\hat{\mathrm{SF}}(T)\big)\,\Delta t_{Th}$. The shiftable load therefore comes from the net-load fit. The transferred SF only sets the headroom above it, $1-\hat{\mathrm{SF}}(T)$, so the capacity estimate drops out. Since $E_{\mathrm{flex}}$ is linear in $\Delta t_{Th}$, Section~\ref{sec:res-flex} reports it per hour of window, or as ratios in which the window cancels. The downward headroom, the curtailable load $\hat{P}_{\mathrm{TCL}}(T)$, needs no pilot. The upward headroom, the unused capacity $(1 - \hat{\mathrm{SF}}(T))\,\hat{P}^{\max}$, inherits the error of the capacity estimate; the two are equal only where $\hat{\mathrm{SF}}(T) = 0.5$.
+
+The shiftable load comes from the net-load fit, and the transferred SF sets only the headroom above it, $1-\hat{\mathrm{SF}}(T)$. Since $\hat{\mathrm{SF}}(T)\,\hat{P}^{\max}$ equals the fitted TCL load, \eqref{eq:flex-energy} equals $\hat{P}_{\mathrm{TCL}}(T)\,\big(1-\hat{\mathrm{SF}}(T)\big)\,\Delta t_{Th}$, so the capacity estimate drops out. Since $E_{\mathrm{flex}}$ is linear in $\Delta t_{Th}$, Section~\ref{sec:res-flex} reports it per hour of window, or as ratios in which the window cancels. The downward headroom, the curtailable load $\hat{P}_{\mathrm{TCL}}(T)$, needs no pilot. The upward headroom, the unused capacity $(1 - \hat{\mathrm{SF}}(T))\,\hat{P}^{\max}$, inherits the error of the capacity estimate; the two are equal only where $\hat{\mathrm{SF}}(T) = 0.5$.
 
 \begin{figure}[t]
 \centering
