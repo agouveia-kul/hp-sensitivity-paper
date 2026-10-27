@@ -2951,8 +2951,8 @@ def tab_cross():
         'LCL London ASHP (real HP)':           r'London, UK~\cite{lcl_heatpump}',
         'COFACTOR Norway (real HP)':           r'Oslo, NO~\cite{cofactor}',
         'ResStock ASHP -- Hennepin MN (cold)': r'Hennepin, MN, US~\cite{resstock}\tnote{a}',
-        'NEEA WA (real HP)':                   r'WA, US~\cite{neea_eulr}\tnote{b}',
-        'NEEA OR (real HP)':                   r'OR, US~\cite{neea_eulr}\tnote{b}',
+        'NEEA WA (real HP)':                   r'WA, US~\cite{neea_eulr}\tnote{a}',
+        'NEEA OR (real HP)':                   r'OR, US~\cite{neea_eulr}\tnote{a}',
         'ResStock ASHP -- King WA (mild)':     r'King, WA, US~\cite{resstock}',
         'Austin Pecan St (real)':              r'Austin, TX, US~\cite{pecanstreet}',
         'ResStock ASHP -- Maricopa AZ (hot)':  r'Maricopa, AZ, US~\cite{resstock}',
@@ -3010,12 +3010,10 @@ def tab_cross():
              + ' & ' + ' & '.join(vals) + r' \\')
         return ('%' + s) if lab in COMMENTED else s
     body = '\n'.join(row(lab) for lab in order)
-    head = 'dataset & TCL tech & $n$ & Climate & ' + ' & '.join(h for h, _, _ in COLS) + r' \\'
+    head = 'dataset & TCL tech & $N$ & Climate & ' + ' & '.join(h for h, _, _ in COLS) + r' \\'
     NOTES = (
-        r"$n$: aggregated households. Climate: K{\"o}ppen--Geiger class~\cite{beck2018koppen}: Cfb, temperate oceanic; Dfa, Dfb, humid continental; Csb, warm-summer Mediterranean; Cfa, humid subtropical; BWh, hot desert. $R^2_h$, $R^2_c$: fit scores on the days of the heating and cooling regimes. ASHP, GSHP, WSHP: air-, ground-, water-source HP; DHP: ductless (mini-split) HP; AC: air conditioning; ER: electric resistance heating." "\n"
-        r"%\par\tnote{a}\,The LCL London aggregate is submetered heat-pump load only (nine homes, no other household load), restricted to 2014, the single year all nine are metered together. Its net-load fit therefore coincides with the HP load, $P_{\mathrm{base}}$ is the winter standby/hot-water floor, and the installed capacity is the sum of the nine per-home 2014 peaks. The 2014 record ends in March, so the window is winter-only and never reaches $T_h$, which weakens the fit." "\n"
-        r"\par\tnote{a}\,Hennepin's SF uses the ASHP compressor's own draw only, excluding its electric-resistance HP-backup element" "\n"
-        r"\par\tnote{b}\,The SF uses the submetered ductless HPs only. Most of these households also have electric baseboard, furnace or other zonal heating circuits (17 of 22 in WA, 16 of 21 in OR), which the net load includes." "\n")
+        r"Climate: K{\"o}ppen--Geiger class~\cite{beck2018koppen}: Cfb, temperate oceanic; Dfa, Dfb, humid continental; Csb, warm-summer Mediterranean; Cfa, humid subtropical; BWh, hot desert. ASHP, GSHP, WSHP: air-, ground-, water-source HP; DHP: ductless (mini-split) HP; AC: air conditioning; ER: electric resistance heating." "\n"
+        r"\par\tnote{a}\,The SF uses the HPs' own draw only: Hennepin excludes the resistance backup, and WA and OR exclude the electric baseboard, furnace or other zonal heating circuits (17 of 22 and 16 of 21 households) that the net load includes.")
     tex = (
         r"\begin{autotable}[%" "\n" + NOTES + "]\n"
         r"{Net-load and SF fits, one aggregate per dataset}{tab:cross}" "\n" r"\setlength{\tabcolsep}{3.5pt}" "\n"
