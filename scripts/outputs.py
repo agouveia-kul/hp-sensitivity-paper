@@ -1209,16 +1209,34 @@ def fig_aggregation_heatmap():
     print('saved -> fig_aggregation_heatmap')
 
 
-def fig_capacity_error(width=20):
-    """fig_capacity_error: signed capacity error of s_h / m_h against true installed capacity (Kloten).
+def fig_capacity_error(width=20, kind='pen'):
+    """fig_capacity_error: capacity estimate of s_h / m_h for the 1260 Kloten aggregates.
 
-    Each aggregate's error (estimate - true) is divided by the largest true capacity of all 1260
-    aggregates, as in the nMAE over that set. Median and 10-90% range in bins of ``width`` kW
-    with at least 20 aggregates.
+    kind='pen' (paper): estimate / true capacity against HP penetration N_hp / N, median and
+    10-90% range at each penetration the design produces.
+    kind='ratio': estimate / true capacity against true capacity. kind='norm': error (estimate - true)
+    divided by the largest true capacity of all 1260 aggregates, as in the nMAE over that set.
+    Both in bins of ``width`` kW with at least 20 aggregates.
     """
     G = _kloten_design()['rows']
+    if kind == 'pen':
+        G = G.assign(r=G.cap_est / G.cap, pen=(G.N_hp / G.N * 100).round(1))
+        S = G.groupby('pen').r.agg(n='size', p10=lambda x: x.quantile(.1), med='median', p90=lambda x: x.quantile(.9))
+        print(S.round(2).to_string())
+        hf.use_style()
+        fig, ax = plt.subplots(figsize=(hf.COL1, 2.2))
+        ax.fill_between(S.index, S.p10, S.p90, color=hf.C_CH, alpha=.25, lw=0, label='10–90%')
+        ax.plot(S.index, S.med, color=hf.C_CH, lw=1.6, marker='o', ms=2.5, label='median')
+        ax.axhline(1, color='0.4', lw=0.8, ls=(0, (3, 3)))
+        ax.set(xlabel='HP penetration $N_{hp}/N$ (%)', ylabel='estimated / true capacity', xlim=(0, 102), ylim=(0.8, 2.3))
+        ax.legend(fontsize=6.5, loc='upper right')
+        ax.grid(False)
+        fig.tight_layout()
+        hf.save(fig, 'fig_capacity_error')
+        print('saved -> fig_capacity_error')
+        return
     y, yh = G.cap.to_numpy(), G.cap_est.to_numpy()
-    e = (yh - y) / y.max() * 100
+    e = yh / y if kind == 'ratio' else (yh - y) / y.max() * 100
     edges = np.arange(0, y.max() + width, width)
     idx = np.digitize(y, edges) - 1
     xs, lo, med, hi = [], [], [], []
@@ -1227,15 +1245,15 @@ def fig_capacity_error(width=20):
         if m.sum() < 20:
             continue
         xs.append(y[m].mean()); lo.append(np.percentile(e[m], 10)); med.append(np.median(e[m])); hi.append(np.percentile(e[m], 90))
-        print(f'  {edges[b]:3.0f}-{edges[b + 1]:3.0f} kW  n={m.sum():3d}  P10 {lo[-1]:+5.1f}  median {med[-1]:+5.1f}  P90 {hi[-1]:+5.1f}')
+        print(f'  {edges[b]:3.0f}-{edges[b + 1]:3.0f} kW  n={m.sum():3d}  P10 {lo[-1]:6.2f}  median {med[-1]:6.2f}  P90 {hi[-1]:6.2f}')
     print(f'max true capacity {y.max():.1f} kW; nMAE {_nmae(yh, y):.1f}%')
     hf.use_style()
     fig, ax = plt.subplots(figsize=(hf.COL1, 2.2))
     ax.fill_between(xs, lo, hi, color=hf.C_CH, alpha=.25, lw=0, label='10–90%')
     ax.plot(xs, med, color=hf.C_CH, lw=1.6, label='median')
-    ax.axhline(0, color='0.4', lw=0.8, ls=(0, (3, 3)))
+    ax.axhline(1 if kind == 'ratio' else 0, color='0.4', lw=0.8, ls=(0, (3, 3)))
     ax.set_xlabel('true installed capacity $P_h^{\\max}$ (kW)')
-    ax.set_ylabel('error / max. true capacity (%)')
+    ax.set_ylabel('estimated / true capacity' if kind == 'ratio' else 'error / max. true capacity (%)')
     ax.set_xlim(0, edges[-1])
     ax.legend(fontsize=6.5, loc='upper left')
     ax.grid(False)
