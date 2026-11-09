@@ -774,7 +774,8 @@ def fig_slope_capacity(window=40, min_n=100):
     hf.use_style()
     fig, (a, b) = plt.subplots(2, 1, figsize=(hf.COL1, 4.0), sharex=True)
     sc = a.scatter(x, y, c=G.N_hp, s=7, cmap='viridis', alpha=.7, edgecolor='none')
-    xl = np.array([0, x.max() * 1.02])
+    xl = np.array([np.floor(x.min()) - 3, np.ceil(x.max()) + 3])     # only the capacities the aggregates span
+    a.set_xlim(*xl)
     a.plot(xl, slope0 * xl, color=hf.C_HP, lw=1.3, label=f'through-origin fit, $r={r:.2f}$')
     a.set(ylabel='net-load sens. $s_h$ (kW/$^\\circ$C)')
     a.legend(fontsize=6.5, loc='upper left')
