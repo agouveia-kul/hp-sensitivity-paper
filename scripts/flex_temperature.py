@@ -963,16 +963,14 @@ def fig_flex_all(L=None, name='fig_flex_all_normalised', saver=None):
     ax.plot(x, h.med.median(), color='0.1', lw=1.4)
     ax.fill_between(x, h.est.quantile(.1), h.est.quantile(.9), color=hf.C_HP, alpha=.15, lw=0)
     ax.plot(x, h.est.median(), color=hf.C_HP, ls='--', lw=1.4)
-    d = L[L.regime == 'dead band'].groupby('bin')
-    ax.plot(d.x.first(), d.med.median(), color='0.5', ls=':', lw=1.2)
+    xmax = float(x.max()) + 1.0          # heating-regime bins only; the dead band is not shown
     ax.axhline(1, color='0.6', lw=.6)
     ax.set_ylabel('$E_{\\mathrm{flex}}$ / own maximum')
     ax.set_ylim(0, 1.6)   # room for the 90th percentile of the estimate on cold days
     handles = [(Patch(color='0.2', alpha=.3, lw=0), Line2D([], [], color='0.1', lw=1.4)),
-               (Patch(color=hf.C_HP, alpha=.15, lw=0), Line2D([], [], color=hf.C_HP, ls='--', lw=1.4)),
-               Line2D([], [], color='0.5', ls=':', lw=1.2)]
+               (Patch(color=hf.C_HP, alpha=.15, lw=0), Line2D([], [], color=hf.C_HP, ls='--', lw=1.4))]
     # lower left is empty: the curves stay above 0.6 below about 8 degC
-    ax.legend(handles, ['actual (median, 10–90%)', 'estimate (median, 10–90%)', 'actual, $T \\geq T_h$'],
+    ax.legend(handles, ['actual (median, 10–90%)', 'estimate (median, 10–90%)'],
               fontsize=6.5, loc='lower left')
     ax = axs[1]
     for nh, c, ls in zip((5, 15, 25), ('#9ecae1', '#4292c6', '#08306b'), (':', '--', '-')):
@@ -984,7 +982,9 @@ def fig_flex_all(L=None, name='fig_flex_all_normalised', saver=None):
     th = float(rebuild_design()[0]['rows'].T_h.median())
     for ax in axs:
         ax.axvline(th, color='0.45', lw=.7, ls=(0, (3, 3)))
-    axs[0].annotate('median $T_h$', (th, 0.6), xytext=(3, 0), textcoords='offset points', fontsize=6.5, color='0.3')
+    axs[1].set_xlim(right=xmax)
+    axs[0].annotate('median $T_h$', (th, 0.6), xytext=(-3, 0), textcoords='offset points', fontsize=6.5, color='0.3',
+                    ha='right')
     for ax, lab in zip(axs, 'ab'):
         ax.text(-0.22, 1.04, f'({lab})', transform=ax.transAxes, fontsize=8, va='top')
     fig.tight_layout()
