@@ -941,52 +941,41 @@ def fig_flex_all(L=None, name='fig_flex_all_normalised', saver=None):
     """All aggregates on one axis, normalised by own maximum (paper Fig. 7 since
     the storyline pass; ``outputs.flex_temperature_figure`` saves it to paper/).
 
-    (a) Actual: median over aggregates of their bin medians with the IQR across
-    aggregates; estimate dashed with its IQR across aggregates; dead-band floor
-    dotted. (b) Day-to-day IQR / median of the actual for 5, 15 and 25 HPs per
-    aggregate. ``saver`` defaults to FLEX_FIG; pass ``hp_figures.save`` for paper/.
+    Heating-regime bins only. Actual: median over aggregates of their bin medians
+    with the 10-90% range across aggregates; estimate dashed with its 10-90% range
+    across aggregates. The day-to-day spread panel was dropped (Alex, 9 Nov).
+    ``saver`` defaults to FLEX_FIG; pass ``hp_figures.save`` for paper/.
     """
     import matplotlib.pyplot as plt
     import hp_figures as hf
+    from matplotlib.lines import Line2D
+    from matplotlib.patches import Patch
     L = flex_all_normalised() if L is None else L
     # show only bins that at least 10% of the aggregates reach
     cover = L.groupby(['regime', 'bin']).row.transform('nunique')
     L = L[cover >= 0.1 * L.row.nunique()]
     hf.use_style()
-    fig, axs = plt.subplots(2, 1, figsize=(hf.COL1, 4.0), sharex=True, gridspec_kw=dict(height_ratios=[1.6, 1]))
-    from matplotlib.lines import Line2D
-    from matplotlib.patches import Patch
-    ax = axs[0]
+    fig, ax = plt.subplots(figsize=(hf.COL1, 2.5))
     h = L[L.regime == 'heating'].groupby('bin')
     x = h.x.first()
     ax.fill_between(x, h.med.quantile(.1), h.med.quantile(.9), color='0.2', alpha=.3, lw=0)
     ax.plot(x, h.med.median(), color='0.1', lw=1.4)
     ax.fill_between(x, h.est.quantile(.1), h.est.quantile(.9), color=hf.C_HP, alpha=.15, lw=0)
     ax.plot(x, h.est.median(), color=hf.C_HP, ls='--', lw=1.4)
-    xmax = float(x.max()) + 1.0          # heating-regime bins only; the dead band is not shown
     ax.axhline(1, color='0.6', lw=.6)
-    ax.set_ylabel('$E_{\\mathrm{flex}}$ / own maximum')
+    ax.set_ylabel('$E_{\mathrm{flex}}$ / own maximum')
+    ax.set_xlabel('daily mean temperature ($^\circ$C)')
     ax.set_ylim(0, 1.6)   # room for the 90th percentile of the estimate on cold days
+    ax.set_xlim(right=float(x.max()) + 1.0)     # heating-regime bins only; the dead band is not shown
     handles = [(Patch(color='0.2', alpha=.3, lw=0), Line2D([], [], color='0.1', lw=1.4)),
                (Patch(color=hf.C_HP, alpha=.15, lw=0), Line2D([], [], color=hf.C_HP, ls='--', lw=1.4))]
     # lower left is empty: the curves stay above 0.6 below about 8 degC
     ax.legend(handles, ['actual (median, 10–90%)', 'estimate (median, 10–90%)'],
               fontsize=6.5, loc='lower left')
-    ax = axs[1]
-    for nh, c, ls in zip((5, 15, 25), ('#9ecae1', '#4292c6', '#08306b'), (':', '--', '-')):
-        g = L[(L.regime == 'heating') & (L.N_hp == nh)].assign(w=lambda v: (v.q90 - v.q10) / v.med).groupby('bin')
-        ax.plot(g.x.first(), g.w.median(), color=c, ls=ls, marker='o', ms=2.5, label=f'{nh} HPs')
-    ax.set_ylabel('day-to-day 10–90%\n/ median')
-    ax.set_xlabel('daily mean temperature ($^\\circ$C)')
-    ax.legend(fontsize=6, loc='upper left')
     th = float(rebuild_design()[0]['rows'].T_h.median())
-    for ax in axs:
-        ax.axvline(th, color='0.45', lw=.7, ls=(0, (3, 3)))
-    axs[1].set_xlim(right=xmax)
-    axs[0].annotate('median $T_h$', (th, 0.6), xytext=(-3, 0), textcoords='offset points', fontsize=6.5, color='0.3',
-                    ha='right')
-    for ax, lab in zip(axs, 'ab'):
-        ax.text(-0.22, 1.04, f'({lab})', transform=ax.transAxes, fontsize=8, va='top')
+    ax.axvline(th, color='0.45', lw=.7, ls=(0, (3, 3)))
+    ax.annotate('median $T_h$', (th, 0.6), xytext=(-3, 0), textcoords='offset points', fontsize=6.5, color='0.3',
+                ha='right')
     fig.tight_layout()
     path = (saver or save_fig)(fig, name)
     plt.close(fig)

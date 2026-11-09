@@ -456,11 +456,11 @@ The ratio splits into two factors, and the net-load fit sets most of it. The tem
 \begin{figure}[t]
 \centering
 \includegraphics[width=\figw]{figures/fig_flex_normalised.pdf}
-\caption{Flexible energy against daily mean temperature for the 1260 Kloten aggregates. (a) Median and 10--90\% range across aggregates, each divided by its largest actual value. (b) Day-to-day 10--90\% range over the median in 2~$^\circ$C bins, by number of HPs. The actual applies \eqref{eq:flex-energy} to submetered inputs, so the comparison checks the inputs of the estimate, not observed flexibility.}
+\caption{Flexible energy against daily mean temperature for the 1260 Kloten aggregates: median and 10--90\% range across aggregates, each divided by its largest actual value. The actual applies \eqref{eq:flex-energy} to submetered inputs, so the comparison checks the inputs of the estimate, not observed flexibility.}
 \label{fig:flex-temperature}
 \end{figure}
 
-The annual ratio of 1.04 averages two opposite errors across temperature (Fig.~\ref{fig:flex-temperature}a). The estimate overstates the flexible energy by 18\% on the coldest days and understates it by 9--11\% between 11 and 15~$^\circ$C. For the aggregates of 50 households with 25 HPs, only the energy factor follows this profile, and the days above 13~$^\circ$C hold only 6\% of the flexible energy.
+The annual ratio of 1.04 averages two opposite errors across temperature (Fig.~\ref{fig:flex-temperature}). The estimate overstates the flexible energy by 18\% on the coldest days and understates it by 9--11\% between 11 and 15~$^\circ$C. For the aggregates of 50 households with 25 HPs, only the energy factor follows this profile, and the days above 13~$^\circ$C hold only 6\% of the flexible energy.
 
 On the coldest days, the fitted arm runs above the measured HP load. The measured load grows by about 0.02~kW per kW installed and degree down to 0~$^\circ$C, but by half that below it, whereas the fitted arm stays linear. The energy factor reaches 1.09 on these days, and the daily resolution and the pilot's SF add 4\% and 2\%. The capacity estimate plays no part, since it drops out of \eqref{eq:flex-energy}.
 
@@ -515,7 +515,7 @@ The full estimator is also tested fully out of sample, on three real aggregates 
 
 The non-TCL temperature response, which the model neglects, is measured rather than assumed away. Section~\ref{sec:res-capacity} sizes it per household, so the resulting bias is predictable from the household count the DSO already holds. Section~\ref{sec:uc-capacity} gives a correction.
 
-The estimate gives the median flexibility at each temperature, not its day-to-day spread. On nine days in ten, the measured flexibility stays above 85\% of its median with 5 HPs and 87\% with 25. The spread is narrowest on cold days and widest at 13--15~$^\circ$C, where heating seems to be on for some days and off for others (Fig.~\ref{fig:flex-temperature}b). With no recorded flexibility events, participation in demand response remains untested.
+The estimate gives the median flexibility at each temperature, not its day-to-day spread. With no recorded flexibility events, participation in demand response remains untested.
 
 The real aggregates also bound the effect of deliberate HP control. Swiss and German domestic HPs commonly run under interruptible tariffs, under which the utility may cut the HP supply during defined blocking periods. Since January 2024, {\S}14a EnWG also lets German DSOs throttle HPs above 4.2~kW \cite{Bna23}. Such control truncates the aggregated TCL peak and may bias the net-load sensitivity and the capacity estimate downwards. The accurate estimates on the real aggregates suggest, however, that such control is not a visible source of error there. The WPuQ campaign predates {\S}14a, but blocking-period tariffs do not.
 
