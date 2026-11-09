@@ -509,3 +509,4 @@ Raised on 9 Nov and parked while the error metric and ranges change. Not done ye
 - The previewed numbers (calibration homes possibly shared with aggregates) were 1.12 at 10% and nMAE 8.1%; the disjoint set gives 1.19 and 7.5%.
 - **Limitations ¶3:** "Section VII outlines a correction" → "Section III-A gives a correction".
 - **Conclusion:** the correction leaves the future-work list ("Five directions" → "Four directions") and becomes a result sentence after the real-aggregate result: subtracting a per-household non-TCL sensitivity, fitted on households without TCLs, removes most of the overestimate and lowers the nMAE to 7.5%. Abstract and highlights unchanged.
+- **III-A, after Eq. capacity-corr:** "The correction needs no knowledge of which households hold a TCL." → "On a target aggregate, the correction needs only its household count N^i, not which of its households hold a TCL." (Alex: the point applies to unseen aggregates; the repeated "aggregate" is fine.)
