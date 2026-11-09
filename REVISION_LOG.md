@@ -500,3 +500,10 @@ Raised on 9 Nov and parked while the error metric and ranges change. Not done ye
 ## Pending after cuts round 1 (Alex, 9 Nov)
 - **C1 kept as is for now:** the II-A interpretation paragraphs (behavioural thresholds; climate balance of s_h and s_c) stay.
 - **To come back to later:** D1 fold the temperature-driven energy into the flexibility pillar (II-E, IV-D, Table III energy row, abstract, Conclusion); D2 reduce Table II to the SF columns plus T_h, or move it to an appendix; D3 supervisor-requested items (II-B design-peak paragraph R28, IV-C 15-min peak SF numbers R31–R32, §14a paragraph in Limitations), kept unless Alex decides otherwise.
+
+## Optional non-TCL correction (Alex, 9 Nov)
+- **Sec. II:** after \eqref{eq:decomp}, the per-household non-TCL sensitivity s_n is named; the neglected term grows with N and weighs most at low TCL penetration. Replaces "Section VI revisits this assumption."
+- **Sec. III-A:** new optional correction, Eq. capacity-corr: (s_h − N s_n)/m_h, with s_n fitted on households without TCLs (e.g., a feeder without HPs); needs N only, not which households hold a TCL. Nomenclature gains s_n.
+- **IV-B ¶3 rewritten** around the correction. In each split, s_n is fitted on 50 HP-free homes that no aggregate of that split contains (489–525 spare per split), at each aggregate's own threshold: median 0.005 kW/°C. Corrected median ratio 1.19 at 10% penetration (uncorrected 1.66), 1.00–1.11 from 15% on; nMAE 9.5% → 7.5%; overall median ratio 1.16 → 1.05. The spread stays. Counter-example: the pilot's other load (0.011 kW/°C) leaves the estimate a third too low at low penetration. The closed-form ratio formula and "within 0.11" are gone. Numbers from `outputs.capacity_correction()`; the draw replay `_kloten_free_draws` checks itself against the cached capacities.
+- **Fig. 5:** corrected median and 10–90% band added (orange) next to the uncorrected one; y from 0.5.
+- The previewed numbers (calibration homes possibly shared with aggregates) were 1.12 at 10% and nMAE 8.1%; the disjoint set gives 1.19 and 7.5%.

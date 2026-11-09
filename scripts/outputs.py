@@ -1220,15 +1220,17 @@ def fig_capacity_error(width=20, kind='pen'):
     """
     G = _kloten_design()['rows']
     if kind == 'pen':
-        G = G.assign(r=G.cap_est / G.cap, pen=(G.N_hp / G.N * 100).round(1))
-        S = G.groupby('pen').r.agg(n='size', p10=lambda x: x.quantile(.1), med='median', p90=lambda x: x.quantile(.9))
-        print(S.round(2).to_string())
+        G = _kloten_corrected()
+        G = G.assign(pen=(G.N_hp / G.N * 100).round(1))
         hf.use_style()
         fig, ax = plt.subplots(figsize=(hf.COL1, 2.2))
-        ax.fill_between(S.index, S.p10, S.p90, color=hf.C_CH, alpha=.25, lw=0, label='10–90%')
-        ax.plot(S.index, S.med, color=hf.C_CH, lw=1.6, marker='o', ms=2.5, label='median')
+        for col, c, lab in (('cap_est', hf.C_CH, 'uncorrected'), ('cap_corr', hf.C_DE, 'corrected')):
+            S = (G[col] / G.cap).groupby(G.pen).agg(p10=lambda x: x.quantile(.1), med='median', p90=lambda x: x.quantile(.9))
+            print(lab); print(S.round(2).T.to_string())
+            ax.fill_between(S.index, S.p10, S.p90, color=c, alpha=.2, lw=0)
+            ax.plot(S.index, S.med, color=c, lw=1.6, marker='o', ms=2.5, label=lab)
         ax.axhline(1, color='0.4', lw=0.8, ls=(0, (3, 3)))
-        ax.set(xlabel='HP penetration $N_{hp}/N$ (%)', ylabel='estimated / true capacity', xlim=(0, 102), ylim=(0.8, 2.3))
+        ax.set(xlabel='HP penetration $N_{hp}/N$ (%)', ylabel='estimated / true capacity', xlim=(0, 102), ylim=(0.5, 2.3))
         ax.legend(fontsize=6.5, loc='upper right')
         ax.grid(False)
         fig.tight_layout()
@@ -1288,6 +1290,68 @@ def capacity_bias_decomposition():
           f'HP-free home {s_f:.4f} (median {np.median(each):.4f}; top 10% give {top:.0%})')
     print(obs.round(2).T.to_string())
     print(f'max |pred - own-m median| {np.abs(obs.pred - obs.r_or).max():.2f}')
+
+
+def _kloten_free_draws(n_splits=20, reps=3, seed=0):
+    """Replay the random draws of ``_kloten_design`` (same seed, same order) and return, per row,
+    the indices of its HP-free homes and its HPs. The design cache does not store them."""
+    K = _kloten_design()['K']
+    rng = np.random.default_rng(seed); nfree = K['free'].shape[0]
+    F_all, H_all = [], []
+    for s in range(n_splits):
+        A, B = _pilot_split(len(K['cap']), rng)
+        for N in N_GRID_K:
+            for nh in NHP_GRID_K:
+                if nh > N:
+                    continue
+                for _ in range(reps):
+                    H_all.append(rng.choice(B, nh, replace=False))
+                    F_all.append(rng.choice(nfree, N - nh, replace=False) if N > nh else np.array([], int))
+    return F_all, H_all
+
+
+def _kloten_corrected(n_cal=50, seed=1):
+    """Capacity estimate corrected by a per-household non-TCL sensitivity s_n (Eq. capacity-corr):
+    (s_h - N s_n) / m_h. In each split, s_n is fitted on n_cal HP-free homes that no aggregate of
+    that split contains, at each aggregate's own threshold T_h. Returns the design rows with
+    columns s_n and cap_corr."""
+    D = _kloten_design(); G = D['rows'].copy(); K = D['K']; T = D['T']
+    F_all, H_all = _kloten_free_draws()
+    cap_chk = np.array([K['cap'][H].sum() for H in H_all])
+    assert len(F_all) == len(G) and np.allclose(cap_chk, G.cap), 'draw replay does not match the design'
+    grid = np.round(np.arange(np.floor(G.T_h.min()), np.ceil(G.T_h.max()) + 0.05, 0.1), 1)
+    rng = np.random.default_rng(seed); nfree = K['free'].shape[0]
+    def curve(y):
+        return [np.linalg.lstsq(np.c_[np.ones_like(T), np.maximum(0, g - T)], y, rcond=None)[0][1] for g in grid]
+    s_n = np.empty(len(G)); s_p = np.empty(len(G)); spare = []
+    for s, idx in G.groupby('split').groups.items():
+        used = np.unique(np.concatenate([F_all[i] for i in idx]))
+        pool = np.setdiff1d(np.arange(nfree), used); spare.append(len(pool))
+        s_n[idx] = np.interp(G.T_h[idx], grid, curve(K['free'][rng.choice(pool, n_cal, replace=False)].mean(0)))
+        # counter-example: the other load of the pilot's own HP homes (not TCL-free)
+        s_p[idx] = np.interp(G.T_h[idx], grid, curve(K['own'][D['pilots'][s]['A']].mean(0)))
+    G['s_n'] = s_n; G['s_pilot_other'] = s_p
+    G['cap_corr'] = (G.s_h - G.N * G.s_n) / G.m_pilot
+    G['cap_corr_pilot'] = (G.s_h - G.N * G.s_pilot_other) / G.m_pilot
+    G.attrs['spare'] = spare
+    return G
+
+
+def capacity_correction():
+    """IV-B numbers of the corrected estimate (Eq. capacity-corr) against the uncorrected one."""
+    G = _kloten_corrected()
+    G = G.assign(pen=(G.N_hp / G.N * 100).round(1), r0=G.cap_est / G.cap, rc=G.cap_corr / G.cap,
+                 rp=G.cap_corr_pilot / G.cap)
+    print(f'HP-free homes unused per split: {min(G.attrs["spare"])}-{max(G.attrs["spare"])}; '
+          f's_n median {G.s_n.median():.4f} kW/degC (P10-P90 {G.s_n.quantile(.1):.4f}-{G.s_n.quantile(.9):.4f}); '
+          f'pilot other load {G.s_pilot_other.median():.4f}')
+    S = G.groupby('pen').agg(r0=('r0', 'median'), rc=('rc', 'median'), rp=('rp', 'median'),
+                             rc10=('rc', lambda x: x.quantile(.1)), rc90=('rc', lambda x: x.quantile(.9)))
+    print(S.round(2).T.to_string())
+    for c, lab in (('cap_est', 'uncorrected'), ('cap_corr', 'corrected')):
+        r = G[c] / G.cap
+        print(f'  {lab:11s} nMAE {_nmae(G[c], G.cap):4.1f}%  median ratio {r.median():.2f}  '
+              f'P10-P90 {r.quantile(.1):.2f}-{r.quantile(.9):.2f}  negative {(G[c] < 0).sum()}')
 
 
 def fig_capacity_heatmap():
