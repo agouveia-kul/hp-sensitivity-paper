@@ -448,20 +448,27 @@ def _wape(est, act):
     return np.abs(est - act).sum() / act.sum() * 100
 
 
+def _nmae(est, act):
+    """Normalised mean absolute error (%): mean |est - act| over the scored set, divided by the set's
+    largest true value. Equals the mean of each percentage error scaled by act_i / max(act)."""
+    est, act = np.asarray(est, float), np.asarray(act, float)
+    return np.abs(est - act).mean() / act.max() * 100
+
+
 def tab_sf():
     """Table II (SF invariance, N = 50) and the pilot SF figure (fig_sf_pilot)."""
     from scipy.stats import spearmanr
     Dz = _kloten_design(); G = Dz['rows']
     g50 = G[G.N == 50]
 
-    def iqr(x):
-        return x.quantile(.75) - x.quantile(.25)
+    def iqr(x):     # width of the 10-90% range (name kept for the column keys)
+        return x.quantile(.9) - x.quantile(.1)
     par = g50.groupby('N_hp').agg(r2=('r2_anch', 'median'), ri=('r2_anch', iqr), sm=('sfmax', 'median'), si=('sfmax', iqr),
                                   bm=('b_anch', 'median'), bi=('b_anch', iqr),
                                   mm=('m_anch', 'median'), mi=('m_anch', iqr))
     body = "\n".join(f"{int(n)} & {r.r2:.2f}\\,({r.ri:.2f}) & {r.sm:.2f}\\,({r.si:.2f}) & {r.bm:.3f}\\,({r.bi:.3f}) & "
                      f"{r.mm:.4f}\\,({r.mi:.4f}) \\\\" for n, r in par.iterrows())
-    tex = r"""\begin{autotable}{SF fits of the Kloten aggregates, median (interquartile range, IQR)}{tab:sf}
+    tex = r"""\begin{autotable}{SF fits of the Kloten aggregates, median (width of the 10--90\% range)}{tab:sf}
 \begin{tabular}{rcccc}
 \toprule
 $N_{hp}$ & $R^2_h$ & SF$^{\max}_h$ & $b_h$ & $m_h$ ($^\circ$C$^{-1}$) \\
@@ -474,7 +481,7 @@ $N_{hp}$ & $R^2_h$ & SF$^{\max}_h$ & $b_h$ & $m_h$ ($^\circ$C$^{-1}$) \\
     pm = pd.Series([p['m'] for p in Dz['pilots']])
     print(f'{len(g50)} aggregates at N=50; Spearman m_anch vs N_hp {spearmanr(g50.N_hp, g50.m_anch).statistic:+.3f}, '
           f'vs capacity {spearmanr(g50.cap, g50.m_anch).statistic:+.3f}')
-    print(f'pilot m_h over {len(pm)} splits: median {pm.median():.4f} IQR {pm.quantile(.25):.4f}-{pm.quantile(.75):.4f}')
+    print(f'pilot m_h over {len(pm)} splits: median {pm.median():.4f} P10-P90 {pm.quantile(.1):.4f}-{pm.quantile(.9):.4f}')
 
     # pilot figure: the pilot half of split 0
     p0 = Dz['pilots'][0]; K = Dz['K']; T = Dz['T']
@@ -544,7 +551,7 @@ def sf_controls(n_splits=120, n_reps=50, station='KLO', seed=0):
         rows.append(dict(r2=r2, m_pilot=mA, cap_err=(sh / mA - capB) / capB * 100,
                          cap_err_oracle=(sh / mB - capB) / capB * 100))
     D = pd.DataFrame(rows)
-    q = lambda s: f'{s.median():.3f} (IQR {s.quantile(.25):.3f}-{s.quantile(.75):.3f})'
+    q = lambda s: f'{s.median():.3f} (P10-P90 {s.quantile(.1):.3f}-{s.quantile(.9):.3f})'
     print(f'(1) household-disjoint, {len(A)} vs {len(B)} {station} HPs, {n_splits} splits:')
     print(f'    SF R2 (pilot curve at target T_h): {q(D.r2)}; pilot m_h {q(D.m_pilot)}')
     print(f'    capacity error s_h/m_pilot: {q(D.cap_err)} %; oracle own m: {q(D.cap_err_oracle)} %')
@@ -714,7 +721,7 @@ fit + integration & WAPE (\%) & median $\hat{E}_{\mathrm{TCL}}/E_{\mathrm{TCL}}$
     print(f'{len(G)} aggregates; daily+daily Pearson {rho:.3f}, WAPE {_wape(G.e_dd, G.e_act):.1f}%, '
           f'median ratio {np.median(G.e_dd / G.e_act):.3f}')
     print(f'share of HP energy on days >= T_h: median {np.median(1 - G.e_b_act / G.e_act_d) * 100:.1f}%; '
-          f'below-threshold WAPE {_wape(G.e_b_est, G.e_b_act):.1f}%, ratio {np.median(G.e_b_est / G.e_b_act):.3f}')
+          f'below-threshold nMAE {_nmae(G.e_b_est, G.e_b_act):.1f}% (WAPE {_wape(G.e_b_est, G.e_b_act):.1f}%), ratio {np.median(G.e_b_est / G.e_b_act):.3f}')
     print('wrote tab_energy.tex')
 
 
@@ -889,10 +896,10 @@ def tab_baselines():
             (r'(iv) planning SF, $\hat{P}_{\mathrm{TCL}}(T_{\min})/0.425$', 'cap_plan')]
     lines = []
     for name, c in rows:
-        w = [_wape(G[c], G.cap)] + [_wape(g[c], g.cap) for _, g in G.groupby(bins, observed=True)]
+        w = [_nmae(G[c], G.cap)] + [_nmae(g[c], g.cap) for _, g in G.groupby(bins, observed=True)]
         print(f'{c:10s} ' + ' '.join(f'{x:5.1f}' for x in w) + f'  median ratio {np.median(G[c] / G.cap):.3f}')
         lines.append(name + ' & ' + ' & '.join(f'{x:.1f}' for x in w) + r' \\')
-    tex = r"""\begin{autotable}{Capacity WAPE (\%) on the Kloten aggregates, by HP penetration $N_{hp}/N$}{tab:baselines}
+    tex = r"""\begin{autotable}{Capacity nMAE (\%) on the Kloten aggregates, by HP penetration $N_{hp}/N$}{tab:baselines}
 \setlength{\tabcolsep}{2.5pt}
 \begin{tabular}{lccccc}
 \toprule
@@ -1002,8 +1009,8 @@ def flex_figures():
     act = Fh.act_h.to_numpy()
     ratio = G.flex_b_est / act
     er = G.e_b_est / G.e_b_act
-    print(f'{len(G)} aggregates, R1 days, hourly actual: ratio median {ratio.median():.2f} IQR [{ratio.quantile(.25):.2f}, '
-          f'{ratio.quantile(.75):.2f}], WAPE {_wape(G.flex_b_est, act):.1f}%; energy factor {er.median():.2f}, headroom factor '
+    print(f'{len(G)} aggregates, R1 days, hourly actual: ratio median {ratio.median():.2f} P10-P90 [{ratio.quantile(.1):.2f}, '
+          f'{ratio.quantile(.9):.2f}], nMAE {_nmae(G.flex_b_est, act):.1f}% (WAPE {_wape(G.flex_b_est, act):.1f}%); energy factor {er.median():.2f}, headroom factor '
           f'{(ratio / er).median():.2f} [{(ratio / er).quantile(.25):.2f}, {(ratio / er).quantile(.75):.2f}], corr {np.corrcoef(ratio, er)[0, 1]:.2f}; '
           f'hourly / daily-mean actual {np.median(act / G.flex_b_act):.3f}; vs daily-mean actual {np.median(G.flex_b_est / G.flex_b_act):.2f}; '
           f'dead-band share of actual {np.median(1 - Fh.act_h / Fh.act_h_all) * 100:.0f}%; '
@@ -1158,14 +1165,14 @@ def fig_aggregation_heatmap():
     """fig_aggregation_heatmap: fit quality and capacity error against spatial x temporal aggregation.
 
     One row of three panels on the Kloten aggregates at a 50% ETL rate (``_kloten_quality``):
-    median R^2_h of the net-load fit and of the SF fit (shared scale), and the WAPE of s_h / m_h.
+    median R^2_h of the net-load fit and of the SF fit (shared scale), and the nMAE of s_h / m_h (max of each cell).
     Replaces fig_quality_heatmap and fig_capacity_heatmap in the paper.
     """
     Q = _kloten_quality()
     labs = [lab for lab, _ in QUALITY_RES]
     r2 = {c: Q.pivot_table(index='N', columns='resolution', values=c, aggfunc='median')[labs] for c in ('r2_net', 'r2_sf')}
-    wape = Q.groupby(['N', 'resolution']).apply(lambda g: (g.cap_est - g.cap).abs().sum() / g.cap.sum() * 100).unstack()[labs]
-    for c, p in list(r2.items()) + [('WAPE (%)', wape)]:
+    wape = Q.groupby(['N', 'resolution']).apply(lambda g: _nmae(g.cap_est, g.cap)).unstack()[labs]   # nMAE per cell
+    for c, p in list(r2.items()) + [('nMAE (%)', wape)]:
         print(c); print(p.round(2).to_string())
     r2v = np.concatenate([p.values.ravel() for p in r2.values()])
     lo, hi = float(np.nanmin(r2v)), float(np.nanmax(r2v))
@@ -1173,7 +1180,7 @@ def fig_aggregation_heatmap():
     fig, axes = plt.subplots(1, 3, figsize=(hf.COL2, 2.35), gridspec_kw=dict(width_ratios=[1, 1, 1.18]))
     panels = [(r2['r2_net'], 'net-load fit, median $R^2_h$', 'magma', lo, hi, '{:.2f}'),
               (r2['r2_sf'], 'SF fit, median $R^2_h$', 'magma', lo, hi, '{:.2f}'),
-              (wape, 'capacity estimate, WAPE (%)', 'magma_r', float(np.nanmin(wape.values)) - 1,
+              (wape, 'capacity estimate, nMAE (%)', 'magma_r', float(np.nanmin(wape.values)) - 1,
                float(np.nanmax(wape.values)) + 1, '{:.0f}')]
     ims = []
     for ax, (piv, title, cmap, vmin, vmax, fmt) in zip(axes, panels):
@@ -1200,6 +1207,41 @@ def fig_aggregation_heatmap():
     cb = fig.colorbar(ims[2], ax=axes[2], pad=0.03, aspect=22, fraction=0.08); cb.ax.tick_params(labelsize=7)
     hf.save(fig, 'fig_aggregation_heatmap')
     print('saved -> fig_aggregation_heatmap')
+
+
+def fig_capacity_error(width=20):
+    """fig_capacity_error: signed capacity error of s_h / m_h against true installed capacity (Kloten).
+
+    Each aggregate's error (estimate - true) is divided by the largest true capacity of all 1260
+    aggregates, as in the nMAE over that set. Median and 10-90% range in bins of ``width`` kW
+    with at least 20 aggregates.
+    """
+    G = _kloten_design()['rows']
+    y, yh = G.cap.to_numpy(), G.cap_est.to_numpy()
+    e = (yh - y) / y.max() * 100
+    edges = np.arange(0, y.max() + width, width)
+    idx = np.digitize(y, edges) - 1
+    xs, lo, med, hi = [], [], [], []
+    for b in range(len(edges) - 1):
+        m = idx == b
+        if m.sum() < 20:
+            continue
+        xs.append(y[m].mean()); lo.append(np.percentile(e[m], 10)); med.append(np.median(e[m])); hi.append(np.percentile(e[m], 90))
+        print(f'  {edges[b]:3.0f}-{edges[b + 1]:3.0f} kW  n={m.sum():3d}  P10 {lo[-1]:+5.1f}  median {med[-1]:+5.1f}  P90 {hi[-1]:+5.1f}')
+    print(f'max true capacity {y.max():.1f} kW; nMAE {_nmae(yh, y):.1f}%')
+    hf.use_style()
+    fig, ax = plt.subplots(figsize=(hf.COL1, 2.2))
+    ax.fill_between(xs, lo, hi, color=hf.C_CH, alpha=.25, lw=0, label='10–90%')
+    ax.plot(xs, med, color=hf.C_CH, lw=1.6, label='median')
+    ax.axhline(0, color='0.4', lw=0.8, ls=(0, (3, 3)))
+    ax.set_xlabel('true installed capacity $P_h^{\\max}$ (kW)')
+    ax.set_ylabel('error / max. true capacity (%)')
+    ax.set_xlim(0, edges[-1])
+    ax.legend(fontsize=6.5, loc='upper left')
+    ax.grid(False)
+    fig.tight_layout()
+    hf.save(fig, 'fig_capacity_error')
+    print('saved -> fig_capacity_error')
 
 
 def fig_capacity_heatmap():
@@ -2244,7 +2286,7 @@ def tab_transfer(n_splits=300, seed=0):
     bootstrap that redraws 80% of the homes of each pool. The ratio minus one is the
     capacity error caused by the transfer alone.
     """
-    q = lambda s: f"[{s.quantile(.25):.2f}, {s.quantile(.75):.2f}]"
+    q = lambda s: f"[{s.quantile(.1):.2f}, {s.quantile(.9):.2f}]"
     rows = {}
     # Kloten halves, from the daily pools
     D = _daily_pools(); K = D['KLO']; nk = len(K['cap'])
@@ -2303,7 +2345,7 @@ def tab_transfer(n_splits=300, seed=0):
             print(f'{lab:45s} m_h {m:12s} {est:.2f} {q(dist)}')
             body.append(f'{lab} & {c} & {n} & {est:.2f} {q(dist)} \\\\')
         body.append(r'\midrule')
-    tex = r"""\begin{autotable}{Ratio of the target's own to the pilot's SF sensitivity [IQR over random splits or a bootstrap over households]}{tab:transfer}
+    tex = r"""\begin{autotable}{Ratio of the target's own to the pilot's SF sensitivity [10--90\% range over random splits or a bootstrap over households]}{tab:transfer}
 \setlength{\tabcolsep}{2.5pt}
 \begin{tabular}{llcc}
 \toprule

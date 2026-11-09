@@ -925,13 +925,13 @@ def flex_all_normalised(D=None, min_days=MIN_DAYS):
             for regime, m in (('heating', (idx == b) & (T < th[i])), ('dead band', (idx == b) & (T >= th[i]))):
                 if m.sum() < min_days:
                     continue
-                q25, med, q75 = np.quantile(fa[m], [.25, .5, .75])
+                q10, q25, med, q75, q90 = np.quantile(fa[m], [.1, .25, .5, .75, .9])
                 cur.append(dict(row=i, split=r.split, N=r.N, N_hp=r.N_hp, bin=b, x=xb[b], regime=regime,
-                                days=int(m.sum()), med=med, q25=q25, q75=q75,
+                                days=int(m.sum()), med=med, q10=q10, q25=q25, q75=q75, q90=q90,
                                 est=float(fe[m].mean()) if regime == 'heating' else np.nan))
         c = pd.DataFrame(cur)
         ref = c.loc[c.regime == 'heating', 'med'].max()
-        for k in ('med', 'q25', 'q75', 'est'):
+        for k in ('med', 'q10', 'q25', 'q75', 'q90', 'est'):
             c[k] = c[k] / ref
         rows.append(c)
     return pd.concat(rows, ignore_index=True)
@@ -959,26 +959,26 @@ def fig_flex_all(L=None, name='fig_flex_all_normalised', saver=None):
     ax = axs[0]
     h = L[L.regime == 'heating'].groupby('bin')
     x = h.x.first()
-    ax.fill_between(x, h.med.quantile(.25), h.med.quantile(.75), color='0.2', alpha=.3, lw=0)
+    ax.fill_between(x, h.med.quantile(.1), h.med.quantile(.9), color='0.2', alpha=.3, lw=0)
     ax.plot(x, h.med.median(), color='0.1', lw=1.4)
-    ax.fill_between(x, h.est.quantile(.25), h.est.quantile(.75), color=hf.C_HP, alpha=.15, lw=0)
+    ax.fill_between(x, h.est.quantile(.1), h.est.quantile(.9), color=hf.C_HP, alpha=.15, lw=0)
     ax.plot(x, h.est.median(), color=hf.C_HP, ls='--', lw=1.4)
     d = L[L.regime == 'dead band'].groupby('bin')
     ax.plot(d.x.first(), d.med.median(), color='0.5', ls=':', lw=1.2)
     ax.axhline(1, color='0.6', lw=.6)
     ax.set_ylabel('$E_{\\mathrm{flex}}$ / own maximum')
-    ax.set_ylim(0, 1.3)
+    ax.set_ylim(0, 1.6)   # room for the 90th percentile of the estimate on cold days
     handles = [(Patch(color='0.2', alpha=.3, lw=0), Line2D([], [], color='0.1', lw=1.4)),
                (Patch(color=hf.C_HP, alpha=.15, lw=0), Line2D([], [], color=hf.C_HP, ls='--', lw=1.4)),
                Line2D([], [], color='0.5', ls=':', lw=1.2)]
     # lower left is empty: the curves stay above 0.6 below about 8 degC
-    ax.legend(handles, ['actual (median, IQR)', 'estimate (median, IQR)', 'actual, $T \\geq T_h$'],
+    ax.legend(handles, ['actual (median, 10–90%)', 'estimate (median, 10–90%)', 'actual, $T \\geq T_h$'],
               fontsize=6.5, loc='lower left')
     ax = axs[1]
     for nh, c, ls in zip((5, 15, 25), ('#9ecae1', '#4292c6', '#08306b'), (':', '--', '-')):
-        g = L[(L.regime == 'heating') & (L.N_hp == nh)].assign(w=lambda v: (v.q75 - v.q25) / v.med).groupby('bin')
+        g = L[(L.regime == 'heating') & (L.N_hp == nh)].assign(w=lambda v: (v.q90 - v.q10) / v.med).groupby('bin')
         ax.plot(g.x.first(), g.w.median(), color=c, ls=ls, marker='o', ms=2.5, label=f'{nh} HPs')
-    ax.set_ylabel('day-to-day IQR\n/ median')
+    ax.set_ylabel('day-to-day 10–90%\n/ median')
     ax.set_xlabel('daily mean temperature ($^\\circ$C)')
     ax.legend(fontsize=6, loc='upper left')
     th = float(rebuild_design()[0]['rows'].T_h.median())
