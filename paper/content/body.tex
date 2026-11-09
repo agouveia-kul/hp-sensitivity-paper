@@ -29,7 +29,7 @@ This paper joins the change-point and simultaneity approaches. It estimates the 
 The contributions of this paper are threefold.
 \begin{enumerate}
 \item \emph{Installed Capacity Estimation:} A method to estimate the installed TCL capacity behind a feeder from its net load and temperature, calibrated once on a small submetered pilot. The households of the target feeder are never submetered.
-\item \emph{SF Sensitivity Transfer:} An evaluation of when the SF sensitivity of a pilot transfers: within one population, across HP penetration, aggregate size and data resolution; to real aggregates outside the pilot and to populations from five countries.
+\item \emph{SF Sensitivity Transfer:} An evaluation of when the SF sensitivity of a pilot transfers: within one population, across HP penetration and aggregate size; to real aggregates outside the pilot and to populations from five countries.
 \item \emph{Flexibility Potential Estimation:} Estimates of the temperature-driven TCL energy, which needs only the net-load sensitivity and no pilot, and of a flexibility potential against temperature, which also uses the SF sensitivity.
 \end{enumerate}
 
@@ -407,17 +407,6 @@ Fig.~\ref{fig:capacity-error} shows the ratio of estimated to true capacity agai
 
 The overestimate grows as the penetration falls because $s_h$ also absorbs the temperature response of the non-HP load, which \eqref{eq:decomp} neglects. The pilot is not the cause: with each aggregate's own $m_h$, the median ratio still falls from 1.57 to 1.06. Fitted at a common threshold, an HP adds 0.112~kW/$^\circ$C to $s_h$, the other load of its home 0.010~kW/$^\circ$C and each household without an HP 0.006~kW/$^\circ$C. With $p = N_{hp}/N$, the ratio therefore follows $1 + (s_o + s_f(1-p)/p)/s_{hp}$, within 0.11 of the median at every penetration. The range is widest at low penetration because a tenth of the households without an HP give 81\% of their response.
 
-\begin{figure*}[t]
-\centering
-\includegraphics[width=\linewidth]{figures/fig_aggregation_heatmap.pdf}
-\caption{Fit quality and capacity error on the Kloten aggregates against spatial aggregation (households per aggregate, $N$) and temporal aggregation (averaging window), at a fixed 50\% HP penetration. Left and centre: median $R^2_h$ of the net-load fit and the SF fit. Right: nMAE of the capacity estimate \eqref{eq:capacity}, with the maximum taken within each cell.}
-\label{fig:aggregation}
-\end{figure*}
-
-Summing more households and averaging over longer windows both smooth out behaviour that does not follow the temperature, so both raise the fit quality, and each partly substitutes for the other (Fig.~\ref{fig:aggregation}). The figure repeats both fits and the estimate over a grid of household counts and averaging windows. It uses a separate set of Kloten aggregates at a fixed 50\% HP penetration, also drawn without replacement. In each cell, the target's net-load fit and the pilot's SF fit are made at the cell's resolution. Both fits are scored on the points below the net-load threshold $T_h$. The median $R^2_h$ rises from 0.42 for the net-load fit and 0.60 for the SF fit, at ten households and hourly resolution, to 0.91 and 0.95 at fifty households and daily resolution.
-
-The capacity estimate depends little on either form of aggregation. Its nMAE stays between 10\% and 12\% in every cell, as both sensitivities of \eqref{eq:capacity} come from fits at the same resolution, and the median overestimate stays between 9\% and 14\%. Five HPs among ten households give an nMAE of 12.9\%, against 22\% for five HPs across all household counts. This points to the HP penetration, rather than the HP count or the number of households, as what drives the error. The daily mean, used throughout this paper, therefore suffices for the capacity estimate.
-
 Table~\ref{tab:baselines} compares four estimators on the same aggregates:
 \begin{itemize}
 \item[(i)] the proposed estimate, the aggregate's $s_h$ divided by the pilot's $m_h$ \eqref{eq:capacity};
@@ -532,7 +521,7 @@ The full estimator is also tested fully out of sample, on three real aggregates 
 
 The non-TCL temperature response, which the model neglects, is measured rather than assumed away. The zero-HP control of Section~\ref{sec:accuracy} sizes it, so the resulting bias is predictable from the household count the DSO already holds. Section~\ref{sec:conclusion} outlines a correction.
 
-The estimate gives the median flexibility at each temperature, not its day-to-day spread. On nine days in ten, the measured flexibility stays above 85\% of its median with 5 HPs and 87\% with 25. The spread is narrowest on cold days and widest at 13--15~$^\circ$C, where heating seems to be on for some days and off for others (Fig.~\ref{fig:flex-temperature}b). Unlike the fit quality in Fig.~\ref{fig:aggregation}, this spread barely shrinks with aggregation. With no recorded flexibility events, participation in demand response remains untested.
+The estimate gives the median flexibility at each temperature, not its day-to-day spread. On nine days in ten, the measured flexibility stays above 85\% of its median with 5 HPs and 87\% with 25. The spread is narrowest on cold days and widest at 13--15~$^\circ$C, where heating seems to be on for some days and off for others (Fig.~\ref{fig:flex-temperature}b). With no recorded flexibility events, participation in demand response remains untested.
 
 The real aggregates also bound the effect of deliberate HP control. Swiss and German domestic HPs commonly run under interruptible tariffs, under which the utility may cut the HP supply during defined blocking periods. Since January 2024, {\S}14a EnWG also lets German DSOs throttle HPs above 4.2~kW \cite{Bna23}. Such control truncates the aggregated TCL peak and may bias the net-load sensitivity and the capacity estimate downwards. The accurate estimates on the real aggregates suggest, however, that such control is not a visible source of error there. The WPuQ campaign predates {\S}14a, but blocking-period tariffs do not.
 
