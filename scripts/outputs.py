@@ -753,22 +753,45 @@ def fig_energy_error(below_th=True):
     print('saved ->', name)
 
 
-def fig_slope_capacity():
-    """fig_slope_capacity: net-load sensitivity vs installed HP capacity (Kloten)."""
-    G = _kloten_design()['rows']
-    x, y = G.cap.to_numpy(), G.s_h.to_numpy()
+def fig_slope_capacity(window=40, min_n=100):
+    """fig_slope_capacity: (a) net-load sensitivity s_h against installed HP capacity; (b) the
+    aggregates' own SF sensitivity m_h against installed capacity: 10-90% range over a rolling
+    window of ``window`` kW (evaluated every kW where it holds at least ``min_n`` aggregates),
+    the median of all aggregates and the median of the 20 pilots (Kloten, 1260 aggregates)."""
+    from scipy.stats import spearmanr
+    Dz = _kloten_design(); G = Dz['rows']
+    x, y, m = G.cap.to_numpy(), G.s_h.to_numpy(), G.m_own.to_numpy()
     slope0 = np.sum(x * y) / np.sum(x * x); r = np.corrcoef(x, y)[0, 1]
-    print(f'n={len(G)} Pearson r={r:.3f} through-origin slope={slope0:.4f}')
+    pm = np.median([p['m'] for p in Dz['pilots']])
+    xg = np.arange(np.floor(x.min()), np.ceil(x.max()) + 1, 1.0)
+    win = [m[np.abs(x - c) <= window / 2] for c in xg]
+    ok = np.array([len(w) >= min_n for w in win])
+    lo = np.array([np.quantile(w, .1) for w, k in zip(win, ok) if k])
+    hi = np.array([np.quantile(w, .9) for w, k in zip(win, ok) if k])
+    xg = xg[ok]
+    print(f'n={len(G)} Pearson r={r:.3f} through-origin slope={slope0:.4f}; m_h median {np.median(m):.4f}, '
+          f'pilots {pm:.4f}, Spearman(m_h, cap) {spearmanr(x, m).statistic:+.3f}; band {xg.min():.0f}-{xg.max():.0f} kW')
     hf.use_style()
-    fig, ax = plt.subplots(figsize=(hf.COL1, 2.3))
-    sc = ax.scatter(x, y, c=G.N_hp, s=9, cmap='viridis', alpha=.7, edgecolor='none')
+    fig, (a, b) = plt.subplots(2, 1, figsize=(hf.COL1, 4.0), sharex=True)
+    sc = a.scatter(x, y, c=G.N_hp, s=7, cmap='viridis', alpha=.7, edgecolor='none')
     xl = np.array([0, x.max() * 1.02])
-    ax.plot(xl, slope0 * xl, color=hf.C_HP, lw=1.4,
-            label=f'through-origin fit\n($r={r:.2f}$, $m={slope0:.4f}\\,^\\circ$C$^{{-1}}$)')
-    ax.set(xlabel='installed HP capacity $P_h^{\\max}$ (kW)', ylabel='net-load sensitivity $s_h$ (kW/$^\\circ$C)')
-    ax.legend(fontsize=7, loc='upper left')
-    cb = fig.colorbar(sc, ax=ax, pad=0.02); cb.set_label('$N_{hp}$', fontsize=8)
-    fig.tight_layout(); hf.save(fig, 'fig_slope_capacity')
+    a.plot(xl, slope0 * xl, color=hf.C_HP, lw=1.3, label=f'through-origin fit, $r={r:.2f}$')
+    a.set(ylabel='net-load sens. $s_h$ (kW/$^\\circ$C)')
+    a.legend(fontsize=6.5, loc='upper left')
+    a.text(0.98, 0.05, '(a)', transform=a.transAxes, ha='right', fontsize=8)
+    b.fill_between(xg, lo, hi, color='0.45', alpha=.35, lw=0, label=f'targets, 10–90% ({window} kW window)', zorder=2)
+    b.axhline(np.median(m), color='0.05', lw=1.3, label=f'targets, median ({np.median(m):.3f})', zorder=3)
+    b.axhline(pm, color=hf.C_HP, lw=1.2, ls='--', label=f'pilots, median ({pm:.3f})', zorder=4)
+    b.set(xlabel='installed HP capacity $P_h^{\\max}$ (kW)', ylabel='SF sensitivity $m_h$ ($^\\circ$C$^{-1}$)',
+          ylim=(0.008, 0.026), yticks=[0.010, 0.015, 0.020, 0.025])
+    b.legend(fontsize=6, loc='lower right')
+    b.text(0.98, 0.95, '(b)', transform=b.transAxes, ha='right', va='top', fontsize=8)
+    for ax in (a, b):
+        ax.grid(False)
+    fig.tight_layout()
+    cb = fig.colorbar(sc, ax=a, pad=0.02, ticks=[5, 10, 15, 20, 25]); cb.set_label('number of HPs', fontsize=8)
+    b.set_position([a.get_position().x0, b.get_position().y0, a.get_position().width, b.get_position().height])
+    hf.save(fig, 'fig_slope_capacity')
     print('saved -> fig_slope_capacity')
 
 

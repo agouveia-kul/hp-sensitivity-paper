@@ -421,22 +421,21 @@ The overestimate grows as the penetration falls because $s_h$ also holds the non
 
 The capacity estimate divides a sensitivity that grows with the installed capacity by one that does not. This subsection shows both properties on the Kloten aggregates, which is the within-population test of the hypothesis of Section~\ref{sec:transfer}.
 
-The SF fit is stable within the population. Because the SF comes from the submetered HPs alone, the households without an HP do not affect it. Table~\ref{tab:sf} therefore reports the aggregates of a constant size, 50 households, where $N_{hp}$ is the only variable. Neither the maximum heating SF nor the sensitivity $m_h$ changes meaningfully with the number of HPs or their installed capacity: $m_h$ holds near $0.018\,^\circ$C$^{-1}$ and the maximum SF near 0.48.
+The SF fit is stable within the population. Because the SF comes from the submetered HPs alone, the households without an HP do not affect it. Fig.~\ref{fig:slope-capacity}(b) therefore plots the own $m_h$ of every aggregate against its installed capacity. It holds near $0.018\,^\circ$C$^{-1}$ at every capacity, at a Spearman correlation of $-0.06$, and the maximum heating SF holds near 0.47.
 %They differ slightly because they are fitted differently: $m$ as the median of the per-substation SF fits, and the slope as a single regression of $s_h$ on installed capacity pooled across the substations.
-More HPs behind the meter do not shift these values but tighten them, as the 10--90\% range of $m_h$ narrows from 0.0084 at five HPs to 0.0023 at twenty-five. \chg{This maximum is a daily mean. Taken at the 15-min peak, as network planning takes it, the SF of the 50 Kloten HPs reaches 0.56 on the coldest day and 0.59 over the year. Both lie above the HP SF of 0.425 that a Great Britain-wide LV network study draws from UK field trials \cite{Few24}. On the coldest day of the Kloten data, the 15-min peak SF of the 50 submetered HPs is 1.28 times the daily mean, and on a median heating day 1.75 times.}
+More HPs behind the meter do not shift these values but tighten them, as the 10--90\% range of $m_h$ narrows from 0.0092 at five HPs to 0.0023 at twenty-five. \chg{This maximum is a daily mean. Taken at the 15-min peak, as network planning takes it, the SF of the 50 Kloten HPs reaches 0.56 on the coldest day and 0.59 over the year. Both lie above the HP SF of 0.425 that a Great Britain-wide LV network study draws from UK field trials \cite{Few24}. On the coldest day of the Kloten data, the 15-min peak SF of the 50 submetered HPs is 1.28 times the daily mean, and on a median heating day 1.75 times.}
 
-\input{tables/tab_sf}
 
 Across the twenty splits, the pilot's SF sensitivity $m_h$ has a median of $0.018\,^\circ$C$^{-1}$ and a 10--90\% range of 0.017--0.019. In one split, the pilot's SF fit at its own net-load threshold gives $\hat{\mathrm{SF}}_h(T) = 0.021 + 0.019\,(16.6 - T)$ for $T<16.6\,^\circ$C, at an $R^2_h$ of 0.94.
 
 Placed at the target half's net-load threshold, the pilot's SF curve also reproduces the SF of the whole target half, at a median $R^2_h$ of 0.91 over 120 random splits and a 10--90\% range of 0.77--0.95. The pilot's SF sensitivity also recovers the capacity of the target half through \eqref{eq:capacity}. The median error is $+8\%$, with a 10--90\% range from $-8\%$ to $+27\%$.
 
-The net-load sensitivity, in turn, grows with the installed capacity. Fig.~\ref{fig:slope-capacity} plots the fitted $s_h$ against the installed HP capacity across the aggregates, coloured by the number of HPs. The two track closely, at a Pearson correlation of 0.97, along a line through the origin of slope $0.020\,^\circ$C$^{-1}$. A steeper heating arm therefore signals more installed capacity, as Section~\ref{sec:fits-net} anticipated.
+The net-load sensitivity, in turn, grows with the installed capacity. Fig.~\ref{fig:slope-capacity}(a) plots the fitted $s_h$ against the installed HP capacity across the aggregates, coloured by the number of HPs. The two track closely, at a Pearson correlation of 0.97, along a line through the origin of slope $0.020\,^\circ$C$^{-1}$. A steeper heating arm therefore signals more installed capacity, as Section~\ref{sec:fits-net} anticipated.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\figw]{figures/fig_slope_capacity.pdf}
-\caption{Fitted net-load sensitivity $s_h$ against installed HP capacity across the 1260 Kloten aggregates, coloured by the number of HPs.}
+\caption{Sensitivities of the 1260 Kloten aggregates against installed HP capacity. (a) Fitted net-load sensitivity $s_h$, coloured by the number of HPs. (b) Own SF sensitivity $m_h$: 10--90\% range over a 40~kW rolling window, median of all aggregates and median of the 20 pilots.}
 \label{fig:slope-capacity}
 \end{figure}
 
