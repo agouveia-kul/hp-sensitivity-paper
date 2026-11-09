@@ -1616,14 +1616,14 @@ def tab_real():
     print(R.round(3).to_string(index=False))
     s = lambda v: f"${v:+.0f}$"
     body = "\n".join(f"{r.agg} & {r.n} & {r.cap:.0f} & {r.cap_e:.0f} & {s(r.err)} & {s(r.oracle)} & "
-                     f"{s(r.whole)} & {s(r.plan)} & {r.flex_b:.2f} \\\\" for r in R.itertuples())
+                     f"{s(r.whole)} & {r.flex_b:.2f} \\\\" for r in R.itertuples())
     tex = r"""\begin{autotable}{Transfer to real aggregates outside Kloten}{tab:real}
 \setlength{\tabcolsep}{2.5pt}
-\begin{tabular}{lcccccccc}
+\begin{tabular}{lccccccc}
 \toprule
- & & & & \multicolumn{4}{c}{capacity error (\%)} & \\
-\cmidrule(lr){5-8}
-aggregate & $N_{hp}$ & $P_h^{\max}$ (kW) & $\hat{P}_h^{\max}$ (kW) & \begin{tabular}[b]{@{}c@{}}pilot\\$m_h$\end{tabular} & \begin{tabular}[b]{@{}c@{}}target\\$m_h$\end{tabular} & \begin{tabular}[b]{@{}c@{}}full\\curve\end{tabular} & \begin{tabular}[b]{@{}c@{}}planning\\SF\end{tabular} & flex \\
+ & & & & \multicolumn{3}{c}{capacity error (\%)} & \\
+\cmidrule(lr){5-7}
+aggregate & $N_{hp}$ & $P_h^{\max}$ (kW) & $\hat{P}_h^{\max}$ (kW) & \begin{tabular}[b]{@{}c@{}}pilot\\$m_h$\end{tabular} & \begin{tabular}[b]{@{}c@{}}target\\$m_h$\end{tabular} & \begin{tabular}[b]{@{}c@{}}full\\curve\end{tabular} & flex \\
 \midrule
 """ + body + r"""
 \bottomrule

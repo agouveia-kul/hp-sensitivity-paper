@@ -416,20 +416,6 @@ Fig.~\ref{fig:capacity-error} shows the ratio of estimated to true capacity agai
 
 The overestimate grows as the penetration falls because $s_h$ also holds the non-TCL response of every household, about $N s_{n,h}$, while the TCL response grows only with $N_{hp}$. The pilot is not the cause: with each aggregate's own $m_h$, the median ratio still falls from 1.57 at 10\% penetration to 1.06 at 100\%. Fitted on 50 households without an HP that no aggregate of the split contains, $s_{n,h}$ is a median 0.005~kW/$^\circ$C, against 0.112~kW/$^\circ$C for one HP. The correction \eqref{eq:capacity-corr} then cuts the median ratio at 10\% penetration from 1.66 to 1.19 and holds it within 1.00--1.11 from 15\% on. It lowers the nMAE from 9.5\% to 7.5\%. It removes most of the bias but not the spread, since a tenth of the households without an HP give 81\% of their response. The calibration households must hold no TCL: the steeper sensitivity of the pilot's other load, 0.011~kW/$^\circ$C, leaves the estimate a third too low at low penetration.
 
-Table~\ref{tab:baselines} compares four estimators on the same aggregates:
-\begin{itemize}
-\item[(i)] the proposed estimate, the aggregate's $s_h$ divided by the pilot's $m_h$ \eqref{eq:capacity};
-\item[(ii)] the own-sensitivity estimate, $s_h$ divided by the aggregate's own $m_h$, which removes the transfer and isolates the error of the net-load sensitivity;
-\item[(iii)] the full pilot curve, the pilot's whole SF fit, intercept and threshold included, evaluated on the coldest day;
-\item[(iv)] the planning estimate, the coldest-day TCL load of the net-load fit divided by the HP SF of 0.425 used in a Great Britain-wide LV network study \cite{Few24}.
-\end{itemize}
-
-\input{tables/tab_baselines}
-
-\chg{The own-sensitivity estimate (ii) reaches an nMAE of 7.1\%, against 9.5\% for the proposed estimate (i): the transfer adds about two points, and the non-TCL temperature response in the net-load sensitivity accounts for the rest. Every estimate degrades in the same way as the HP penetration falls, from 5--9\% above 65\% penetration to 29--37\% below 15\%.}
-
-\chg{The full pilot curve (iii) performs better than the sensitivity alone, at an nMAE of 7.5\%. This is possibly because the pilot's intercept, $b_h \approx 0.03$, raises the denominator and so partly offsets the upward bias of the net-load sensitivity. The offset relies on the pilot and the target sharing a threshold temperature, as all Kloten aggregates do, whereas the sensitivity alone needs no such match. The planning estimate (iv) reaches an nMAE of 10.3\%, since the Kloten span of $25\,^\circ$C between threshold and coldest day happens to bring the coldest-day SF close to 0.425. Its error therefore depends on how cold the observed year is, whereas the proposed estimate carries no such dependence, since the temperature cancels in \eqref{eq:capacity}.}
-
 \subsection{Why the Estimate Works: Invariance and Transfer}
 \label{sec:res-sf}
 
@@ -496,7 +482,7 @@ On all three real aggregates, the capacity estimate lies within 10\% of the true
 
 The thresholds show why only the sensitivity transfers. The net-load thresholds are $16.7\,^\circ$C at Affoltern, $14.0\,^\circ$C at Einsiedeln and $13.9\,^\circ$C at Hamelin, against $16.6\,^\circ$C for the Kloten pilot. The threshold temperature varies with the insulation of the building stock, the heat released indoors by occupants and appliances, and the preferred indoor setpoint \cite{Men18}. Transferring the full pilot curve from Kloten, intercept and threshold included, gives capacity errors of $-3\%$, $-20\%$ and $-26\%$. The error of the full curve therefore grows with the distance between the target's threshold and the pilot's, whereas the sensitivity alone stays within 10\%.
 
-\chg{The full pilot curve and the planning estimate both err more overall than the sensitivity alone on these aggregates. Unlike within Kloten, the full curve loses to the sensitivity alone here, since the targets' thresholds lie up to $2.7\,^\circ$C below the pilot's. The planning estimate of Section~\ref{sec:res-capacity} errs by $+4\%$, $-6\%$ and $-26\%$. At Hamelin, the span between threshold and coldest day is only $19\,^\circ$C, against $25\,^\circ$C at Kloten, so the coldest-day SF falls well below 0.425. With each target's own SF sensitivity, the errors are $+6\%$, $+5\%$ and $+3\%$. This error of the net-load sensitivity remains small since every household in these aggregates has an HP.}
+With each target's own SF sensitivity, the errors are $+6\%$, $+5\%$ and $+3\%$. This error of the net-load sensitivity remains small, since every household in these aggregates has an HP.
 
 \subsection{Transfer across Populations}
 \label{sec:transfer-pop}
@@ -516,7 +502,7 @@ The thresholds show why only the sensitivity transfers. The net-load thresholds 
 \subsection{Error Sources and Transfer}
 \label{sec:accuracy}
 
-The capacity estimate carries two error sources. The first is the non-TCL temperature response that \eqref{eq:decomp} neglects, which biases the net-load sensitivity upwards and dominates at low HP penetration (Section~\ref{sec:res-capacity}). The second source is the pilot's SF sensitivity. Within Kloten, it matches the aggregates' own at a median ratio of 1.00, with a 10--90\% range of 0.84--1.22, so the transfer adds spread rather than bias. Table~\ref{tab:baselines} sizes the two sources: with each aggregate's own SF sensitivity, the nMAE is 7.1\%, and with the pilot's, 9.5\%.
+The capacity estimate carries two error sources. The first is the non-TCL temperature response that \eqref{eq:decomp} neglects, which biases the net-load sensitivity upwards and dominates at low HP penetration (Section~\ref{sec:res-capacity}). The second source is the pilot's SF sensitivity. Within Kloten, it matches the aggregates' own at a median ratio of 1.00, with a 10--90\% range of 0.84--1.22, so the transfer adds spread rather than bias. With each aggregate's own SF sensitivity, the nMAE is 7.1\%, against 9.5\% with the pilot's.
 
 The sensitivity transfers within 12\% between populations that share a climate zone and a housing stock (Table~\ref{tab:transfer}). Transferring the full pilot curve, threshold and intercept included, raises the capacity error to 20\% at Einsiedeln and 26\% at Hamelin. The sensitivity differs by factors of 1.7 between heating zones and 1.65 between social and private housing, more than between HP technologies. Across the climate classes of Table~\ref{tab:cross}, it varies by up to a factor of four. This mirrors the inverse problem solved for PV installed capacity against irradiance \cite{gouveia2026pvcapacity}, here posed against outdoor temperature.
 
