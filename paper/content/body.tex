@@ -405,6 +405,8 @@ With the pilot's SF sensitivity, \eqref{eq:capacity} recovers the installed capa
 
 Fig.~\ref{fig:capacity-error} shows the ratio of estimated to true capacity against the HP penetration. Its median falls from 1.66 at 10\% penetration to between 1.07 and 1.13 from 50\% on, and its 10--90\% range narrows from 1.30--2.21 to about 0.9--1.3 above 50\%. Below 15\% penetration, even the 10th percentile overestimates the capacity, by 5--30\%.
 
+The overestimate grows as the penetration falls because $s_h$ also absorbs the temperature response of the non-HP load, which \eqref{eq:decomp} neglects. The pilot is not the cause: with each aggregate's own $m_h$, the median ratio still falls from 1.57 to 1.06. Fitted at a common threshold, an HP adds 0.112~kW/$^\circ$C to $s_h$, the other load of its home 0.010~kW/$^\circ$C and each household without an HP 0.006~kW/$^\circ$C. With $p = N_{hp}/N$, the ratio therefore follows $1 + (s_o + s_f(1-p)/p)/s_{hp}$, within 0.11 of the median at every penetration. The range is widest at low penetration because a tenth of the households without an HP give 81\% of their response.
+
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\linewidth]{figures/fig_aggregation_heatmap.pdf}

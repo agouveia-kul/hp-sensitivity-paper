@@ -1262,6 +1262,34 @@ def fig_capacity_error(width=20, kind='pen'):
     print('saved -> fig_capacity_error')
 
 
+def capacity_bias_decomposition():
+    """IV-B numbers: why the capacity ratio falls with HP penetration.
+
+    Ratio with the pilot's and with each aggregate's own m_h, the heating slopes of the HP, the
+    other load of an HP home and an HP-free home (one common threshold, the HP pool's), and the
+    ratio they predict, 1 + (s_o + s_f (1 - p) / p) / s_hp, against the observed median.
+    """
+    D = _kloten_design(); G = D['rows']; K = D['K']; T = D['T']
+    G = G.assign(pen=(G.N_hp / G.N * 100).round(1), r_est=G.cap_est / G.cap, r_or=G.cap_or / G.cap)
+    obs = G.groupby('pen')[['r_est', 'r_or']].median()
+    _, _, th, _ = fit_hockey_stick(T, K['hp'].sum(0) + K['own'].sum(0), T_BALANCE_BOUNDS)
+    A = np.c_[np.ones_like(T), np.maximum(0, th - T)]
+
+    def slope(y):
+        return np.linalg.lstsq(A, y, rcond=None)[0][1]
+    s_hp = slope(K['hp'].sum(0)) / K['hp'].shape[0]
+    s_o = slope(K['own'].sum(0)) / K['own'].shape[0]
+    s_f = slope(K['free'].sum(0)) / K['free'].shape[0]
+    each = np.sort([slope(K['free'][j]) for j in range(K['free'].shape[0])])
+    top = each[-len(each) // 10:].sum() / each.sum()
+    p = obs.index.to_numpy() / 100
+    obs['pred'] = 1 + (s_o + s_f * (1 - p) / p) / s_hp
+    print(f'threshold {th:.1f} C; slopes (kW/degC): HP {s_hp:.3f}, other load of HP home {s_o:.4f}, '
+          f'HP-free home {s_f:.4f} (median {np.median(each):.4f}; top 10% give {top:.0%})')
+    print(obs.round(2).T.to_string())
+    print(f'max |pred - own-m median| {np.abs(obs.pred - obs.r_or).max():.2f}')
+
+
 def fig_capacity_heatmap():
     """fig_capacity_heatmap: capacity error against spatial x temporal aggregation (Kloten, 50% ETL rate).
 
