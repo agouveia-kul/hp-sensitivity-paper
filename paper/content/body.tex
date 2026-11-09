@@ -75,7 +75,7 @@ The net load is the sum of a TCL and a non-TCL component,
 P_{\mathrm{net}}(t) = P_{\mathrm{TCL}}(t) + P_{\text{non-TCL}}(t),
 \label{eq:decomp}
 \end{equation}
-where $t$ denotes time and only the TCL component responds directly to temperature. The non-TCL component also carries a weaker, indirect temperature dependence, visible in the whole-home energy signature \cite{Wes20}. Still, TCLs dominate the total temperature response, so the model neglects the non-TCL contribution. On average, each household adds a small non-TCL sensitivity $s_n$ [kW/$^\circ$C], so the neglected term grows with the household count $N$ and weighs most where few households hold a TCL. Section~\ref{sec:uc-capacity} gives an optional correction, and Section~\ref{sec:res-capacity} sizes the effect.
+where $t$ denotes time and only the TCL component responds directly to temperature. The non-TCL component also carries a weaker, indirect temperature dependence, visible in the whole-home energy signature \cite{Wes20}. Still, TCLs dominate the total temperature response, so the model neglects the non-TCL contribution. On average, each household adds small non-TCL sensitivities $s_{n,h}$ and $s_{n,c}$ [kW/$^\circ$C] to the heating and cooling arms, so the neglected term grows with the household count $N$ and weighs most where few households hold a TCL. Section~\ref{sec:uc-capacity} gives an optional correction, and Section~\ref{sec:res-capacity} sizes the effect.
 
 Two fits describe how the TCLs of an aggregate respond to the outdoor temperature. The first, the net-load fit, uses only the net load and temperature the DSO holds (Section~\ref{sec:fits-net}). The second, the SF fit, needs the submetered TCL load and installed capacity, which in practice only a pilot provides (Section~\ref{sec:fits-sf}). Both fits share the same piecewise-linear form and use daily means, which reduce the effect of building thermal inertia \cite{Per17b}.
 
@@ -266,9 +266,11 @@ Dividing the arms of \eqref{eq:tclfit} by \eqref{eq:sf-target} gives the install
 \end{equation}
 Note that the temperature cancels, so the estimate needs no choice of evaluation day. The net-load fit supplies the numerator, which the DSO observes. The pilot supplies only the denominator $m_k$. The estimate is therefore as good as these two sensitivities, which Section~\ref{sec:results} tests.
 
-The net-load sensitivity also holds the non-TCL response of about $N s_n$ (Section~\ref{sec:problem}), which biases \eqref{eq:capacity} upwards. A DSO that holds the load of households without TCLs, for instance a feeder without HPs, can fit $s_n$ on it and subtract this term,
+The net-load sensitivities also hold the non-TCL response of the households, about $N s_{n,k}$ in regime $k$ (Section~\ref{sec:problem}), which biases \eqref{eq:capacity} upwards. A DSO that holds the net load of an aggregate without TCLs, for instance a feeder without HPs or air conditioners, can fit \eqref{eq:bathtub} to it at the target's thresholds and divide its sensitivities by its household count. This gives the non-TCL sensitivities per household, $s_{n,h}$ and $s_{n,c}$, which the corrected capacity of each regime subtracts,
 \begin{equation}
-    \hat{P}_h^{\max,i} = \frac{s_h^{\,i} - N^i s_n}{m_h},
+\begin{aligned}
+    \hat{P}_h^{\max,i} &= \frac{s_h^{\,i} - N^i s_{n,h}}{m_h}, & \hat{P}_c^{\max,i} &= \frac{s_c^{\,i} - N^i s_{n,c}}{m_c},
+\end{aligned}
 \label{eq:capacity-corr}
 \end{equation}
 where $N^i$ is the household count of aggregate $i$. On a target aggregate, the correction needs only its household count $N^i$, not which of its households hold a TCL.
@@ -412,7 +414,7 @@ With the pilot's SF sensitivity, \eqref{eq:capacity} recovers the installed capa
 
 Fig.~\ref{fig:capacity-error} shows the ratio of estimated to true capacity against the HP penetration. Its median falls from 1.66 at 10\% penetration to between 1.07 and 1.13 from 50\% on, and its 10--90\% range narrows from 1.30--2.21 to about 0.9--1.3 above 50\%. Below 15\% penetration, even the 10th percentile overestimates the capacity, by 5--30\%.
 
-The overestimate grows as the penetration falls because $s_h$ also holds the non-TCL response of every household, about $N s_n$, while the TCL response grows only with $N_{hp}$. The pilot is not the cause: with each aggregate's own $m_h$, the median ratio still falls from 1.57 at 10\% penetration to 1.06 at 100\%. Fitted on 50 households without an HP that no aggregate of the split contains, $s_n$ is a median 0.005~kW/$^\circ$C, against 0.112~kW/$^\circ$C for one HP. The correction \eqref{eq:capacity-corr} then cuts the median ratio at 10\% penetration from 1.66 to 1.19 and holds it within 1.00--1.11 from 15\% on. It lowers the nMAE from 9.5\% to 7.5\%. It removes most of the bias but not the spread, since a tenth of the households without an HP give 81\% of their response. The calibration households must hold no TCL: the steeper sensitivity of the pilot's other load, 0.011~kW/$^\circ$C, leaves the estimate a third too low at low penetration.
+The overestimate grows as the penetration falls because $s_h$ also holds the non-TCL response of every household, about $N s_{n,h}$, while the TCL response grows only with $N_{hp}$. The pilot is not the cause: with each aggregate's own $m_h$, the median ratio still falls from 1.57 at 10\% penetration to 1.06 at 100\%. Fitted on 50 households without an HP that no aggregate of the split contains, $s_{n,h}$ is a median 0.005~kW/$^\circ$C, against 0.112~kW/$^\circ$C for one HP. The correction \eqref{eq:capacity-corr} then cuts the median ratio at 10\% penetration from 1.66 to 1.19 and holds it within 1.00--1.11 from 15\% on. It lowers the nMAE from 9.5\% to 7.5\%. It removes most of the bias but not the spread, since a tenth of the households without an HP give 81\% of their response. The calibration households must hold no TCL: the steeper sensitivity of the pilot's other load, 0.011~kW/$^\circ$C, leaves the estimate a third too low at low penetration.
 
 Table~\ref{tab:baselines} compares four estimators on the same aggregates:
 \begin{itemize}
