@@ -417,7 +417,7 @@ Table~\ref{tab:baselines} compares four estimators on the same aggregates:
 
 \input{tables/tab_baselines}
 
-\chg{The own-sensitivity estimate (ii) reaches an nMAE of 7.1\%, against 9.5\% for the proposed estimate (i): the transfer adds about two points, and the non-TCL temperature response in the net-load sensitivity accounts for the rest. Every estimate degrades in the same way as the HP penetration falls, from 5--9\% above 65\% penetration to 29--37\% below 15\%. This points to the net-load sensitivity as the dominant error at low penetration.}
+\chg{The own-sensitivity estimate (ii) reaches an nMAE of 7.1\%, against 9.5\% for the proposed estimate (i): the transfer adds about two points, and the non-TCL temperature response in the net-load sensitivity accounts for the rest. Every estimate degrades in the same way as the HP penetration falls, from 5--9\% above 65\% penetration to 29--37\% below 15\%.}
 
 \chg{The full pilot curve (iii) performs better than the sensitivity alone, at an nMAE of 7.5\%. This is possibly because the pilot's intercept, $b_h \approx 0.03$, raises the denominator and so partly offsets the upward bias of the net-load sensitivity. The offset relies on the pilot and the target sharing a threshold temperature, as all Kloten aggregates do, whereas the sensitivity alone needs no such match. The planning estimate (iv) reaches an nMAE of 10.3\%, since the Kloten span of $25\,^\circ$C between threshold and coldest day happens to bring the coldest-day SF close to 0.425. Its error therefore depends on how cold the observed year is, whereas the proposed estimate carries no such dependence, since the temperature cancels in \eqref{eq:capacity}.}
 
@@ -436,7 +436,7 @@ Across the twenty splits, the pilot's SF sensitivity $m_h$ has a median of $0.01
 
 Placed at the target half's net-load threshold, the pilot's SF curve also reproduces the SF of the whole target half, at a median $R^2_h$ of 0.91 over 120 random splits and a 10--90\% range of 0.77--0.95. The pilot's SF sensitivity also recovers the capacity of the target half through \eqref{eq:capacity}. The median error is $+8\%$, with a 10--90\% range from $-8\%$ to $+27\%$.
 
-The net-load sensitivity, in turn, grows with the installed capacity. Fig.~\ref{fig:slope-capacity} plots the fitted $s_h$ against the installed HP capacity across the aggregates, coloured by the number of HPs. The two track closely, at a Pearson correlation of 0.97, along a line through the origin of slope $0.020\,^\circ$C$^{-1}$. A steeper heating arm therefore signals more installed capacity, as Section~\ref{sec:fits-net} anticipated. This slope exceeds the pilot SF sensitivity by about 12\%, a first sign of the non-TCL temperature response that the net-load sensitivity absorbs.
+The net-load sensitivity, in turn, grows with the installed capacity. Fig.~\ref{fig:slope-capacity} plots the fitted $s_h$ against the installed HP capacity across the aggregates, coloured by the number of HPs. The two track closely, at a Pearson correlation of 0.97, along a line through the origin of slope $0.020\,^\circ$C$^{-1}$. A steeper heating arm therefore signals more installed capacity, as Section~\ref{sec:fits-net} anticipated.
 
 \begin{figure}[t]
 \centering
@@ -507,7 +507,7 @@ The thresholds show why only the sensitivity transfers. The net-load thresholds 
 \subsection{Error Sources and Transfer}
 \label{sec:accuracy}
 
-The capacity estimate carries two error sources. The first is the non-TCL temperature response that \eqref{eq:decomp} neglects, which biases the net-load sensitivity upwards. Aggregates of 10 to 50 Kloten households without an HP still show a small heating arm. From it, \eqref{eq:capacity} infers a median 0.28~kW of spurious capacity per household, about 4\% of the mean 6.3~kW HP. This adds about 45\% to the estimate at 10\% HP penetration, but only about 4\% once every household has an HP. The second source is the pilot's SF sensitivity. Within Kloten, it matches the aggregates' own at a median ratio of 1.00, with a 10--90\% range of 0.84--1.22, so the transfer adds spread rather than bias. Table~\ref{tab:baselines} sizes the two sources: with each aggregate's own SF sensitivity, the nMAE is 7.1\%, and with the pilot's, 9.5\%.
+The capacity estimate carries two error sources. The first is the non-TCL temperature response that \eqref{eq:decomp} neglects, which biases the net-load sensitivity upwards and dominates at low HP penetration (Section~\ref{sec:res-capacity}). The second source is the pilot's SF sensitivity. Within Kloten, it matches the aggregates' own at a median ratio of 1.00, with a 10--90\% range of 0.84--1.22, so the transfer adds spread rather than bias. Table~\ref{tab:baselines} sizes the two sources: with each aggregate's own SF sensitivity, the nMAE is 7.1\%, and with the pilot's, 9.5\%.
 
 The sensitivity transfers within 12\% between populations that share a climate zone and a housing stock (Table~\ref{tab:transfer}). Transferring the full pilot curve, threshold and intercept included, raises the capacity error to 20\% at Einsiedeln and 26\% at Hamelin. The sensitivity differs by factors of 1.7 between heating zones and 1.65 between social and private housing, more than between HP technologies. Across the climate classes of Table~\ref{tab:cross}, it varies by up to a factor of four. This mirrors the inverse problem solved for PV installed capacity against irradiance \cite{gouveia2026pvcapacity}, here posed against outdoor temperature.
 
@@ -519,7 +519,7 @@ The within-population tests keep each pilot apart from its targets. Over twenty 
 
 The full estimator is also tested fully out of sample, on three real aggregates whose HPs never enter the pilot (Section~\ref{sec:real-agg}). Table~\ref{tab:transfer} tests the SF transfer further, on populations from five countries. The real aggregates are few and all have an HP in every household, so lower HP penetrations are tested only on the semi-synthetic Kloten aggregates, which span 10\% to 100\%.
 
-The non-TCL temperature response, which the model neglects, is measured rather than assumed away. The zero-HP control of Section~\ref{sec:accuracy} sizes it, so the resulting bias is predictable from the household count the DSO already holds. Section~\ref{sec:conclusion} outlines a correction.
+The non-TCL temperature response, which the model neglects, is measured rather than assumed away. Section~\ref{sec:res-capacity} sizes it per household, so the resulting bias is predictable from the household count the DSO already holds. Section~\ref{sec:conclusion} outlines a correction.
 
 The estimate gives the median flexibility at each temperature, not its day-to-day spread. On nine days in ten, the measured flexibility stays above 85\% of its median with 5 HPs and 87\% with 25. The spread is narrowest on cold days and widest at 13--15~$^\circ$C, where heating seems to be on for some days and off for others (Fig.~\ref{fig:flex-temperature}b). With no recorded flexibility events, participation in demand response remains untested.
 
