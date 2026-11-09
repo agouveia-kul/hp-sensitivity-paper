@@ -963,8 +963,8 @@ def fig_flex_all(L=None, name='fig_flex_all_normalised', saver=None):
     ax.fill_between(x, h.est.quantile(.1), h.est.quantile(.9), color=hf.C_HP, alpha=.15, lw=0)
     ax.plot(x, h.est.median(), color=hf.C_HP, ls='--', lw=1.4)
     ax.axhline(1, color='0.6', lw=.6)
-    ax.set_ylabel('$E_{\mathrm{flex}}$ / own maximum')
-    ax.set_xlabel('daily mean temperature ($^\circ$C)')
+    ax.set_ylabel('$E_{\\mathrm{flex}}$ / own maximum')
+    ax.set_xlabel('daily mean temperature ($^\\circ$C)')
     ax.set_ylim(0, 1.6)   # room for the 90th percentile of the estimate on cold days
     ax.set_xlim(right=float(x.max()) + 1.0)     # heating-regime bins only; the dead band is not shown
     handles = [(Patch(color='0.2', alpha=.3, lw=0), Line2D([], [], color='0.1', lw=1.4)),
@@ -976,6 +976,80 @@ def fig_flex_all(L=None, name='fig_flex_all_normalised', saver=None):
     ax.axvline(th, color='0.45', lw=.7, ls=(0, (3, 3)))
     ax.annotate('median $T_h$', (th, 0.6), xytext=(-3, 0), textcoords='offset points', fontsize=6.5, color='0.3',
                 ha='right')
+    fig.tight_layout()
+    path = (saver or save_fig)(fig, name)
+    plt.close(fig)
+    return path
+
+
+def flex_all_per_kw(min_days=1, width=FIRM_WIDTH):
+    """Every aggregate's flexibility against T per kW of true installed capacity (paper Fig. 7).
+
+    Per aggregate and ``width`` degC bin of its heating days (T < own T_h; bins with
+    fewer than ``min_days`` days of the year are merged by ``temperature_bins``): the
+    median over days of the actual F (hourly reference) and the mean of the estimate
+    SF_e (1 - SF_e) cap_est, both divided by the aggregate's true capacity. For the
+    actual this is the mean SF (1 - SF), at most 0.25. Returns (long frame, edges, T).
+    """
+    Dz, _ = rebuild_design()
+    D = daily_frames()
+    G = Dz['rows']; T = D['T']
+    edges, _ = temperature_bins(T, min_days, width)
+    idx = np.clip(np.digitize(T, edges) - 1, 0, len(edges) - 2)
+    xb = np.array([T[idx == b].mean() if (idx == b).any() else np.nan for b in range(len(edges) - 1)])
+    rows = []
+    for i, r in enumerate(G.itertuples()):
+        fa = D['fa_h'][i].astype(float)
+        sf_e = O.sf_target(T, r.T_h, r.m_pilot)
+        fe = sf_e * (1 - sf_e) * r.cap_est
+        heat = T < r.T_h
+        for b in range(len(edges) - 1):
+            m = (idx == b) & heat
+            if not m.any():
+                continue
+            rows.append(dict(row=i, N=r.N, N_hp=r.N_hp, bin=b, x=xb[b], days=int(m.sum()),
+                             act=float(np.median(fa[m])) / r.cap, est=float(fe[m].mean()) / r.cap))
+    return pd.DataFrame(rows), np.asarray(edges), T
+
+
+def fig_flex_per_kw(P=None, name='fig_flex_normalised', saver=None):
+    """Paper Fig. 7: flexible energy per kW of true installed capacity against daily mean
+    temperature, median and 10-90% across the aggregates that reach each bin (at least 10%
+    of them), estimate against actual; below, the number of days of the year in each bin."""
+    import matplotlib.pyplot as plt
+    import hp_figures as hf
+    from matplotlib.lines import Line2D
+    from matplotlib.patches import Patch
+    L, edges, T = flex_all_per_kw() if P is None else P
+    L = L[L.groupby('bin').row.transform('nunique') >= 0.1 * L.row.nunique()]
+    h = L.groupby('bin'); x = h.x.first()
+    ratio = (L.est / L.act).groupby(L.bin).median()
+    print(pd.DataFrame(dict(x=x, act=h.act.median(), est=h.est.median(), est_over_act=ratio,
+                            n_agg=h.row.nunique())).round(3).to_string())
+    hf.use_style()
+    fig, (ax, axb) = plt.subplots(2, 1, figsize=(hf.COL1, 3.0), sharex=True, gridspec_kw=dict(height_ratios=[3, 1]))
+    ax.fill_between(x, h.act.quantile(.1), h.act.quantile(.9), color='0.2', alpha=.3, lw=0)
+    ax.plot(x, h.act.median(), color='0.1', lw=1.4, marker='o', ms=2.5)
+    ax.fill_between(x, h.est.quantile(.1), h.est.quantile(.9), color=hf.C_HP, alpha=.15, lw=0)
+    ax.plot(x, h.est.median(), color=hf.C_HP, ls='--', lw=1.4)
+    ax.set_ylabel('$E_{\\mathrm{flex}}$ per kW installed\n(kWh/h per kW)')
+    ax.set_ylim(0, None)
+    handles = [(Patch(color='0.2', alpha=.3, lw=0), Line2D([], [], color='0.1', lw=1.4, marker='o', ms=2.5)),
+               (Patch(color=hf.C_HP, alpha=.15, lw=0), Line2D([], [], color=hf.C_HP, ls='--', lw=1.4))]
+    ax.legend(handles, ['actual (median, 10–90%)', 'estimate (median, 10–90%)'], fontsize=6.5, loc='upper right')
+    th = float(rebuild_design()[0]['rows'].T_h.median())
+    for b in x.index:
+        lo, hi = edges[b], edges[b + 1]
+        n = int(((T >= lo) & (T < hi)).sum())
+        axb.bar((lo + hi) / 2, n, width=hi - lo, color='0.75', edgecolor='white', lw=0.6)
+        axb.text((lo + hi) / 2, n + 1, str(n), ha='center', va='bottom', fontsize=5.5, color='0.3')
+    axb.set(ylabel='days', xlabel='daily mean temperature ($^\\circ$C)', ylim=(0, 48),
+            xlim=(edges[x.index[0]] - .5, edges[x.index[-1] + 1] + .5))
+    for a in (ax, axb):
+        a.axvline(th, color='0.45', lw=.7, ls=(0, (3, 3)))
+        a.grid(False)
+    ax.annotate('median $T_h$', (th, ax.get_ylim()[1] * 0.55), xytext=(-3, 0), textcoords='offset points',
+                fontsize=6.5, color='0.3', ha='right')
     fig.tight_layout()
     path = (saver or save_fig)(fig, name)
     plt.close(fig)

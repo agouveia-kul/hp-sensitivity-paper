@@ -1077,14 +1077,13 @@ def flex_figures():
 
 
 def flex_temperature_figure():
-    """fig_flex_normalised: flexible energy against temperature for all 1260 Kloten
-    aggregates, each normalised by its own maximum, estimate against actual, and
-    the day-to-day spread by HP count (Sec. IV-F). Replaced fig_flex_temperature
-    (headroom, N = 50), which replaced fig_flex_ratio and fig_flex_season; the
-    bins and checks are in ``flex_temperature`` (FLEX_LOG.md)."""
+    """fig_flex_normalised (Fig. 7): flexible energy per kW of true installed capacity against
+    temperature for all 1260 Kloten aggregates, estimate against actual, unmerged 2 degC bins,
+    with the day count of each bin below (Alex, 9 Nov). The earlier own-maximum version is
+    ``FT.fig_flex_all``; the bins and checks are in ``flex_temperature`` (FLEX_LOG.md)."""
     import flex_temperature as FT
-    L = FT._cached('flex_all_normalised', FT.flex_all_normalised)
-    print('saved ->', FT.fig_flex_all(L, name='fig_flex_normalised', saver=hf.save))
+    P = FT._cached('flex_all_per_kw', FT.flex_all_per_kw)
+    print('saved ->', FT.fig_flex_per_kw(P, name='fig_flex_normalised', saver=hf.save))
 
 
 KLOTEN_QUALITY = 'data/_kloten_quality.pkl'
