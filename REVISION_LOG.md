@@ -464,3 +464,18 @@ Each paragraph now opens with its main message where it did not; repeated claims
 - Header $n$ → $N$ (the nomenclature symbol for households), so the "$n$: aggregated households" note goes. The $R^2_h$, $R^2_c$ note goes (nomenclature and II-C define them). The commented-out LCL note is deleted.
 - Notes (a) Hennepin and (b) WA/OR merged into one note (a) on all three rows: "The SF uses the HPs' own draw only: Hennepin excludes the resistance backup, and WA and OR exclude the electric baseboard, furnace or other zonal heating circuits (17 of 22 and 16 of 21 households) that the net load includes."
 - Köppen key and HP abbreviations kept. Cell values unchanged; `scripts/outputs.py` (`tab_cross`) writes the same notes.
+
+## Pending — to address later (Alex, 9 Nov)
+Raised on 9 Nov and parked while the error metric and ranges change. Not done yet:
+1. **Contributions with key results.** Add one result to each of the three labelled contributions (Alex's labels: Installed Capacity Estimation, SF Sensitivity Transfer, Flexibility Potential Estimation), using the new metric. Note: Supervisor 1's R14–R18 asked for no results in the contributions; confirm with her.
+2. **Storyline around the three pillars** (installed capacity, SF transferability, flexibility potential). Candidates from the 9 Nov audit:
+   - fold the temperature-driven energy into the flexibility pillar (III-B, IV-D, the energy row of Table III, energy clauses in the abstract, V-A and the Conclusion);
+   - cut the II-A interpretation paragraphs (behavioural thresholds; climate balance of s_h and s_c);
+   - reduce Table II to the SF columns plus T_h, or move the full table to an appendix;
+   - drop the R² panels of the aggregation figure, or replace that figure with the error plot;
+   - cut the IV-E concavity / dead-band-floor paragraph;
+   - shorten (Alex's call, supervisor-requested): the II-B design-peak paragraph (R28), the 15-min peak SF numbers in IV-C (R31–R32), the §14a paragraph in Limitations;
+   - optional: regroup Sec. IV–V by pillar (A capacity, B SF transferability, C flexibility).
+3. **Tier 2 shortening items** still open: Table V as a sentence, merged equations, baseline descriptions into Table IV row labels.
+4. **Elsevier version:** CRediT, competing-interest, generative-AI, data-availability and acknowledgement sections are TODO (FlexIQ C2M/24/028 funding, if it applies). IEEE version has no affiliations.
+5. **Smaller open items:** "percent" (US) once in Sec. I; `scripts/gen_litreview.py` still emits the Azz24 row; nine `\chg{}` markers left (no effect on output); TeXstudio "save before compile" can overwrite tables regenerated outside it.
