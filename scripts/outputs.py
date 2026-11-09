@@ -1254,7 +1254,7 @@ def fig_capacity_error(width=20, kind='pen'):
             ax.fill_between(S.index, S.p10, S.p90, color=c, alpha=.2, lw=0)
             ax.plot(S.index, S.med, color=c, lw=1.6, marker='o', ms=2.5, label=lab)
         ax.axhline(1, color='0.4', lw=0.8, ls=(0, (3, 3)))
-        ax.set(xlabel='HP penetration $N_{hp}/N$ (%)', ylabel='estimated / true capacity', xlim=(0, 102), ylim=(0.5, 2.3))
+        ax.set(xlabel='HP penetration $N_{hp}/N$ (%)', ylabel='estimated / true capacity', xlim=(8, 102), ylim=(0.5, 2.3), xticks=[10, 20, 30, 40, 50, 60, 70, 80, 90, 100])
         ax.legend(fontsize=6.5, loc='upper right')
         ax.grid(False)
         fig.tight_layout()
