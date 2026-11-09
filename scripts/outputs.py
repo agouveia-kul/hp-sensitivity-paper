@@ -1247,7 +1247,7 @@ def fig_capacity_error(width=20, kind='pen'):
         G = G.assign(pen=(G.N_hp / G.N * 100).round(1))
         hf.use_style()
         fig, ax = plt.subplots(figsize=(hf.COL1, 2.2))
-        for col, c, lab in (('cap_est', hf.C_CH, 'uncorrected'), ('cap_corr', hf.C_DE, 'corrected')):
+        for col, c, lab in (('cap_est', hf.C_CH, 'uncorrected'), ('cap_corr', hf.C_DE, 'corrected with known $N$')):
             S = (G[col] / G.cap).groupby(G.pen).agg(p10=lambda x: x.quantile(.1), med='median', p90=lambda x: x.quantile(.9))
             print(lab); print(S.round(2).T.to_string())
             ax.fill_between(S.index, S.p10, S.p90, color=c, alpha=.2, lw=0)
