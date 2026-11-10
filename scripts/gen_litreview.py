@@ -59,8 +59,6 @@ ROWS = [
          input='Aggr.\\ net load', cap='Y', target='N', train='N', transfer='N'),
     dict(group=G_CAP, ref='gouveia2026pvcapacity', der='PV', task='Capacity', level='Substation', method='ML / model-based',
          input='Aggr.\\ net load + GHI', cap='Y', target='N', train='Y', transfer='Y'),
-    dict(group=G_CAP, ref='Azz24', der='Transformer', task='Nameplate rating', level='Transformer', method='Model-free',
-         input='Smart meter', cap='Y', target='N', train='N', transfer='N'),
     # --- HP demand, coincidence and flexibility ---
     dict(group=G_COI, ref='Bec24', der='PV/EV/HP', task='Coincidence / impact', level='Feeder', method='Empirical',
          input='Smart-meter profiles', cap='N', target='N', train='N', transfer='N'),
