@@ -554,3 +554,6 @@ Raised on 9 Nov and parked while the error metric and ranges change. Not done ye
 - **Highlights:** 3 "9.5% nMAE on 1260 semi-synthetic aggregates; within 10% outside the pilot" (leftover "real ones"); 4 "housing types" → "housing tenures"; 5 "The same fits quantify the flexibility potential at a 4.8% nMAE".
 - **Table I:** "This work" task "Capacity, flexibility" (tex and `gen_litreview.py`).
 - IEEE 12 pages, Elsevier 5p 15.
+
+## D2: Table II kept as is (Alex, 10 Nov)
+- Options offered: (1) drop P_base, b_h, b_c, SF^max_h, SF^max_c (19 → 14 columns, text unchanged); (2) SF columns plus T_h, cutting the II-E net-load sentences; (3) full table in an appendix. Alex: keep all 19 columns for now. Option 1 remains the fallback if space is needed.
