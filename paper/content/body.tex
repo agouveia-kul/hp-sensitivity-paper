@@ -434,9 +434,7 @@ Fig.~\ref{fig:capacity-error} shows the ratio of estimated to true capacity agai
 
 The overestimate grows as the penetration falls because $s_h$ also holds the non-TCL response of every household, about $N s_{n,h}$, while the TCL response grows only with $N_{hp}$. The pilot is not the cause: with each aggregate's own $m_h$, the median ratio still falls from 1.57 at 10\% penetration to 1.06 at 100\%. Fitted on 50 households without an HP that no aggregate of the split contains, $s_{n,h}$ is a median 0.005~kW/$^\circ$C, against 0.112~kW/$^\circ$C for one HP. The correction \eqref{eq:capacity-corr} then cuts the median ratio at 10\% penetration from 1.66 to 1.19 and holds it within 1.00--1.11 from 15\% on. It lowers the nMAE from 9.5\% to 7.5\%. It removes most of the bias but not the spread, since a tenth of the households without an HP give 81\% of their response. The calibration households must hold no TCL: the steeper sensitivity of the pilot's other load, 0.011~kW/$^\circ$C, leaves the estimate a third too low at low penetration.
 
-\input{tables/tab_real}
-
-On all three aggregates outside the pilot, the capacity estimate lies within 10\% of the true capacity (Table~\ref{tab:real}), with errors of $+2\%$ at Affoltern, $-6\%$ at Einsiedeln and $-9\%$ at Hamelin, an nMAE of 3.8\%. Einsiedeln holds only six HPs, below the ten from which Section~\ref{sec:res-capacity} finds the estimates reliable, so its result is indicative.
+On all three aggregates outside the pilot, the capacity estimate lies within 10\% of the true capacity, at an nMAE of 3.8\%. It gives 112 against 109~kW at Affoltern ($+2\%$), 48 against 51~kW at Einsiedeln ($-6\%$) and 217 against 239~kW at Hamelin ($-9\%$). Einsiedeln holds only six HPs, below the ten from which Section~\ref{sec:res-capacity} finds the estimates reliable, so its result is indicative.
 
 With each target's own SF sensitivity, the errors are $+6\%$, $+5\%$ and $+3\%$. This error of the net-load sensitivity remains small, since every household in these aggregates has an HP.
 
@@ -484,7 +482,7 @@ On the coldest days, the fitted arm runs above the measured HP load. The measure
 
 In mild weather, the estimate misses the HP use that does not depend on temperature, most plausibly hot-water heating \cite{Bru23}. The fitted arm reaches zero at $T_h$, whereas the measured HP load still draws 0.05--0.06~kW per kW installed at 14--16~$^\circ$C.
 
-On the three aggregates outside the pilot, the flexibility ratio on the heating-regime days lies between 0.93 and 0.96, slightly below the Kloten median of 1.04. It follows the energy factors of 0.89 to 0.92, while the unused-capacity factor stays between 1.01 and 1.05. These energy factors are lower than on Kloten possibly because these aggregates hold no households without an HP, whose temperature response inflates the heating arm.
+On the three aggregates outside the pilot, the flexibility ratio on the heating-regime days is 0.96 at Affoltern and 0.93 at Einsiedeln and Hamelin, slightly below the Kloten median of 1.04. It follows the energy factors of 0.89 to 0.92, while the unused-capacity factor stays between 1.01 and 1.05. These energy factors are lower than on Kloten possibly because these aggregates hold no households without an HP, whose temperature response inflates the heating arm.
 
 % =====================================================================
 \section{Discussion}

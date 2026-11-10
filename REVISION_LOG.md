@@ -597,3 +597,10 @@ Raised on 9 Nov and parked while the error metric and ranges change. Not done ye
 - **IV-C (T4):** "On these datasets, only the SF transfer is tested." (said in the IV intro and the paragraph's last sentence).
 - **V-B opener (T5):** second sentence now "This subsection tests the second, the hypothesis of Section II-D." (the three steps are listed in II-D).
 - Not taken: dropping the V intro sentence (T1) and the VI-A factor sentence (T6). IEEE 11 pages, Elsevier 5p 14.
+
+## Table IV (tab_real) dropped (Alex, 10 Nov)
+- After the regroup, the table mixed V-A (capacity), V-B (full-curve errors) and V-C (flexibility) results. Every value except the kW capacities was already in the text, so the table is removed and the transfer table becomes Table IV.
+- **V-A:** "On all three aggregates outside the pilot, the capacity estimate lies within 10% of the true capacity, at an nMAE of 3.8%. It gives 112 against 109 kW at Affoltern (+2%), 48 against 51 kW at Einsiedeln (−6%) and 217 against 239 kW at Hamelin (−9%)."
+- **V-C:** the flexibility ratio "is 0.96 at Affoltern and 0.93 at Einsiedeln and Hamelin" (was "lies between 0.93 and 0.96").
+- `tab_real()` and paper/tables/tab_real.tex stay as the source of these numbers; replication.py labels: tab_real "Sec. V numbers", tab_transfer "Table IV".
+- IEEE 11 pages (last page now has room), Elsevier 5p 14.
