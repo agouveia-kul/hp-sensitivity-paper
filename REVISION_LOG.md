@@ -530,7 +530,8 @@ Raised on 9 Nov and parked while the error metric and ranges change. Not done ye
 - **Fig. 5 labels:** legend "corrected" → "corrected with known N"; caption "corrected" → "corrected with the known household count N" (Alex's wording).
 
 ## Pending — "real aggregates" (Alex, 10 Nov)
-- **Refrain from calling Affoltern and Einsiedeln "real aggregates".** Each is the set of HEAPO households of one weather station, summed after the fact, not a metered feeder. Term to revisit wherever it is used: Sec. V title and V-A heading, the abstract, the Conclusion, VI-A, Fig. 4 box. Open question: Hamelin (WPuQ) is also summed from individually metered houses. The contribution 1 result sentence drops its "within 10% on three real aggregates" clause for this reason.
+- **Refrain from calling Affoltern and Einsiedeln "real aggregates".** Each is the set of HEAPO households of one weather station: in the same area, but not guaranteed to share an LV network. Term to revisit wherever it is used: Sec. V title and V-A heading, the abstract, the Conclusion, VI-A, Fig. 4 box. The contribution 1 result sentence drops its "within 10% on three real aggregates" clause for this reason.
+- **Hamelin (WPuQ) stays a real aggregate** (Alex, 10 Nov): its 37 houses are connected to the same LV network, even though the net load is summed from individual meters rather than metered at the transformer.
 
 ## Contributions with key results (Alex, 10 Nov)
 - **Contribution 1:** adds "On 1260 semi-synthetic Swiss aggregates, the capacity is recovered at an nMAE of 9.5%, or 7.5% when the total number of households is known." (Alex's wording for the corrected value; the real-aggregate clause was dropped, see the "real aggregates" pending note.)
