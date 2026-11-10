@@ -655,3 +655,6 @@ Raised on 9 Nov and parked while the error metric and ranges change. Not done ye
 ## IEEE affiliations (Alex, 10 Nov)
 - hp_sensitivity_overleaf.tex: authors joined with "and"; three \thanks footnotes, taken from the Elsevier affiliations: "A. M. V. Gouveia (corresponding author) is with ESAT, KU Leuven, EnergyVille and VITO, Belgium (e-mail: …)."; "M. U. Hashmi and D. Van Hertem are with ESAT, KU Leuven and EnergyVille, Belgium."; "R. D'hulst is with EnergyVille, VITO and Orion Grid Technologies, Belgium."
 - The footnote pushes the last reference onto p. 11 (IEEE 11 pages); cutting the Sec. I smart-meter sentence restores 10 (scratch build).
+
+## Roadmap paragraph (Alex, 10 Nov)
+- **Sec. I, after the contributions:** "The rest of the paper is structured as follows: Section II introduces the net-load and SF fits and the transfer of the SF sensitivity; Section III derives the installed capacity and the flexibility potential from them; Section IV describes the data and the evaluation design. Section V reports the results, and Section VI discusses the error sources and limitations. Lastly, Section VII concludes the paper. Fig. 1 maps each step of the method to the section that defines it." (absorbs the former one-line Fig. 1 paragraph).

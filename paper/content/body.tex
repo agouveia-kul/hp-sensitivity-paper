@@ -33,7 +33,7 @@ The contributions of this paper are threefold.
 \item \emph{Flexibility Potential Estimation:} A method to quantify the flexibility potential of an aggregated TCL population against temperature, from the net-load sensitivity and the SF sensitivity. On the semi-synthetic Swiss aggregates, it recovers the annual flexible energy at an nMAE of 4.8\%.
 \end{enumerate}
 
-Fig.~\ref{fig:pipeline} maps each step of the method to the section that defines it.
+The rest of the paper is structured as follows: Section~\ref{sec:problem} introduces the net-load and SF fits and the transfer of the SF sensitivity; Section~\ref{sec:estimation} derives the installed capacity and the flexibility potential from them; Section~\ref{sec:data} describes the data and the evaluation design. Section~\ref{sec:results} reports the results, and Section~\ref{sec:discussion} discusses the error sources and limitations. Lastly, Section~\ref{sec:conclusion} concludes the paper. Fig.~\ref{fig:pipeline} maps each step of the method to the section that defines it.
 
 \begin{figure}[t]
 \centering
@@ -266,7 +266,7 @@ Two error metrics recur below. The nMAE scores the estimates $\hat{y}_i$ against
 	\mathrm{nMAE} =\sum_{i\in\mathcal{A}} \frac{ |\hat{y}_i - y_i|}{n\,\max_{j\in\mathcal{A}} y_j}100\%,
 	\label{eq:nmae}
 \end{equation}
-i.e.\ the mean absolute error as a share of the largest true value in $\mathcal{A}$. A small aggregate, with a large percentage error but a small absolute error, therefore cannot dominate. Where a result is reported for a subset of the aggregates, $\mathcal{A}$ is that subset alone, so both the mean and the maximum are taken within it. The median ratio, the median of $\hat{y}_i / y_i$, gives the direction of the error, $< 1$ for an underestimate and $> 1$ for an overestimate. Every spread reported below is a 10--90\% range, i.e.\ it spans the 10th to the 90th percentile of the values across aggregates, unless stated otherwise.
+i.e.\ the mean absolute error normalised by the largest true value in $\mathcal{A}$. A small aggregate, with a large percentage error but a small absolute error, therefore cannot dominate. Where a result is reported for a subset of the aggregates, $\mathcal{A}$ is that subset alone, so both the mean and the maximum are taken within it. The median ratio, the median of $\hat{y}_i / y_i$, gives the direction of the error, $< 1$ for an underestimate and $> 1$ for an overestimate. Every spread reported below is a 10--90\% range, i.e.\ it spans the 10th to the 90th percentile of the values across aggregates.
 
 \subsection{Kloten Pilot and Semi-Synthetic Aggregates}
 \label{sec:data-kloten}
