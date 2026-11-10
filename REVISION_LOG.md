@@ -643,3 +643,7 @@ Raised on 9 Nov and parked while the error metric and ranges change. Not done ye
 ## Table III (tab:params) removed (Alex, 10 Nov)
 - The parameter table, and its sentence "Table III summarises which fitted parameters each estimate uses, and which data they come from.", are removed: Fig. 1, eq. (capacity) and III-B already show which fit feeds each estimate, and with the Pilot column gone the table no longer separated the estimates. The transfer table is now Table III (replication.py label updated).
 - Restores IEEE 10 pages with about eight reference lines to spare; the Sec. I smart-meter sentence stays. Elsevier 5p 14.
+
+## nMAE definition rewritten (Alex, 10 Nov)
+- **IV intro, eq. (nmae):** the set is named, nMAE = 100% / (n max_{j∈A} y_j) · Σ_{i∈A} |ŷ_i − y_i|, so the sum and the maximum visibly share A, and the constant denominator sits outside the sum. Text: "The nMAE scores the estimates ŷ_i against their ground truth y_i over a set A of n aggregates, … i.e. the mean absolute error as a share of the largest true value in A. … Where a result is reported for a subset of the aggregates, such as those with five HPs, A is that subset alone, so both the mean and the maximum are taken within it." Dropped "where the maximum is taken over the same set" and the "percentage error scaled by the ratio" sentence.
+- **V-A:** "normalised within each subset" removed, now covered by IV. Same metric, no number changed. IEEE 10 pages, Elsevier 5p 14.

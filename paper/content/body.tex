@@ -261,12 +261,12 @@ This flexible energy is an idealised upper bound, not a dispatchable schedule. I
 
 The evaluation draws on three sets of data, each further from the pilot. Semi-synthetic aggregates of one Swiss population test the full method against a known capacity (Section~\ref{sec:data-kloten}). Three aggregates outside the pilot test it on field meters (Section~\ref{sec:data-real}), and further populations with submetered heating test the SF transfer alone (Section~\ref{sec:data-pop}).
 
-Two error metrics recur below. The nMAE scores an estimate $\hat{y}_i$ against its ground truth $y_i$ across a set of $n$ aggregates,
+Two error metrics recur below. The nMAE scores the estimates $\hat{y}_i$ against their ground truth $y_i$ over a set $\mathcal{A}$ of $n$ aggregates,
 \begin{equation}
-	\mathrm{nMAE} = \frac{1}{n}\sum_i \frac{|\hat{y}_i - y_i|}{\max_j y_j} \times 100\%,
+	\mathrm{nMAE} = \frac{100\%}{n\,\max_{j\in\mathcal{A}} y_j}\sum_{i\in\mathcal{A}} |\hat{y}_i - y_i|,
 	\label{eq:nmae}
 \end{equation}
-where the maximum is taken over the same set. Each error is thus a percentage error scaled by the ratio of its aggregate's true value to the largest in the set. A small aggregate, with a large percentage error but a small absolute error, therefore cannot dominate. The median ratio, the median of $\hat{y}_i / y_i$, gives the direction of the error, $< 1$ for an underestimate and $> 1$ for an overestimate. Ranges are 10--90\% ranges across aggregates, splits or bootstrap samples.
+i.e.\ the mean absolute error as a share of the largest true value in $\mathcal{A}$. A small aggregate, with a large percentage error but a small absolute error, therefore cannot dominate. Where a result is reported for a subset of the aggregates, such as those with five HPs, $\mathcal{A}$ is that subset alone, so both the mean and the maximum are taken within it. The median ratio, the median of $\hat{y}_i / y_i$, gives the direction of the error, $< 1$ for an underestimate and $> 1$ for an overestimate. Ranges are 10--90\% ranges across aggregates, splits or bootstrap samples.
 
 \subsection{Kloten Pilot and Semi-Synthetic Aggregates}
 \label{sec:data-kloten}
@@ -303,7 +303,7 @@ The net-load sensitivity grows with the installed capacity, as Section~\ref{sec:
 \label{fig:slope-capacity}
 \end{figure}
 
-With the pilot's SF sensitivity, \eqref{eq:capacity} recovers the installed capacity of the 1260 aggregates at an nMAE of 9.5\%, with a median overestimate of 16\%. In absolute terms, the mean error is 17~kW, the capacity of about three HPs of the mean 6.3~kW. The overestimate comes from the non-TCL temperature response that the net-load sensitivity absorbs, the neglected term of \eqref{eq:decomp}, sized below. The error shrinks as HPs are added: the nMAE, normalised within each subset, falls from 22\% at five HPs to 13\% at 25, and the median overestimate from 35\% to 12\%.
+With the pilot's SF sensitivity, \eqref{eq:capacity} recovers the installed capacity of the 1260 aggregates at an nMAE of 9.5\%, with a median overestimate of 16\%. In absolute terms, the mean error is 17~kW, the capacity of about three HPs of the mean 6.3~kW. The overestimate comes from the non-TCL temperature response that the net-load sensitivity absorbs, the neglected term of \eqref{eq:decomp}, sized below. The error shrinks as HPs are added: the nMAE falls from 22\% at five HPs to 13\% at 25, and the median overestimate from 35\% to 12\%.
 
 \begin{figure}[t]
 \centering
