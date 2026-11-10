@@ -608,3 +608,6 @@ Raised on 9 Nov and parked while the error metric and ranges change. Not done ye
 ## Full-pilot SF fit moved from IV-B to V-B (Alex, 10 Nov)
 - **IV-B:** ends "For these aggregates, the pilot comprises all 50 Kloten HPs." (was "The pilot now comprises …" followed by the fit and "only its sensitivity m_h = 0.018 °C⁻¹ transfers").
 - **V-B thresholds paragraph:** second sentence "The SF fit of the full Kloten pilot, at its own net-load threshold, is SF_h(T) = 0.029 + 0.018 (16.6 − T)."; "The net-load thresholds of the targets are … against 16.6 °C for the pilot." No number changed. IEEE 11 pages, Elsevier 5p 14.
+
+## V-A self-reference removed (Alex, 10 Nov)
+- After the regroup, V-A cited itself. Now: "Einsiedeln holds only six HPs, below the ten from which the Kloten aggregates give reliable estimates, so its result is indicative." No other section cites itself. IEEE 11 pages, Elsevier 5p 14.
