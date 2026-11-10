@@ -557,3 +557,9 @@ Raised on 9 Nov and parked while the error metric and ranges change. Not done ye
 
 ## D2: Table II kept as is (Alex, 10 Nov)
 - Options offered: (1) drop P_base, b_h, b_c, SF^max_h, SF^max_c (19 → 14 columns, text unchanged); (2) SF columns plus T_h, cutting the II-E net-load sentences; (3) full table in an appendix. Alex: keep all 19 columns for now. Option 1 remains the fallback if space is needed.
+
+## D3: supervisor-requested passages shortened (Alex, 10 Nov)
+- **II-B design peak (R28), 4 → 2 sentences:** "The SF fit also links to the design peak of Section I. At a design temperature T_d < T_h, the design SF is b_h + m_h (T_h − T_d), and the installed capacity times this SF gives a daily-mean design load, which the 15-min design peak exceeds (Section IV-C)."
+- **IV-C 15-min peak SF (R31–R32), 4 → 3 sentences, \chg removed:** "…reaches 0.56 on the coldest day, which is 1.28 times the daily mean. This lies above the HP SF of 0.425…". Dropped: 0.59 over the year; 1.75 times on a median heating day.
+- **Limitations, tariff control, 6 → 4 sentences:** opens "Deliberate HP control may also bias the estimate." (replaces "…also bound the effect of…", which Alex found unclear); tariffs and §14a in one sentence; ends "The aggregates outside the pilot may run under such tariffs, yet their estimates show no visible error from it." Dropped: "The WPuQ campaign predates §14a, but blocking-period tariffs do not."
+- Five \chg markers remain. IEEE 11 pages, Elsevier 5p 14 (with D1).
