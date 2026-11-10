@@ -651,3 +651,7 @@ Raised on 9 Nov and parked while the error metric and ranges change. Not done ye
 ## IV intro: range sentence (Alex, 10 Nov)
 - "Ranges are 10–90% ranges across aggregates, splits or bootstrap samples." → "Every spread reported below is a 10–90% range, i.e. it spans the 10th to the 90th percentile of the values across aggregates, unless stated otherwise." Six of the ten ranges in the text are across aggregates; the other four (pilot m_h, target-half R² and error, RHPP spread) and Table III name their splits where they appear.
 - Coverage (share within ±10%/±20%) computed for Alex and left out: uncorrected 31%/57%, corrected 39%/68%, corrected at 25 HPs 58%/89% (nMAEs reproduced: 9.5, 7.5, 7.1%). IEEE 10 pages, Elsevier 5p 14.
+
+## IEEE affiliations (Alex, 10 Nov)
+- hp_sensitivity_overleaf.tex: authors joined with "and"; three \thanks footnotes, taken from the Elsevier affiliations: "A. M. V. Gouveia (corresponding author) is with ESAT, KU Leuven, EnergyVille and VITO, Belgium (e-mail: …)."; "M. U. Hashmi and D. Van Hertem are with ESAT, KU Leuven and EnergyVille, Belgium."; "R. D'hulst is with EnergyVille, VITO and Orion Grid Technologies, Belgium."
+- The footnote pushes the last reference onto p. 11 (IEEE 11 pages); cutting the Sec. I smart-meter sentence restores 10 (scratch build).
