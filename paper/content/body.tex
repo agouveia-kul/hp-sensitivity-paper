@@ -59,7 +59,7 @@ Fig.~\ref{fig:pipeline} maps each step of the method to the section that defines
 \draw[->] (en) -- (fl);
 \end{tikzpicture}%
 }
-\caption{Overview of the method, with the section that defines each step. Sections~\ref{sec:results} and~\ref{sec:validation} evaluate the two outputs.}
+\caption{Overview of the method, with the section that defines each step. Section~\ref{sec:results} evaluates the two outputs.}
 \label{fig:pipeline}
 \end{figure}
 
@@ -94,7 +94,7 @@ where $T$ is the daily mean temperature [$^\circ$C], $P_{\mathrm{base}}$ the tem
 
 %\textcolor{red}{should mention that $P_{\mathrm{base}}, s_h, s_c$ are the outcome of least square fit}
 
-Fig.~\ref{fig:austin}(a) shows the net-load fit to aggregated Austin smart-meter data \cite{pecanstreet}, with the parameters of \eqref{eq:bathtub} marked. The thresholds divide the temperature axis into three regimes: the heating regime below $T_h$, the cooling regime above $T_c$ and the dead band between them, where the population neither heats nor cools. This work characterises the heating and cooling regimes alike and leaves the dead band out of scope. The evaluation of Sections~\ref{sec:results} and~\ref{sec:validation} covers the heating regime only, since the available data allow no test of the transfer in the cooling regime (Section~\ref{sec:discussion}).
+Fig.~\ref{fig:austin}(a) shows the net-load fit to aggregated Austin smart-meter data \cite{pecanstreet}, with the parameters of \eqref{eq:bathtub} marked. The thresholds divide the temperature axis into three regimes: the heating regime below $T_h$, the cooling regime above $T_c$ and the dead band between them, where the population neither heats nor cools. This work characterises the heating and cooling regimes alike and leaves the dead band out of scope. The evaluation of Section~\ref{sec:results} covers the heating regime only, since the available data allow no test of the transfer in the cooling regime (Section~\ref{sec:discussion}).
 
 \begin{figure}[t]
 \centering
@@ -138,7 +138,7 @@ The fitted parameters carry a physical interpretation. The threshold temperature
 
 The sensitivities $s_h$ and $s_c$ of the net-load fit measure how much heating or cooling load the population adds per degree.
 % A steeper arm signals more installed TCLs.
-They scale with the TCL capacity installed behind the meter, so an aggregate with more TCLs shows a steeper arm, all else being equal. Between aggregates of the same size, a steeper arm therefore also indicates a higher TCL penetration. Section~\ref{sec:res-sf} confirms this, with $s_h$ tracking installed capacity across the aggregates.
+They scale with the TCL capacity installed behind the meter, so an aggregate with more TCLs shows a steeper arm, all else being equal. Between aggregates of the same size, a steeper arm therefore also indicates a higher TCL penetration. Section~\ref{sec:res-capacity} confirms this, with $s_h$ tracking installed capacity across the aggregates.
 
 %The flat centre $P_{\mathrm{base}}$ is the load that remains on days between $T_h$ and $T_c$. The net load on these days is not constant, but it shows no trend with temperature. This temperature-independent load is outside the scope of this paper.
 % However, this work will not focus on this region of electricity consumption, as the TCLs are most likely not active for this region of average temperature.
@@ -218,7 +218,7 @@ Both fits hold across climates. Table~\ref{tab:cross} reports them on aggregates
 
 The threshold temperatures follow the local climate. $T_h$ falls between 8 and 17\,$^\circ$C, and $T_c$ between 18 and 26\,$^\circ$C. A hot county such as Maricopa has a steep cooling arm, whereas a cold one such as Hamelin has no cooling whatsoever. The sensitivities $s_h$ and $s_c$ of the net-load fit scale with the aggregate's total installed TCL, and therefore with its size. The 849-household Norwegian aggregate and the electrified ResStock counties show the steepest arms for this reason. The SF sensitivities $m_h$ and $m_c$ remove this size dependence.
 
-The SF sensitivities $m_h$ and $m_c$ group partly by K{\"o}ppen class \cite{beck2018koppen}. The two temperate oceanic (Cfb) aggregates, Hamelin and Kloten, sit at $m_h=0.016$ and $0.018\,^\circ$C$^{-1}$, despite running on water-source and mixed ground-and-air-source heat pumps respectively. The two humid continental (Dfa and Dfb) sites, Oslo and Hennepin, converge on $m_h\approx0.022\,^\circ$C$^{-1}$, even though Oslo's heating load is mostly ground-source and direct resistance, while Hennepin's is air-source. The temperate dry and warm summer (Csb) class, however, splits. Its two measured aggregates, the Washington and Oregon households with ductless HPs, sit at $m_h=0.023$--$0.024\,^\circ$C$^{-1}$, whereas the simulated King County aggregate of ducted HPs with resistance backup reaches $0.036\,^\circ$C$^{-1}$. The cooling sensitivity $m_c$ spans $0.024$--$0.038\,^\circ$C$^{-1}$ without a clear grouping. The hot desert site, Maricopa, is the outlier, with the steepest SF sensitivity of all, $m_h=0.063\,^\circ$C$^{-1}$. This is possibly because a single aggregate and few genuinely cold days leave little data to anchor the coldest end of its heating arm. Overall, the K{\"o}ppen class narrows $m_h$ for aggregates of similar TCL technology. The technology matters as well, and possibly so does the difference between measured and simulated peaks. Across classes, $m_h$ varies by up to a factor of four, so the SF sensitivity is expected to transfer only within a climate class and TCL technology (Section~\ref{sec:transfer}). Section~\ref{sec:transfer-pop} tests this expectation on further populations with complete heating submetering.
+The SF sensitivities $m_h$ and $m_c$ group partly by K{\"o}ppen class \cite{beck2018koppen}. The two temperate oceanic (Cfb) aggregates, Hamelin and Kloten, sit at $m_h=0.016$ and $0.018\,^\circ$C$^{-1}$, despite running on water-source and mixed ground-and-air-source heat pumps respectively. The two humid continental (Dfa and Dfb) sites, Oslo and Hennepin, converge on $m_h\approx0.022\,^\circ$C$^{-1}$, even though Oslo's heating load is mostly ground-source and direct resistance, while Hennepin's is air-source. The temperate dry and warm summer (Csb) class, however, splits. Its two measured aggregates, the Washington and Oregon households with ductless HPs, sit at $m_h=0.023$--$0.024\,^\circ$C$^{-1}$, whereas the simulated King County aggregate of ducted HPs with resistance backup reaches $0.036\,^\circ$C$^{-1}$. The cooling sensitivity $m_c$ spans $0.024$--$0.038\,^\circ$C$^{-1}$ without a clear grouping. The hot desert site, Maricopa, is the outlier, with the steepest SF sensitivity of all, $m_h=0.063\,^\circ$C$^{-1}$. This is possibly because a single aggregate and few genuinely cold days leave little data to anchor the coldest end of its heating arm. Overall, the K{\"o}ppen class narrows $m_h$ for aggregates of similar TCL technology. The technology matters as well, and possibly so does the difference between measured and simulated peaks. Across classes, $m_h$ varies by up to a factor of four, so the SF sensitivity is expected to transfer only within a climate class and TCL technology (Section~\ref{sec:transfer}). Section~\ref{sec:res-sf} tests this expectation on further populations with complete heating submetering.
 
 \subsection{Transferability of SF}
 \label{sec:transfer}
@@ -227,7 +227,7 @@ The method calibrates the SF sensitivity once on a submetered pilot and reuses i
 
 Only the SF sensitivities $m_h$ and $m_c$ transfer. The pilot's thresholds follow its own building stock and climate, so the target's thresholds $T_h$ and $T_c$ are read from the target's net-load fit instead. The pilot's intercepts $b_h$ and $b_c$ describe weather-independent TCL use, which the target's net-load fit places in $P_{\mathrm{base}}$ and never attributes to its TCL arms.
 
-The transfer rests on a hypothesis, which this paper tests rather than assumes: within a population, the SF sensitivity does not depend on the installed capacity or the TCL penetration of an aggregate. The hypothesis matters because the capacity estimate divides the target's net-load sensitivity by the pilot's SF sensitivity (Section~\ref{sec:uc-capacity}). Any mismatch between the pilot's and the target's SF sensitivity therefore passes directly into the estimated capacity. Three tests follow, each wider than the last. Section~\ref{sec:res-sf} tests the hypothesis within one population, Section~\ref{sec:real-agg} on aggregates outside the pilot, and Section~\ref{sec:transfer-pop} across populations from five countries.
+The transfer rests on a hypothesis, which this paper tests rather than assumes: within a population, the SF sensitivity does not depend on the installed capacity or the TCL penetration of an aggregate. The hypothesis matters because the capacity estimate divides the target's net-load sensitivity by the pilot's SF sensitivity (Section~\ref{sec:uc-capacity}). Any mismatch between the pilot's and the target's SF sensitivity therefore passes directly into the estimated capacity. Section~\ref{sec:res-sf} tests it in three steps, each wider than the last: within one population, on aggregates outside the pilot and across populations from five countries.
 
 %\textcolor{blue}{A single linear arm can underfit at the most extreme climates, where a convex load (backup heat and COP fall-off in deep cold, or air-conditioning saturation in extreme heat) would justify a second threshold, e.g.\ a kneepoint near $-13^\circ$C raises Hennepin's net-load $R^2$ from 0.81 to 0.98 and its SF $R^2$ from 0.77 to 0.97. However, this is out of scope and not considered for the datasets used in the rest of this paper.}
 
@@ -339,13 +339,22 @@ Flexibility \eqref{eq:flex-energy} & $s_h, s_c, T_h, T_c$ & $m_h, m_c$ & $\Delta
 \end{autotable}
 
 % =====================================================================
-\section{Numerical Results}
-\label{sec:results}
-
-\subsection{Kloten Data and Evaluation Design}
+\section{Data and Evaluation Design}
 \label{sec:data}
 
-The experiment of this section emulates a DSO that submeters one pilot and estimates the installed capacity of many feeders without submetering them. Each semi-synthetic aggregate plays the role of one such feeder. Its net load is known, and so is its true installed capacity, the sum of the capacities of its own HPs. The aggregates differ in size and HP penetration, so each has its own true capacity. For every aggregate, the estimate is its own net-load sensitivity divided by the pilot's SF sensitivity \eqref{eq:capacity}, scored against its true capacity. Fig.~\ref{fig:split} sketches one split.
+The evaluation draws on three sets of data, each further from the pilot. Semi-synthetic aggregates of one Swiss population test the full method against a known capacity (Section~\ref{sec:data-kloten}). Three aggregates outside the pilot test it on field meters (Section~\ref{sec:data-real}), and further populations with submetered heating test the SF transfer alone (Section~\ref{sec:data-pop}).
+
+Two error metrics recur below. The normalised mean absolute error (nMAE) scores an estimate $\hat{y}_i$ against its ground truth $y_i$ across a set of $n$ aggregates,
+\begin{equation}
+	\mathrm{nMAE} = \frac{1}{n}\sum_i \frac{|\hat{y}_i - y_i|}{\max_j y_j} \times 100\%,
+	\label{eq:nmae}
+\end{equation}
+where the maximum is taken over the same set. Each error is thus a percentage error scaled by the ratio of its aggregate's true value to the largest in the set. A small aggregate, with a large percentage error but a small absolute error, therefore cannot dominate. The median ratio, the median of $\hat{y}_i / y_i$, gives the direction of the error, $< 1$ for an underestimate and $> 1$ for an overestimate. Ranges are 10--90\% ranges across aggregates, splits or bootstrap samples.
+
+\subsection{Kloten Pilot and Semi-Synthetic Aggregates}
+\label{sec:data-kloten}
+
+The main experiment emulates a DSO that submeters one pilot and estimates the installed capacity of many feeders without submetering them. Each semi-synthetic aggregate plays the role of one such feeder. Its net load is known, and so is its true installed capacity, the sum of the capacities of its own HPs. The aggregates differ in size and HP penetration, so each has its own true capacity. For every aggregate, the estimate is its own net-load sensitivity divided by the pilot's SF sensitivity \eqref{eq:capacity}, scored against its true capacity. Fig.~\ref{fig:split} sketches one split.
 
 \begin{figure}[t]
 \centering
@@ -384,15 +393,33 @@ This section uses a single Swiss population, the households metered at the Klote
 
 The 50 HPs are split at random into two halves of 25, twenty times over. In each split, the first half is the submetered pilot: its aggregated SF is fitted with \eqref{eq:sffit} and supplies the sensitivity $m_h$. Semi-synthetic aggregates, i.e. sums of measured households, are then drawn from the target half only, so no HP informs both the pilot and a target. Each aggregate combines $N_{hp}$ distinct HPs of that half, with the same households' other load, and $N - N_{hp}$ distinct households without an HP. The household count $N$ takes the values 10, 20, 30, 40 and 50, and $N_{hp}$ the values 5, 10, 15, 20 and 25, with $N_{hp} \le N$. Every feasible cell holds three aggregates per split, giving 1260 aggregates. All draws are without replacement, so no household recurs within an aggregate.
 
-Two error metrics recur below. The normalised mean absolute error (nMAE) scores an estimate $\hat{y}_i$ against its ground truth $y_i$ across a set of $n$ aggregates,
-\begin{equation}
-	\mathrm{nMAE} = \frac{1}{n}\sum_i \frac{|\hat{y}_i - y_i|}{\max_j y_j} \times 100\%,
-	\label{eq:nmae}
-\end{equation}
-where the maximum is taken over the same set. Each error is thus a percentage error scaled by the ratio of its aggregate's true value to the largest in the set. A small aggregate, with a large percentage error but a small absolute error, therefore cannot dominate. The median ratio, the median of $\hat{y}_i / y_i$, gives the direction of the error, $< 1$ for an underestimate and $> 1$ for an overestimate. Ranges are 10--90\% ranges across aggregates, splits or bootstrap samples.
+\subsection{Aggregates outside the Pilot}
+\label{sec:data-real}
+
+Three aggregates lie outside the Kloten pilot, each summed from its own field meters. Their submetered data serve only to validate the results, never as input. Two are regional aggregates: the HEAPO households of two further Swiss weather stations, Z{\"u}rich-Affoltern (Affoltern below) and Einsiedeln, with 21 and 6 submetered HPs. Their households share an area but not necessarily an LV network. The third comes from the WPuQ measurement campaign in Hamelin \cite{Sch22}. It is a real aggregate of 37 German single-family houses on one LV network, each with a submetered HP, and its net load is the sum of their individual meters. All three are summed rather than metered at a transformer, so they carry no network losses. They also contain no households without an HP, which makes their HP penetration 100\%. The pilot now comprises all 50 Kloten HPs. Its SF fit, at the pilot's own net-load threshold, gives $\hat{\mathrm{SF}}_h(T) = 0.029 + 0.018\,(16.6 - T)$, and only its sensitivity $m_h = 0.018\,^\circ$C$^{-1}$ transfers.
+
+\subsection{Populations with Submetered Heating}
+\label{sec:data-pop}
+
+The SF transfer is further tested on every population with submetered heating available to this study, beyond the one Swiss pilot. These are 849 Oslo apartments grouped in ten blocks \cite{cofactor}, 182 households of the GB RHPP trial \cite{rhpp8151, Lov17} and US households of the BPA \cite{bpa_hphc} and NREL \cite{nrel_ccashp} field studies, whose submetering covers the HP and its backup heat. The BPA households lie in two heating zones, the milder western Washington (HZ1) and the colder inland (HZ2), where the NREL households also lie. On these datasets, only the SF transfer is tested. The RHPP, BPA and NREL data hold the heating load of each household but no other load, so no faithful net load can be built from them. In Oslo, the apartments' own load includes electric heating that the submetered heating channel omits. Each row of Table~\ref{tab:transfer} therefore compares the target's own SF sensitivity with the pilot's, and the ratio minus one is the capacity error caused by the transfer alone.
+
+% =====================================================================
+\section{Results}
+\label{sec:results}
+
+This section reports the results in the order of the three contributions: the installed capacity, the transfer of the SF sensitivity on which it rests and the flexibility potential.
 
 \subsection{Installed Capacity}
 \label{sec:res-capacity}
+
+The net-load sensitivity grows with the installed capacity, as Section~\ref{sec:fits-net} anticipated. Fig.~\ref{fig:slope-capacity}(a) plots the fitted $s_h$ against the installed HP capacity across the aggregates, coloured by the number of HPs. The two track closely, at a Pearson correlation of 0.97, along a line through the origin of slope $0.020\,^\circ$C$^{-1}$. A steeper heating arm therefore signals more installed capacity.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\figw]{figures/fig_slope_capacity.pdf}
+\caption{Sensitivities of the 1260 Kloten aggregates against installed HP capacity. (a) Fitted net-load sensitivity $s_h$, coloured by the number of HPs. (b) Own SF sensitivity $m_h$: 10--90\% range over a 40~kW rolling window, median of all aggregates and median of the 20 pilots.}
+\label{fig:slope-capacity}
+\end{figure}
 
 With the pilot's SF sensitivity, \eqref{eq:capacity} recovers the installed capacity of the 1260 aggregates at an nMAE of 9.5\%, with a median overestimate of 16\%. In absolute terms, the mean error is 17~kW, the capacity of about three HPs of the mean 6.3~kW. The overestimate comes from the non-TCL temperature response that the net-load sensitivity absorbs, the neglected term of \eqref{eq:decomp} discussed in Section~\ref{sec:discussion}. The error shrinks as HPs are added: the nMAE falls from 22\% at five HPs to 13\% at twenty-five, and the median overestimate from 35\% to 12\%.
 
@@ -407,10 +434,16 @@ Fig.~\ref{fig:capacity-error} shows the ratio of estimated to true capacity agai
 
 The overestimate grows as the penetration falls because $s_h$ also holds the non-TCL response of every household, about $N s_{n,h}$, while the TCL response grows only with $N_{hp}$. The pilot is not the cause: with each aggregate's own $m_h$, the median ratio still falls from 1.57 at 10\% penetration to 1.06 at 100\%. Fitted on 50 households without an HP that no aggregate of the split contains, $s_{n,h}$ is a median 0.005~kW/$^\circ$C, against 0.112~kW/$^\circ$C for one HP. The correction \eqref{eq:capacity-corr} then cuts the median ratio at 10\% penetration from 1.66 to 1.19 and holds it within 1.00--1.11 from 15\% on. It lowers the nMAE from 9.5\% to 7.5\%. It removes most of the bias but not the spread, since a tenth of the households without an HP give 81\% of their response. The calibration households must hold no TCL: the steeper sensitivity of the pilot's other load, 0.011~kW/$^\circ$C, leaves the estimate a third too low at low penetration.
 
-\subsection{Why the Estimate Works: Invariance and Transfer}
+\input{tables/tab_real}
+
+On all three aggregates outside the pilot, the capacity estimate lies within 10\% of the true capacity (Table~\ref{tab:real}), with errors of $+2\%$ at Affoltern, $-6\%$ at Einsiedeln and $-9\%$ at Hamelin, an nMAE of 3.8\%. Einsiedeln holds only six HPs, below the ten from which Section~\ref{sec:res-capacity} finds the estimates reliable, so its result is indicative.
+
+With each target's own SF sensitivity, the errors are $+6\%$, $+5\%$ and $+3\%$. This error of the net-load sensitivity remains small, since every household in these aggregates has an HP.
+
+\subsection{Transfer of the SF Sensitivity}
 \label{sec:res-sf}
 
-The capacity estimate divides a sensitivity that grows with the installed capacity by one that does not. This subsection shows both properties on the Kloten aggregates, which is the within-population test of the hypothesis of Section~\ref{sec:transfer}.
+The capacity estimate divides the net-load sensitivity, which grows with the installed capacity, by the SF sensitivity, which should not. This subsection tests this second property, the hypothesis of Section~\ref{sec:transfer}, within one population, outside the pilot and across populations.
 
 The SF fit is stable within the population. Because the SF comes from the submetered HPs alone, the households without an HP do not affect it. Fig.~\ref{fig:slope-capacity}(b) therefore plots the own $m_h$ of every aggregate against its installed capacity. It holds near $0.018\,^\circ$C$^{-1}$ at every capacity, at a Spearman correlation of $-0.06$, and the maximum heating SF holds near 0.47.
 %They differ slightly because they are fitted differently: $m$ as the median of the per-substation SF fits, and the slope as a single regression of $s_h$ on installed capacity pooled across the substations.
@@ -421,14 +454,13 @@ Across the twenty splits, the pilot's SF sensitivity $m_h$ has a median of $0.01
 
 Placed at the target half's net-load threshold, the pilot's SF curve also reproduces the SF of the whole target half, at a median $R^2_h$ of 0.91 over 120 random splits and a 10--90\% range of 0.77--0.95. The pilot's SF sensitivity also recovers the capacity of the target half through \eqref{eq:capacity}. The median error is $+8\%$, with a 10--90\% range from $-8\%$ to $+27\%$.
 
-The net-load sensitivity, in turn, grows with the installed capacity. Fig.~\ref{fig:slope-capacity}(a) plots the fitted $s_h$ against the installed HP capacity across the aggregates, coloured by the number of HPs. The two track closely, at a Pearson correlation of 0.97, along a line through the origin of slope $0.020\,^\circ$C$^{-1}$. A steeper heating arm therefore signals more installed capacity, as Section~\ref{sec:fits-net} anticipated.
+Outside the pilot, the thresholds show why only the sensitivity transfers. The net-load thresholds are $16.7\,^\circ$C at Affoltern, $14.0\,^\circ$C at Einsiedeln and $13.9\,^\circ$C at Hamelin, against $16.6\,^\circ$C for the Kloten pilot. The threshold temperature varies with the insulation of the building stock, the heat released indoors by occupants and appliances, and the preferred indoor setpoint \cite{Men18}. Transferring the full pilot curve from Kloten, intercept and threshold included, gives capacity errors of $-3\%$, $-20\%$ and $-26\%$. The error of the full curve therefore grows with the distance between the target's threshold and the pilot's, whereas the sensitivity alone stays within 10\%.
 
-\begin{figure}[t]
-\centering
-\includegraphics[width=\figw]{figures/fig_slope_capacity.pdf}
-\caption{Sensitivities of the 1260 Kloten aggregates against installed HP capacity. (a) Fitted net-load sensitivity $s_h$, coloured by the number of HPs. (b) Own SF sensitivity $m_h$: 10--90\% range over a 40~kW rolling window, median of all aggregates and median of the 20 pilots.}
-\label{fig:slope-capacity}
-\end{figure}
+\input{tables/tab_transfer}
+
+Table~\ref{tab:transfer} reports the transfer on the populations of Section~\ref{sec:data-pop}. Between random splits of one population, the ratio has a median of 1.00 in every dataset. Its spread narrows as the pilot and target grow, from a 10--90\% range of $-28\%$ to $+39\%$ at ten RHPP households to $-11\%$ to $+13\%$ at 91. The same holds between studies of one country and climate zone: the sensitivity transfers from the BPA HZ2 households to the NREL households within 5\%, and from Kloten to Affoltern and Einsiedeln within 10\%. Between Kloten and Hamelin, two countries of the same climate class, it transfers within 12\%.
+
+The transfer degrades along three further axes. Between air- and ground-source HPs, the sensitivity differs by 13 to 14\%. Between the two BPA heating zones, it differs by a factor of 1.7. Between social and private housing within the RHPP trial, it differs by a factor of 1.65, far more than between the two technologies. This is possibly because the two housing types size their HPs differently against the heat demand of the building. That sizing sets how much of its capacity a population draws at a given temperature. A pilot therefore needs to match the target not only in climate and TCL technology, but also in housing stock.
 
 \subsection{Flexibility Potential}
 \label{sec:res-flex}
@@ -451,34 +483,8 @@ The annual ratio of 1.04 averages two opposite errors across temperature (Fig.~\
 On the coldest days, the fitted arm runs above the measured HP load. The measured load grows by about 0.02~kW per kW installed and degree down to 0~$^\circ$C, but by half that below it, whereas the fitted arm stays linear. The energy factor reaches 1.09 on these days, and the daily resolution and the pilot's SF add 4\% and 2\%. The capacity estimate plays no part, since it drops out of \eqref{eq:flex-energy}.
 
 In mild weather, the estimate misses the HP use that does not depend on temperature, most plausibly hot-water heating \cite{Bru23}. The fitted arm reaches zero at $T_h$, whereas the measured HP load still draws 0.05--0.06~kW per kW installed at 14--16~$^\circ$C.
-\section{Validation outside the Pilot}
-\label{sec:validation}
 
-\subsection{Aggregates outside the Pilot}
-\label{sec:real-agg}
-
-Section~\ref{sec:results} tested the method within one population, on aggregates built from its households. This section applies it to aggregates that no pilot has seen, each summed from its own field meters. Swiss and German aggregates test the heating regime with the Kloten pilot. Submetered data serve only to validate the results, never as input.
-
-Three aggregates lie outside the Kloten pilot. Two are regional aggregates: the HEAPO households of two further Swiss weather stations, Z{\"u}rich-Affoltern (Affoltern below) and Einsiedeln, with 21 and 6 submetered HPs. Their households share an area but not necessarily an LV network. The third comes from the WPuQ measurement campaign in Hamelin \cite{Sch22}. It is a real aggregate of 37 German single-family houses on one LV network, each with a submetered HP, and its net load is the sum of their individual meters. All three are summed rather than metered at a transformer, so they carry no network losses. They also contain no households without an HP, which makes their HP penetration 100\%. The pilot now comprises all 50 Kloten HPs. Its SF fit, at the pilot's own net-load threshold, gives $\hat{\mathrm{SF}}_h(T) = 0.029 + 0.018\,(16.6 - T)$, and only its sensitivity $m_h = 0.018\,^\circ$C$^{-1}$ transfers.
-
-\input{tables/tab_real}
-
-On all three aggregates, the capacity estimate lies within 10\% of the true capacity (Table~\ref{tab:real}), with errors of $+2\%$ at Affoltern, $-6\%$ at Einsiedeln and $-9\%$ at Hamelin, an nMAE of 3.8\%. Einsiedeln holds only six HPs, below the ten from which Section~\ref{sec:res-capacity} finds the estimates reliable, so its result is indicative. The flexibility ratio on the heating-regime days lies between 0.93 and 0.96, slightly below the Kloten median of 1.04 (Section~\ref{sec:res-flex}). It follows the energy factors of 0.89 to 0.92, while the unused-capacity factor stays between 1.01 and 1.05. These energy factors are lower than on Kloten possibly because these aggregates hold no households without an HP, whose temperature response inflates the heating arm.
-
-The thresholds show why only the sensitivity transfers. The net-load thresholds are $16.7\,^\circ$C at Affoltern, $14.0\,^\circ$C at Einsiedeln and $13.9\,^\circ$C at Hamelin, against $16.6\,^\circ$C for the Kloten pilot. The threshold temperature varies with the insulation of the building stock, the heat released indoors by occupants and appliances, and the preferred indoor setpoint \cite{Men18}. Transferring the full pilot curve from Kloten, intercept and threshold included, gives capacity errors of $-3\%$, $-20\%$ and $-26\%$. The error of the full curve therefore grows with the distance between the target's threshold and the pilot's, whereas the sensitivity alone stays within 10\%.
-
-With each target's own SF sensitivity, the errors are $+6\%$, $+5\%$ and $+3\%$. This error of the net-load sensitivity remains small, since every household in these aggregates has an HP.
-
-\subsection{Transfer across Populations}
-\label{sec:transfer-pop}
-
-Table~\ref{tab:transfer} widens the test of the SF transfer to every population with submetered heating available to this study, beyond the one Swiss pilot of Section~\ref{sec:real-agg}. These are 849 Oslo apartments grouped in ten blocks \cite{cofactor}, 182 households of the GB RHPP trial \cite{rhpp8151, Lov17} and US households of the BPA \cite{bpa_hphc} and NREL \cite{nrel_ccashp} field studies, whose submetering covers the HP and its backup heat. The BPA households lie in two heating zones, the milder western Washington (HZ1) and the colder inland (HZ2), where the NREL households also lie. On these datasets, only the SF transfer is tested. The RHPP, BPA and NREL data hold the heating load of each household but no other load, so no faithful net load can be built from them. In Oslo, the apartments' own load includes electric heating that the submetered heating channel omits. Each row of Table~\ref{tab:transfer} therefore compares the target's own SF sensitivity with the pilot's, and the ratio minus one is the capacity error caused by the transfer alone.
-
-\input{tables/tab_transfer}
-
-Between random splits of one population, the ratio has a median of 1.00 in every dataset. Its spread narrows as the pilot and target grow, from a 10--90\% range of $-28\%$ to $+39\%$ at ten RHPP households to $-11\%$ to $+13\%$ at 91. The same holds between studies of one country and climate zone: the sensitivity transfers from the BPA HZ2 households to the NREL households within 5\%, and from Kloten to Affoltern and Einsiedeln within 10\%. Between Kloten and Hamelin, two countries of the same climate class, it transfers within 12\%.
-
-The transfer degrades along three further axes. Between air- and ground-source HPs, the sensitivity differs by 13 to 14\%. Between the two BPA heating zones, it differs by a factor of 1.7. Between social and private housing within the RHPP trial, it differs by a factor of 1.65, far more than between the two technologies. This is possibly because the two housing types size their HPs differently against the heat demand of the building. That sizing sets how much of its capacity a population draws at a given temperature. A pilot therefore needs to match the target not only in climate and TCL technology, but also in housing stock.
+On the three aggregates outside the pilot, the flexibility ratio on the heating-regime days lies between 0.93 and 0.96, slightly below the Kloten median of 1.04. It follows the energy factors of 0.89 to 0.92, while the unused-capacity factor stays between 1.01 and 1.05. These energy factors are lower than on Kloten possibly because these aggregates hold no households without an HP, whose temperature response inflates the heating arm.
 
 % =====================================================================
 \section{Discussion}
@@ -497,7 +503,7 @@ The pilot should therefore match the target in climate zone, TCL technology and 
 
 The within-population tests keep each pilot apart from its targets. Over twenty random splits of the 50 Kloten HPs, no HP informs both the pilot and a target, and no household recurs within an aggregate. Aggregates of the same split do share HPs, so their errors are not independent, but the twenty splits keep the results from resting on any single partition.
 
-The full estimator is also tested fully out of sample, on three aggregates whose HPs never enter the pilot (Section~\ref{sec:real-agg}). Table~\ref{tab:transfer} tests the SF transfer further, on populations from five countries. These aggregates are few and all have an HP in every household, so lower HP penetrations are tested only on the semi-synthetic Kloten aggregates, which span 10\% to 100\%.
+The full estimator is also tested fully out of sample, on three aggregates whose HPs never enter the pilot (Section~\ref{sec:res-capacity}). Table~\ref{tab:transfer} tests the SF transfer further, on populations from five countries. These aggregates are few and all have an HP in every household, so lower HP penetrations are tested only on the semi-synthetic Kloten aggregates, which span 10\% to 100\%.
 
 The non-TCL temperature response, which the model neglects, is measured rather than assumed away. Section~\ref{sec:res-capacity} sizes it per household, so the resulting bias is predictable from the household count the DSO already holds. Section~\ref{sec:uc-capacity} gives a correction.
 
