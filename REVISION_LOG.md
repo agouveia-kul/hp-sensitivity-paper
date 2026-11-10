@@ -611,3 +611,7 @@ Raised on 9 Nov and parked while the error metric and ranges change. Not done ye
 
 ## V-A self-reference removed (Alex, 10 Nov)
 - After the regroup, V-A cited itself. Now: "Einsiedeln holds only six HPs, below the ten from which the Kloten aggregates give reliable estimates, so its result is indicative." No other section cites itself. IEEE 11 pages, Elsevier 5p 14.
+
+## Fig. 7: legend, axis label, caption (Alex, 10 Nov)
+- **Figure (flex_temperature.fig_flex_per_kw, regenerated):** legend moved to the lower left of the top panel; y-axis label "E_flex / (P^max Δt_Th)" (was "E_flex per kW installed (kWh/h per kW)"). Data unchanged; the pixel diff before the label change covered only the two legend positions.
+- **Caption (~75 → ~35 words):** "Flexible energy normalised by the window Δt_Th and the true installed capacity, E_flex/(P^max Δt_Th), against daily mean temperature, for the 1260 Kloten aggregates in 2 °C bins. Bottom: number of days of 2023 in each bin." Dropped: "median and 10–90% range across aggregates" (in the legend); the SF(1−SF) ≤ 0.25 sentence (Alex); the "not observed flexibility" caveat (V-C and Limitations cover it). IEEE 11 pages, Elsevier 5p 14.

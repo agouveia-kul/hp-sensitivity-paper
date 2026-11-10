@@ -1032,11 +1032,11 @@ def fig_flex_per_kw(P=None, name='fig_flex_normalised', saver=None):
     ax.plot(x, h.act.median(), color='0.1', lw=1.4, marker='o', ms=2.5)
     ax.fill_between(x, h.est.quantile(.1), h.est.quantile(.9), color=hf.C_HP, alpha=.15, lw=0)
     ax.plot(x, h.est.median(), color=hf.C_HP, ls='--', lw=1.4)
-    ax.set_ylabel('$E_{\\mathrm{flex}}$ per kW installed\n(kWh/h per kW)')
+    ax.set_ylabel('$E_{\\mathrm{flex}}\\,/\\,(P^{\\max}\\Delta t_{Th})$')
     ax.set_ylim(0, None)
     handles = [(Patch(color='0.2', alpha=.3, lw=0), Line2D([], [], color='0.1', lw=1.4, marker='o', ms=2.5)),
                (Patch(color=hf.C_HP, alpha=.15, lw=0), Line2D([], [], color=hf.C_HP, ls='--', lw=1.4))]
-    ax.legend(handles, ['actual (median, 10–90%)', 'estimate (median, 10–90%)'], fontsize=6.5, loc='upper right')
+    ax.legend(handles, ['actual (median, 10–90%)', 'estimate (median, 10–90%)'], fontsize=6.5, loc='lower left')
     th = float(rebuild_design()[0]['rows'].T_h.median())
     for b in x.index:
         lo, hi = edges[b], edges[b + 1]
