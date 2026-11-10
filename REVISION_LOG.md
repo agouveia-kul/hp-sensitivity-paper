@@ -658,3 +658,6 @@ Raised on 9 Nov and parked while the error metric and ranges change. Not done ye
 
 ## Roadmap paragraph (Alex, 10 Nov)
 - **Sec. I, after the contributions:** "The rest of the paper is structured as follows: Section II introduces the net-load and SF fits and the transfer of the SF sensitivity; Section III derives the installed capacity and the flexibility potential from them; Section IV describes the data and the evaluation design. Section V reports the results, and Section VI discusses the error sources and limitations. Lastly, Section VII concludes the paper. Fig. 1 maps each step of the method to the section that defines it." (absorbs the former one-line Fig. 1 paragraph).
+
+## IEEE layout: figure width and float spacing (Alex, 10 Nov)
+- hp_sensitivity_overleaf.tex only: \figw = 0.95\columnwidth (was \columnwidth); \textfloatsep and \dbltextfloatsep 10pt plus 2pt minus 4pt, \floatsep, \dblfloatsep and \intextsep 8pt plus 2pt minus 2pt (IEEEtran default ~17pt). Margins untouched (fixed by the template). With the roadmap and the affiliations, IEEE is 10 pages with about eight reference lines to spare; the Sec. I smart-meter sentence stays. Elsevier 5p 14.

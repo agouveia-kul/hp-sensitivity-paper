@@ -16,9 +16,14 @@
 \usepackage{hyperref}
 \graphicspath{{figures/}}
 
-\newlength{\figw}\setlength{\figw}{\columnwidth}
+\newlength{\figw}\setlength{\figw}{0.95\columnwidth}
 \input{content/macros}
 
+\setlength{\textfloatsep}{10pt plus 2pt minus 4pt}
+\setlength{\floatsep}{8pt plus 2pt minus 2pt}
+\setlength{\dbltextfloatsep}{10pt plus 2pt minus 4pt}
+\setlength{\dblfloatsep}{8pt plus 2pt minus 2pt}
+\setlength{\intextsep}{8pt plus 2pt minus 2pt}
 \begin{document}
 
 \title{Estimating the Installed Capacity of Aggregated Thermostatically Controlled Loads from Net Load and Temperature}
