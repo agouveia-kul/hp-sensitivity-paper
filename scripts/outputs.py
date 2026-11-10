@@ -1640,7 +1640,7 @@ def tab_real():
     s = lambda v: f"${v:+.0f}$"
     body = "\n".join(f"{r.agg} & {r.n} & {r.cap:.0f} & {r.cap_e:.0f} & {s(r.err)} & {s(r.oracle)} & "
                      f"{s(r.whole)} & {r.flex_b:.2f} \\\\" for r in R.itertuples())
-    tex = r"""\begin{autotable}{Transfer to real aggregates outside Kloten}{tab:real}
+    tex = r"""\begin{autotable}{Transfer to aggregates outside the Kloten pilot}{tab:real}
 \setlength{\tabcolsep}{2.5pt}
 \begin{tabular}{lccccccc}
 \toprule
