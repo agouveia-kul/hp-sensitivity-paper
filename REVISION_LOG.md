@@ -623,3 +623,4 @@ Raised on 9 Nov and parked while the error metric and ranges change. Not done ye
 ## Page cut to 10 (IEEE), route 3 (Alex, 10 Nov)
 - **S1, nomenclature:** removed from the IEEE wrapper only (hp_sensitivity_overleaf.tex); the Elsevier version keeps it.
 - **S2, Fig. 4 (Kloten split diagram):** removed, with "Fig. 4 sketches one split." in IV-A; the split paragraph describes it in full. Figs. 5–7 are now Figs. 4–6 (replication.py labels updated).
+- **S3, Table I:** rows Jar22, Sos17, Zha16b, Li19d and And20b removed (cited only in the table), so their references leave the bibliography (61 → 56). Done in gen_litreview.py; the regenerated tab_litreview.tex equals the old table minus those five lines.
