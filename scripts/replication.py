@@ -17,7 +17,7 @@ Command line (from the repo root, with scripts/ and src/ on the path)::
 
     python scripts/replication.py            # which datasets are in place
     python scripts/replication.py --run      # recompute everything, headless
-    python scripts/replication.py --run tab_sf,tab_real    # only these steps
+    python scripts/replication.py --run tab_real,tab_transfer    # only these steps
 """
 import contextlib
 import difflib
@@ -357,19 +357,15 @@ def _o(name, *a, **k):
 SWISS = ['heapo', 'swiss']
 STEPS = {s.key: s for s in [
     Step('tab_litreview', 'Table I', ['tab_litreview'], [], _litreview, '<1'),
-    Step('fig_bathtub_example', 'Fig. 2', ['fig_bathtub_example'], ['pecan'], _o('fig_bathtub_example'), '1 / 3'),
-    Step('fig_sf_arms_anchored', 'Fig. 3', ['fig_sf_arms_anchored'], ['pecan'], _o('fig_sf_arms_anchored'), '3'),
+    Step('fig_austin_fits', 'Fig. 2', ['fig_austin_fits'], ['pecan'], _o('fig_austin_fits'), '1 / 3'),
     Step('tab_cross', 'Table II', ['tab_cross'], ['wpuq', 'heapo', 'swiss', 'cofactor', 'pecan', 'neea', 'resstock'],
          _tab_cross, '10 / 60'),
-    Step('fig_flex_schedule', 'Fig. 4', ['fig_flex_schedule'], [], _o('fig_flex_schedule'), '<1'),
-    Step('fig_quality_heatmap', 'Fig. 5', ['fig_quality_heatmap'], SWISS, _o('fig_quality_heatmap'), '2 / 40'),
+    Step('fig_flex_schedule', 'Fig. 3', ['fig_flex_schedule'], [], _o('fig_flex_schedule'), '<1'),
+    Step('fig_capacity_error', 'Fig. 5', ['fig_capacity_error'], SWISS, _o('fig_capacity_error'), '<1 / 30'),
     Step('fig_slope_capacity', 'Fig. 6', ['fig_slope_capacity'], SWISS, _o('fig_slope_capacity'), '<1 / 30'),
-    Step('tab_sf', 'Table III, Fig. 7', ['tab_sf', 'fig_sf_pilot'], SWISS, _o('tab_sf'), '<1'),
-    Step('fig_capacity_heatmap', 'Fig. 8', ['fig_capacity_heatmap'], SWISS, _o('fig_capacity_heatmap'), '<1'),
-    Step('tab_baselines', 'Table IV', ['tab_baselines'], SWISS, _o('tab_baselines'), '<1'),
     Step('flex_temperature_figure', 'Fig. 7', ['fig_flex_normalised'], SWISS, _o('flex_temperature_figure'), '<1 / 5'),
-    Step('tab_real', 'Table V', ['tab_real'], SWISS + ['wpuq'], _o('tab_real'), '2 / 5'),
-    Step('tab_transfer', 'Table VI', ['tab_transfer'],
+    Step('tab_real', 'Table IV', ['tab_real'], SWISS + ['wpuq'], _o('tab_real'), '2 / 5'),
+    Step('tab_transfer', 'Table V', ['tab_transfer'],
          SWISS + ['wpuq', 'cofactor', 'rhpp', 'hadcet', 'bpa', 'nrel'], _o('tab_transfer'), '10 / 30'),
 ]}
 
