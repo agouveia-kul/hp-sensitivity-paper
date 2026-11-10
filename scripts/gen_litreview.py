@@ -77,7 +77,7 @@ ROWS = [
     dict(group=G_COI, ref='Dhu15', der='Appliances', task='Flexibility / DR', level='Population', method='Field study',
          input='Submetered appliances', cap='N', target='Y', train='N', transfer='N'),
     # --- this work ---
-    dict(group=None, ref='THIS', der='HP / TCL', task='Capacity, energy, flexibility', level='Aggregate',
+    dict(group=None, ref='THIS', der='HP / TCL', task='Capacity, flexibility', level='Aggregate',
          method='Change-point + SF', input='Net load + temp.\\ + pilot SF', cap='Y', target='N', train='Y', transfer='Y'),
 ]
 

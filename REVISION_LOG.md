@@ -542,3 +542,15 @@ Raised on 9 Nov and parked while the error metric and ranges change. Not done ye
 ## "Real aggregates" wording (Alex, 10 Nov)
 - **Terms:** Affoltern and Einsiedeln are now "regional aggregates" (households of one area, not necessarily on one LV network); Hamelin stays "a real aggregate" of 37 houses on one LV network; the three together are "aggregates outside the pilot".
 - **Changed:** abstract ("On three aggregates outside the pilot, where every household has an HP, …"; 249 words); II-F reference to V-A; Sec. V title "Real Aggregates" → "Validation outside the Pilot"; V-A heading → "Aggregates outside the Pilot"; V-A ¶1 and ¶3 drop "real"; V-A ¶2 names the two regional aggregates, adds "Their households share an area but not necessarily an LV network." and describes Hamelin as a real aggregate on one LV network; Limitations ¶2 and ¶4 ("these aggregates", "the aggregates outside the pilot"); Conclusion ("two Swiss regional aggregates and a German LV network"); Table VI caption "Transfer to aggregates outside the Kloten pilot" (also in `outputs.tab_real`). The label sec:real-agg is kept. Resolves the "real aggregates" pending note. IEEE 12 pages, Elsevier 5p 15.
+
+## D1: temperature-driven energy folded into the flexibility (Alex, 10 Nov)
+- **Two outputs, not three:** Sec. II ¶1 and the Sec. III intro now name installed capacity and flexibility potential; the temperature-driven energy is the baseline the flexibility builds on, given by the net-load fit without a pilot.
+- **Fig. 1:** the "Energy" output box becomes an intermediate "Baseline energy" box (Sec. III-B) feeding Flexibility; caption "the two outputs".
+- **III-B "Temperature-Driven Energy Estimation" removed as a subsection:** eq. (energy) and the dead-band sentence move into the Flexibility subsection as its baseline paragraph. Dropped: annual energy as the sum over days; separating / forecasting the daily TCL load; "captures the temperature-driven share, not the annual total".
+- **Table III:** Energy row deleted.
+- **IV-D "Temperature-Driven Energy" removed as a subsection:** its median ratio 0.97 and nMAE 4.1% move into the IV-E decomposition as the first factor (baseline energy). Dropped energy-only results: about 7% of annual HP energy in the dead band, annual ratio 0.90, hourly integration lifting it to 0.94. "energy ratios" → "energy factor(s)" in IV-E and V-A.
+- **Abstract** (236 words): "The same fits recover a flexibility potential at an nMAE of 4.8%, overestimated by 18% on the coldest days."
+- **Conclusion:** ¶1 drops the energy nMAE; ¶2 "…the temperature-driven TCL energy that the flexibility builds on"; last future-work direction now closes "the gap between the estimated and the measured flexibility in mild weather".
+- **Highlights:** 3 "9.5% nMAE on 1260 semi-synthetic aggregates; within 10% outside the pilot" (leftover "real ones"); 4 "housing types" → "housing tenures"; 5 "The same fits quantify the flexibility potential at a 4.8% nMAE".
+- **Table I:** "This work" task "Capacity, flexibility" (tex and `gen_litreview.py`).
+- IEEE 12 pages, Elsevier 5p 15.
