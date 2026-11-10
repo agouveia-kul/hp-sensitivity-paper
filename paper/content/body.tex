@@ -263,10 +263,10 @@ The evaluation draws on three sets of data, each further from the pilot. Semi-sy
 
 Two error metrics recur below. The nMAE scores the estimates $\hat{y}_i$ against their ground truth $y_i$ over a set $\mathcal{A}$ of $n$ aggregates,
 \begin{equation}
-	\mathrm{nMAE} = \frac{100\%}{n\,\max_{j\in\mathcal{A}} y_j}\sum_{i\in\mathcal{A}} |\hat{y}_i - y_i|,
+	\mathrm{nMAE} =\sum_{i\in\mathcal{A}} \frac{ |\hat{y}_i - y_i|}{n\,\max_{j\in\mathcal{A}} y_j}100\%,
 	\label{eq:nmae}
 \end{equation}
-i.e.\ the mean absolute error as a share of the largest true value in $\mathcal{A}$. A small aggregate, with a large percentage error but a small absolute error, therefore cannot dominate. Where a result is reported for a subset of the aggregates, such as those with five HPs, $\mathcal{A}$ is that subset alone, so both the mean and the maximum are taken within it. The median ratio, the median of $\hat{y}_i / y_i$, gives the direction of the error, $< 1$ for an underestimate and $> 1$ for an overestimate. Ranges are 10--90\% ranges across aggregates, splits or bootstrap samples.
+i.e.\ the mean absolute error as a share of the largest true value in $\mathcal{A}$. A small aggregate, with a large percentage error but a small absolute error, therefore cannot dominate. Where a result is reported for a subset of the aggregates, $\mathcal{A}$ is that subset alone, so both the mean and the maximum are taken within it. The median ratio, the median of $\hat{y}_i / y_i$, gives the direction of the error, $< 1$ for an underestimate and $> 1$ for an overestimate. Every spread reported below is a 10--90\% range, i.e.\ it spans the 10th to the 90th percentile of the values across aggregates, unless stated otherwise.
 
 \subsection{Kloten Pilot and Semi-Synthetic Aggregates}
 \label{sec:data-kloten}
