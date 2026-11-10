@@ -567,3 +567,6 @@ Raised on 9 Nov and parked while the error metric and ranges change. Not done ye
 ## Abstract and highlights (Alex, 10 Nov)
 - **Abstract (238 words):** capacity result now "…an nMAE of 9.5%, or 7.5% when the total number of households is known. The error grows as fewer households have an HP."; the flexibility sentence ends at "an nMAE of 4.8%" (the "overestimated by 18% on the coldest days" clause is removed, Alex).
 - **Highlights (version A):** bullets 1–2 merged into "Heat-pump capacity is estimated from feeder net load, temperature and a small pilot" (83 characters); new bullet 3 "Knowing the total number of households lowers the capacity nMAE to 7.5%" (71). Others unchanged. IEEE 11 pages, Elsevier 5p 14.
+
+## C1: II-A threshold paragraph (Alex, 10 Nov; option 3)
+- The three II-A interpretation paragraphs stay. The threshold paragraph no longer calls T_h and T_c "behavioural… rather than a property of any building or device", which contradicted V-A (threshold set by insulation, internal gains and setpoint, Men18). Now: "…mark where the population, on average, begins to heat or cool. They reflect both its buildings and its habits. … settle at values typical of the region (Section II-E)." Options not taken: cut the threshold and climate-balance paragraphs and shorten the sensitivity one (1); cut all three (2).
