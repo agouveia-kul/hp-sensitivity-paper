@@ -574,7 +574,10 @@ Raised on 9 Nov and parked while the error metric and ranges change. Not done ye
 ## Small items (Alex, 10 Nov)
 - **Sec. I ¶1:** "over twenty percent" → "over 20%".
 - **\chg wrappers:** the last five removed (II-B, II-E, three V-B paragraphs); text and output unchanged. The macro stays in macros.tex.
-- **gen_litreview.py:** Azz24 row removed. Note: the generator is out of sync with the hand-edited Table I in more than this row (footnote, Jar22, Wan20, Oma24, Per17b, Mat13, Hao15, Zha16b, And20b, the missing Rou23 row, the PV-capacity group name). Do not regenerate Table I until the generator is synced.
+- **gen_litreview.py:** Azz24 row removed. Note: the generator is out of sync with the hand-edited Table I in more than this row (footnote, Jar22, Wan20, Oma24, Per17b, Mat13, Hao15, Zha16b, And20b, the missing Rou23 row, the PV-capacity group name). Synced in the next entry.
 - **replication.py:** step list now matches the paper (Table I, Fig. 2 fig_austin_fits, Table II, Fig. 3, Fig. 5 fig_capacity_error, Fig. 6, Fig. 7, Table IV tab_real, Table V tab_transfer). Dropped steps for artifacts no longer in the paper: fig_bathtub_example, fig_sf_arms_anchored, fig_quality_heatmap, tab_sf/fig_sf_pilot, fig_capacity_heatmap, tab_baselines. The two new steps run and reproduce the published Figs. 2 and 5.
 - **Not done:** unused generators stay in outputs.py and flex_temperature.py, since paper_results.ipynb still calls most of them.
 - Corrected the "real aggregates" entry: tab_real is Table IV, not Table VI.
+
+## Table I generator synced (Alex, 10 Nov)
+- `gen_litreview.py` now carries every hand edit of Table I: Jar22, Wan20, Oma24, Per17b (AC, submetered, target), Mat13 and Hao15 (no training), Zha16b (statistical, cloud cover), And20b (data-driven thermal relation), the Rou23 row, the group name "PV capacity", the column definitions kept as a commented-out line of the note, and no HVAC abbreviation. Its output equals the paper's table except two leading tabs in the note, so tab_litreview.tex was rewritten from the generator (no change in the PDF). `replication.py --run tab_litreview` now reports a match.

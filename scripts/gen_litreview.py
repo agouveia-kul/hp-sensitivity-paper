@@ -3,7 +3,7 @@
 
 Rows are grouped by the lines of research the introduction reviews: HP and DER
 detection/disaggregation, temperature-response (change-point) models, TCL aggregate
-modelling, PV and transformer capacity, and HP demand, coincidence and flexibility.
+modelling, PV capacity, and HP demand, coincidence and flexibility.
 Every field is kept in ROWS so any column can be switched in via DEFAULT_COLS.
 Writes paper/tables/tab_litreview.tex.
 """
@@ -12,7 +12,7 @@ import os
 G_DET = 'Detection and disaggregation'
 G_TRF = 'Temperature-response models'
 G_TCL = 'TCL aggregate modelling'
-G_CAP = 'PV and transformer capacity'
+G_CAP = 'PV capacity'
 G_COI = 'HP demand, coincidence and flexibility'
 
 # cap: recovers installed capacity; target: needs submetered device data or labels on the
@@ -28,29 +28,29 @@ ROWS = [
          input='15-min smart meter', cap='N', target='N', train='Y', transfer='N'),
     dict(group=G_DET, ref='Gis26', der='HP', task='Detection + disaggregation', level='Meter', method='ML (CNN)',
          input='Smart meter', cap='N', target='N', train='Y', transfer='N'),
-    dict(group=G_DET, ref='Jar22', der='PV/EV/HP', task='Detection', level='Meter', method='ML',
+    dict(group=G_DET, ref='Jar22', der='PV/EV', task='Detection + disaggregation', level='Meter', method='ML',
          input='Net demand', cap='N', target='N', train='Y', transfer='N'),
-    dict(group=G_DET, ref='Wan20', der='Loads/DER', task='Regional NILM', level='Substation', method='NILM',
-         input='Substation load', cap='N', target='N', train='Y', transfer='N'),
-    dict(group=G_DET, ref='Oma24', der='Loads', task='Disaggregation', level='Substation', method='ML (deep)',
+    dict(group=G_DET, ref='Wan20', der='PV/EV', task='Regional NILM, PV capacity', level='Substation',
+         method='Signal processing', input='Substation load + irradiance', cap='Y', target='N', train='N', transfer='N'),
+    dict(group=G_DET, ref='Oma24', der='EV/HP/PV', task='Disaggregation', level='Substation', method='ML (deep)',
          input='Substation load', cap='N', target='N', train='Y', transfer='N'),
     dict(group=G_DET, ref='Led18', der='AC', task='Real-time disaggregation', level='Feeder', method='Online learning',
          input='Feeder load + device models', cap='N', target='N', train='Y', transfer='N'),
     # --- temperature-response models ---
     dict(group=G_TRF, ref='Ali11', der='Cooling', task='Change-point model', level='Community', method='Change-point',
          input='Aggr.\\ load + temp.', cap='N', target='N', train='N', transfer='N'),
-    dict(group=G_TRF, ref='Per17b', der='HVAC', task='Change-point model', level='Meter', method='Change-point',
-         input='Smart meter + temp.', cap='N', target='N', train='N', transfer='N'),
+    dict(group=G_TRF, ref='Per17b', der='AC', task='Change-point model', level='Meter', method='Change-point',
+         input='Submetered AC + temp.', cap='N', target='Y', train='N', transfer='N'),
     dict(group=G_TRF, ref='Mac19', der='Sector load', task='Weather effects', level='System', method='Regression',
          input='Sector load + weather', cap='N', target='N', train='N', transfer='N'),
     # --- TCL aggregate modelling ---
     dict(group=G_TCL, ref='Mat13', der='TCL', task='State estimation, control', level='Population',
-         method='Markov model + Kalman filter', input='Aggr.\\ load + TCL model', cap='N', target='N', train='Y', transfer='N'),
+         method='Markov model + Kalman filter', input='Aggr.\\ load + TCL model', cap='N', target='N', train='N', transfer='N'),
     dict(group=G_TCL, ref='Hao15', der='TCL', task='Flexibility (virtual battery)', level='Population',
-         method='Physics (thermal)', input='TCL parameters + temp.', cap='N', target='N', train='Y', transfer='N'),
-    # --- PV and transformer capacity ---
-    dict(group=G_CAP, ref='Zha16b', der='PV', task='Detection + capacity', level='Meter', method='ML',
-         input='Smart meter', cap='Y', target='N', train='Y', transfer='N'),
+         method='Physics (thermal)', input='TCL parameters + temp.', cap='N', target='N', train='N', transfer='N'),
+    # --- PV capacity ---
+    dict(group=G_CAP, ref='Zha16b', der='PV', task='Detection + capacity', level='Meter', method='Statistical',
+         input='Smart meter + cloud cover', cap='Y', target='N', train='N', transfer='N'),
     dict(group=G_CAP, ref='Li19d', der='PV', task='Capacity + energy', level='Meter', method='ML',
          input='Smart meter', cap='Y', target='N', train='Y', transfer='N'),
     dict(group=G_CAP, ref='Sos17', der='PV', task='Disaggregation', level='Feeder', method='Physics',
@@ -68,8 +68,11 @@ ROWS = [
          input='Submetered HP', cap='N', target='Y', train='N', transfer='N'),
     dict(group=G_COI, ref='And20', der='HP', task='Demand vs temperature', level='Population', method='Probabilistic',
          input='Submetered HP + temp.', cap='N', target='N', train='Y', transfer='Y'),
-    dict(group=G_COI, ref='And20b', der='HP', task='Load profiles', level='Feeder', method='Physics (thermal)',
-         input='Temp.\\ + housing', cap='N', target='N', train='N', transfer='Y'),
+    dict(group=G_COI, ref='And20b', der='HP', task='Load profiles', level='Feeder', method='Data-driven thermal relation',
+         input='Submetered HP + temp.', cap='N', target='N', train='Y', transfer='Y'),
+    dict(group=G_COI, ref='Rou23', der='HP', task='Aggregated peak forecast', level='Transformer',
+         method='Clustered load duration curves', input='Rated power + temp.\\ + submetered HP',
+         cap='N', target='N', train='Y', transfer='Y'),
     dict(group=G_COI, ref='Mul19', der='HP', task='Flexibility / DR', level='Population', method='Field study',
          input='Submetered HP', cap='N', target='Y', train='N', transfer='N'),
     dict(group=G_COI, ref='Dhu15', der='Appliances', task='Flexibility / DR', level='Population', method='Field study',
@@ -95,14 +98,15 @@ FLAGS = ('cap', 'target', 'train', 'transfer')   # shown as marks: Y -> check, P
 MARK = {'Y': r'\checkmark', 'Part': r'(\checkmark)', 'N': ''}
 SUBMETER = ('target', 'train')                   # grouped under one "Submetering needed" header
 
-KEY = (r"Installed capacity: recovers the installed capacity. Submetering needed: "
+# The column definitions are kept but commented out in the table note, as in the paper.
+KEY_DEFS = (r"Installed capacity: recovers the installed capacity. Submetering needed: "
        r"submetered device data or labels are needed on the target aggregate itself (Target), or only to train or "
        r"calibrate the method on other data, such as a submetered pilot (Training). Transferable: a calibration "
        r"transfers to un-submetered aggregates. Level: individual meter; summed meters of an aggregate; feeder, "
-       r"substation or transformer measurement; or a submetered population. "
-       r"AC: air conditioning; ADMD: after-diversity maximum demand; CNN: convolutional neural network; "
+       r"substation or transformer measurement; or a submetered population. ")
+KEY = (r"AC: air conditioning; ADMD: after-diversity maximum demand; CNN: convolutional neural network; "
        r"DER: distributed energy resource; DR: demand response; EV: electric vehicle; GHI: global horizontal "
-       r"irradiance; HVAC: heating, ventilation and air conditioning; ML: machine learning; NILM: non-intrusive "
+       r"irradiance; ML: machine learning; NILM: non-intrusive "
        r"load monitoring; PU: positive-unlabelled; PV: photovoltaics.")
 
 
@@ -138,7 +142,7 @@ def build(tabdir=os.path.join('paper', 'tables')):
             group = r['group']
         lines.append(' & '.join(cell(r, k) for _, k in cols) + r' \\')
     tex = (
-        r"\begin{autotable}[%" "\n" + KEY + "]\n"
+        r"\begin{autotable}[%" "\n" "%" + KEY_DEFS + "\n" + KEY + "]\n"
         r"{Prior work on detecting and quantifying DERs and TCLs}{tab:litreview}" "\n"
         r"\setlength{\tabcolsep}{2.4pt}" "\n"
         r"\begin{tabular}{" + spec + "}\n" r"\toprule" "\n"
