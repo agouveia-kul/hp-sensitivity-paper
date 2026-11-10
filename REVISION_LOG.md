@@ -589,3 +589,11 @@ Raised on 9 Nov and parked while the error metric and ranges change. Not done ye
 - **Cross-references:** Fig. 1 caption and the II-A dead-band sentence cite Section V only; II-A s_h sentence → V-A; II-C expectation → V-B; II-D hypothesis "Section V-B tests it in three steps, each wider than the last: within one population, on aggregates outside the pilot and across populations from five countries."; Limitations → V-A. Labels sec:validation, sec:real-agg and sec:transfer-pop removed; sec:data-kloten, sec:data-real and sec:data-pop added.
 - **Numbering:** fig_slope_capacity is now Fig. 5 and fig_capacity_error Fig. 6 (replication.py labels swapped). No number in the text changed.
 - IEEE 12 pages (two references spill onto p. 12), Elsevier 5p 15 (likewise). Was 11 / 14.
+
+## Page trims after the regroup (Alex, 10 Nov; T2–T5)
+- The regroup pushed two references onto a 12th (IEEE) / 15th (Elsevier) page. Four repeated sentences cut:
+- **VI-A ¶2 (T2):** "Transferring the full pilot curve, threshold and intercept included, raises the capacity error to 20% at Einsiedeln and 26% at Hamelin." (repeats V-B).
+- **Limitations ¶2 (T3):** "Table V tests the SF transfer further, on populations from five countries." (repeats V-B and II-D).
+- **IV-C (T4):** "On these datasets, only the SF transfer is tested." (said in the IV intro and the paragraph's last sentence).
+- **V-B opener (T5):** second sentence now "This subsection tests the second, the hypothesis of Section II-D." (the three steps are listed in II-D).
+- Not taken: dropping the V intro sentence (T1) and the VI-A factor sentence (T6). IEEE 11 pages, Elsevier 5p 14.
