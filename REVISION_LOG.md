@@ -531,3 +531,9 @@ Raised on 9 Nov and parked while the error metric and ranges change. Not done ye
 
 ## Pending — "real aggregates" (Alex, 10 Nov)
 - **Refrain from calling Affoltern and Einsiedeln "real aggregates".** Each is the set of HEAPO households of one weather station, summed after the fact, not a metered feeder. Term to revisit wherever it is used: Sec. V title and V-A heading, the abstract, the Conclusion, VI-A, Fig. 4 box. Open question: Hamelin (WPuQ) is also summed from individually metered houses. The contribution 1 result sentence drops its "within 10% on three real aggregates" clause for this reason.
+
+## Contributions with key results (Alex, 10 Nov)
+- **Contribution 1:** adds "On 1260 semi-synthetic Swiss aggregates, the capacity is recovered at an nMAE of 9.5%, or 7.5% when the total number of households is known." (Alex's wording for the corrected value; the real-aggregate clause was dropped, see the "real aggregates" pending note.)
+- **Contribution 2:** rewritten as one ordered list of the transfers tested: median ratio 1.00 between aggregates of one population; within 10% between cities, 12% between countries, 14% between HP technologies; 1.65-fold between housing tenures ("tenure" replaces "type" for social versus private) and 1.7-fold between climate zones.
+- **Contribution 3:** flexibility only, the energy estimate is no longer named: a method to quantify the flexibility potential against temperature, 4.8% nMAE on the annual flexible energy.
+- Supervisor 1's R14–R18 (no results in the contributions) overruled by Alex: contributions carry a summarised headline result. IEEE 12 pages, Elsevier 5p 15.
