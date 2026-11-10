@@ -619,3 +619,7 @@ Raised on 9 Nov and parked while the error metric and ranges change. Not done ye
 ## Normalised flexible energy: III-B and Fig. 7 caption (Alex, 10 Nov)
 - **III-B:** "Since E_flex is linear in Δt_Th, Section V-C reports the normalised flexible energy E_flex/(P^max Δt_Th), with P^max the true installed capacity. Dividing by the window frees the results from a parameter that this paper takes as given rather than estimates. Dividing by the capacity makes aggregates with different numbers and sizes of HPs comparable." (was "… reports it per hour of window, or as ratios in which the window cancels."; V-C already says Δt_Th cancels in the ratio).
 - **Fig. 7 caption:** "Normalised flexible energy E_flex/(P^max Δt_Th) against daily mean temperature, for the 1260 Kloten aggregates in 2 °C bins, where P^max is the true installed capacity. Bottom: …" (the previous wording read as if the expression defined the capacity, Alex). IEEE 11 pages, Elsevier 5p 14.
+
+## Page cut to 10 (IEEE), route 3 (Alex, 10 Nov)
+- **S1, nomenclature:** removed from the IEEE wrapper only (hp_sensitivity_overleaf.tex); the Elsevier version keeps it.
+- **S2, Fig. 4 (Kloten split diagram):** removed, with "Fig. 4 sketches one split." in IV-A; the split paragraph describes it in full. Figs. 5–7 are now Figs. 4–6 (replication.py labels updated).

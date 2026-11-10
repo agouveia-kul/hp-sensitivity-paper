@@ -354,40 +354,7 @@ where the maximum is taken over the same set. Each error is thus a percentage er
 \subsection{Kloten Pilot and Semi-Synthetic Aggregates}
 \label{sec:data-kloten}
 
-The main experiment emulates a DSO that submeters one pilot and estimates the installed capacity of many feeders without submetering them. Each semi-synthetic aggregate plays the role of one such feeder. Its net load is known, and so is its true installed capacity, the sum of the capacities of its own HPs. The aggregates differ in size and HP penetration, so each has its own true capacity. For every aggregate, the estimate is its own net-load sensitivity divided by the pilot's SF sensitivity \eqref{eq:capacity}, scored against its true capacity. Fig.~\ref{fig:split} sketches one split.
-
-\begin{figure}[t]
-\centering
-\adjustbox{max width=\figw}{%
-\begin{tikzpicture}[flow]
-% columns at x = 0, 32, 64 mm; rows every 15 mm
-\node[fin]   (hps)   at (16mm, 0)       {50 submetered Kloten HPs};
-\node[fproc] (pilot) at (0, -15mm)      {Pilot\\25 HPs};
-\node[fproc] (half)  at (32mm, -15mm)   {Target half\\25 HPs};
-\node[fin]   (free)  at (64mm, -15mm)   {1307 households without an HP};
-\node[fproc] (sffit) at (0, -30mm)      {SF fit\\[1pt]$m_h$};
-\node[fproc] (agg)   at (32mm, -30mm)   {Aggregates\\10--50 households,\\5--25 HPs};
-\node[fout]  (est)   at (0, -45mm)      {Estimate\\[1pt]$s_h / m_h$};
-\node[fproc] (net)   at (32mm, -45mm)   {Net-load fit\\[1pt]$s_h$};
-\node[fproc] (truth) at (64mm, -45mm)   {True capacity\\sum over its HPs};
-\node[fout]  (score) at (32mm, -60mm)   {nMAE over all\\20 splits (1260)};
-\node[flab, right=2mm of hps] {split at random,\\repeated 20 times};
-\draw[->] (hps.south) -- ++(0,-2.5mm) -| (pilot.north);
-\draw[->] (hps.south) -- ++(0,-2.5mm) -| (half.north);
-\draw[->] (pilot) -- (sffit);
-\draw[->] (sffit) -- (est);
-\draw[->] (half) -- (agg);
-\draw[->] (free.south) |- ([yshift=2mm]agg.east);
-\draw[->] (agg) -- (net);
-\draw[->] ([yshift=-2mm]agg.east) -| (truth.north);
-\draw[->] (net) -- (est);
-\draw[->] (est.south) |- (score.west);
-\draw[->] (truth.south) |- (score.east);
-\end{tikzpicture}%
-}
-\caption{One split of the Kloten experiment. The pilot half gives $m_h$; aggregates drawn from the target half and the households without an HP give $s_h$ and their true capacity. No HP serves both the pilot and a target.}
-\label{fig:split}
-\end{figure}
+The main experiment emulates a DSO that submeters one pilot and estimates the installed capacity of many feeders without submetering them. Each semi-synthetic aggregate plays the role of one such feeder. Its net load is known, and so is its true installed capacity, the sum of the capacities of its own HPs. The aggregates differ in size and HP penetration, so each has its own true capacity. For every aggregate, the estimate is its own net-load sensitivity divided by the pilot's SF sensitivity \eqref{eq:capacity}, scored against its true capacity.
 
 This section uses a single Swiss population, the households metered at the Kloten weather station in calendar 2023. The data combine two sources, the HEAPO dataset \cite{Bru25} and an additional smart-meter dataset \cite{Kai26b}. The load profiles have 15-minute resolution, while the outdoor temperature is hourly. The only TCLs are HPs, and only heating is observed. The station holds 50 households with a submetered HP and 1307 households with neither an HP nor any other electric heating.
 
