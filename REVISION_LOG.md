@@ -563,3 +563,7 @@ Raised on 9 Nov and parked while the error metric and ranges change. Not done ye
 - **IV-C 15-min peak SF (R31–R32), 4 → 3 sentences, \chg removed:** "…reaches 0.56 on the coldest day, which is 1.28 times the daily mean. This lies above the HP SF of 0.425…". Dropped: 0.59 over the year; 1.75 times on a median heating day.
 - **Limitations, tariff control, 6 → 4 sentences:** opens "Deliberate HP control may also bias the estimate." (replaces "…also bound the effect of…", which Alex found unclear); tariffs and §14a in one sentence; ends "The aggregates outside the pilot may run under such tariffs, yet their estimates show no visible error from it." Dropped: "The WPuQ campaign predates §14a, but blocking-period tariffs do not."
 - Five \chg markers remain. IEEE 11 pages, Elsevier 5p 14 (with D1).
+
+## Abstract and highlights (Alex, 10 Nov)
+- **Abstract (238 words):** capacity result now "…an nMAE of 9.5%, or 7.5% when the total number of households is known. The error grows as fewer households have an HP."; the flexibility sentence ends at "an nMAE of 4.8%" (the "overestimated by 18% on the coldest days" clause is removed, Alex).
+- **Highlights (version A):** bullets 1–2 merged into "Heat-pump capacity is estimated from feeder net load, temperature and a small pilot" (83 characters); new bullet 3 "Knowing the total number of households lowers the capacity nMAE to 7.5%" (71). Others unchanged. IEEE 11 pages, Elsevier 5p 14.
