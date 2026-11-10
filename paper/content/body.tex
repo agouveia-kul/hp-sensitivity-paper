@@ -255,20 +255,6 @@ The shiftable load comes from the net-load fit, and the transferred SF sets only
 
 This flexible energy is an idealised upper bound, not a dispatchable schedule. It takes the square wave as feasible and ignores each building's thermal state and the comfort limits within which its TCLs can shift. It therefore stands as a potential against temperature and window length, not as a firm reserve.
 
-Table~\ref{tab:params} summarises which fitted parameters each estimate uses, and which data they come from.
-
-\begin{autotable}{Fitted parameters used by each estimate}{tab:params}
-\setlength{\tabcolsep}{3pt}
-\begin{tabular}{lccc}
-\toprule
-Estimate & Net-load fit (target) & SF fit (pilot) & External \\
-\midrule
-Capacity \eqref{eq:capacity} & $s_h, s_c$ & $m_h, m_c$ & -- \\
-Flexibility \eqref{eq:flex-energy} & $s_h, s_c, T_h, T_c$ & $m_h, m_c$ & $\Delta t_{Th}$ \\
-\bottomrule
-\end{tabular}
-\end{autotable}
-
 % =====================================================================
 \section{Data and Evaluation Design}
 \label{sec:data}

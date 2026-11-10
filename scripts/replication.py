@@ -365,7 +365,7 @@ STEPS = {s.key: s for s in [
     Step('fig_capacity_error', 'Fig. 5', ['fig_capacity_error'], SWISS, _o('fig_capacity_error'), '<1 / 30'),
     Step('flex_temperature_figure', 'Fig. 6', ['fig_flex_normalised'], SWISS, _o('flex_temperature_figure'), '<1 / 5'),
     Step('tab_real', 'Sec. V numbers', ['tab_real'], SWISS + ['wpuq'], _o('tab_real'), '2 / 5'),
-    Step('tab_transfer', 'Table IV', ['tab_transfer'],
+    Step('tab_transfer', 'Table III', ['tab_transfer'],
          SWISS + ['wpuq', 'cofactor', 'rhpp', 'hadcet', 'bpa', 'nrel'], _o('tab_transfer'), '10 / 30'),
 ]}
 
