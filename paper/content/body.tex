@@ -312,7 +312,7 @@ E_{\mathrm{flex}} = \hat{\mathrm{SF}}(T)\big(1 - \hat{\mathrm{SF}}(T)\big)\,\hat
 \label{eq:flex-energy}
 \end{equation}
 
-The shiftable load comes from the net-load fit, and the transferred SF sets only the headroom above it, $1-\hat{\mathrm{SF}}(T)$. Since $\hat{\mathrm{SF}}(T)\,\hat{P}^{\max}$ equals the fitted TCL load, \eqref{eq:flex-energy} equals $\hat{P}_{\mathrm{TCL}}(T)\,\big(1-\hat{\mathrm{SF}}(T)\big)\,\Delta t_{Th}$, so the capacity estimate drops out. Since $E_{\mathrm{flex}}$ is linear in $\Delta t_{Th}$, Section~\ref{sec:res-flex} reports it per hour of window, or as ratios in which the window cancels.
+The shiftable load comes from the net-load fit, and the transferred SF sets only the headroom above it, $1-\hat{\mathrm{SF}}(T)$. Since $\hat{\mathrm{SF}}(T)\,\hat{P}^{\max}$ equals the fitted TCL load, \eqref{eq:flex-energy} equals $\hat{P}_{\mathrm{TCL}}(T)\,\big(1-\hat{\mathrm{SF}}(T)\big)\,\Delta t_{Th}$, so the capacity estimate drops out. Since $E_{\mathrm{flex}}$ is linear in $\Delta t_{Th}$, Section~\ref{sec:res-flex} reports the normalised flexible energy $E_{\mathrm{flex}}/(P^{\max}\Delta t_{Th})$, with $P^{\max}$ the true installed capacity. Dividing by the window frees the results from a parameter that this paper takes as given rather than estimates. Dividing by the capacity makes aggregates with different numbers and sizes of HPs comparable.
 \begin{figure}[t]
 \centering
 \includegraphics[width=\figw]{figures/fig_flex_schedule.pdf}
@@ -472,7 +472,7 @@ The ratio splits into two factors, and the net-load fit sets most of it. The fir
 \begin{figure}[t]
 \centering
 \includegraphics[width=\figw]{figures/fig_flex_normalised.pdf}
-\caption{Flexible energy normalised by the window $\Delta t_{Th}$ and the true installed capacity, $E_{\mathrm{flex}}/(P^{\max}\Delta t_{Th})$, against daily mean temperature, for the 1260 Kloten aggregates in 2~$^\circ$C bins. Bottom: number of days of 2023 in each bin.}
+\caption{Normalised flexible energy $E_{\mathrm{flex}}/(P^{\max}\Delta t_{Th})$ against daily mean temperature, for the 1260 Kloten aggregates in 2~$^\circ$C bins, where $P^{\max}$ is the true installed capacity. Bottom: number of days of 2023 in each bin.}
 \label{fig:flex-temperature}
 \end{figure}
 
