@@ -604,3 +604,7 @@ Raised on 9 Nov and parked while the error metric and ranges change. Not done ye
 - **V-C:** the flexibility ratio "is 0.96 at Affoltern and 0.93 at Einsiedeln and Hamelin" (was "lies between 0.93 and 0.96").
 - `tab_real()` and paper/tables/tab_real.tex stay as the source of these numbers; replication.py labels: tab_real "Sec. V numbers", tab_transfer "Table IV".
 - IEEE 11 pages (last page now has room), Elsevier 5p 14.
+
+## Full-pilot SF fit moved from IV-B to V-B (Alex, 10 Nov)
+- **IV-B:** ends "For these aggregates, the pilot comprises all 50 Kloten HPs." (was "The pilot now comprises …" followed by the fit and "only its sensitivity m_h = 0.018 °C⁻¹ transfers").
+- **V-B thresholds paragraph:** second sentence "The SF fit of the full Kloten pilot, at its own net-load threshold, is SF_h(T) = 0.029 + 0.018 (16.6 − T)."; "The net-load thresholds of the targets are … against 16.6 °C for the pilot." No number changed. IEEE 11 pages, Elsevier 5p 14.
