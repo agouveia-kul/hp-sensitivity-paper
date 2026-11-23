@@ -26,6 +26,10 @@
   Tech. Rep., 2022, [Online]. Available:
   https://www.iea.org/reports/the-future-of-heat-pumps.
 
+\bibitem{Ehp26}
+{European Heat Pump Association}, ``{Market data},'' [Online]. Available:
+  https://ehpa.org/market-data/, 2026, accessed: 2026-10-16.
+
 \bibitem{Tre26}
 M.~Treutlein, P.~Bothe, M.~Schmidt, R.~Hahn, O.~Neumann, R.~Mikut, and
   V.~Hagenmeyer, ``{Real-world energy data of 200 feeders from low-voltage
@@ -56,7 +60,49 @@ T.~Becker, R.~Smet, B.~Macharis, and K.~Vanthournout, ``{Effect of electric
 \bibitem{Lia26}
 R.~Liao, M.~Manfren, P.~A.~B. James, and T.~Zang, ``Quantifying the impact of
   residential heat pumps on primary substations under critical cold events: A
-  {UK} case study,'' \emph{Energy}, 2026.
+  {UK} case study,'' \emph{Energy}, vol. 360, p. 141736, 2026.
+
+\bibitem{Few24}
+S.~Few, P.~Djapic, G.~Strbac, J.~Nelson, and C.~Candelise, ``{A geographically
+  disaggregated approach to integrate low-carbon technologies across local
+  electricity networks},'' \emph{Nature Energy}, vol.~9, no.~7, pp. 871--882,
+  2024.
+
+\bibitem{Lov17}
+J.~Love, A.~Z.~P. Smith, S.~Watson, E.~Oikonomou, A.~Summerfield, C.~Gleeson,
+  P.~Biddulph, L.~F. Chiu, J.~Wingfield, C.~Martin, A.~Stone, and R.~Lowe,
+  ``{The addition of heat pump electricity load profiles to GB electricity
+  demand: Evidence from a heat pump field trial},'' \emph{Applied Energy}, vol.
+  204, pp. 332--342, 2017.
+
+\bibitem{Che21b}
+M.~Chesser, P.~O'Reilly, P.~Lyons, and P.~Carroll, ``{The impact of extreme
+  weather on peak electricity demand from homes heated by air source heat
+  pumps},'' \emph{Energy Sources, Part B: Economics, Planning, and Policy},
+  vol.~16, no.~8, pp. 707--718, 2021.
+
+\bibitem{Rou23}
+G.~Rouwhorst, A.~Pondes, P.~H. Nguyen, and H.~Slootweg, ``{Medium-term
+  forecasting of daily aggregated peak loads from heat pumps using
+  clustering-based load duration curves to calculate the annual impact on
+  medium to low voltage transformers},'' \emph{IET Smart Grid}, vol.~7, no.~2,
+  pp. 157--171, 2024.
+
+\bibitem{Mul19}
+F.~L. M\"uller and B.~Jansen, ``Large-scale demonstration of precise demand
+  response provided by residential heat pumps,'' \emph{Appl. Energy}, vol. 239,
+  pp. 836--845, 2019.
+
+\bibitem{Zir19}
+C.~Ziras, C.~Heinrich, M.~Pertl, and H.~W. Bindner, ``Experimental flexibility
+  identification of aggregated residential thermal loads using behind-the-meter
+  data,'' \emph{Appl. Energy}, vol. 242, pp. 1407--1421, 2019.
+
+\bibitem{Dhu15}
+R.~D'hulst, W.~Labeeuw, B.~Beusen, S.~Claessens, G.~Deconinck, and
+  K.~Vanthournout, ``Demand response flexibility and flexibility potential of
+  residential smart appliances: Experiences from large pilot test in
+  {Belgium},'' \emph{Appl. Energy}, vol. 155, pp. 79--90, 2015.
 
 \bibitem{Gou26}
 A.~M.~V. Gouveia, M.~U. Hashmi, R.~D'hulst, and D.~Van~Hertem, ``{Importance of
@@ -73,7 +119,7 @@ H.~Fei, Y.~Kim, S.~Sahu, M.~Naphade, S.~K. Mamidipalli, and J.~Hutchinson,
 \bibitem{Wei20b}
 A.~Weigert, K.~Hopf, N.~Weinig, and T.~Staake, ``{Detection of heat pumps from
   smart meter and open data},'' \emph{Energy Informatics}, vol.~3, no.~S1,
-  2020.
+  p.~21, 2020.
 
 \bibitem{Bru23}
 T.~Brudermueller, F.~Breer, and T.~Staake, ``{Disaggregation of Heat Pump Load
@@ -84,13 +130,7 @@ T.~Brudermueller, F.~Breer, and T.~Staake, ``{Disaggregation of Heat Pump Load
 \bibitem{Gis26}
 O.~Gisiger, A.~Melillo, and P.~Schuetz, ``Heat pump detection and load
   disaggregation in low-resolution smart meter data with convolutional neural
-  networks,'' \emph{Energy and AI}, p. 100691, 2026.
-
-\bibitem{Jar22}
-A.~F. Moreno~Jaramillo, D.~M. Laverty, D.~J. Morrow, J.~Martinez~del Rincon,
-  and A.~M. Foley, ``Effective identification of distributed energy resources
-  using smart meter net-demand data,'' \emph{IET Smart Grid}, vol.~5, no.~5,
-  pp. 315--328, 2022.
+  networks,'' \emph{Energy and AI}, vol.~24, p. 100691, 2026.
 
 \bibitem{Wan20}
 S.~Wang, R.~Li, A.~Evans, and F.~Li, ``{Regional nonintrusive load monitoring
@@ -133,54 +173,16 @@ H.~Hao, B.~M. Sanandaji, K.~Poolla, and T.~L. Vincent, ``Aggregate flexibility
   of thermostatically controlled loads,'' \emph{IEEE Trans. Power Syst.},
   vol.~30, no.~1, pp. 189--198, 2015.
 
-\bibitem{Zha16b}
-X.~Zhang and S.~Grijalva, ``A data-driven approach for detection and estimation
-  of residential {PV} installations,'' \emph{IEEE Transactions on Smart Grid},
-  vol.~7, no.~5, pp. 2477--2485, 2016.
-
-\bibitem{Li19d}
-K.~Li, F.~Wang, Z.~Mi, others, and T.~Wang, ``Capacity and output power
-  estimation approach of individual behind-the-meter distributed photovoltaic
-  system for demand response baseline estimation,'' \emph{Applied Energy}, vol.
-  253, p. 113595, 2019.
-
-\bibitem{Sos17}
-F.~Sossan, L.~Nespoli, V.~Medici, and M.~Paolone, ``Unsupervised disaggregation
-  of photovoltaic production from composite power flow measurements of
-  heterogeneous prosumers,'' \emph{IEEE Transactions on Industrial
-  Informatics}, vol.~14, no.~9, pp. 3904--3913, 2018.
-
 \bibitem{Was21}
 L.~Waswa, M.~J. Chihota, and B.~Bekker, ``A probabilistic estimation of {PV}
   capacity in distribution networks from aggregated net-load data,'' \emph{IEEE
   Access}, vol.~9, pp. 140\,358--140\,371, 2021.
 
 \bibitem{gouveia2026pvcapacity}
-\BIBentryALTinterwordspacing
-A.~M. Gouveia, M.~U. Hashmi, R.~D’hulst, and D.~{Van Hertem}, ``Installed pv
-  capacity detection on lv substations: Comparison of data-driven and
+A.~M.~V. Gouveia, M.~U. Hashmi, R.~D’hulst, and D.~{Van Hertem}, ``Installed
+  {PV} capacity detection on {LV} substations: Comparison of data-driven and
   model-based methods,'' \emph{International Journal of Electrical Power \&
-  Energy Systems}, vol. 177, p. 111848, 2026. [Online]. Available:
-  \url{https://doi.org/10.1016/j.ijepes.2026.111848}
-\BIBentrySTDinterwordspacing
-
-\bibitem{Azz24}
-J.~A. Azzolini, M.~J. Reno, and J.~Yusuf, ``A model-free approach for
-  estimating service transformer capacity using residential smart meter data,''
-  \emph{IEEE J. Photovolt.}, vol.~14, no.~1, pp. 65--73, 2024.
-
-\bibitem{Lov17}
-J.~Love, A.~Z.~P. Smith, S.~Watson, E.~Oikonomou, A.~Summerfield, C.~Gleeson,
-  P.~Biddulph, L.~F. Chiu, J.~Wingfield, C.~Martin, A.~Stone, and R.~Lowe,
-  ``{The addition of heat pump electricity load profiles to GB electricity
-  demand: Evidence from a heat pump field trial},'' \emph{Applied Energy}, vol.
-  204, pp. 332--342, 2017.
-
-\bibitem{Che21b}
-M.~Chesser, P.~O'Reilly, P.~Lyons, and P.~Carroll, ``{The impact of extreme
-  weather on peak electricity demand from homes heated by air source heat
-  pumps},'' \emph{Energy Sources, Part B: Economics, Planning, and Policy},
-  vol.~16, no.~8, pp. 707--718, 2021.
+  Energy Systems}, vol. 177, p. 111848, 2026.
 
 \bibitem{And20}
 A.~Anderson, B.~Stephen, R.~Telford, and S.~McArthur, ``{A Probabilistic Model
@@ -189,31 +191,14 @@ A.~Anderson, B.~Stephen, R.~Telford, and S.~McArthur, ``{A Probabilistic Model
   (ISGT-Europe)}.\hskip 1em plus 0.5em minus 0.4em\relax IEEE, 2020, pp.
   1030--1034.
 
-\bibitem{And20b}
-A.~Anderson, B.~Stephen, R.~Telford, and S.~D.~J. McArthur, ``Predictive
-  thermal relation model for synthesizing low carbon heating load profiles on
-  distribution networks,'' \emph{IEEE Access}, vol.~8, pp. 195\,290--195\,304,
-  2020.
-
-\bibitem{Mul19}
-F.~L. M\"uller and B.~Jansen, ``Large-scale demonstration of precise demand
-  response provided by residential heat pumps,'' \emph{Appl. Energy}, vol. 239,
-  pp. 836--845, 2019.
-
-\bibitem{Dhu15}
-R.~D'hulst, W.~Labeeuw, B.~Beusen, S.~Claessens, G.~Deconinck, and
-  K.~Vanthournout, ``Demand response flexibility and flexibility potential of
-  residential smart appliances: Experiences from large pilot test in
-  {Belgium},'' \emph{Appl. Energy}, vol. 155, pp. 79--90, 2015.
-
 \bibitem{Ray19}
 G.~Le~Ray, M.~H. Christensen, and P.~Pinson, ``{Detection and Characterization
   of Domestic Heat Pumps},'' in \emph{2019 IEEE Milan PowerTech}.\hskip 1em
   plus 0.5em minus 0.4em\relax IEEE, 2019, pp. 1--6.
 
 \bibitem{Fel08}
-M.~F. Fels, ``Energy conservation scorekeeping: The {PRISM} method,'' \emph{AIP
-  Conf. Proc.}, vol. 135, pp. 169--183, 1985.
+M.~F. Fels, ``{PRISM}: An introduction,'' \emph{Energy and Buildings}, vol.~9,
+  no. 1--2, pp. 5--18, 1986.
 
 \bibitem{Ruc92}
 D.~Ruch and D.~E. Claridge, ``{A Four-Parameter Change-Point Model for
@@ -230,6 +215,11 @@ R.~Fazeli, M.~Ruth, and B.~Davidsdottir, ``Temperature response functions for
   residential energy demand -- a review of models,'' \emph{Urban Climate},
   vol.~15, pp. 45--59, 2016.
 
+\bibitem{Cal09}
+D.~S. Callaway, ``Tapping the energy storage potential in electric loads to
+  deliver load following and regulation, with application to wind energy,''
+  \emph{Energy Convers. Manage.}, vol.~50, no.~5, pp. 1389--1400, 2009.
+
 \bibitem{Liu22}
 B.~Liu, J.~Tian, W.~Luan, Y.~Gao, X.~Wang, and S.~Luo, ``Residential {PV}
   capacity estimation and power disaggregation using net metering
@@ -241,23 +231,6 @@ A.~M.~V. Gouveia, R.~D’hulst, M.~U. Hashmi, and D.~Van~Hertem, ``Data-driven
   photovoltaic installed capacity detection at low voltage substation level,''
   in \emph{14th Mediterranean Conference on Power Generation Transmission,
   Distribution and Energy Conversion (MEDPOWER 2024)}, 2024, pp. 678--683.
-
-\bibitem{Rou23}
-G.~Rouwhorst, A.~Pondes, P.~H. Nguyen, and H.~Slootweg, ``{Medium-term
-  forecasting of daily aggregated peak loads from heat pumps using
-  clustering-based load duration curves to calculate the annual impact on
-  medium to low voltage transformers},'' \emph{IET Smart Grid}, vol.~7, no.~2,
-  pp. 157--171, 2023.
-
-\bibitem{Zir19}
-C.~Ziras, C.~Heinrich, M.~Pertl, and H.~W. Bindner, ``Experimental flexibility
-  identification of aggregated residential thermal loads using behind-the-meter
-  data,'' \emph{Appl. Energy}, vol. 242, pp. 1407--1421, 2019.
-
-\bibitem{Cal09}
-D.~S. Callaway, ``Tapping the energy storage potential in electric loads to
-  deliver load following and regulation, with application to wind energy,''
-  \emph{Energy Convers. Manage.}, vol.~50, no.~5, pp. 1389--1400, 2009.
 
 \bibitem{Wes20}
 P.~Westermann, C.~Deb, A.~Schlueter, and R.~Evins, ``{Unsupervised learning of
@@ -271,13 +244,13 @@ P.~Westermann, C.~Deb, A.~Schlueter, and R.~Evins, ``{Unsupervised learning of
 
 \bibitem{fani2024impact}
 H.~Fani, M.~U. Hashmi, and G.~Deconinck, ``Impact of electric vehicle charging
-  simultaneity factor on the hosting capacity of lv feeder,'' \emph{Sustainable
-  Energy, Grids and Networks}, vol.~40, p. 101581, 2024.
+  simultaneity factor on the hosting capacity of {LV} feeder,''
+  \emph{Sustainable Energy, Grids and Networks}, vol.~40, p. 101581, 2024.
 
 \bibitem{Sch22}
 M.~Schlemminger, T.~Ohrdes, E.~Schneider, and M.~Knoop, ``{Dataset on
   electrical single-family house and heat pump load profiles in Germany},''
-  \emph{Scientific Data}, vol.~9, no.~1, 2022.
+  \emph{Scientific Data}, vol.~9, no.~1, p.~56, 2022.
 
 \bibitem{Bru25}
 T.~Brudermueller, E.~Fleisch, M.~Gonz\'{a}lez~Vay\'{a}, and T.~Staake, ``{HEAPO
@@ -302,8 +275,8 @@ E.~J.~H. Wilson, A.~Parker, A.~Fontanini, E.~Present, J.~L. Reyna
   \emph{et~al.}, ``{End-Use Load Profiles for the U.S. Building Stock:
   Methodology and Results of Model Calibration, Validation, and Uncertainty
   Quantification},'' National Renewable Energy Laboratory (NREL), Tech. Rep.
-  NREL/TP-5500-80889, 2022, resStock EUSS 2024.2 release. [Online]. Available:
-  \url{https://data.openei.org/s3_viewer?bucket=oedi-data-lake}.
+  NREL/TP-5500-80889, 2022, {ResStock} {EUSS} 2024.2 release. [Online].
+  Available: \url{https://data.openei.org/s3_viewer?bucket=oedi-data-lake}.
 
 \bibitem{neea_eulr}
 {Northwest Energy Efficiency Alliance}, ``{Northwest End-Use Load Research
@@ -322,16 +295,10 @@ N.~Chapman, L.~Zhang, N.~Good, and P.~Mancarella, ``{Exploring flexibility of
   Energy Conf. (EnergyCon)}.\hskip 1em plus 0.5em minus 0.4em\relax IEEE, 2016,
   pp. 1--6.
 
-\bibitem{Few24}
-S.~Few, P.~Djapic, and G.~Strbac, ``{A geographically disaggregated approach to
-  integrate low-carbon technologies across local electricity networks},''
-  \emph{Nature Energy}, vol.~9, no.~7, pp. 871--882, 2024.
-
-\bibitem{Men18}
-Q.~Meng, M.~Mourshed, and S.~Wei, ``{Going beyond the mean: Distributional
-  degree-day base temperatures for building energy analytics using change point
-  quantile regression},'' \emph{IEEE Access}, vol.~6, pp. 39\,532--39\,540,
-  2018.
+\bibitem{Hon13}
+J.~Hong, N.~J. Kelly, I.~Richardson, and M.~Thomson, ``{Assessing heat pumps as
+  flexible load},'' \emph{Proc. Inst. Mech. Eng. A: J. Power Energy}, vol. 227,
+  no.~1, pp. 30--42, 2013.
 
 \bibitem{rhpp8151}
 {Department for Business, Energy and Industrial Strategy}, ``{Renewable Heat
@@ -350,6 +317,12 @@ J.~Winkler and S.~Ramaraj, ``{Field Validation of Air-Source Heat Pumps for
   Cold Climates},'' National Renewable Energy Laboratory (NREL), Golden, CO,
   USA, Tech. Rep. NREL/TP-5500-84745, 2023, data: U.S. DOE Heat Pump Database.
   [Online]. Available: \url{https://heatpumpdata.energy.gov}.
+
+\bibitem{Men18}
+Q.~Meng, M.~Mourshed, and S.~Wei, ``{Going beyond the mean: Distributional
+  degree-day base temperatures for building energy analytics using change point
+  quantile regression},'' \emph{IEEE Access}, vol.~6, pp. 39\,532--39\,540,
+  2018.
 
 \bibitem{Bna23}
 {Bundesnetzagentur}, ``{Festlegung zur netzorientierten Steuerung von
