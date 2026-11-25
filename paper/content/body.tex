@@ -303,7 +303,7 @@ The net-load sensitivity grows with the installed capacity, as Section~\ref{sec:
 \label{fig:slope-capacity}
 \end{figure}
 
-With the pilot's SF sensitivity, \eqref{eq:capacity} recovers the installed capacity of the 1260 aggregates at an nMAE of 9.5\%, with a median overestimate of 16\%. In absolute terms, the mean error is 17~kW, the capacity of about three HPs of the mean 6.3~kW. The overestimate comes from the non-TCL temperature response that the net-load sensitivity absorbs, the neglected term of \eqref{eq:decomp}, sized below. The error shrinks as HPs are added: the nMAE falls from 22\% at five HPs to 13\% at 25, and the median overestimate from 35\% to 12\%.
+With the pilot's SF sensitivity, \eqref{eq:capacity} recovers the installed capacity of the 1260 aggregates at an nMAE of 9.5\%, with a median overestimate of 16\%. In absolute terms, the mean error is 17~kW, the capacity of about three HPs of the mean 6.3~kW. The overestimate comes from the non-TCL temperature response that the net-load sensitivity absorbs, the neglected term of \eqref{eq:decomp}. It shrinks as the HP penetration grows (Fig.~\ref{fig:capacity-error}).
 
 \begin{figure}[t]
 \centering
@@ -349,7 +349,7 @@ The flexibility estimate recovers the annual flexible energy at an nMAE of 4.8\%
 
 Across the 1260 aggregates, the ratio of estimated to actual annual flexible energy has a median of 1.04 and a 10--90\% range of 0.92--1.35. The estimate sums \eqref{eq:flex-energy} over the heating-regime days, each at its daily mean temperature, since the Kloten aggregates have no cooling regime. The actual flexible energy, the reference the estimate is scored against, covers the same days and applies the same expression to each hour's submetered SF and the true capacity, averaged over the day. The two share no input other than the HP load in the net load, so their agreement does not follow by construction.
 
-The ratio splits into two factors, and the net-load fit sets most of it. The first, the energy factor, compares the baseline energy \eqref{eq:energy}, which the net-load fit gives with no pilot, with the submetered HP energy on the days below the threshold. It has a median ratio of 0.97, at an nMAE of 4.1\%. The second, the unused-capacity factor, has a median ratio of 1.07. About three percentage points of this factor come from the pilot's SF running slightly below the measured one. About four more come from the daily resolution of the estimate: computed from the daily mean SF, the actual would be 3\% higher and the median ratio 1.01, since $\mathrm{SF}(1-\mathrm{SF})$ is concave. The flexibility ratio and the energy factor correlate at 0.96. Since $\Delta t_{Th}$ cancels in the ratio, neither factor depends on the window.
+The median flexibility ratio of 1.04 combines two opposing errors. The net-load fit underestimates the TCL energy \eqref{eq:energy} by 3\% (median energy factor 0.97, nMAE 4.1\%), while the estimate overstates the unused share of capacity, $1-\mathrm{SF}$, by 7\%. About half of this overstatement comes from the pilot's SF running slightly below the measured one. The other half comes from the daily resolution of the estimate: computed from the daily-mean SF, the actual would be 3.4\% higher and the median ratio 1.01. The spread across aggregates follows the energy factor, at a correlation of 0.96, so the net-load fit sets most of the error. Since $\Delta t_{Th}$ cancels in the ratio, neither error depends on the window.
 
 \begin{figure}[t]
 \centering
