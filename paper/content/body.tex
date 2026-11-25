@@ -33,7 +33,7 @@ The contributions of this paper are threefold.
 \item \emph{Flexibility Potential Estimation:} A method to quantify the flexibility potential of an aggregated TCL population against temperature, from the net-load sensitivity and the SF sensitivity. On the semi-synthetic Swiss aggregates, it recovers the annual flexible energy at an nMAE of 4.8\%.
 \end{enumerate}
 
-The rest of the paper is structured as follows: Section~\ref{sec:problem} introduces the net-load and SF fits and the transfer of the SF sensitivity; Section~\ref{sec:estimation} derives the installed capacity and the flexibility potential from them; Section~\ref{sec:data} describes the data and the evaluation design. Section~\ref{sec:results} reports the results, and Section~\ref{sec:discussion} discusses the error sources and limitations. Lastly, Section~\ref{sec:conclusion} concludes the paper. Fig.~\ref{fig:pipeline} maps each step of the method to the section that defines it.
+The rest of the paper is structured as follows: Section~\ref{sec:problem} introduces the net-load and SF fits; Section~\ref{sec:estimation} derives the installed capacity, the transfer of the SF sensitivity from a pilot and the flexibility potential; Section~\ref{sec:data} describes the data and the evaluation design. Section~\ref{sec:results} reports the results, and Section~\ref{sec:discussion} discusses the error sources and limitations. Lastly, Section~\ref{sec:conclusion} concludes the paper. Fig.~\ref{fig:pipeline} maps each step of the method to the section that defines it.
 
 \begin{figure}[t]
 \centering
@@ -52,7 +52,7 @@ The rest of the paper is structured as follows: Section~\ref{sec:problem} introd
 \draw[->] (temp.east) -- (sf.south west);
 \draw[->] (temp.east) -- (bath.north west);
 \draw[->] (net) -- (bath);
-\draw[->] (sf) -- (cap) node[midway, above, flab, text=black] {SF\\sensitivity};
+\draw[->] (sf) -- (cap) node[midway, above, flab, text=black] {SF\\sensitivity\\[-1pt]{\scriptsize\color{black!60}Sec.~\ref*{sec:transfer}}};
 \draw[->] (bath.north east) -- (cap.south west);
 \draw[->] (bath) -- (en);
 \draw[->] (cap) -- (fl);
@@ -166,26 +166,17 @@ The threshold temperatures follow the local climate, whereas the net-load sensit
 
 The SF sensitivities $m_h$ and $m_c$ group partly by K{\"o}ppen class \cite{beck2018koppen}. The two temperate oceanic (Cfb) aggregates, Hamelin and Kloten, sit at $m_h=0.016$ and $0.018\,^\circ$C$^{-1}$, and the two humid continental (Dfa and Dfb) sites, Oslo and Hennepin, near $0.022\,^\circ$C$^{-1}$, despite different HP technologies. The temperate dry and warm summer (Csb) class splits: its measured Washington and Oregon aggregates of ductless HPs sit at $0.023$--$0.024\,^\circ$C$^{-1}$, its simulated King County aggregate of ducted HPs with resistance backup at $0.036\,^\circ$C$^{-1}$. The cooling sensitivity $m_c$ spans $0.024$--$0.038\,^\circ$C$^{-1}$ without a clear grouping. The hot desert site, Maricopa, is the outlier, at $m_h=0.063\,^\circ$C$^{-1}$, possibly because few genuinely cold days anchor the coldest end of its heating arm. Across classes, $m_h$ varies by up to a factor of four, so the SF sensitivity is expected to transfer only within a climate class and TCL technology (Section~\ref{sec:transfer}). Section~\ref{sec:res-sf} tests this expectation on further populations with complete heating submetering.
 
-\subsection{Transferability of SF}
-\label{sec:transfer}
-
-The method calibrates the SF sensitivity once on a submetered pilot and reuses it on every target. The SF fit needs submetered TCL data, which a DSO rarely holds for the aggregate under study. The pilot is a small set of households whose TCL load is submetered, so that its installed capacity is known. A target is an aggregate whose installed capacity is to be estimated and whose households are not submetered. In the main experiment, pilot and targets belong to the same population, i.e.\ the households of one dataset or study. In the experiments, a split is one random partition of a population into a pilot and targets.
-
-Only the SF sensitivities $m_h$ and $m_c$ transfer. The pilot's thresholds follow its own building stock and climate, so the target's thresholds $T_h$ and $T_c$ are read from the target's net-load fit instead. The pilot's intercepts $b_h$ and $b_c$ describe weather-independent TCL use, which the target's net-load fit places in $P_{\mathrm{base}}$ and never attributes to its TCL arms. The alternative is to transfer the full pilot curve, i.e.\ the whole SF fit \eqref{eq:sffit} with the pilot's own intercept and threshold. The capacity then follows from the target's fitted TCL load \eqref{eq:tclfit} on its coldest day, divided by the pilot's SF on that day. Section~\ref{sec:res-sf} compares the two transfers on aggregates whose thresholds differ from the pilot's.
-
-The transfer rests on a hypothesis, which this paper tests rather than assumes: within a population, the SF sensitivity does not depend on the installed capacity or the TCL penetration of an aggregate. The hypothesis matters because the capacity estimate divides the target's net-load sensitivity by the pilot's SF sensitivity (Section~\ref{sec:uc-capacity}). Any mismatch between the pilot's and the target's SF sensitivity therefore passes directly into the estimated capacity. Section~\ref{sec:res-sf} tests it in three steps, each wider than the last: within one population, on aggregates outside the pilot and across populations from five countries.
-
 \section{Aggregated TCL Quantification}
 \label{sec:estimation}
 
-The two fits, \eqref{eq:tclfit} and \eqref{eq:sffit}, are complementary. The net-load fit \eqref{eq:tclfit} needs no submetering, but its sensitivities also absorb any temperature response of the non-TCL load. The SF fit \eqref{eq:sffit} needs submetering but isolates the TCL simultaneity. Together they estimate two quantities a DSO needs about the TCLs of an aggregate: their installed capacity and flexibility potential. Installed capacity needs the transferred SF sensitivity, since the net load exposes the aggregated TCL demand, not the non-coincident sum of the individual peaks. Flexibility needs both fits: the net-load fit gives the temperature-driven energy the TCLs must deliver, and the SF fit the headroom above it. Section~\ref{sec:results} evaluates each quantity.
+The two fits, \eqref{eq:tclfit} and \eqref{eq:sffit}, are complementary. The net-load fit \eqref{eq:tclfit} needs no submetering, but its sensitivities also absorb any temperature response of the non-TCL load. The SF fit \eqref{eq:sffit} needs submetering but isolates the TCL simultaneity. Together they estimate two quantities a DSO needs about the TCLs of an aggregate: their installed capacity and flexibility potential. Installed capacity needs the transferred SF sensitivity, since the net load exposes the aggregated TCL demand, not the non-coincident sum of the individual peaks. Flexibility needs both fits: the net-load fit gives the temperature-driven energy the TCLs must deliver, and the SF fit the headroom above it. Section~\ref{sec:uc-capacity} derives the installed capacity, Section~\ref{sec:transfer} shows how a pilot supplies the SF sensitivity, and Section~\ref{sec:uc-flex} derives the flexibility. Section~\ref{sec:results} evaluates each quantity.
 
 \subsection{Installed Capacity Estimation}
 \label{sec:uc-capacity}
 
-The installed capacity of each regime is the target's net-load sensitivity divided by the pilot's SF sensitivity, $s_k/m_k$. It is the sum of the individual peak demands \eqref{eq:pk}, which the aggregated TCLs never draw at once, so the net load never exposes it directly. The net-load fit does expose the temperature-driven TCL load $\hat{P}_{\mathrm{TCL}}^{\,i}(T)$ of aggregate $i$. Rearranging \eqref{eq:sf-piecewise}, the capacity of regime $k$ follows from this load and the SF at the same temperature.
+The installed capacity of each regime is the net-load sensitivity of an aggregate divided by its SF sensitivity, $s_k/m_k$. It is the sum of the individual peak demands \eqref{eq:pk}, which the aggregated TCLs never draw at once, so the net load never exposes it directly. The net-load fit does expose the temperature-driven TCL load $\hat{P}_{\mathrm{TCL}}^{\,i}(T)$ of aggregate $i$. Rearranging \eqref{eq:sf-piecewise}, the capacity of regime $k$ follows from this load and the SF at the same temperature.
 
-The net-load arm and the SF must describe the same load. The net-load arm is zero at the aggregate's own threshold by construction, and the weather-independent TCL use sits in $P_{\mathrm{base}}$. The matching SF is therefore the temperature-driven part of \eqref{eq:sffit}. It starts from zero at the aggregate's own thresholds and grows with the pilot's SF sensitivity,
+The net-load arm and the SF must describe the same load. The net-load arm is zero at the aggregate's own threshold by construction, and the weather-independent TCL use sits in $P_{\mathrm{base}}$. The matching SF is therefore the temperature-driven part of \eqref{eq:sffit}. It starts from zero at the aggregate's own thresholds and grows with the SF sensitivity $m_k$,
 \begin{equation}
 \begin{aligned}
     \hat{\mathrm{SF}}_h^{\,i}(T) &= m_h\,(T_h^{\,i} - T), \quad \forall T < T_h^{\,i},\\
@@ -201,16 +192,25 @@ Dividing the arms of \eqref{eq:tclfit} by \eqref{eq:sf-target} gives the install
 \end{aligned}
 \label{eq:capacity}
 \end{equation}
-The temperature cancels, so the estimate needs no choice of evaluation day. The net-load fit supplies the numerator, which the DSO observes. The pilot supplies only the denominator $m_k$. The estimate is therefore as good as these two sensitivities, which Section~\ref{sec:results} tests.
+The temperature cancels, so the estimate needs no choice of evaluation day. The net-load fit supplies the numerator, which the DSO observes. The SF fit supplies the denominator $m_k$, which needs submetering. Section~\ref{sec:transfer} shows how a pilot supplies it for an aggregate that is not submetered. The estimate is therefore as good as these two sensitivities, which Section~\ref{sec:results} tests.
 
-The net-load sensitivities also hold the non-TCL response of the households, about $N s_{n,k}$ in regime $k$ (Section~\ref{sec:problem}), which biases \eqref{eq:capacity} upwards. A DSO that holds the net load of an aggregate without TCLs, for instance a feeder without HPs or air conditioners, can fit \eqref{eq:bathtub} to it at the target's thresholds and divide its sensitivities by its household count. This gives the non-TCL sensitivities per household, $s_{n,h}$ and $s_{n,c}$, which the corrected capacity of each regime subtracts,
+The net-load sensitivities also hold the non-TCL response of the households, about $N s_{n,k}$ in regime $k$ (Section~\ref{sec:problem}), which biases \eqref{eq:capacity} upwards. A DSO that holds the net load of an aggregate without TCLs, for instance a feeder without HPs or air conditioners, can fit \eqref{eq:bathtub} to it at the aggregate's thresholds and divide its sensitivities by its household count. This gives the non-TCL sensitivities per household, $s_{n,h}$ and $s_{n,c}$, which the corrected capacity of each regime subtracts,
 \begin{equation}
 \begin{aligned}
     \hat{P}_h^{\max,i} &= \frac{s_h^{\,i} - N^i s_{n,h}}{m_h}, & \hat{P}_c^{\max,i} &= \frac{s_c^{\,i} - N^i s_{n,c}}{m_c},
 \end{aligned}
 \label{eq:capacity-corr}
 \end{equation}
-where $N^i$ is the household count of aggregate $i$. On a target aggregate, the correction needs only its household count $N^i$, not which of its households hold a TCL.
+where $N^i$ is the household count of aggregate $i$. On an aggregate under study, the correction needs only its household count $N^i$, not which of its households hold a TCL.
+
+\subsection{Transferability of the SF Sensitivity}
+\label{sec:transfer}
+
+The capacity estimate \eqref{eq:capacity} needs the SF sensitivity $m_k$ of the aggregate, but the SF fit needs submetered TCL data, which a DSO rarely holds. The method therefore calibrates the SF sensitivity once on a submetered pilot and reuses it on every target. The SF fit needs submetered TCL data, which a DSO rarely holds for the aggregate under study. The pilot is a small set of households whose TCL load is submetered, so that its installed capacity is known. A target is an aggregate whose installed capacity is to be estimated and whose households are not submetered. In the main experiment, pilot and targets belong to the same population, i.e.\ the households of one dataset or study. In the experiments, a split is one random partition of a population into a pilot and targets.
+
+Only the SF sensitivities $m_h$ and $m_c$ transfer. The pilot's thresholds follow its own building stock and climate, so the target's thresholds $T_h$ and $T_c$ are read from the target's net-load fit instead. The pilot's intercepts $b_h$ and $b_c$ describe weather-independent TCL use, which the target's net-load fit places in $P_{\mathrm{base}}$ and never attributes to its TCL arms. The alternative is to transfer the full pilot curve, i.e.\ the whole SF fit \eqref{eq:sffit} with the pilot's own intercept and threshold. The capacity then follows from the target's fitted TCL load \eqref{eq:tclfit} on its coldest day, divided by the pilot's SF on that day. Section~\ref{sec:res-sf} compares the two transfers on aggregates whose thresholds differ from the pilot's.
+
+The transfer rests on a hypothesis, which this paper tests rather than assumes: within a population, the SF sensitivity does not depend on the installed capacity or the TCL penetration of an aggregate. The hypothesis matters because the capacity estimate divides the target's net-load sensitivity by the pilot's SF sensitivity (Section~\ref{sec:uc-capacity}). Any mismatch between the pilot's and the target's SF sensitivity therefore passes directly into the estimated capacity. Section~\ref{sec:res-sf} tests it in three steps, each wider than the last: within one population, on aggregates outside the pilot and across populations from five countries.
 
 % =====================================================================
 \subsection{Flexibility Potential Estimation}
@@ -381,7 +381,7 @@ The pilot should therefore match the target in climate, HP technology and housin
 
 \subsection{Limitations}
 
-Aggregates of the same Kloten split share HPs, so their errors are not independent, but the 20 splits keep the results from resting on any single partition. The three aggregates outside the pilot are few and all have an HP in every household, so lower HP penetrations are tested only on the semi-synthetic Kloten aggregates. On a real feeder with few HPs, the estimate should therefore be expected to overestimate the capacity as the Kloten aggregates do, by a median 66\% at 10\% penetration, or 19\% with the correction \eqref{eq:capacity-corr}. This paper could not evaluate cooling, since the Washington pilot of the NEEA households \cite{neea_eulr}, the only aggregates with complete cooling ground truth, has no day above its cooling threshold in 2023.
+Aggregates of the same Kloten split share HPs, so their errors are not independent, but the 20 splits keep the results from resting on any single partition. The three aggregates outside the pilot are few and all have an HP in every household, so lower HP penetrations are tested only on the semi-synthetic Kloten aggregates. On a real feeder with few HPs, the estimate should therefore be expected to overestimate the capacity as the Kloten aggregates do, by a median 66\% at 10\% penetration, or 19\% with the correction \eqref{eq:capacity-corr}. This paper could not evaluate cooling, since the Washington pilot of the NEEA households \cite{neea_eulr}, the only aggregates with complete cooling ground truth, has no day above its cooling threshold in 2023. The cooling capacity estimate therefore remains untested on measured data, and the transfer of $m_c$ may behave differently from that of $m_h$.
 
 The non-TCL temperature response, which the model neglects, is sized per household in Section~\ref{sec:res-capacity}. The resulting bias is thus predictable from the household count the DSO already holds, and Section~\ref{sec:uc-capacity} corrects it. The correction removes most of the bias but not the spread, so the nMAE falls only from 9.5\% to 7.5\%.
 
