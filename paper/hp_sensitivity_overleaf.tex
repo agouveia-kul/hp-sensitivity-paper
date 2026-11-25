@@ -48,6 +48,8 @@ Thermostatically controlled loads, heat pumps, low-voltage networks, simultaneit
 
 \balance
 \bibliographystyle{IEEEtran}
-\bibliography{references}
+% References one size smaller than IEEEtran's default (footnotesize)
+{\let\footnotesize\scriptsize
+\bibliography{references}}
 
 \end{document}
